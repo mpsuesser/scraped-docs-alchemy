@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-gateway
 title: "Add an AI Gateway"
 description: "Wire an AI Gateway into your Worker, turn it into a typed Effect LanguageModel, and run generations and streams through Workers AI with caching, rate limiting, and logs."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 You've now wired Durable Objects, hibernatable WebSockets, a

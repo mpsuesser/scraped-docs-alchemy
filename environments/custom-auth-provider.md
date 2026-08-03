@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/custom-auth-provider
 title: "Custom Auth Provider"
 description: "Plug a third-party API into alchemy login — a lazy credentials service backed by an AuthProvider that resolves keys from a Profile, env vars, or a refreshable session."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 The [Custom Provider](../infrastructure-as-code/custom-provider.md) guide builds a

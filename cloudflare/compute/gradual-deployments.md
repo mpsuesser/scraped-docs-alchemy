@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/gradual-deployments
 title: "Gradual deployments"
 description: "Roll out Worker deploys incrementally — upload preview versions, canary a percentage of live traffic, ramp to 100%, pin users to a version during the rollout, and verify which version served each request."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Every deploy of a Worker uploads an immutable

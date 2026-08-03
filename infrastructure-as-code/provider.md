@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/provider
 title: "Providers"
 description: "Providers implement the lifecycle operations for a resource type — reconcile, delete, diff, read, and more."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 A **Provider** implements the lifecycle operations for a resource

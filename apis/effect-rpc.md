@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-rpc
 title: "Effect RPC"
 description: "Schema-first RPC for trust boundaries — declare procedures, construct handler Layers, derive typed clients from the same schema."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Effect RPC is schema-first: every procedure declares `payload`,

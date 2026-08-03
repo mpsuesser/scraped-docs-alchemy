@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/lifecycle
 title: "Connection lifecycle"
 description: "SQL clients build lazily on first query, memoize per execution, and tear down when the event settles — why, and what that means on workerd and Lambda."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Every alchemy SQL client — `SQL.Postgres`, `SQL.D1`,

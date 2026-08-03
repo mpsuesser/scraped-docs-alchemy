@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-search
 title: "Add AI Search (AutoRAG)"
 description: "Stand up a Cloudflare AI Search (AutoRAG) pipeline over an R2 bucket with one Search call, bind it into your Worker as a typed Effect client, and answer questions over your own documents."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Cloudflare **AI Search** indexes the documents in an

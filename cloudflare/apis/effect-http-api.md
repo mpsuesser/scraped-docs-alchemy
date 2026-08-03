@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-http-api
 title: "Effect HTTP API"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as a Cloudflare Worker."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Effect HTTP is the trust-boundary modality: schema-validated REST

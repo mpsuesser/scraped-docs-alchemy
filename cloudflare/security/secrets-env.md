@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-env
 title: "Secrets & env"
 description: "Bind env vars and secrets to Workers with effect/Config, generate stable tokens with Alchemy.Random, and graduate to Secrets Store when secrets are shared across Workers."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Three ways to get a secret into a Worker, by where the value lives.

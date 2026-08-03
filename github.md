@@ -2,8 +2,8 @@
 url: https://alchemy.run/github
 title: "GitHub"
 description: "Repositories, Actions secrets and variables, webhooks, and repository event sources as Stack resources — the glue for CI/CD."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 The GitHub provider manages repositories, Actions secrets and variables, and webhooks as resources. It’s the glue for CI/CD: your Stack can mint a scoped cloud credential and store it as an Actions secret in the same deploy — no pasting tokens into repo settings. Workers can even subscribe to repository events directly.

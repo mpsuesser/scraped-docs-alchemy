@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/postgres
 title: "Postgres"
 description: "SQL.Postgres turns a connection string into an @effect/sql-pg client — tagged-template queries with typed errors, one pool per execution."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 `SQL.Postgres` opens an `@effect/sql-pg` client (a connection pool)

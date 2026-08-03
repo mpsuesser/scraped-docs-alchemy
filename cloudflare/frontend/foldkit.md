@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/foldkit
 title: "Foldkit"
 description: "Deploy a Foldkit app to Cloudflare with the Vite resource — one declaration, no Wrangler config."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 [Foldkit](https://foldkit.dev) is an Elm-architecture frontend

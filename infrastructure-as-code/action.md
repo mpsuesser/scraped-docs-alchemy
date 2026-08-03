@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/action
 title: "Actions"
 description: "A node in the dependency graph that runs an Effect during apply when its inputs change."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 An **Action** is a node in the stack's dependency graph that runs an

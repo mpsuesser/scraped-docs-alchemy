@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker
 title: "Docker"
 description: "Images, containers, networks, and volumes as Stack resources, driven through your active Docker CLI context."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 The Docker provider manages images, containers, networks, and volumes by shelling out to the `docker` CLI’s active context — Docker Desktop, a remote or SSH context, a CI daemon. There is no daemon API client and no credentials of its own, and the resources live in the same Stack as your cloud resources. It is separate from `Cloudflare.Container`; registry image references are the boundary between Docker-managed images and cloud container platforms.

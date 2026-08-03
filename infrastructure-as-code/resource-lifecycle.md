@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
 title: "Resource lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

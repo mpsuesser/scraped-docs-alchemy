@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 A Durable Object is _hosted_ by exactly one Worker, but any

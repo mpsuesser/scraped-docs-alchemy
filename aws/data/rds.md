@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/rds
 title: "RDS & Aurora"
 description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with pg, or skip connections entirely with the Data API."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Aurora is AWS's managed Postgres/MySQL. Bringing it up by hand

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/analytics-engine
 title: "Analytics Engine"
 description: "Write time-series data points from a Worker with Workers Analytics Engine — declare a dataset, bind it with WriteDataset, and query it later over Cloudflare's SQL API."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Workers Analytics Engine is Cloudflare's write-heavy time-series

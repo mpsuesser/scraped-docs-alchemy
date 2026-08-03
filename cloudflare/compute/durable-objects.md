@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/durable-objects
 title: "Durable Objects"
 description: "Durable Objects are globally-unique stateful instances with transactional storage — define one as an Effect, persist state per key, expose typed RPC methods, and stream values back to the caller."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 A Durable Object (DO) is a globally-unique stateful instance

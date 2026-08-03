@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/alerting
 title: "Alerting: monitors & notifiers"
 description: "Turn APL queries into alerts — Threshold, MatchEvent, and AnomalyDetection monitors wired to Slack, email, PagerDuty, and webhook notifiers, all as resources in your Stack."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 An Axiom `Monitor` is a saved APL query that runs on a fixed cadence

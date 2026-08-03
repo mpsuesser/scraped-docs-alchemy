@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/solidstart
 title: "SolidStart"
 description: "Deploy SolidStart to Cloudflare with Cloudflare.Website.Vite — plus the hand-rolled SolidJS SSR variant for full control over the server entry."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 SolidStart builds through Vite: the `solidStart()` plugin in your

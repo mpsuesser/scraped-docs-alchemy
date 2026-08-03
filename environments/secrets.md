@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
 description: "Use effect/Config to read env vars at init time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)

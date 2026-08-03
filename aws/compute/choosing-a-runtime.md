@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/choosing-a-runtime
 title: "Choosing a runtime"
 description: "Lambda vs ECS vs EKS vs EC2 for Alchemy apps — cold starts, cost shape, packaging, and how much of each Alchemy currently covers."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Every Alchemy app on AWS needs somewhere for its code to run.

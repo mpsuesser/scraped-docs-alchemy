@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite
 title: "Vite"
 description: "Deploy any pure-Vite app to Cloudflare Workers with a single resource."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 `Cloudflare.Website.Vite` deploys any app that is pure Vite — a

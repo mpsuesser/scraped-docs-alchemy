@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 This is the walkthrough for a plain React single-page app on

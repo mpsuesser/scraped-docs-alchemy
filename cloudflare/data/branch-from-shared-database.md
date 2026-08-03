@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/branch-from-shared-database
 title: "Branch from a shared database"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, cheap branches, no extra clusters."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 In the [Hyperdrive](hyperdrive.md) tutorial you provisioned a `Neon.Project` and a `Neon.Branch`, then [Drizzle](drizzle.md) layered automatic migrations on top. Both work fine with a single stage — but the moment you start deploying PR previews (`pr-147`, `pr-148`, …) the default flow becomes painful:

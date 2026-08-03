@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom
 title: "Axiom"
 description: "Observability as resources — OTEL datasets, ingest tokens, monitors, notifiers, and dashboards declared next to the code that emits the data."
-access_date: 2026-08-03T18:54:18.847Z
-current_date: 2026-08-03T18:54:18.847Z
+access_date: 2026-08-03T19:00:17.443Z
+current_date: 2026-08-03T19:00:17.443Z
 ---
 
 Axiom is an event and observability store for logs, traces, and metrics. Effect already emits OpenTelemetry, and with alchemy the receiving end is code too: datasets, ingest tokens, monitors, notifiers, and dashboards live in the same Stack as the Workers and Functions they observe, so a threshold change is a reviewable diff.
