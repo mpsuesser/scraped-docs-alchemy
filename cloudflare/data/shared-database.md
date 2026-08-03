@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/shared-database
 title: "Shared database across stages"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, copy-on-write branches, no extra clusters."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 [Stages](../../environments/stages.md) make it cheap to spin up isolated copies

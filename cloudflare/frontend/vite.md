@@ -2,17 +2,11 @@
 url: https://alchemy.run/cloudflare/frontend/vite
 title: "Vite"
 description: "Deploy any pure-Vite app to Cloudflare Workers with a single resource."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-`Cloudflare.Website.Vite` deploys any app that is pure Vite — a
-project whose entire build is `vite build` with plugins from your
-`vite.config.ts`. That covers a plain `index.html`, a React or Vue
-SPA, and full-stack SSR frameworks like TanStack Start or React
-Router. This page explains the resource itself; each supported
-framework has [its own landing page](#frameworks) that flows from
-here.
+`Cloudflare.Website.Vite` deploys any app that is pure Vite — a project whose entire build is `vite build` with plugins from your `vite.config.ts`. That covers a plain `index.html`, a React or Vue SPA, and full-stack SSR frameworks like TanStack Start or React Router. This page explains the resource itself; each supported framework has [its own landing page](#frameworks) that flows from here.
 
 ## One resource, one build
 
@@ -22,16 +16,7 @@ The minimal form takes no props at all:
 const site = yield* Cloudflare.Website.Vite("Website");
 ```
 
-Alchemy loads **your** project's Vite install (resolved from
-`rootDir`'s `package.json`), appends Alchemy's own Cloudflare Vite
-plugin to the plugins your
-`vite.config.ts` already declares, and runs `builder.buildApp()`.
-Client assets are uploaded as Worker static assets; if the build
-emits a server bundle (SSR), that bundle becomes the Worker entry —
-otherwise the Worker is assets-only. There is no `main` entrypoint,
-no build command, no output directory, and no `wrangler.jsonc`: an
-`index.html` next to your `alchemy.run.ts` (plus your
-`vite.config.ts`, if you have one) is enough.
+Alchemy loads **your** project’s Vite install (resolved from `rootDir` ’s `package.json`), appends Alchemy’s own Cloudflare Vite plugin to the plugins your `vite.config.ts` already declares, and runs `builder.buildApp()`. Client assets are uploaded as Worker static assets; if the build emits a server bundle (SSR), that bundle becomes the Worker entry — otherwise the Worker is assets-only. There is no `main` entrypoint, no build command, no output directory, and no `wrangler.jsonc`: an `index.html` next to your `alchemy.run.ts` (plus your `vite.config.ts`, if you have one) is enough.
 
 ## What pure Vite means
 
@@ -47,42 +32,13 @@ const builder = await vite.createBuilder({
 await builder.buildApp();
 ```
 
-A framework is supported if — and only if — a `vite build` of your
-`vite.config.ts` builds the whole app. Frameworks whose build is
-orchestrated by their own CLI (`astro build`, `nuxi build`) never
-enter this path, so they are not yet supported by this resource —
-see [Astro](astro.md) and
-[Nuxt](nuxt.md) for their current status and
-workarounds, or [StaticSite](static-site.md) as
-the general fallback for any build command that produces a
-directory of files.
+A framework is supported if — and only if — a `vite build` of your `vite.config.ts` builds the whole app. Frameworks whose build is orchestrated by their own CLI (`astro build`, `nuxi build`) never enter this path, so they are not yet supported by this resource — see [Astro](astro.md) and [Nuxt](nuxt.md) for their current status and workarounds, or [StaticSite](static-site.md) as the general fallback for any build command that produces a directory of files.
 
-## Remove `@cloudflare/vite-plugin`
-
-:::caution[Remove @cloudflare/vite-plugin if present]
-Alchemy appends its own Cloudflare Vite plugin
-(`@distilled.cloud/cloudflare-vite-plugin`) and is **not
-compatible** with `@cloudflare/vite-plugin` in your
-`vite.config.ts`. Remove it — this applies to every framework
-deployed with this resource:
-
-```diff lang="typescript"
-// vite.config.ts
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
--import cloudflare from "@cloudflare/vite-plugin";
-
-export default defineConfig({
--  plugins: [react(), cloudflare()],
-+  plugins: [react()],
-});
-```
-:::
+## Remove @cloudflare/vite-plugin
 
 ## Props
 
-`ViteProps` is `WorkerProps` minus the things the build now owns
-(`main`, the directory-shaped `assets`), plus Vite-specific options:
+`ViteProps` is `WorkerProps` minus the things the build now owns (`main`, the directory-shaped `assets`), plus Vite-specific options:
 
 ```typescript
 const site = yield* Cloudflare.Website.Vite("Website", {
@@ -92,31 +48,13 @@ const site = yield* Cloudflare.Website.Vite("Website", {
 });
 ```
 
-- **`rootDir`** — Vite's project root, default `process.cwd()`.
-- **`memo`** — narrows which files are hashed to decide whether a
-  rebuild is needed (see [Rebuilds and memo](#rebuilds-and-memo)).
-- **`viteEnvironments`** — for frameworks that build more than one
-  server environment (see
-  [Multiple server environments](#multiple-server-environments-rsc)).
-- **`assets`** — a flat `AssetsConfig` for routing behavior:
-  `runWorkerFirst`, `htmlHandling`, `notFoundHandling`, etc. The
-  built asset directory is supplied by the build, so unlike a plain
-  Worker there is no `directory` to configure.
-- Everything else is inherited from the Worker — `domain`, `env`,
-  `compatibility`, `crons`, and so on. See
-  [Workers](../compute/workers.md).
+- **`rootDir`** — Vite’s project root, default `process.cwd()`.
+- **`memo`** — narrows which files are hashed to decide whether a rebuild is needed (see [Rebuilds and memo](#rebuilds-and-memo)).
+- **`viteEnvironments`** — for frameworks that build more than one server environment (see [Multiple server environments](#multiple-server-environments-rsc)).
+- **`assets`** — a flat `AssetsConfig` for routing behavior: `runWorkerFirst`, `htmlHandling`, `notFoundHandling`, etc. The built asset directory is supplied by the build, so unlike a plain Worker there is no `directory` to configure.
+- Everything else is inherited from the Worker — `domain`, `env`, `compatibility`, `crons`, and so on. See [Workers](../compute/workers.md).
 
-:::caution[index.html must be at rootDir]
-Vite resolves `index.html` relative to its project root. `rootDir`
-defaults to `process.cwd()` — so place `index.html` next to your
-`alchemy.run.ts`, or set `rootDir` to the folder that contains it.
-See Vite's
-[project structure docs](https://vite.dev/guide/#index-html-and-project-root).
-:::
-
-Like `Worker`, the resource also has a class form — useful when
-other resources bind to the site, or when you want to derive its
-`env` types:
+Like `Worker`, the resource also has a class form — useful when other resources bind to the site, or when you want to derive its `env` types:
 
 ```typescript
 export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
@@ -124,20 +62,15 @@ export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
 }) {}
 ```
 
-See [TanStack Start](tanstack-start.md) for the
-class form in a real app.
+See [TanStack Start](tanstack-start.md) for the class form in a real app.
 
 ## Environment
 
-`env` feeds your app through two distinct channels: build-time
-inlining into the client bundle, and runtime Worker bindings for
-server code.
+`env` feeds your app through two distinct channels: build-time inlining into the client bundle, and runtime Worker bindings for server code.
 
 ### Build-time inlining
 
-Only `VITE_`-prefixed keys are inlined into the client bundle as
-`import.meta.env.<KEY>`, matching `vite build`'s default
-`envPrefix` semantics:
+Only `VITE_` -prefixed keys are inlined into the client bundle as `import.meta.env.<KEY>`, matching `vite build` ’s default `envPrefix` semantics:
 
 ```typescript
 const web = yield* Cloudflare.Website.Vite("Website", {
@@ -147,19 +80,11 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 });
 ```
 
-`Output` values like `backend.url` resolve at deploy time before
-the build runs, so the client reads a concrete
-`import.meta.env.VITE_API_URL`. `Redacted` values are unwrapped
-when `VITE_`-prefixed — the prefix means you are opting the value
-into the public bundle, so don't prefix secrets with `VITE_`.
+`Output` values like `backend.url` resolve at deploy time before the build runs, so the client reads a concrete `import.meta.env.VITE_API_URL`. `Redacted` values are unwrapped when `VITE_` -prefixed — the prefix means you are opting the value into the public bundle, so don’t prefix secrets with `VITE_`.
 
-### The site's own URL
+### The site’s own URL
 
-`backend.url` works for *another* Worker's URL, but a site can't
-reference its own `url` Output. `Worker.URL` closes the loop:
-Alchemy resolves the URL the Worker will be served at — its first
-custom domain, otherwise its `workers.dev` URL — before the build
-and injects it:
+`backend.url` works for *another* Worker’s URL, but a site can’t reference its own `url` Output. `Worker.URL` closes the loop: Alchemy resolves the URL the Worker will be served at — its first custom domain, otherwise its `workers.dev` URL — before the build and injects it:
 
 ```typescript
 const web = yield* Cloudflare.Website.Vite("Website", {
@@ -169,15 +94,11 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 });
 ```
 
-The client bundle reads a concrete
-`import.meta.env.VITE_PUBLIC_URL`, and server code sees the same
-value on `env.VITE_PUBLIC_URL` (typed `string` by `InferEnv`).
-Under `alchemy dev` it resolves to the local dev server's URL.
+The client bundle reads a concrete `import.meta.env.VITE_PUBLIC_URL`, and server code sees the same value on `env.VITE_PUBLIC_URL` (typed `string` by `InferEnv`). Under `alchemy dev` it resolves to the local dev server’s URL.
 
 ### Runtime bindings
 
-Non-`VITE_` values become native Worker bindings, available to SSR
-code and typed via `Cloudflare.InferEnv`:
+Non- `VITE_` values become native Worker bindings, available to SSR code and typed via `Cloudflare.InferEnv`:
 
 ```typescript
 export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
@@ -191,15 +112,11 @@ export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>;
 ```
 
-See [TanStack Start](tanstack-start.md) for the
-full pattern of consuming these bindings from server routes.
+See [TanStack Start](tanstack-start.md) for the full pattern of consuming these bindings from server routes.
 
 ## Multiple server environments (RSC)
 
-`viteEnvironments` defaults to `{ entry: "ssr", children: [] }`.
-Frameworks that emit several server environments — React Server
-Components split into `rsc` and `ssr` — declare which environment
-produces the Worker entry chunk and which are bundled alongside it:
+`viteEnvironments` defaults to `{ entry: "ssr", children: [] }`. Frameworks that emit several server environments — React Server Components split into `rsc` and `ssr` — declare which environment produces the Worker entry chunk and which are bundled alongside it:
 
 ```typescript
 const app = yield* Cloudflare.Website.Vite("ReactRouterRSC", {
@@ -208,20 +125,11 @@ const app = yield* Cloudflare.Website.Vite("ReactRouterRSC", {
 });
 ```
 
-The `entry` environment becomes the deployed Worker entry,
-`children` chunks are bundled alongside it, and the `client`
-environment is always deployed as static assets. See
-[React Router](react-router.md) for the worked
-example.
+The `entry` environment becomes the deployed Worker entry, `children` chunks are bundled alongside it, and the `client` environment is always deployed as static assets. See [React Router](react-router.md) for the worked example.
 
 ## Rebuilds and memo
 
-By default, every non-gitignored file under `rootDir` plus the
-nearest lockfile is content-hashed; if nothing changed, both the
-build and the deploy are skipped entirely. The hash is
-path-insensitive — relocating `rootDir` with identical sources is a
-no-op deploy. Narrow the scope with `memo` when the project
-contains large directories that don't affect the build output:
+By default, every non-gitignored file under `rootDir` plus the nearest lockfile is content-hashed; if nothing changed, both the build and the deploy are skipped entirely. The hash is path-insensitive — relocating `rootDir` with identical sources is a no-op deploy. Narrow the scope with `memo` when the project contains large directories that don’t affect the build output:
 
 ```typescript
 const site = yield* Cloudflare.Website.Vite("Docs", {
@@ -237,12 +145,7 @@ const site = yield* Cloudflare.Website.Vite("Docs", {
 bun alchemy dev
 ```
 
-`alchemy dev` boots Vite's own dev server programmatically with the
-Cloudflare plugin attached — you get HMR on your application code
-while bindings point at the **real** cloud resources, so there is
-no emulation fidelity gap. By default the dev server picks an
-available port; set `dev.port` to keep the local URL stable across
-runs:
+`alchemy dev` boots Vite’s own dev server programmatically with the Cloudflare plugin attached — you get HMR on your application code while bindings point at the **real** cloud resources, so there is no emulation fidelity gap. By default the dev server picks an available port; set `dev.port` to keep the local URL stable across runs:
 
 ```typescript
 const web = yield* Cloudflare.Website.Vite("Website", {
@@ -252,21 +155,12 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 
 ## Frameworks
 
-Each supported framework has its own landing page building on this
-resource:
+Each supported framework has its own landing page building on this resource:
 
-- [React SPA](vite-spa.md) — single-page apps,
-  from a bare `index.html` to the `create-vite` template.
-- [TanStack Start](tanstack-start.md) —
-  full-stack React and Solid with server routes and typed bindings.
-- [React Router](react-router.md) — including
-  React Server Components via `viteEnvironments`.
+- [React SPA](vite-spa.md) — single-page apps, from a bare `index.html` to the `create-vite` template.
+- [TanStack Start](tanstack-start.md) — full-stack React and Solid with server routes and typed bindings.
+- [React Router](react-router.md) — including React Server Components via `viteEnvironments`.
 - [Vue](vue.md) — Vue 3 SPAs.
-- [SolidStart](solidstart.md) — SolidStart and
-  hand-rolled SolidJS SSR.
+- [SolidStart](solidstart.md) — SolidStart and hand-rolled SolidJS SSR.
 
-Not yet supported by this resource: [Astro](astro.md)
-and [Nuxt](nuxt.md) — their builds are driven by
-their own CLIs, not `vite build`. Their pages document the current
-workarounds, generally deploying build output with
-[StaticSite](static-site.md).
+Not yet supported by this resource: [Astro](astro.md) and [Nuxt](nuxt.md) — their builds are driven by their own CLIs, not `vite build`. Their pages document the current workarounds, generally deploying build output with [StaticSite](static-site.md).

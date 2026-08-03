@@ -2,38 +2,25 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-This is the walkthrough for a plain React single-page app on
-[`Cloudflare.Website.Vite`](vite.md): build the
-client assets, ship them to Cloudflare, and serve them through a
-Worker so your frontend and backend share one URL surface and one
-deploy. For the resource itself — what it does, its props, `memo`
-semantics, and dev mode — see the
-[Vite resource page](vite.md).
+This is the walkthrough for a plain React single-page app on [`Cloudflare.Website.Vite`](vite.md): build the client assets, ship them to Cloudflare, and serve them through a Worker so your frontend and backend share one URL surface and one deploy. For the resource itself — what it does, its props, `memo` semantics, and dev mode — see the [Vite resource page](vite.md).
 
-Pick the path that fits where you're starting from:
+Pick the path that fits where you’re starting from:
 
-1. [Set it up manually](#set-it-up-manually) — start from an
-   empty project; the bare minimum is an `index.html` and an
-   entry module.
-2. [Use the `create-vite` template](#use-the-create-vite-template)
-   — start from Vite's official React + TS scaffold.
-3. [Deploy an existing Vite project](#deploy-an-existing-vite-project)
-   — point Alchemy at a SPA you already have.
+1. [Set it up manually](#set-it-up-manually) — start from an empty project; the bare minimum is an `index.html` and an entry module.
+2. [Use the `create-vite` template](#use-the-create-vite-template) — start from Vite’s official React + TS scaffold.
+3. [Deploy an existing Vite project](#deploy-an-existing-vite-project) — point Alchemy at a SPA you already have.
 
 ## Set it up manually
 
-The bare minimum is **an `index.html` with a script tag** — no
-`package.json` `build` script, no `main` entry; Alchemy runs Vite
-for you, merging its Cloudflare integration on top of your
-`vite.config.ts`.
+The bare minimum is **an `index.html` with a script tag** — no `package.json` `build` script, no `main` entry; Alchemy runs Vite for you, merging its Cloudflare integration on top of your `vite.config.ts`.
 
 A minimal React SPA looks like:
 
-```
+```plaintext
 .
 ├── index.html          # entry HTML, references the client bundle
 ├── vite.config.ts      # your plugins — react() here
@@ -50,11 +37,9 @@ bun add -d @types/react @types/react-dom @vitejs/plugin-react
 
 ### Create vite.config.ts
 
-Register the React plugin — Alchemy runs Vite with your config and
-its plugins intact:
+Register the React plugin — Alchemy runs Vite with your config and its plugins intact:
 
 ```typescript
-// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
@@ -81,20 +66,11 @@ export default defineConfig({
 </html>
 ```
 
-:::caution[index.html must be at rootDir]
-Vite resolves `index.html` relative to its project root. Alchemy's
-`rootDir` defaults to `process.cwd()` — so place `index.html`
-next to your `alchemy.run.ts`, or set `rootDir` to the folder
-that contains it. See Vite's
-[project structure docs](https://vite.dev/guide/#index-html-and-project-root).
-:::
-
 ### Create src/main.tsx
 
 Mount a React component into the `#root` div:
 
 ```tsx
-// src/main.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -118,8 +94,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
 Yield `Cloudflare.Website.Vite("Website")` from your Stack:
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
@@ -133,10 +108,10 @@ export default Alchemy.Stack(
   },
   Effect.gen(function* () {
     const worker = yield* Worker;
-+    const web = yield* Cloudflare.Website.Vite("Website");
+    const web = yield* Cloudflare.Website.Vite("Website");
     return {
       url: worker.url,
-+      webUrl: web.url,
+      webUrl: web.url,
     };
   }),
 );
@@ -144,95 +119,72 @@ export default Alchemy.Stack(
 
 ### Configure the deep-link fallback
 
-If your SPA uses client-side routing (React Router, TanStack
-Router), configure the not-found fallback explicitly so a deep
-link like `/about` serves `index.html` instead of a 404 and your
-router handles the path on the client:
+If your SPA uses client-side routing (React Router, TanStack Router), configure the not-found fallback explicitly so a deep link like `/about` serves `index.html` instead of a 404 and your router handles the path on the client:
 
-```diff lang="typescript"
-// alchemy.run.ts
--const web = yield* Cloudflare.Website.Vite("Website");
-+const web = yield* Cloudflare.Website.Vite("Website", {
-+  assets: { notFoundHandling: "single-page-application" },
-+});
+```typescript
+const web = yield* Cloudflare.Website.Vite("Website");
+const web = yield* Cloudflare.Website.Vite("Website", {
+  assets: { notFoundHandling: "single-page-application" },
+});
 ```
 
-`assets` accepts the standard Cloudflare Worker static-assets
-config — the same options you'd set on a plain Worker's `assets`
-block.
+`assets` accepts the standard Cloudflare Worker static-assets config — the same options you’d set on a plain Worker’s `assets` block.
 
 ### Inject the Worker URL at build time
 
-A pure SPA needs the backend's URL baked into the JS bundle at
-build time — there's no server to resolve it on each request. Pass
-`env` to `Cloudflare.Website.Vite` and any `VITE_`-prefixed entry is
-inlined as `import.meta.env.<KEY>` during the Vite build, the same
-as if you'd run `VITE_API_URL=https://… vite build`:
+A pure SPA needs the backend’s URL baked into the JS bundle at build time — there’s no server to resolve it on each request. Pass `env` to `Cloudflare.Website.Vite` and any `VITE_` -prefixed entry is inlined as `import.meta.env.<KEY>` during the Vite build, the same as if you’d run `VITE_API_URL=https://… vite build`:
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 const worker = yield* Worker;
 const web = yield* Cloudflare.Website.Vite("Website", {
-+  env: {
-+    VITE_API_URL: worker.url.as<string>(),
-+  },
+  env: {
+    VITE_API_URL: worker.url.as<string>(),
+  },
 });
 ```
 
 Then read it from the SPA:
 
 ```tsx
-// src/main.tsx
 const apiUrl = import.meta.env.VITE_API_URL;
 
-await fetch(`${apiUrl}/api/hello`);
+await fetch(\`${apiUrl}/api/hello\`);
 ```
 
-Only `VITE_`-prefixed keys are inlined into the bundle, and
-`Output` values like `worker.url.as<string>()` resolve at deploy
-time before the build runs. For the full semantics — `Redacted`
-unwrapping, what happens to non-prefixed keys, redeploys on
-env-only changes — see the
-[Vite resource's environment section](vite.md#environment).
+Only `VITE_` -prefixed keys are inlined into the bundle, and `Output` values like `worker.url.as<string>()` resolve at deploy time before the build runs. For the full semantics — `Redacted` unwrapping, what happens to non-prefixed keys, redeploys on env-only changes — see the [Vite resource’s environment section](vite.md#environment).
 
-To inject the site's *own* URL — for canonical links, OG tags, or
-OAuth redirect URIs — use `Cloudflare.Worker.URL`. A site can't
-reference its own `url` Output, so Alchemy resolves the URL before
-the build and inlines it the same way:
+To inject the site’s *own* URL — for canonical links, OG tags, or OAuth redirect URIs — use `Cloudflare.Worker.URL`. A site can’t reference its own `url` Output, so Alchemy resolves the URL before the build and inlines it the same way:
 
-```diff lang="typescript"
+```typescript
 const web = yield* Cloudflare.Website.Vite("Website", {
   env: {
     VITE_API_URL: worker.url.as<string>(),
-+    VITE_PUBLIC_URL: Cloudflare.Worker.URL,
+    VITE_PUBLIC_URL: Cloudflare.Worker.URL,
   },
 });
 ```
 
 ## Use the create-vite template
 
-If you'd rather start from a real framework scaffold (React + TS
-with HMR, ESLint, etc.), use Vite's official template:
+If you’d rather start from a real framework scaffold (React + TS with HMR, ESLint, etc.), use Vite’s official template:
 
 ```sh
 bun create vite@latest web -- --template react-ts
 cd web && bun install && cd ..
 ```
 
-That drops a complete project into `./web/` with its own
-`package.json`, `tsconfig.json`, and `vite.config.ts`.
+That drops a complete project into `./web/` with its own `package.json`, `tsconfig.json`, and `vite.config.ts`.
 
 ### Point Cloudflare.Website.Vite at the subfolder
 
-Since the SPA isn't at the project root, set `rootDir`:
+Since the SPA isn’t at the project root, set `rootDir`:
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 Effect.gen(function* () {
   const worker = yield* Worker;
-+  const web = yield* Cloudflare.Website.Vite("Website", {
-+    rootDir: "./web",
-+  });
+  const web = yield* Cloudflare.Website.Vite("Website", {
+    rootDir: "./web",
+  });
   return {
     url: worker.url,
     webUrl: web.url,
@@ -240,43 +192,19 @@ Effect.gen(function* () {
 }),
 ```
 
-`rootDir` defaults to `process.cwd()`, so you only set it when
-your `index.html` isn't next to `alchemy.run.ts`.
+`rootDir` defaults to `process.cwd()`, so you only set it when your `index.html` isn’t next to `alchemy.run.ts`.
 
 ## Deploy an existing Vite project
 
-Already have a Vite SPA? Point `Cloudflare.Website.Vite` at it with
-`rootDir` and you're done:
+Already have a Vite SPA? Point `Cloudflare.Website.Vite` at it with `rootDir` and you’re done:
 
 ```ts
-// alchemy.run.ts
 const web = yield* Cloudflare.Website.Vite("Website", {
   rootDir: "./path/to/your/spa",
 });
 ```
 
-Your existing `vite.config.ts`, plugins, aliases, and `tsconfig`
-are all preserved — Alchemy merges its Cloudflare integration on
-top of your config (the [Vite resource page](vite.md)
-covers how). One thing to check first:
-
-:::caution[Remove @cloudflare/vite-plugin if present]
-Alchemy ships its own Cloudflare integration and is **not
-compatible** with `@cloudflare/vite-plugin` — remove it from your
-`vite.config.ts`:
-
-```diff lang="typescript"
-// vite.config.ts
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
--import cloudflare from "@cloudflare/vite-plugin";
-
-export default defineConfig({
--  plugins: [react(), cloudflare()],
-+  plugins: [react()],
-});
-```
-:::
+Your existing `vite.config.ts`, plugins, aliases, and `tsconfig` are all preserved — Alchemy merges its Cloudflare integration on top of your config (the [Vite resource page](vite.md) covers how). One thing to check first:
 
 ## Deploy
 
@@ -284,10 +212,9 @@ export default defineConfig({
 bun alchemy deploy
 ```
 
-Alchemy runs Vite on `rootDir`, uploads the assets, creates a
-Worker that serves them, and prints the new `webUrl` stack output:
+Alchemy runs Vite on `rootDir`, uploads the assets, creates a Worker that serves them, and prints the new `webUrl` stack output:
 
-```
+```plaintext
 {
   url: "https://myapp-worker-dev-you.workers.dev",
   webUrl: "https://myapp-web-dev-you.workers.dev",
@@ -309,8 +236,7 @@ curl -s https://myapp-web-dev-you.workers.dev | head -5
 
 Or add an integration test alongside the existing ones:
 
-```diff lang="typescript"
-// test/integ.test.ts
+```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
@@ -325,16 +251,16 @@ const { test, beforeAll, deploy } = Test.make({
 
 const stack = beforeAll(deploy(Stack));
 
-+test(
-+  "Web SPA serves index.html",
-+  Effect.gen(function* () {
-+    const { webUrl } = yield* stack;
-+
-+    const response = yield* HttpClient.get(webUrl);
-+    expect(response.status).toBe(200);
-+    expect(yield* response.text).toContain("<!doctype html>");
-+  }),
-+);
+test(
+  "Web SPA serves index.html",
+  Effect.gen(function* () {
+    const { webUrl } = yield* stack;
+
+    const response = yield* HttpClient.get(webUrl);
+    expect(response.status).toBe(200);
+    expect(yield* response.text).toContain("<!doctype html>");
+  }),
+);
 ```
 
 ## Local dev
@@ -343,138 +269,100 @@ const stack = beforeAll(deploy(Stack));
 bun alchemy dev
 ```
 
-`alchemy dev` runs the whole Stack locally with hot reloading.
-For a `Cloudflare.Website.Vite` worker that means Alchemy boots
-Vite's dev server (HMR, instant module updates) behind Alchemy's
-local proxy; each Worker gets its own local URL:
+`alchemy dev` runs the whole Stack locally with hot reloading. For a `Cloudflare.Website.Vite` worker that means Alchemy boots Vite’s dev server (HMR, instant module updates) behind Alchemy’s local proxy; each Worker gets its own local URL:
 
-```
+```plaintext
 {
   url: "http://localhost:1337",
   webUrl: "http://localhost:1338",
 }
 ```
 
-Edit `src/main.tsx`, save, and the browser updates without a full
-reload. Backend resources (R2 buckets, D1 databases, service
-bindings) are the **real** cloud resources — only your application
-code runs locally, so there's no emulation fidelity gap.
+Edit `src/main.tsx`, save, and the browser updates without a full reload. Backend resources (R2 buckets, D1 databases, service bindings) are the **real** cloud resources — only your application code runs locally, so there’s no emulation fidelity gap.
 
-The build-time env injection works the same in dev — `VITE_`-prefixed
-entries are inlined as `import.meta.env.<KEY>`, and `Output` values
-like `worker.url.as<string>()` resolve before the dev server starts.
+The build-time env injection works the same in dev — `VITE_` -prefixed entries are inlined as `import.meta.env.<KEY>`, and `Output` values like `worker.url.as<string>()` resolve before the dev server starts.
 
-By default the dev server picks an available port. Set `dev.port`
-only if you want the local URL to stay the same across runs:
+By default the dev server picks an available port. Set `dev.port` only if you want the local URL to stay the same across runs:
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 const web = yield* Cloudflare.Website.Vite("Website", {
-+  dev: { port: 3000 },
+  dev: { port: 3000 },
 });
 ```
 
-See [Local Development](../../environments/local-development.md) for the full
-model — how Workers run in `workerd`, how to attach a debugger, and
-how `dev` differs from `deploy`.
+See [Local Development](../../environments/local-development.md) for the full model — how Workers run in `workerd`, how to attach a debugger, and how `dev` differs from `deploy`.
 
 ## Use a different framework
 
-This page is the plain React SPA path. Other frameworks have
-their own landing pages, each flowing from the same
-[`Cloudflare.Website.Vite` resource](vite.md):
+This page is the plain React SPA path. Other frameworks have their own landing pages, each flowing from the same [`Cloudflare.Website.Vite` resource](vite.md):
 
-- [TanStack Start](tanstack-start.md) — full-stack
-  React with server routes and runtime bindings
-- [React Router](react-router.md) — SPA or React
-  Server Components
+- [TanStack Start](tanstack-start.md) — full-stack React with server routes and runtime bindings
+- [React Router](react-router.md) — SPA or React Server Components
 - [Vue](vue.md) — Vue 3 SPA
 - [SolidStart](solidstart.md) — SSR Solid
 
-For frameworks whose build isn't driven by Vite alone, deploy the
-built output with
-[`Cloudflare.Website.StaticSite`](static-site.md).
-The [Frontend overview](frontends.md) lays out
-which resource fits which framework.
+For frameworks whose build isn’t driven by Vite alone, deploy the built output with [`Cloudflare.Website.StaticSite`](static-site.md). The [Frontend overview](frontends.md) lays out which resource fits which framework.
 
 ## Add a backend resource
 
-Most SPAs need to talk to a real backing service — a bucket for
-uploads, a database for state. Bindings give your Worker a typed
-handle to those resources.
+Most SPAs need to talk to a real backing service — a bucket for uploads, a database for state. Bindings give your Worker a typed handle to those resources.
 
-The walkthrough below uses a TanStack Start route handler because
-a pure SPA only ships static assets — there's no server-side `env`
-to call. The same `env` map and the same three call patterns work
-in any Vite framework that exposes server routes (TanStack Start,
-SolidStart, React Router).
+The walkthrough below uses a TanStack Start route handler because a pure SPA only ships static assets — there’s no server-side `env` to call. The same `env` map and the same three call patterns work in any Vite framework that exposes server routes (TanStack Start, SolidStart, React Router).
 
 Start with the simplest backend: an R2 bucket.
 
 ```typescript
-// src/backend.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 
 export const Bucket = Cloudflare.R2.Bucket("Bucket");
 ```
 
-`Cloudflare.R2.Bucket("Bucket")` is a description, not a deploy.
-Alchemy provisions the real bucket on the next run as soon as
-something binds to it.
+`Cloudflare.R2.Bucket("Bucket")` is a description, not a deploy. Alchemy provisions the real bucket on the next run as soon as something binds to it.
 
 ## Bind the bucket to your worker
 
-Add the bucket to the Vite worker's `bindings` map:
+Add the bucket to the Vite worker’s `bindings` map:
 
-```diff lang="typescript"
-// alchemy.run.ts
-+import { Bucket } from "./src/backend.ts";
+```typescript
+import { Bucket } from "./src/backend.ts";
 
 const web = yield* Cloudflare.Website.Vite("Website", {
-+  env: {
-+    BUCKET: Bucket,
-+  },
+  env: {
+    BUCKET: Bucket,
+  },
 });
 ```
 
-The key (`BUCKET`) is the field name on `env`; the value identifies
-the resource. `env.BUCKET` is now typed as `Bucket` end to end.
+The key (`BUCKET`) is the field name on `env`; the value identifies the resource. `env.BUCKET` is now typed as `Bucket` end to end.
 
-## Pull in Cloudflare's binding types
+## Pull in Cloudflare’s binding types
 
-`InferEnv` maps each binding to a Cloudflare runtime type
-(`Bucket`, `Service`, `Namespace`, …) — those types live in
-`@cloudflare/workers-types`. Add it to your `tsconfig.json` so the
-TypeScript checker can find them:
+`InferEnv` maps each binding to a Cloudflare runtime type (`Bucket`, `Service`, `Namespace`, …) — those types live in `@cloudflare/workers-types`. Add it to your `tsconfig.json` so the TypeScript checker can find them:
 
 ```sh
 bun add -d @cloudflare/workers-types
 ```
 
-```diff lang="json"
-// tsconfig.json
+```json
 {
   "compilerOptions": {
     "types": [
       "bun",
--      "vite/client"
-+      "vite/client",
-+      "@cloudflare/workers-types"
+      "vite/client"
+      "vite/client",
+      "@cloudflare/workers-types"
     ]
   }
 }
 ```
 
-Without this you'll see `Cannot find name 'Bucket'` (or `Service`,
-etc.) the moment you reference `env.BUCKET` inside a route handler.
+Without this you’ll see `Cannot find name 'Bucket'` (or `Service`, etc.) the moment you reference `env.BUCKET` inside a route handler.
 
 ## Option 1 — call the binding directly
 
-Inside a server route, `env.BUCKET` is the standard Cloudflare R2
-client. Use it as a regular `async`/`await` API:
+Inside a server route, `env.BUCKET` is the standard Cloudflare R2 client. Use it as a regular `async` / `await` API:
 
 ```typescript
-// src/routes/api.hello.ts
 import { createFileRoute } from "@tanstack/react-router";
 import { env } from "../env.ts";
 
@@ -495,169 +383,128 @@ export const Route = createFileRoute("/api/hello")({
 });
 ```
 
-This is the most direct path — no extra workers, no extra code.
-Reach for it when the route handler owns all the logic itself.
+This is the most direct path — no extra workers, no extra code. Reach for it when the route handler owns all the logic itself.
 
 ## Add an Effect-native Worker
 
-When the work is shared across routes, deserves typed errors, or
-needs Effect-native primitives (retries, layers, structured
-concurrency), factor it into its own Worker:
+When the work is shared across routes, deserves typed errors, or needs Effect-native primitives (retries, layers, structured concurrency), factor it into its own Worker:
 
-```diff lang="typescript"
-// src/backend.ts
+```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
-+import * as Effect from "effect/Effect";
-+import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as Effect from "effect/Effect";
+import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 
 export const Bucket = Cloudflare.R2.Bucket("Bucket");
-+
-+export default class Backend extends Cloudflare.Worker<Backend>()(
-+  "Backend",
-+  { main: import.meta.url },
-+  Effect.gen(function* () {
-+    const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
-+
-+    return {
-+      hello: Effect.fn("Backend.hello")(function* (key: string) {
-+        const object = yield* bucket.get(key);
-+        if (object === null) return null;
-+        return yield* object.text();
-+      }),
-+      fetch: Effect.gen(function* () {
-+        const request = yield* HttpServerRequest;
-+        const key = new URL(request.url, "http://x").searchParams.get("key");
-+        if (!key) {
-+          return HttpServerResponse.text("Missing 'key'", { status: 400 });
-+        }
-+        const object = yield* bucket.get(key);
-+        if (object === null) {
-+          return HttpServerResponse.text("Not found", { status: 404 });
-+        }
-+        return HttpServerResponse.stream(object.body);
-+      }),
-+    };
-+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
-+) {}
+
+export default class Backend extends Cloudflare.Worker<Backend>()(
+  "Backend",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
+
+    return {
+      hello: Effect.fn("Backend.hello")(function* (key: string) {
+        const object = yield* bucket.get(key);
+        if (object === null) return null;
+        return yield* object.text();
+      }),
+      fetch: Effect.gen(function* () {
+        const request = yield* HttpServerRequest;
+        const key = new URL(request.url, "http://x").searchParams.get("key");
+        if (!key) {
+          return HttpServerResponse.text("Missing 'key'", { status: 400 });
+        }
+        const object = yield* bucket.get(key);
+        if (object === null) {
+          return HttpServerResponse.text("Not found", { status: 404 });
+        }
+        return HttpServerResponse.stream(object.body);
+      }),
+    };
+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
+) {}
 ```
 
-`hello` is a typed RPC method — any worker bound to `Backend` can
-call it across worker boundaries. `fetch` is the standard HTTP
-handler. The R2 binding lives once on the Backend; the Vite worker
-no longer needs to bind it directly unless it also wants to call
-R2 itself.
+`hello` is a typed RPC method — any worker bound to `Backend` can call it across worker boundaries. `fetch` is the standard HTTP handler. The R2 binding lives once on the Backend; the Vite worker no longer needs to bind it directly unless it also wants to call R2 itself.
 
 ## Bind the Backend as a service
 
-Add `Backend` next to (or instead of) `BUCKET` in the Vite worker's
-`env`:
+Add `Backend` next to (or instead of) `BUCKET` in the Vite worker’s `env`:
 
-```diff lang="typescript"
-// alchemy.run.ts
--import { Bucket } from "./src/backend.ts";
-+import Backend, { Bucket } from "./src/backend.ts";
+```typescript
+import { Bucket } from "./src/backend.ts";
+import Backend, { Bucket } from "./src/backend.ts";
 
 const web = yield* Cloudflare.Website.Vite("Website", {
   env: {
     BUCKET: Bucket,
-+    BACKEND: Backend,
+    BACKEND: Backend,
   },
 });
 ```
 
-`env.BACKEND` is a Cloudflare service binding, typed for the wire
-shape Alchemy emits — Effect/Stream return values come back as
-encoded envelopes (more on that in option 3).
+`env.BACKEND` is a Cloudflare service binding, typed for the wire shape Alchemy emits — Effect/Stream return values come back as encoded envelopes (more on that in option 3).
 
-## Option 2 — call the worker's `fetch`
+## Option 2 — call the worker’s fetch
 
-`env.BACKEND.fetch(input, init?)` is the standard Cloudflare
-service-binding `fetch`. Use it like any other HTTP service:
+`env.BACKEND.fetch(input, init?)` is the standard Cloudflare service-binding `fetch`. Use it like any other HTTP service:
 
-```diff lang="typescript"
-// src/routes/api.hello.ts
-      GET: async ({ request }) => {
-        const key = new URL(request.url).searchParams.get("key");
-        if (!key) return new Response("Missing 'key'", { status: 400 });
+```typescript
+GET: async ({ request }) => {
+  const key = new URL(request.url).searchParams.get("key");
+  if (!key) return new Response("Missing 'key'", { status: 400 });
 
--        // option 1 — use the async binding directly
--        const object = await env.BUCKET.get(key);
--        if (!object) return new Response("Not found", { status: 404 });
--        return new Response(object.body);
-+        // option 2 — call the worker's fetch handler
-+        return env.BACKEND.fetch(
-+          `https://backend/?key=${encodeURIComponent(key)}`,
-+        );
-      },
+  // option 1 — use the async binding directly
+  const object = await env.BUCKET.get(key);
+  if (!object) return new Response("Not found", { status: 404 });
+  return new Response(object.body);
+  // option 2 — call the worker's fetch handler
+  return env.BACKEND.fetch(
+    \`https://backend/?key=${encodeURIComponent(key)}\`,
+  );
+},
 ```
 
-The Backend already handles the R2 lookup behind its own `fetch`,
-so the response flows straight through. Reach for this when the
-backend logic is HTTP-shaped (REST endpoints, streaming responses)
-and you don't want to duplicate it in the route handler.
+The Backend already handles the R2 lookup behind its own `fetch`, so the response flows straight through. Reach for this when the backend logic is HTTP-shaped (REST endpoints, streaming responses) and you don’t want to duplicate it in the route handler.
 
 ## Wrap the binding for typed RPC
 
-Effect-native workers serialize their results as wire envelopes:
-`Effect.fail` becomes an `RpcErrorEnvelope`, `Stream` becomes an
-encoded `ReadableStream`. `toRpcAsync` is the consumer-side
-wrapper that auto-decodes those envelopes into a clean `Promise<T>`
-API:
+Effect-native workers serialize their results as wire envelopes: `Effect.fail` becomes an `RpcErrorEnvelope`, `Stream` becomes an encoded `ReadableStream`. `toRpcAsync` is the consumer-side wrapper that auto-decodes those envelopes into a clean `Promise<T>` API:
 
-```diff lang="typescript"
-// src/routes/api.hello.ts
+```typescript
 import { createFileRoute } from "@tanstack/react-router";
-+import * as Cloudflare from "alchemy/Cloudflare/Bridge";
-+import type Backend from "../backend.ts";
+import * as Cloudflare from "alchemy/Cloudflare/Bridge";
+import type Backend from "../backend.ts";
 import { env } from "../env.ts";
 
-+const backend = Cloudflare.toRpcAsync<Backend>(env.BACKEND);
+const backend = Cloudflare.toRpcAsync<Backend>(env.BACKEND);
 ```
 
-Error envelopes are thrown so `await` rejects; stream envelopes
-unwrap to their raw `ReadableStream<Uint8Array>` body.
-`Service.fetch` and `Service.connect` pass through unchanged so the
-returned proxy is still a usable `Service` binding.
+Error envelopes are thrown so `await` rejects; stream envelopes unwrap to their raw `ReadableStream<Uint8Array>` body. `Service.fetch` and `Service.connect` pass through unchanged so the returned proxy is still a usable `Service` binding.
 
-## Option 3 — call the worker's RPC method
+## Option 3 — call the worker’s RPC method
 
 Now `hello` is a normal typed `await`:
 
-```diff lang="typescript"
-// src/routes/api.hello.ts
-      GET: async ({ request }) => {
-        const key = new URL(request.url).searchParams.get("key");
-        if (!key) return new Response("Missing 'key'", { status: 400 });
+```typescript
+GET: async ({ request }) => {
+  const key = new URL(request.url).searchParams.get("key");
+  if (!key) return new Response("Missing 'key'", { status: 400 });
 
--        // option 2 — call the worker's fetch handler
--        return env.BACKEND.fetch(
--          `https://backend/?key=${encodeURIComponent(key)}`,
--        );
-+        // option 3 — call the worker's RPC method
-+        const value = await backend.hello(key);
-+        if (value === null) return new Response("Not found", { status: 404 });
-+        return new Response(value);
-      },
+  // option 2 — call the worker's fetch handler
+  return env.BACKEND.fetch(
+    \`https://backend/?key=${encodeURIComponent(key)}\`,
+  );
+  // option 3 — call the worker's RPC method
+  const value = await backend.hello(key);
+  if (value === null) return new Response("Not found", { status: 404 });
+  return new Response(value);
+},
 ```
 
-RPC keeps you off the HTTP detour — the call is a typed function,
-not a request, and the return value is the value itself (no
-`.json()`, no status codes to plumb).
+RPC keeps you off the HTTP detour — the call is a typed function, not a request, and the return value is the value itself (no `.json()`, no status codes to plumb).
 
-`toRpcAsync` is the async-consumer face of
-[Schemaless RPC](../../apis/schemaless.md) — the same typed methods `Backend`
-exposes, decoded into `Promise`s instead of Effects.
+`toRpcAsync` is the async-consumer face of [Schemaless RPC](../../apis/schemaless.md) — the same typed methods `Backend` exposes, decoded into `Promise` s instead of Effects.
 
-:::tip[Calling RPC from another Effect-native Worker?]
-Use [`Cloudflare.Workers.bindWorker(Backend)`](https://alchemy.run/providers/cloudflare/workers/worker)
-instead of `toRpcAsync`. It returns the same shape with `Effect`
-return values, preserving typed errors and decoded streams instead
-of throwing them away.
-:::
-
-Your app now ships a Worker backend and a Vite frontend from the
-same `alchemy.run.ts`, deploying together with one command. Next
-you'll [run a Container](../compute/run-a-container.md) so each
-Durable Object instance has its own long-lived process for
-executing untrusted code or running binaries.
+Your app now ships a Worker backend and a Vite frontend from the same `alchemy.run.ts`, deploying together with one command. Next you’ll [run a Container](../compute/run-a-container.md) so each Durable Object instance has its own long-lived process for executing untrusted code or running binaries.

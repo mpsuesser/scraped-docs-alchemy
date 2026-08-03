@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only

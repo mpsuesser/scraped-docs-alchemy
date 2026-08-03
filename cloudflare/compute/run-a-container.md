@@ -2,26 +2,17 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-Some workloads need a long-lived process — a sandboxed shell, a
-database client, a binary you can't compile to wasm. In this part
-you'll add a **Cloudflare Container** that runs alongside a Durable
-Object instance, and call into it to execute shell commands.
+Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
 
 ## Declare the Sandbox class
 
-Create `src/Sandbox.ts`. A Container is declared with the **tagged
-shape** — a second type parameter that pins the public RPC surface,
-analogous to declaring an Effect `Context.Service`. The type lists
-every method callers can invoke, and the runtime implementation has
-to match. The tag takes only the container's name; configuration
-like the entrypoint file lives on `.make()` (next step), not here:
+Create `src/Sandbox.ts`. A Container is declared with the **tagged shape** — a second type parameter that pins the public RPC surface, analogous to declaring an Effect `Context.Service`. The type lists every method callers can invoke, and the runtime implementation has to match. The tag takes only the container’s name; configuration like the entrypoint file lives on `.make()` (next step), not here:
 
 ```typescript
-// src/Sandbox.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 import type { PlatformError } from "effect/PlatformError";
@@ -37,28 +28,15 @@ export class Sandbox extends Cloudflare.Container<
 >()("Sandbox") {}
 ```
 
-The `Cloudflare.Container<Sandbox, { ... }>()(...)` shape is the same
-ceremony as `DurableObject` — the empty `()` lets TypeScript
-capture the class identity for the typed RPC stub. Anything that
-binds `Sandbox` now sees `exec(command)` as a typed RPC method
-returning `Effect<{ exitCode, stdout, stderr }, PlatformError>`.
+The `Cloudflare.Container<Sandbox, { ... }>()(...)` shape is the same ceremony as `DurableObject` — the empty `()` lets TypeScript capture the class identity for the typed RPC stub. Anything that binds `Sandbox` now sees `exec(command)` as a typed RPC method returning `Effect<{ exitCode, stdout, stderr }, PlatformError>`.
 
 ## Add the runtime file
 
-The class above is just a typed identifier — it has no
-implementation yet. Containers always split the implementation
-into a **separate file** because the Durable Object that binds the
-container imports the class. If the runtime lived in the same
-file, the DO bundle would pull in process spawners, Node APIs,
-SDKs, etc. and Cloudflare Workers would reject it.
+The class above is just a typed identifier — it has no implementation yet. Containers always split the implementation into a **separate file** because the Durable Object that binds the container imports the class. If the runtime lived in the same file, the DO bundle would pull in process spawners, Node APIs, SDKs, etc. and Cloudflare Workers would reject it.
 
-Create `src/Sandbox.runtime.ts` with an empty `.make()` shell. The
-container's deploy-time props — `main` (the entrypoint file) and
-anything else — are the **first argument** to `.make()`; the
-runtime implementation is the second:
+Create `src/Sandbox.runtime.ts` with an empty `.make()` shell. The container’s deploy-time props — `main` (the entrypoint file) and anything else — are the **first argument** to `.make()`; the runtime implementation is the second:
 
 ```typescript
-// src/Sandbox.runtime.ts
 import * as Effect from "effect/Effect";
 import { Sandbox } from "./Sandbox.ts";
 
@@ -74,31 +52,24 @@ export const SandboxLive = Sandbox.make(
 export default SandboxLive;
 ```
 
-`Sandbox.of(...)` is an identity function carrying the container's
-typed shape — it ensures your implementation matches the interface
-you declared on the class. Right now it complains because `exec`
-is missing. Let's fill it in.
+`Sandbox.of(...)` is an identity function carrying the container’s typed shape — it ensures your implementation matches the interface you declared on the class. Right now it complains because `exec` is missing. Let’s fill it in.
 
 ## Customize per stage
 
-The container's deploy-time props can read the surrounding Stack
-through `Stack.useSync`. Pass it as `.make()`'s first argument to
-pick a beefier instance type in `prod` and the cheap `dev` instance
-everywhere else:
+The container’s deploy-time props can read the surrounding Stack through `Stack.useSync`. Pass it as `.make()` ’s first argument to pick a beefier instance type in `prod` and the cheap `dev` instance everywhere else:
 
-```diff lang="typescript"
-// src/Sandbox.runtime.ts
+```typescript
 import * as Effect from "effect/Effect";
-+import { Stack } from "alchemy/Stack";
+import { Stack } from "alchemy/Stack";
 import { Sandbox } from "./Sandbox.ts";
 
 export const SandboxLive = Sandbox.make(
--  { main: import.meta.url },
-+  Stack.useSync((stack) => ({
-+    main: import.meta.url,
-+    instanceType: stack.stage === "prod" ? "standard-1" : "dev",
-+    observability: { logs: { enabled: true } },
-+  })),
+  { main: import.meta.url },
+  Stack.useSync((stack) => ({
+    main: import.meta.url,
+    instanceType: stack.stage === "prod" ? "standard-1" : "dev",
+    observability: { logs: { enabled: true } },
+  })),
   Effect.gen(function* () {
     return Sandbox.of({
       // exec + fetch will go here
@@ -107,58 +78,48 @@ export const SandboxLive = Sandbox.make(
 );
 ```
 
-`Stack.useSync` is the synchronous accessor for any data in the
-surrounding Effect context — handy for stack-level config like
-stage, app name, or anything else you'd want to vary per
-environment.
+`Stack.useSync` is the synchronous accessor for any data in the surrounding Effect context — handy for stack-level config like stage, app name, or anything else you’d want to vary per environment.
 
-## Implement `exec` as an RPC method
+## Implement exec as an RPC method
 
-Containers have **RPC methods** — the same pattern you used on
-the `Counter` Durable Object in
-[Add a Durable Object](durable-objects.md).
-Anything you return from `Sandbox.of({ ... })` whose value is an
-`Effect` becomes a typed RPC method that callers can invoke
-through the typed handle.
+Containers have **RPC methods** — the same pattern you used on the `Counter` Durable Object in [Add a Durable Object](durable-objects.md). Anything you return from `Sandbox.of({ ... })` whose value is an `Effect` becomes a typed RPC method that callers can invoke through the typed handle.
 
-The interface declared on the class promised an `exec(command)`
-method. Implement it now:
+The interface declared on the class promised an `exec(command)` method. Implement it now:
 
-```diff lang="typescript"
-// src/Sandbox.runtime.ts
+```typescript
 import * as Effect from "effect/Effect";
-+import * as Stream from "effect/Stream";
-+import * as ChildProcess from "effect/unstable/process/ChildProcess";
-+import { ChildProcessSpawner } from "effect/unstable/process/ChildProcessSpawner";
+import * as Stream from "effect/Stream";
+import * as ChildProcess from "effect/unstable/process/ChildProcess";
+import { ChildProcessSpawner } from "effect/unstable/process/ChildProcessSpawner";
 import { Sandbox } from "./Sandbox.ts";
 
 export const SandboxLive = Sandbox.make(
   Stack.useSync((stack) => ({ main: import.meta.url, /* ... */ })),
   Effect.gen(function* () {
-+    const cp = yield* ChildProcessSpawner;
+    const cp = yield* ChildProcessSpawner;
 
     return Sandbox.of({
-+      exec: (command) =>
-+        cp
-+          .spawn(ChildProcess.make(command, { shell: true }))
-+          .pipe(
-+            Effect.flatMap((handle) =>
-+              Effect.all(
-+                [
-+                  handle.exitCode,
-+                  handle.stdout.pipe(Stream.decodeText, Stream.mkString),
-+                  handle.stderr.pipe(Stream.decodeText, Stream.mkString),
-+                ],
-+                { concurrency: "unbounded" },
-+              ),
-+            ),
-+            Effect.map(([exitCode, stdout, stderr]) => ({
-+              exitCode,
-+              stdout,
-+              stderr,
-+            })),
-+            Effect.scoped,
-+          ),
+      exec: (command) =>
+        cp
+          .spawn(ChildProcess.make(command, { shell: true }))
+          .pipe(
+            Effect.flatMap((handle) =>
+              Effect.all(
+                [
+                  handle.exitCode,
+                  handle.stdout.pipe(Stream.decodeText, Stream.mkString),
+                  handle.stderr.pipe(Stream.decodeText, Stream.mkString),
+                ],
+                { concurrency: "unbounded" },
+              ),
+            ),
+            Effect.map(([exitCode, stdout, stderr]) => ({
+              exitCode,
+              stdout,
+              stderr,
+            })),
+            Effect.scoped,
+          ),
     });
   }),
 );
@@ -166,25 +127,16 @@ export const SandboxLive = Sandbox.make(
 export default SandboxLive;
 ```
 
-The body shells out via Effect's `ChildProcessSpawner` and
-collects stdout/stderr/exit code, but the **shape** is what
-matters: a function returning an `Effect` becomes a typed RPC
-method. When the Worker (via the Durable Object) calls
-`agent.exec("echo hi")`, it gets back an
-`Effect<{ exitCode, stdout, stderr }>` — exactly the type
-declared on the class.
+The body shells out via Effect’s `ChildProcessSpawner` and collects stdout/stderr/exit code, but the **shape** is what matters: a function returning an `Effect` becomes a typed RPC method. When the Worker (via the Durable Object) calls `agent.exec("echo hi")`, it gets back an `Effect<{ exitCode, stdout, stderr }>` — exactly the type declared on the class.
 
 ## Add an HTTP handler
 
-A container can also serve HTTP. Add a `fetch` field — Alchemy
-binds it to port `3000` inside the container by default, so any
-HTTP server you'd normally run inside Docker just works:
+A container can also serve HTTP. Add a `fetch` field — Alchemy binds it to port `3000` inside the container by default, so any HTTP server you’d normally run inside Docker just works:
 
-```diff lang="typescript"
-// src/Sandbox.runtime.ts
+```typescript
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
-+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 import * as ChildProcess from "effect/unstable/process/ChildProcess";
 import { ChildProcessSpawner } from "effect/unstable/process/ChildProcessSpawner";
 import { Sandbox } from "./Sandbox.ts";
@@ -196,28 +148,21 @@ export const SandboxLive = Sandbox.make(
 
     return Sandbox.of({
       exec: /* ... unchanged ... */,
-+      fetch: Effect.succeed(
-+        HttpServerResponse.text("Hello from the Sandbox container!"),
-+      ),
+      fetch: Effect.succeed(
+        HttpServerResponse.text("Hello from the Sandbox container!"),
+      ),
     });
   }),
 );
 ```
 
-`fetch` and RPC methods like `exec` are independent — a caller
-decides which they want by either calling `getTcpPort(3000).fetch`
-(HTTP) or invoking `.exec(...)` directly (RPC). We'll use both
-later in the bonus section.
+`fetch` and RPC methods like `exec` are independent — a caller decides which they want by either calling `getTcpPort(3000).fetch` (HTTP) or invoking `.exec(...)` directly (RPC). We’ll use both later in the bonus section.
 
 ## Bind the container from a Durable Object
 
-Workers don't talk to containers directly — every container has a
-**Durable Object in front of it** that owns its lifecycle. Create
-`src/Agent.ts` with the bare DO shell that imports the `Sandbox`
-class:
+Workers don’t talk to containers directly — every container has a **Durable Object in front of it** that owns its lifecycle. Create `src/Agent.ts` with the bare DO shell that imports the `Sandbox` class:
 
 ```typescript
-// src/Agent.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 import { Sandbox } from "./Sandbox.ts";
@@ -232,45 +177,35 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
 ) {}
 ```
 
-Importing `Sandbox` (the class) does **not** pull in the runtime —
-that lives in `Sandbox.runtime.ts` and Rolldown tree-shakes it out.
+Importing `Sandbox` (the class) does **not** pull in the runtime — that lives in `Sandbox.runtime.ts` and Rolldown tree-shakes it out.
 
 ## Get the running container in the outer phase
 
-`yield* Sandbox` hands you a **running** container instance — the
-same typed shape you declared on the class, plus a `getTcpPort`
-helper. Resolve it in the **outer** init phase and expose `exec`
-from the inner phase as an RPC method:
+`yield* Sandbox` hands you a **running** container instance — the same typed shape you declared on the class, plus a `getTcpPort` helper. Resolve it in the **outer** init phase and expose `exec` from the inner phase as an RPC method:
 
-```diff lang="typescript"
+```typescript
 export default class Agent extends Cloudflare.DurableObject<Agent>()(
   "Agents",
   Effect.gen(function* () {
-+    const sandbox = yield* Sandbox;
+    const sandbox = yield* Sandbox;
 
     return Effect.gen(function* () {
--      return {};
-+      return {
-+        exec: (command: string) => sandbox.exec(command),
-+      };
+      return {};
+      return {
+        exec: (command: string) => sandbox.exec(command),
+      };
     });
   }),
 ) {}
 ```
 
-The DO instance is now a thin RPC bridge: callers invoke
-`agent.exec(cmd)`, the DO forwards to `sandbox.exec(cmd)`, and the
-captured stdout/stderr/exitCode flow back through the typed shape.
+The DO instance is now a thin RPC bridge: callers invoke `agent.exec(cmd)`, the DO forwards to `sandbox.exec(cmd)`, and the captured stdout/stderr/exitCode flow back through the typed shape.
 
 ## Configure the container with a Layer
 
-`yield* Sandbox` only resolves once you tell the DO **how** to run
-the container. Provide `Cloudflare.Containers.layer(Sandbox, …)` on
-the DO's init — that layer binds, starts, and monitors the
-container, then satisfies the `Sandbox` tag with the running
-instance:
+`yield* Sandbox` only resolves once you tell the DO **how** to run the container. Provide `Cloudflare.Containers.layer(Sandbox, …)` on the DO’s init — that layer binds, starts, and monitors the container, then satisfies the `Sandbox` tag with the running instance:
 
-```diff lang="typescript"
+```typescript
 export default class Agent extends Cloudflare.DurableObject<Agent>()(
   "Agents",
   Effect.gen(function* () {
@@ -281,35 +216,24 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
         exec: (command: string) => sandbox.exec(command),
       };
     });
--  }),
-+  }).pipe(
-+    Effect.provide(
-+      Cloudflare.Containers.layer(Sandbox, { enableInternet: true }),
-+    ),
-+  ),
+  }),
+  }).pipe(
+    Effect.provide(
+      Cloudflare.Containers.layer(Sandbox, { enableInternet: true }),
+    ),
+  ),
 ) {}
 ```
 
-:::note
-This is the same pattern as any other binding: `yield*` the class to
-get a typed handle, then `Effect.provide` the layer that configures
-it. Because `layer` resolves the `Sandbox` tag, **any**
-Effect or Layer can `yield* Sandbox` and get a running container —
-no separate bind / start / use dance.
-:::
-
 ## Wire the Container into the Stack
 
-The Container's `.make()` is the side-effect that registers the
-runtime — it has to be reachable from `alchemy.run.ts`. Provide
-`SandboxLive` to the Stack via `Effect.provide`:
+The Container’s `.make()` is the side-effect that registers the runtime — it has to be reachable from `alchemy.run.ts`. Provide `SandboxLive` to the Stack via `Effect.provide`:
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-+import SandboxLive from "./src/Sandbox.runtime.ts";
+import SandboxLive from "./src/Sandbox.runtime.ts";
 import Worker from "./src/worker.ts";
 
 export default Alchemy.Stack(
@@ -321,39 +245,38 @@ export default Alchemy.Stack(
   Effect.gen(function* () {
     const worker = yield* Worker;
     return { url: worker.url };
-+  }).pipe(Effect.provide(SandboxLive)),
+  }).pipe(Effect.provide(SandboxLive)),
 );
 ```
 
 The Worker binds `Agent` and exposes the `/sandbox/exec` route:
 
-```diff lang="typescript"
-// src/worker.ts
+```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-+import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
+import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-+import Agent from "./Agent.ts";
+import Agent from "./Agent.ts";
 
 export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-+    const agents = yield* Agent;
+    const agents = yield* Agent;
 
     return {
       fetch: Effect.gen(function* () {
-+        const request = yield* HttpServerRequest;
-+
-+        if (request.url === "/sandbox/exec" && request.method === "POST") {
-+          const command = yield* request.text;
-+          const result = yield* agents
-+            .getByName("default")
-+            .exec(command)
-+            .pipe(Effect.orDie);
-+          return yield* HttpServerResponse.json(result);
-+        }
-+
+        const request = yield* HttpServerRequest;
+
+        if (request.url === "/sandbox/exec" && request.method === "POST") {
+          const command = yield* request.text;
+          const result = yield* agents
+            .getByName("default")
+            .exec(command)
+            .pipe(Effect.orDie);
+          return yield* HttpServerResponse.json(result);
+        }
+
         return HttpServerResponse.text("Hello from my Worker!");
       }),
     };
@@ -367,25 +290,18 @@ export default Cloudflare.Worker(
 bun alchemy deploy
 ```
 
-The first deploy uploads the container image to Cloudflare and
-provisions the registry — expect it to take a minute or two longer
-than usual. The image here is built for you from the `main`
-entrypoint; to run a pre-built image instead, see
-[Bring your own image](containers.md#bring-your-own-image)
-and [Build & push images](../../docker/build-and-push.md) in the Docker hub.
+The first deploy uploads the container image to Cloudflare and provisions the registry — expect it to take a minute or two longer than usual. The image here is built for you from the `main` entrypoint; to run a pre-built image instead, see [Bring your own image](containers.md#bring-your-own-image) and [Build & push images](../../docker/build-and-push.md) in the Docker hub.
 
 ## Verify
 
-Add a test that POSTs a shell command and expects the captured
-stdout in the response:
+Add a test that POSTs a shell command and expects the captured stdout in the response:
 
-```diff lang="typescript"
-// test/integ.test.ts
+```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
-+import * as HttpBody from "effect/unstable/http/HttpBody";
+import * as HttpBody from "effect/unstable/http/HttpBody";
 import * as HttpClient from "effect/unstable/http/HttpClient";
 import Stack from "../alchemy.run.ts";
 
@@ -396,40 +312,35 @@ const { test, beforeAll, deploy } = Test.make({
 
 const stack = beforeAll(deploy(Stack));
 
-+test(
-+  "Sandbox container executes a shell command",
-+  Effect.gen(function* () {
-+    const { url } = yield* stack;
-+
-+    const response = yield* HttpClient.post(`${url}/sandbox/exec`, {
-+      body: HttpBody.text("echo hi"),
-+    });
-+    const body = yield* response.json;
-+    expect(body).toMatchObject({ stdout: "hi\n", exitCode: 0 });
-+  }),
-+  { timeout: 60_000 },
-+);
+test(
+  "Sandbox container executes a shell command",
+  Effect.gen(function* () {
+    const { url } = yield* stack;
+
+    const response = yield* HttpClient.post(\`${url}/sandbox/exec\`, {
+      body: HttpBody.text("echo hi"),
+    });
+    const body = yield* response.json;
+    expect(body).toMatchObject({ stdout: "hi\n", exitCode: 0 });
+  }),
+  { timeout: 60_000 },
+);
 ```
 
 ```sh
 bun test test/integ.test.ts
 ```
 
-The first request boots the container (which takes a few seconds —
-hence the bumped timeout); subsequent requests reuse the warm
-instance until Cloudflare evicts it for inactivity.
+The first request boots the container (which takes a few seconds — hence the bumped timeout); subsequent requests reuse the warm instance until Cloudflare evicts it for inactivity.
 
 ## Bonus: HTTP requests against a container port
 
-Containers can run any HTTP server. The `Sandbox.runtime.ts` above
-exposes `fetch` on port `3000` by default. Add a `hello` RPC method
-to `Agent.ts` that proxies to it via `getTcpPort`:
+Containers can run any HTTP server. The `Sandbox.runtime.ts` above exposes `fetch` on port `3000` by default. Add a `hello` RPC method to `Agent.ts` that proxies to it via `getTcpPort`:
 
-```diff lang="typescript"
-// src/Agent.ts
+```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
 import { Sandbox } from "./Sandbox.ts";
 
 export default class Agent extends Cloudflare.DurableObject<Agent>()(
@@ -440,14 +351,14 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
     return Effect.gen(function* () {
       return {
         exec: (command: string) => sandbox.exec(command),
-+        hello: () =>
-+          Effect.gen(function* () {
-+            const { fetch } = yield* sandbox.getTcpPort(3000);
-+            const response = yield* fetch(
-+              HttpClientRequest.get("http://container/"),
-+            );
-+            return yield* response.text;
-+          }),
+        hello: () =>
+          Effect.gen(function* () {
+            const { fetch } = yield* sandbox.getTcpPort(3000);
+            const response = yield* fetch(
+              HttpClientRequest.get("http://container/"),
+            );
+            return yield* response.text;
+          }),
       };
     });
   }).pipe(
@@ -460,25 +371,21 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
 
 And the matching `/sandbox/hello` route on the Worker:
 
-```diff lang="typescript"
+```typescript
 // src/worker.ts (inside fetch)
 if (request.url === "/sandbox/exec" && request.method === "POST") {
   // ... unchanged ...
 }
 
-+if (request.url === "/sandbox/hello") {
-+  const text = yield* agents
-+    .getByName("default")
-+    .hello()
-+    .pipe(Effect.orDie);
-+  return HttpServerResponse.text(text);
-+}
+if (request.url === "/sandbox/hello") {
+  const text = yield* agents
+    .getByName("default")
+    .hello()
+    .pipe(Effect.orDie);
+  return HttpServerResponse.text(text);
+}
 ```
 
-`getTcpPort(n)` returns a `Fetcher`-shaped object whose `fetch`
-method retries with backoff while the container is still booting,
-so you don't have to coordinate readiness yourself.
+`getTcpPort(n)` returns a `Fetcher` -shaped object whose `fetch` method retries with backoff while the container is still booting, so you don’t have to coordinate readiness yourself.
 
-Next you'll [add a Workflow](workflows.md) to
-orchestrate multi-step durable work that the container or DOs can
-trigger — perfect for jobs that need to outlive any single request.
+Next you’ll [add a Workflow](workflows.md) to orchestrate multi-step durable work that the container or DOs can trigger — perfect for jobs that need to outlive any single request.

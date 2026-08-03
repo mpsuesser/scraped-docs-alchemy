@@ -2,52 +2,36 @@
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
 description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-**EventBridge** is AWS's event router — producers publish events onto
-a bus, rules match them by pattern, and targets receive them.
-**EventBridge Scheduler** is its time-based sibling: fire an
-invocation on a `rate(...)`, `cron(...)`, or one-time `at(...)`
-expression. In Alchemy the surface is:
+**EventBridge** is AWS’s event router — producers publish events onto a bus, rules match them by pattern, and targets receive them. **EventBridge Scheduler** is its time-based sibling: fire an invocation on a `rate(...)`, `cron(...)`, or one-time `at(...)` expression. In Alchemy the surface is:
 
 - `EventBridge.EventBus` and `EventBridge.Rule` — the raw resources.
-- `EventBridge.PutEvents` — a producer binding that grants
-  `events:PutEvents` on the bus you publish to.
-- `EventBridge.consumeBusEvents` — subscribe a Lambda to a pattern as
-  a typed `Stream`, creating the rule and invoke permission for you.
-- `EventBridge.events(bus, pattern).toLambda/.toQueue/.toEcsTask` —
-  route matching events to a target with no handler code.
-- `Scheduler.every/cron/at` — chainable schedule builders that
-  synthesize the target's IAM role.
+- `EventBridge.PutEvents` — a producer binding that grants `events:PutEvents` on the bus you publish to.
+- `EventBridge.consumeBusEvents` — subscribe a Lambda to a pattern as a typed `Stream`, creating the rule and invoke permission for you.
+- `EventBridge.events(bus, pattern).toLambda/.toQueue/.toEcsTask` — route matching events to a target with no handler code.
+- `Scheduler.every/cron/at` — chainable schedule builders that synthesize the target’s IAM role.
 - `ECS.every` — run a Fargate task on a schedule.
 
 ## Create an event bus
 
-An event bus is a one-line resource. Declare it in a shared module so
-producers and consumers can reference the same handle:
+An event bus is a one-line resource. Declare it in a shared module so producers and consumers can reference the same handle:
 
 ```typescript
-// src/bus.ts
 import * as AWS from "alchemy/AWS";
 
 export const Events = AWS.EventBridge.EventBus("Events", {});
 ```
 
-No name required — Alchemy generates one from the app, stage, and
-logical ID. The name `default` is reserved: to target the account's
-**default bus** (where AWS service events land), simply omit the bus
-argument in the APIs below.
+No name required — Alchemy generates one from the app, stage, and logical ID. The name `default` is reserved: to target the account’s **default bus** (where AWS service events land), simply omit the bus argument in the APIs below.
 
 ## Publish events from a Lambda
 
-`EventBridge.PutEvents(bus)` returns a callable Effect and quietly
-attaches an `events:PutEvents` policy statement scoped to the bus ARN
-(or the default bus, if you pass nothing):
+`EventBridge.PutEvents(bus)` returns a callable Effect and quietly attaches an `events:PutEvents` policy statement scoped to the bus ARN (or the default bus, if you pass nothing):
 
 ```typescript
-// src/api.ts
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
@@ -78,20 +62,13 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 ) {}
 ```
 
-Entries carry a `Source`, a `DetailType`, and a JSON-encoded `Detail`
-— the three fields rules match on. The `EventBusName` is filled in
-from the bus you bound, so entries never repeat it.
-`AWS.EventBridge.PutEventsHttp` is the runtime layer that implements
-the binding over the EventBridge API.
+Entries carry a `Source`, a `DetailType`, and a JSON-encoded `Detail` — the three fields rules match on. The `EventBusName` is filled in from the bus you bound, so entries never repeat it. `AWS.EventBridge.PutEventsHttp` is the runtime layer that implements the binding over the EventBridge API.
 
 ## Consume events in a Lambda
 
-`consumeBusEvents` is the consumer-side mirror of
-`SQS.consumeQueueMessages`: pass the bus, an event pattern, and a
-handler that receives matching events as a typed `Stream`:
+`consumeBusEvents` is the consumer-side mirror of `SQS.consumeQueueMessages`: pass the bus, an event pattern, and a handler that receives matching events as a typed `Stream`:
 
 ```typescript
-// src/worker.ts
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
@@ -108,7 +85,7 @@ export default class Worker extends AWS.Lambda.Function<Worker>()(
       { source: ["app.orders"], "detail-type": ["OrderPlaced"] },
       (events) =>
         Stream.runForEach(events, (event) =>
-          Effect.log(`order placed: ${JSON.stringify(event.detail)}`),
+          Effect.log(\`order placed: ${JSON.stringify(event.detail)}\`),
         ),
     );
 
@@ -117,22 +94,13 @@ export default class Worker extends AWS.Lambda.Function<Worker>()(
 ) {}
 ```
 
-That single call does the infrastructure work at deploy time — an
-EventBridge `Rule` with the pattern targeting this function, plus the
-Lambda permission that lets `events.amazonaws.com` invoke it — and at
-runtime filters incoming invocations against the same pattern before
-feeding them into your stream. Omit the `bus` argument to subscribe to
-the default bus, which is where AWS service events (S3, EC2, ECS
-state changes, …) arrive.
+That single call does the infrastructure work at deploy time — an EventBridge `Rule` with the pattern targeting this function, plus the Lambda permission that lets `events.amazonaws.com` invoke it — and at runtime filters incoming invocations against the same pattern before feeding them into your stream. Omit the `bus` argument to subscribe to the default bus, which is where AWS service events (S3, EC2, ECS state changes, …) arrive.
 
-`AWS.Lambda.EventSource` is the Lambda runtime implementation of the
-EventBridge event source — provide it at the bottom of the function
-like any other event source layer.
+`AWS.Lambda.EventSource` is the Lambda runtime implementation of the EventBridge event source — provide it at the bottom of the function like any other event source layer.
 
 ### Type the event detail
 
-Events are `EventRecord<Detail>` with `Detail` defaulting to
-`unknown`. Narrow the stream when you know the payload shape:
+Events are `EventRecord<Detail>` with `Detail` defaulting to `unknown`. Narrow the stream when you know the payload shape:
 
 ```typescript
 type OrderPlaced = { orderId: string };
@@ -143,36 +111,25 @@ yield* AWS.EventBridge.consumeBusEvents(
   (events) =>
     Stream.runForEach(
       events as Stream.Stream<AWS.EventBridge.EventRecord<OrderPlaced>>,
-      (event) => Effect.log(`order: ${event.detail.orderId}`),
+      (event) => Effect.log(\`order: ${event.detail.orderId}\`),
     ),
 );
 ```
 
 ## Route events without a handler
 
-Not every consumer is code you own. `EventBridge.events(bus, pattern)`
-builds a route — chain `.toLambda`, `.toQueue`, or `.toEcsTask` to
-deliver matching events to a target resource, permissions included:
+Not every consumer is code you own. `EventBridge.events(bus, pattern)` builds a route — chain `.toLambda`, `.toQueue`, or `.toEcsTask` to deliver matching events to a target resource, permissions included:
 
 ```typescript
-// alchemy.run.ts
 yield* AWS.EventBridge.events(bus, { source: ["app.orders"] })
   .toQueue(auditQueue);
 ```
 
-Each target wires its own access: `.toQueue` attaches a queue policy
-allowing `events.amazonaws.com` to `sqs:SendMessage` (conditioned on
-the rule's ARN), `.toLambda` adds the invoke permission, and
-`.toEcsTask` creates an IAM role with `ecs:RunTask` and `iam:PassRole`
-for the task's roles. Pass a string as the first argument to name the
-backing rule deterministically instead of deriving it from the
-pattern hash.
+Each target wires its own access: `.toQueue` attaches a queue policy allowing `events.amazonaws.com` to `sqs:SendMessage` (conditioned on the rule’s ARN), `.toLambda` adds the invoke permission, and `.toEcsTask` creates an IAM role with `ecs:RunTask` and `iam:PassRole` for the task’s roles. Pass a string as the first argument to name the backing rule deterministically instead of deriving it from the pattern hash.
 
 ## Rules directly
 
-The helpers above all bottom out in the `Rule` resource. Reach for it
-directly when you need full control — input transformers, dead-letter
-queues, retry policies, or up to five targets per rule:
+The helpers above all bottom out in the `Rule` resource. Reach for it directly when you need full control — input transformers, dead-letter queues, retry policies, or up to five targets per rule:
 
 ```typescript
 const rule = yield* AWS.EventBridge.Rule("ObjectCreated", {
@@ -184,34 +141,21 @@ const rule = yield* AWS.EventBridge.Rule("ObjectCreated", {
 });
 ```
 
-A rule needs an `eventPattern` or a `scheduleExpression` (rules also
-accept `rate(...)`/`cron(...)` expressions, though Scheduler below is
-the better tool for time-based work). Omitting `eventBusName` puts
-the rule on the default bus. Unlike the `events(...)` helpers, a raw
-`Rule` does **not** grant the target-side permissions — supply a
-target `RoleArn` or resource policy yourself.
+A rule needs an `eventPattern` or a `scheduleExpression` (rules also accept `rate(...)` / `cron(...)` expressions, though Scheduler below is the better tool for time-based work). Omitting `eventBusName` puts the rule on the default bus. Unlike the `events(...)` helpers, a raw `Rule` does **not** grant the target-side permissions — supply a target `RoleArn` or resource policy yourself.
 
 ## Scheduled jobs with Scheduler
 
-`AWS.Scheduler` exposes chainable builders. The simplest form invokes
-a Lambda on a fixed rate:
+`AWS.Scheduler` exposes chainable builders. The simplest form invokes a Lambda on a fixed rate:
 
 ```typescript
-// alchemy.run.ts
 const api = yield* Api;
 
 yield* AWS.Scheduler.every("5 minutes").toLambda(api);
 ```
 
-`every` accepts a plain-English duration (normalized to
-`rate(5 minutes)`) or a full `rate(...)`/`cron(...)` expression
-as-is. The builder synthesizes the piece Scheduler always demands —
-an execution role assumable by `scheduler.amazonaws.com` with
-`lambda:InvokeFunction` on exactly that function — then creates the
-`Scheduler.Schedule` resource.
+`every` accepts a plain-English duration (normalized to `rate(5 minutes)`) or a full `rate(...)` / `cron(...)` expression as-is. The builder synthesizes the piece Scheduler always demands — an execution role assumable by `scheduler.amazonaws.com` with `lambda:InvokeFunction` on exactly that function — then creates the `Scheduler.Schedule` resource.
 
-Cron schedules take an options object with a timezone, and `.named`
-pins the schedule's name:
+Cron schedules take an options object with a timezone, and `.named` pins the schedule’s name:
 
 ```typescript
 yield* AWS.Scheduler
@@ -220,12 +164,9 @@ yield* AWS.Scheduler
   .toLambda(api, { input: { job: "nightly-report" } });
 ```
 
-`input` is delivered as the invocation payload (objects are
-JSON-stringified for you); `retryPolicy` and `deadLetterConfig` are
-also accepted per target.
+`input` is delivered as the invocation payload (objects are JSON-stringified for you); `retryPolicy` and `deadLetterConfig` are also accepted per target.
 
-One-time schedules use `at(date)`, and `.toQueue` sends a payload to
-SQS instead of invoking a function:
+One-time schedules use `at(date)`, and `.toQueue` sends a payload to SQS instead of invoking a function:
 
 ```typescript
 yield* AWS.Scheduler
@@ -233,15 +174,11 @@ yield* AWS.Scheduler
   .toQueue(queue, { type: "launch.reminder" });
 ```
 
-Builder options cover the rest of the Scheduler feature set —
-`group` (a `Scheduler.ScheduleGroup`), `startDate`/`endDate`,
-`flexibleTimeWindow`, `state`, `kmsKeyArn`, and
-`actionAfterCompletion` for one-time schedules.
+Builder options cover the rest of the Scheduler feature set — `group` (a `Scheduler.ScheduleGroup`), `startDate` / `endDate`, `flexibleTimeWindow`, `state`, `kmsKeyArn`, and `actionAfterCompletion` for one-time schedules.
 
 ### The Schedule resource directly
 
-The builders materialize `Scheduler.Schedule` under the hood. Use it
-directly when you bring your own role:
+The builders materialize `Scheduler.Schedule` under the hood. Use it directly when you bring your own role:
 
 ```typescript
 const schedule = yield* AWS.Scheduler.Schedule("Poll", {
@@ -254,14 +191,11 @@ const schedule = yield* AWS.Scheduler.Schedule("Poll", {
 });
 ```
 
-The `RoleArn` must trust `scheduler.amazonaws.com`. Alchemy retries
-the creation while the freshly-created IAM role propagates, so a role
-declared in the same deploy just works.
+The `RoleArn` must trust `scheduler.amazonaws.com`. Alchemy retries the creation while the freshly-created IAM role propagates, so a role declared in the same deploy just works.
 
 ## ECS scheduled tasks
 
-For jobs too heavy for Lambda, `AWS.ECS.every` runs a Fargate task on
-a schedule — cron-as-a-container:
+For jobs too heavy for Lambda, `AWS.ECS.every` runs a Fargate task on a schedule — cron-as-a-container:
 
 ```typescript
 yield* AWS.ECS.every("HourlyJob", "1 hour", {
@@ -272,13 +206,7 @@ yield* AWS.ECS.every("HourlyJob", "1 hour", {
 });
 ```
 
-`cluster` and `task` are the outputs of `AWS.ECS.Cluster` and
-`AWS.ECS.Task` (see [ECS](../compute/ecs.md) for standing those up). Under the
-hood this is `Scheduler.every(...).named("HourlyJob").toEcsTask(...)`:
-a schedule plus an execution role with `ecs:RunTask` on the task
-definition and `iam:PassRole` for its task and execution roles. Plain
-durations normalize to `rate(...)`; full `cron(...)` expressions pass
-through unchanged:
+`cluster` and `task` are the outputs of `AWS.ECS.Cluster` and `AWS.ECS.Task` (see [ECS](../compute/ecs.md) for standing those up). Under the hood this is `Scheduler.every(...).named("HourlyJob").toEcsTask(...)`: a schedule plus an execution role with `ecs:RunTask` on the task definition and `iam:PassRole` for its task and execution roles. Plain durations normalize to `rate(...)`; full `cron(...)` expressions pass through unchanged:
 
 ```typescript
 yield* AWS.ECS.every("NightlyJob", "cron(0 3 * * ? *)", {
@@ -291,19 +219,11 @@ yield* AWS.ECS.every("NightlyJob", "cron(0 3 * * ? *)", {
 });
 ```
 
-Tasks launch as Fargate with no public IP by default
-(`assignPublicIp: true` to change that), `taskCount` copies per tick,
-and an optional static `input` forwarded to the task.
+Tasks launch as Fargate with no public IP by default (`assignPublicIp: true` to change that), `taskCount` copies per tick, and an optional static `input` forwarded to the task.
 
 ## Where next
 
-- [Lambda](../compute/lambda.md) — the runtime both the consumer and scheduled
-  targets above deploy to.
-- [SNS](sns.md) — pub/sub fan-out when you want subscriptions
-  rather than pattern-matching rules.
-- [ECS](../compute/ecs.md) — the cluster, task, and networking that
-  `ECS.every` schedules onto.
-- [`EventBus`](https://alchemy.run/providers/aws/eventbridge/eventbus),
-  [`Rule`](https://alchemy.run/providers/aws/eventbridge/rule), and
-  [`Schedule`](https://alchemy.run/providers/aws/scheduler/schedule) references — every
-  prop and attribute.
+- [Lambda](../compute/lambda.md) — the runtime both the consumer and scheduled targets above deploy to.
+- [SNS](sns.md) — pub/sub fan-out when you want subscriptions rather than pattern-matching rules.
+- [ECS](../compute/ecs.md) — the cluster, task, and networking that `ECS.every` schedules onto.
+- [`EventBus`](https://alchemy.run/providers/aws/eventbridge/eventbus), [`Rule`](https://alchemy.run/providers/aws/eventbridge/rule), and [`Schedule`](https://alchemy.run/providers/aws/scheduler/schedule) references — every prop and attribute.

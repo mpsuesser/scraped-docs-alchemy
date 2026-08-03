@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/dynamodb
 title: "DynamoDB"
 description: "Add a DynamoDB Table, bind GetItem and PutItem to your Lambda, and serve a typed key/value HTTP API backed by DynamoDB."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 **DynamoDB** is AWS's serverless key/value store — structured

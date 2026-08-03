@@ -2,20 +2,15 @@
 url: https://alchemy.run/infrastructure-as-code/stack
 title: "Stacks"
 description: "A Stack is a collection of Resources deployed together as a unit."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-import StackOutputsTerminal from "../../../components/marketing-islands/StackOutputsTerminal.tsx";
-
-A **Stack** is the top-level unit of deployment in Alchemy. It groups
-resources together, wires up providers, and tracks state across
-deploys.
+A **Stack** is the top-level unit of deployment in Alchemy. It groups resources together, wires up providers, and tracks state across deploys.
 
 ## Defining a Stack
 
-A Stack is just an Effect that you `export default` from a TypeScript
-file:
+A Stack is just an Effect that you `export default` from a TypeScript file:
 
 ```typescript
 import * as Alchemy from "alchemy";
@@ -35,29 +30,12 @@ export default Alchemy.Stack(
 `Alchemy.Stack` takes three arguments:
 
 1. **Name** — identifies this stack in state storage
-2. **Options** — `providers` and `state`, both required (see
-   [State Store](../state-store.md) for the available state layers)
+2. **Options** — `providers` and `state`, both required (see [State Store](../state-store.md) for the available state layers)
 3. **Effect** — a generator that declares resources and returns outputs
-
-:::note[`alchemy.run.ts` is a convention]
-The CLI looks for `alchemy.run.ts` by default, but **any TypeScript
-file with a default-exported Stack works**. Pass the path as the
-first positional argument:
-
-```sh
-alchemy deploy infra/my-stack.ts
-alchemy destroy stacks/github.ts
-```
-
-See the [CLI reference](../cli/deploy.md) for the full invocation
-syntax.
-:::
 
 ## Stack outputs
 
-The value returned from the generator becomes the **stack output**.
-After a deploy, outputs are printed to the console and available
-programmatically in tests.
+The value returned from the generator becomes the **stack output**. After a deploy, outputs are printed to the console and available programmatically in tests.
 
 ```typescript
 Effect.gen(function* () {
@@ -73,14 +51,11 @@ Effect.gen(function* () {
 
 The CLI renders them after every successful deploy:
 
-<StackOutputsTerminal client:visible />
+*Interactive demonstration unavailable in static documentation.*
 
 ## Stages
 
-Every deploy targets a **stage** — an isolated instance of the stack
-like `dev_sam`, `staging`, or `prod`. The stage defaults to
-`dev_$USER`, so each developer gets their own environment
-automatically. State and physical names are namespaced by stage.
+Every deploy targets a **stage** — an isolated instance of the stack like `dev_sam`, `staging`, or `prod`. The stage defaults to `dev_$USER`, so each developer gets their own environment automatically. State and physical names are namespaced by stage.
 
 ```sh
 # Each stage = its own state file + its own physical names.
@@ -92,14 +67,11 @@ $ alchemy deploy --stage prod        # -> myapp-prod-photos-7d4e
 # never touches the others.
 ```
 
-For naming patterns, isolation, and per-stage configuration see
-[Stages](../environments/stages.md). Credentials per environment are managed
-via [Profiles](../environments/profiles.md).
+For naming patterns, isolation, and per-stage configuration see [Stages](../environments/stages.md). Credentials per environment are managed via [Profiles](../environments/profiles.md).
 
 ## Accessing the Stack
 
-Inside a resource or layer, you can access the current Stack's
-metadata via the `Stack` service:
+Inside a resource or layer, you can access the current Stack’s metadata via the `Stack` service:
 
 ```typescript
 import { Stack } from "alchemy/Stack";
@@ -116,13 +88,9 @@ Effect.gen(function* () {
 });
 ```
 
-### `Stack.useSync` for module-scope resources
+### Stack.useSync for module-scope resources
 
-When you declare a resource at module scope (outside any
-`Effect.gen`), there is no `yield*` available to read the `Stack`
-service. But a Resource's props can themselves be an Effect —
-`Stack.useSync` builds one that computes props from the current
-stack, useful for parameterizing names by stage:
+When you declare a resource at module scope (outside any `Effect.gen`), there is no `yield*` available to read the `Stack` service. But a Resource’s props can themselves be an Effect — `Stack.useSync` builds one that computes props from the current stack, useful for parameterizing names by stage:
 
 ```typescript
 import * as Axiom from "alchemy/Axiom";
@@ -131,21 +99,19 @@ import { Stack } from "alchemy/Stack";
 export const Traces = Axiom.Dataset(
   "Traces",
   Stack.useSync(({ stage }) => ({
-    name: `${stage}-traces`,
+    name: \`${stage}-traces\`,
     kind: "otel:traces:v1" as const,
-    description: `OTEL traces for stage '${stage}'`,
+    description: \`OTEL traces for stage '${stage}'\`,
     retentionDays: 30,
   })),
 );
 ```
 
-The function runs once at plan time, after the stage is resolved.
-Use it anywhere a resource accepts a `props` object.
+The function runs once at plan time, after the stage is resolved. Use it anywhere a resource accepts a `props` object.
 
 ## Cross-stack references
 
-A typed `Alchemy.Stack` handle lets one stack read another's
-persisted outputs at plan time:
+A typed `Alchemy.Stack` handle lets one stack read another’s persisted outputs at plan time:
 
 ```typescript
 // backend/src/Stack.ts — typed handle shared across packages
@@ -177,17 +143,11 @@ export default Alchemy.Stack(
 );
 ```
 
-`yield* Backend` defaults to the **current stage** — `sam`
-frontend reads `sam` backend, `pr-42` reads `pr-42`. Use
-`Backend.stage.<name>` to pin to a specific stage instead.
+`yield* Backend` defaults to the **current stage** — `sam` frontend reads `sam` backend, `pr-42` reads `pr-42`. Use `Backend.stage.<name>` to pin to a specific stage instead.
 
-See [References](references.md) for the underlying
-operators and [Monorepo](../project-structure/monorepo.md) for the
-end-to-end walkthrough (package layout, schema sharing, deploy
-ordering).
+See [References](references.md) for the underlying operators and [Monorepo](../project-structure/monorepo.md) for the end-to-end walkthrough (package layout, schema sharing, deploy ordering).
 
-A stack is just the container — the things it deploys are
-[Resources](resource.md).
+A stack is just the container — the things it deploys are [Resources](resource.md).
 
 ## Where next
 

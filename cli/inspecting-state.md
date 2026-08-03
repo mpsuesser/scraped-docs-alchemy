@@ -2,11 +2,9 @@
 url: https://alchemy.run/cli/inspecting-state
 title: "Inspecting State"
 description: "See what alchemy thinks is deployed, debug a bad diff, and recover from bad state."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
-
-import Terminal from "../../../components/Terminal.astro";
 
 ## What does alchemy think is deployed?
 
@@ -14,17 +12,17 @@ import Terminal from "../../../components/Terminal.astro";
 bun alchemy state tree
 ```
 
-<Terminal content={`AlchemyEffectWebsite
+```
+AlchemyEffectWebsite
 ├─ dev_sam
 │  ├─ Bucket
 │  └─ Worker
 └─ prod
-   ├─ Bucket
-   └─ Worker`} />
+ ├─ Bucket
+ └─ Worker
+```
 
-This is the record the next plan diffs against — not the live cloud
-(see [State Store](../state-store.md)). Full flag reference:
-[state](state.md).
+This is the record the next plan diffs against — not the live cloud (see [State Store](../state-store.md)). Full flag reference: [state](state.md).
 
 Drill down one level at a time:
 
@@ -44,8 +42,7 @@ Lists every stage recorded under `myapp`.
 bun alchemy state resources --stack myapp --stage dev_sam
 ```
 
-Prints the FQNs tracked under that stack/stage — the addresses
-`state get` takes.
+Prints the FQNs tracked under that stack/stage — the addresses `state get` takes.
 
 ## Debugging a bad diff
 
@@ -53,32 +50,17 @@ Prints the FQNs tracked under that stack/stage — the addresses
 bun alchemy state get --stack myapp --stage dev_sam --fqn Bucket
 ```
 
-This is the persisted props/attrs the planner diffs against — see
-[state](state.md) for the output encoding. Compare it with what
-`alchemy plan` says it wants to change. Three usual causes:
+This is the persisted props/attrs the planner diffs against — see [state](state.md) for the output encoding. Compare it with what `alchemy plan` says it wants to change. Three usual causes:
 
-**Wrong stage.** `--stage` defaults to `dev_$USER` (e.g. `dev_sam`),
-so a plan that "wants to create everything" often just means you're
-looking at a stage you never deployed. Run
-`state stages --stack myapp` and confirm which stage actually has
-state.
+**Wrong stage.** `--stage` defaults to `dev_$USER` (e.g. `dev_sam`), so a plan that “wants to create everything” often just means you’re looking at a stage you never deployed. Run `state stages --stack myapp` and confirm which stage actually has state.
 
-**Drift.** The cloud changed out-of-band — someone edited the
-resource in a console or another tool. `state get` shows what alchemy
-last persisted; the reconciler converges observed cloud state to the
-desired state on the next deploy (see
-[Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md)).
+**Drift.** The cloud changed out-of-band — someone edited the resource in a console or another tool. `state get` shows what alchemy last persisted; the reconciler converges observed cloud state to the desired state on the next deploy (see [Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md)).
 
-**Stale state from a partially-failed deploy.** If a deploy crashed
-after mutating the cloud but before persisting, the record lags
-reality. Check the persisted attributes against what actually exists
-before reaching for `clear`.
+**Stale state from a partially-failed deploy.** If a deploy crashed after mutating the cloud but before persisting, the record lags reality. Check the persisted attributes against what actually exists before reaching for `clear`.
 
 ## Recover from bad state
 
-When the record is beyond repair, clear it and redeploy. `clear` is
-destructive but **local-only** — it deletes alchemy's record, never
-the cloud resources themselves:
+When the record is beyond repair, clear it and redeploy. `clear` is destructive but **local-only** — it deletes alchemy’s record, never the cloud resources themselves:
 
 ```sh
 # one stage
@@ -100,15 +82,11 @@ If the deploy fails with `OwnedBySomeoneElse`, escalate:
 bun alchemy deploy --adopt
 ```
 
-See [Adopting Resources](adopting-resources.md) for why the flag is
-usually unnecessary.
+See [Adopting Resources](adopting-resources.md) for why the flag is usually unnecessary.
 
 ## Orphaned local state
 
-Pass `--local` to any `state` subcommand to read the on-disk
-`.alchemy/state` directory instead of the stack's configured store.
-The canonical use: a Cloudflare state-store bootstrap was interrupted
-and left resources recorded only locally.
+Pass `--local` to any `state` subcommand to read the on-disk `.alchemy/state` directory instead of the stack’s configured store. The canonical use: a Cloudflare state-store bootstrap was interrupted and left resources recorded only locally.
 
 ```sh
 # wipe local state after a botched bootstrap

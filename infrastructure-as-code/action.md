@@ -2,30 +2,21 @@
 url: https://alchemy.run/infrastructure-as-code/action
 title: "Actions"
 description: "A node in the dependency graph that runs an Effect during apply when its inputs change."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-An **Action** is a node in the stack's dependency graph that runs an
-arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has
-no provider lifecycle — no replace, no read, no delete. The engine just
-diffs the resolved input against the last persisted hash and either runs
-the body or skips it.
+An **Action** is a node in the stack’s dependency graph that runs an arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has no provider lifecycle — no replace, no read, no delete. The engine just diffs the resolved input against the last persisted hash and either runs the body or skips it.
 
-Actions are useful for one-off deploy-time work that needs to be
-reproducible and dependency-aware: seeding a database, posting a
-release notification, generating an artifact and uploading it,
-invalidating a CDN cache, running a migration check.
+Actions are useful for one-off deploy-time work that needs to be reproducible and dependency-aware: seeding a database, posting a release notification, generating an artifact and uploading it, invalidating a CDN cache, running a migration check.
 
 ## Declaring an Action
 
-Define an Action with its type name and a body, then call it inside a
-stack to register an instance. `yield*` returns `Output<Out>` ready to
-feed into downstream nodes:
+Define an Action with its type name and a body, then call it inside a stack to register an instance. `yield*` returns `Output<Out>` ready to feed into downstream nodes:
 
 ```typescript
 const Sync = Action("Sync", Effect.fn(function* (input: { table: string }) {
-  yield* Effect.log(`syncing ${input.table}`);
+  yield* Effect.log(\`syncing ${input.table}\`);
   return { rows: 42 };
 }));
 
@@ -35,36 +26,30 @@ const rows = yield* Sync({ table: bucket.name });
 rows.rows // Output<number>
 ```
 
-The body Effect receives the **resolved** input — any
-[Output](outputs.md) references in the input are evaluated against the
-current tracker before the body runs.
+The body Effect receives the **resolved** input — any [Output](outputs.md) references in the input are evaluated against the current tracker before the body runs.
 
 ### Init constructor (pulling in dependencies)
 
-Pass an Effect that yields the runner instead of the runner itself.
-The init Effect can `yield*` services, and those dependencies surface
-as `Req` on the call site:
+Pass an Effect that yields the runner instead of the runner itself. The init Effect can `yield*` services, and those dependencies surface as `Req` on the call site:
 
 ```typescript
 const Sync = Action("Sync", Effect.gen(function* () {
   const db = yield* Database;
   const logger = yield* Logger;
   return Effect.fn(function* (input: { table: string }) {
-    yield* logger.info(`syncing ${input.table}`);
+    yield* logger.info(\`syncing ${input.table}\`);
     return { rows: yield* db.count(input.table) };
   });
 }));
 
-// `yield* Sync({...})` now requires `Database | Logger | Stack`.
+// \`yield* Sync({...})\` now requires \`Database | Logger | Stack\`.
 ```
 
-The init runs at most once per process and the resolved runner is
-reused across every instance and re-run.
+The init runs at most once per process and the resolved runner is reused across every instance and re-run.
 
 ### Multiple instances
 
-Pass an explicit logical id to register more than one instance of the
-same Action definition:
+Pass an explicit logical id to register more than one instance of the same Action definition:
 
 ```typescript
 const nightly = yield* Sync("nightly", { table: usersBucket.name });
@@ -73,10 +58,7 @@ const hourly  = yield* Sync("hourly",  { table: eventsBucket.name });
 
 ### Tagged form (service + layer)
 
-When you want to split the contract from the implementation — e.g. for
-testing or to keep stack code declarative — declare the type with an
-`interface`, build the value with the no-argument overload, then supply
-the runner separately with `.make`:
+When you want to split the contract from the implementation — e.g. for testing or to keep stack code declarative — declare the type with an `interface`, build the value with the no-argument overload, then supply the runner separately with `.make`:
 
 ```typescript
 export interface Sync extends Action<"Sync", { table: string }, { rows: number }> {}
@@ -93,22 +75,15 @@ export const SyncLive = Sync.make(
 
 // In a stack:
 const rows = yield* Sync({ table: bucket.name });
-//          ^ requires `Sync` — add `SyncLive` to the stack's providers,
-//            or provide it locally with `Effect.provide(SyncLive)`.
+//          ^ requires \`Sync\` — add \`SyncLive\` to the stack's providers,
+//            or provide it locally with \`Effect.provide(SyncLive)\`.
 ```
 
-`.make(...)` accepts either a direct runner or an init Effect, and the
-init runs under the same context as the inline form — so the resource
-bindings and Output accessors below work here too.
+`.make(...)` accepts either a direct runner or an init Effect, and the init runs under the same context as the inline form — so the resource bindings and Output accessors below work here too.
 
 ## Binding resources
 
-An Action's body often needs to *talk to* the resources in your stack —
-seed a database, warm a cache, enqueue a job. Bindings like
-[`Cloudflare.D1.QueryDatabase`](../cloudflare/data/d1.md) normally resolve
-against a deployed Worker's runtime environment, which an Action doesn't
-have. Provide the binding's **`*Local`** layer instead: it talks to the
-service over the provider's HTTP API using your current CLI credentials.
+An Action’s body often needs to *talk to* the resources in your stack — seed a database, warm a cache, enqueue a job. Bindings like [`Cloudflare.D1.QueryDatabase`](../cloudflare/data/d1.md) normally resolve against a deployed Worker’s runtime environment, which an Action doesn’t have. Provide the binding’s **`*Local`** layer instead: it talks to the service over the provider’s HTTP API using your current CLI credentials.
 
 ```typescript
 const Seed = Action(
@@ -126,23 +101,13 @@ const Seed = Action(
 );
 ```
 
-`*Local` is a third binding variant alongside the native Worker binding
-(`*Binding`) and the scoped-token HTTP client (`*Http`). It registers no
-binding on a host and mints no token — it reuses the credentials Alchemy
-is already deploying with. The runtime client is identical, so the same
-`db.prepare(...).run()` code works whether it runs inside a deployed
-Worker or a deploy-time Action.
+`*Local` is a third binding variant alongside the native Worker binding (`*Binding`) and the scoped-token HTTP client (`*Http`). It registers no binding on a host and mints no token — it reuses the credentials Alchemy is already deploying with. The runtime client is identical, so the same `db.prepare(...).run()` code works whether it runs inside a deployed Worker or a deploy-time Action.
 
-Local layers exist for every Cloudflare capability with an HTTP data
-plane — D1, KV, R2, Queues, DNS, Vectorize, Tunnel, AI Search, Flagship,
-and Browser Rendering. Worker-runtime-only bindings (Rate Limiting,
-Version Metadata, service bindings, …) have no Local variant.
+Local layers exist for every Cloudflare capability with an HTTP data plane — D1, KV, R2, Queues, DNS, Vectorize, Tunnel, AI Search, Flagship, and Browser Rendering. Worker-runtime-only bindings (Rate Limiting, Version Metadata, service bindings, …) have no Local variant.
 
-### Reading a resource's Outputs
+### Reading a resource’s Outputs
 
-Inside an Action you can `yield*` a resource
-[Output](outputs.md) to get an accessor that
-resolves at apply time — after the resource exists:
+Inside an Action you can `yield*` a resource [Output](outputs.md) to get an accessor that resolves at apply time — after the resource exists:
 
 ```typescript
 const Seed = Action(
@@ -152,16 +117,13 @@ const Seed = Action(
     //    ^ deferred accessor — not the value yet
     return Effect.fn(function* () {
       const id = yield* databaseId; // resolved during apply
-      yield* Effect.log(`seeding ${id}`);
+      yield* Effect.log(\`seeding ${id}\`);
     });
   }),
 );
 ```
 
-Capturing an Output this way also makes the Action **depend** on that
-resource, so it runs after the resource is created — the same edge you'd
-get from passing `database.databaseId` as input. This works in both the
-inline and tagged `.make` forms.
+Capturing an Output this way also makes the Action **depend** on that resource, so it runs after the resource is created — the same edge you’d get from passing `database.databaseId` as input. This works in both the inline and tagged `.make` forms.
 
 ## Lifecycle
 
@@ -169,18 +131,14 @@ An Action has only two terminal states:
 
 | Action | Symbol | When |
 | --- | --- | --- |
-| **run**  | `λ` | First time, or `inputHash` differs from the last persisted run, or `--force` is set |
+| **run** | `λ` | First time, or `inputHash` differs from the last persisted run, or `--force` is set |
 | **skip** | `·` | Persisted `inputHash` matches the newly resolved input |
 
-There is no `replace` and no `delete`. When an Action is removed from the
-stack, its persisted state is dropped without the body being invoked.
+There is no `replace` and no `delete`. When an Action is removed from the stack, its persisted state is dropped without the body being invoked.
 
 ### Input hashing
 
-The Action's input is JSON-serialized and SHA-256 hashed after upstream
-Outputs are resolved. The hash is persisted alongside the result; on
-the next plan, a new hash that matches means "skip", a new hash that
-differs means "run".
+The Action’s input is JSON-serialized and SHA-256 hashed after upstream Outputs are resolved. The hash is persisted alongside the result; on the next plan, a new hash that matches means “skip”, a new hash that differs means “run”.
 
 ### Forcing a re-run
 
@@ -195,21 +153,14 @@ alchemy deploy --force
 Actions live in the same FQN namespace as Resources. They can:
 
 - Take Resource outputs as input (`{ table: bucket.name }`)
-- Capture a Resource Output in the init (`yield* bucket.name`) — see
-  [Reading a resource's Outputs](#reading-a-resources-outputs)
-- Be referenced by Resources via `action.output` (downstream resource
-  waits for the action before reconciling)
+- Capture a Resource Output in the init (`yield* bucket.name`) — see [Reading a resource’s Outputs](#reading-a-resources-outputs)
+- Be referenced by Resources via `action.output` (downstream resource waits for the action before reconciling)
 - Reference other Actions
 
 Cycles are rejected at plan time just like resource cycles.
 
 ## What Actions are not
 
-- **Not a Resource.** No `diff`/`read`/`reconcile`/`delete`. If you
-  need lifecycle management of a cloud entity, model it as a Resource.
-- **Not a runtime function.** An Action runs at deploy time. To call code
-  from a deployed Worker or Lambda, see [Functions & Servers](../infrastructure-as-effects/functions-and-servers.md).
-- **Not idempotent for free.** The engine guarantees the body runs
-  only when inputs change, but the body itself must tolerate retries
-  on apply restart (its `running` state is persisted but not its
-  side effects).
+- **Not a Resource.** No `diff` / `read` / `reconcile` / `delete`. If you need lifecycle management of a cloud entity, model it as a Resource.
+- **Not a runtime function.** An Action runs at deploy time. To call code from a deployed Worker or Lambda, see [Functions & Servers](../infrastructure-as-effects/functions-and-servers.md).
+- **Not idempotent for free.** The engine guarantees the body runs only when inputs change, but the body itself must tolerate retries on apply restart (its `running` state is persisted but not its side effects).

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/networking/custom-domains
 title: "Custom domains with Route53 + ACM"
 description: "Serve your site or API from your own domain — DNS-validated ACM certificates, Route 53 alias records, and the domain prop on Website resources."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 A custom domain on AWS is three moving parts: a TLS certificate (ACM), DNS

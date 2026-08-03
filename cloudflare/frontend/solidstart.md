@@ -2,36 +2,19 @@
 url: https://alchemy.run/cloudflare/frontend/solidstart
 title: "SolidStart"
 description: "Deploy SolidStart to Cloudflare with Cloudflare.Website.Vite — plus the hand-rolled SolidJS SSR variant for full control over the server entry."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-SolidStart builds through Vite: the `solidStart()` plugin in your
-`vite.config.ts` owns routing, SSR, and the server entry, and a
-single `vite build` produces the whole app. That makes it a pure-Vite
-project, so [`Cloudflare.Website.Vite`](vite.md)
-deploys it directly — no adapter config, no Wrangler file, no manual
-entrypoint.
+SolidStart builds through Vite: the `solidStart()` plugin in your `vite.config.ts` owns routing, SSR, and the server entry, and a single `vite build` produces the whole app. That makes it a pure-Vite project, so [`Cloudflare.Website.Vite`](vite.md) deploys it directly — no adapter config, no Wrangler file, no manual entrypoint.
 
-:::note[Verified version line]
-The checked-in example
-([examples/cloudflare-solidstart](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-solidstart))
-pins `@solidjs/start` **2.0.0-alpha.2** with
-`@solidjs/vite-plugin-nitro-2` — the Vite-native alpha line where
-`solidStart()` is a plain Vite plugin. That is the version line
-verified against Alchemy.
-:::
-
-Using TanStack Start with Solid instead? See
-[TanStack Start](tanstack-start.md).
+Using TanStack Start with Solid instead? See [TanStack Start](tanstack-start.md).
 
 ## Configure Vite
 
-Your `vite.config.ts` is just the SolidStart plugin — Alchemy layers
-its Cloudflare integration on top when it builds:
+Your `vite.config.ts` is just the SolidStart plugin — Alchemy layers its Cloudflare integration on top when it builds:
 
 ```typescript
-// vite.config.ts
 import { defineConfig } from "vite";
 
 import { solidStart } from "@solidjs/start/config";
@@ -41,18 +24,13 @@ export default defineConfig({
 });
 ```
 
-Because SolidStart is fully expressed as a Vite plugin, Alchemy's
-programmatic `vite build` picks up the client assets and the SSR
-server bundle from this one config — the server bundle becomes the
-deployed Worker, the client output becomes its static assets.
+Because SolidStart is fully expressed as a Vite plugin, Alchemy’s programmatic `vite build` picks up the client assets and the SSR server bundle from this one config — the server bundle becomes the deployed Worker, the client output becomes its static assets.
 
 ## Add it to the Stack
 
-Yield `Cloudflare.Website.Vite` from your Stack with `nodejs_compat`
-enabled:
+Yield `Cloudflare.Website.Vite` from your Stack with `nodejs_compat` enabled:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
@@ -77,19 +55,13 @@ export default Alchemy.Stack(
 );
 ```
 
-The `nodejs_compat` flag is required because SolidStart's SSR server
-bundle uses Node APIs at runtime; without it the deployed Worker
-fails to start.
+The `nodejs_compat` flag is required because SolidStart’s SSR server bundle uses Node APIs at runtime; without it the deployed Worker fails to start.
 
 ## Hand-rolled SolidJS SSR
 
-You don't need SolidStart to server-render Solid. The
-[examples/cloudflare-solidjs-ssr](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-solidjs-ssr)
-example uses plain `vite-plugin-solid` with SSR enabled and declares
-an `ssr` environment whose input is a hand-written server entry:
+You don’t need SolidStart to server-render Solid. The [examples/cloudflare-solidjs-ssr](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-solidjs-ssr) example uses plain `vite-plugin-solid` with SSR enabled and declares an `ssr` environment whose input is a hand-written server entry:
 
 ```typescript
-// vite.config.ts
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
@@ -112,19 +84,13 @@ export default defineConfig({
 });
 ```
 
-`src/entry-server.tsx` default-exports a standard Worker `fetch`
-handler that calls Solid's `renderToStringAsync` and injects the
-result (plus the hydration script) into the HTML template — that
-file becomes the Worker entry, while the client build ships as
-static assets.
+`src/entry-server.tsx` default-exports a standard Worker `fetch` handler that calls Solid’s `renderToStringAsync` and injects the result (plus the hydration script) into the HTML template — that file becomes the Worker entry, while the client build ships as static assets.
 
-### Deploy with `runWorkerFirst`
+### Deploy with runWorkerFirst
 
-Because the Worker itself renders every page, requests must reach it
-before the asset layer answers — set `assets.runWorkerFirst`:
+Because the Worker itself renders every page, requests must reach it before the asset layer answers — set `assets.runWorkerFirst`:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
@@ -152,10 +118,7 @@ export default Alchemy.Stack(
 );
 ```
 
-With `runWorkerFirst: true` the SSR handler sees every request first
-and delegates to the `ASSETS` binding itself for static files —
-without it, a request matching a built asset (like `/index.html`)
-would be served directly and never hit your renderer.
+With `runWorkerFirst: true` the SSR handler sees every request first and delegates to the `ASSETS` binding itself for static files — without it, a request matching a built asset (like `/index.html`) would be served directly and never hit your renderer.
 
 ## Deploy
 
@@ -163,10 +126,7 @@ would be served directly and never hit your renderer.
 bun alchemy deploy
 ```
 
-Alchemy runs the Vite build, uploads the client assets, deploys the
-SSR bundle as the Worker, and prints the stack's `url` output.
-Inputs are content-hashed, so re-deploying an unchanged project
-skips the build entirely.
+Alchemy runs the Vite build, uploads the client assets, deploys the SSR bundle as the Worker, and prints the stack’s `url` output. Inputs are content-hashed, so re-deploying an unchanged project skips the build entirely.
 
 ## Local dev
 
@@ -174,15 +134,8 @@ skips the build entirely.
 bun alchemy dev
 ```
 
-`alchemy dev` boots Vite's own dev server programmatically — HMR and
-instant module updates work as in a plain SolidStart project, while
-any bound backend resources are the real cloud resources.
+`alchemy dev` boots Vite’s own dev server programmatically — HMR and instant module updates work as in a plain SolidStart project, while any bound backend resources are the real cloud resources.
 
 ## Environment variables and bindings
 
-Both env channels of the Vite resource apply unchanged: `VITE_`-prefixed
-`env` entries are inlined into the client bundle as
-`import.meta.env.<KEY>` at build time, and everything else attaches
-to the SSR Worker as runtime bindings. See
-[the Vite resource page](vite.md) for how each
-channel works.
+Both env channels of the Vite resource apply unchanged: `VITE_` -prefixed `env` entries are inlined into the client bundle as `import.meta.env.<KEY>` at build time, and everything else attaches to the SSR Worker as runtime bindings. See [the Vite resource page](vite.md) for how each channel works.

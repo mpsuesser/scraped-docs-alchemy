@@ -2,14 +2,11 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for alchemy/Test — every helper, hook, and option exposed by Test.make for Bun and Vitest."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-`alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same
-Effect-aware harness. For the end-to-end walkthrough, see
-[Testing a Stack](testing-a-stack.md); for provider-lifecycle
-testing, see [Testing Providers](testing-providers.md).
+`alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same Effect-aware harness. For the end-to-end walkthrough, see [Testing a Stack](testing-a-stack.md); for provider-lifecycle testing, see [Testing Providers](testing-providers.md).
 
 ## What Test.make returns
 
@@ -24,7 +21,7 @@ const { test, beforeAll, beforeEach, afterAll, afterEach, deploy, destroy } =
 ```
 
 | Helper | Purpose |
-|---|---|
+| --- | --- |
 | `test(name, effect)` | Effect-aware test. `HttpClient` and your providers Layer are in scope. |
 | `test.skip` / `test.skipIf` / `test.only` / `test.todo` | Skip / focus / todo modifiers (same shape as `bun.test`). |
 | `test.provider(name, fn)` | [Provider-lifecycle test](testing-providers.md) against a scratch in-memory stack. |
@@ -35,11 +32,9 @@ const { test, beforeAll, beforeEach, afterAll, afterEach, deploy, destroy } =
 | `deploy(Stack, opts?)` | Plan + apply a stack, resolve to its outputs. |
 | `destroy(Stack, opts?)` | Plan + apply against an empty desired state. |
 
-`Test.getWhenReady` / `Test.executeWhenReady` are module-level HTTP
-cold-start helpers, taught in [Testing a Stack](testing-a-stack.md).
+`Test.getWhenReady` / `Test.executeWhenReady` are module-level HTTP cold-start helpers, taught in [Testing a Stack](testing-a-stack.md).
 
-`expect` (and `describe`) come from the underlying runner —
-`bun:test` or `@effect/vitest` — directly.
+`expect` (and `describe`) come from the underlying runner — `bun:test` or `@effect/vitest` — directly.
 
 ## Test.make options
 
@@ -52,10 +47,9 @@ Test.make({
 });
 ```
 
-### `providers` (required)
+### providers (required)
 
-The provider Layer that resolves resource implementations.
-Usually the same one your `Stack` uses:
+The provider Layer that resolves resource implementations. Usually the same one your `Stack` uses:
 
 ```typescript
 providers: Cloudflare.providers(),
@@ -63,15 +57,11 @@ providers: Cloudflare.providers(),
 providers: Layer.mergeAll(Cloudflare.providers(), Stripe.providers()),
 ```
 
-Credentials resolve through the same `AuthProviders` registry as
-`alchemy deploy`, so tests pick up `alchemy login` profiles or
-the env-var auth methods registered by each provider.
+Credentials resolve through the same `AuthProviders` registry as `alchemy deploy`, so tests pick up `alchemy login` profiles or the env-var auth methods registered by each provider.
 
-### `state`
+### state
 
-The state store used by top-level `deploy(Stack)` and
-`destroy(Stack)` (not by `test.provider`). Defaults to
-`localState()` — `.alchemy/` on disk.
+The state store used by top-level `deploy(Stack)` and `destroy(Stack)` (not by `test.provider`). Defaults to `localState()` — `.alchemy/` on disk.
 
 ```typescript
 state: Cloudflare.state(),  // R2-backed, survives across CI runners
@@ -79,15 +69,11 @@ state: localState({ path: ".alchemy-test/" }),  // separate dir
 state: undefined,  // omit → defaults to localState()
 ```
 
-Persistent state lets `deploy(Stack)` skip recreating unchanged
-resources between runs. The run-against-an-existing-stack pattern
-built on it lives in [Testing a Stack](testing-a-stack.md).
+Persistent state lets `deploy(Stack)` skip recreating unchanged resources between runs. The run-against-an-existing-stack pattern built on it lives in [Testing a Stack](testing-a-stack.md).
 
-### `profile`
+### profile
 
-Override `ALCHEMY_PROFILE` for this file only. Useful for
-pinning tests to a sandbox profile regardless of what's set in
-the environment:
+Override `ALCHEMY_PROFILE` for this file only. Useful for pinning tests to a sandbox profile regardless of what’s set in the environment:
 
 ```typescript
 Test.make({
@@ -96,13 +82,11 @@ Test.make({
 });
 ```
 
-When omitted, the harness reads `ALCHEMY_PROFILE` from env / `.env`
-the same way the CLI does.
+When omitted, the harness reads `ALCHEMY_PROFILE` from env / `.env` the same way the CLI does.
 
-### `stage`
+### stage
 
-Default stage for `deploy(Stack)` / `destroy(Stack)`. Defaults to
-`"test"`. Override per file, or per call:
+Default stage for `deploy(Stack)` / `destroy(Stack)`. Defaults to `"test"`. Override per file, or per call:
 
 ```typescript
 Test.make({ providers, stage: "ci-pr-42" });
@@ -112,16 +96,13 @@ beforeAll(deploy(Stack, { stage: "ci-pr-42" }));
 afterAll.skipIf(!process.env.CI)(destroy(Stack, { stage: "ci-pr-42" }));
 ```
 
-A unique stage per PR or test run lets multiple suites run in
-parallel against the same provider account without colliding.
+A unique stage per PR or test run lets multiple suites run in parallel against the same provider account without colliding.
 
 ## Hooks
 
-### `beforeAll(effect) → Effect.Effect<A>`
+### beforeAll(effect) → Effect.Effect<A>
 
-Runs the Effect once before any test in the file. Stores the
-result and returns a lazy accessor — `yield* accessor` inside
-any test or other hook returns the resolved value:
+Runs the Effect once before any test in the file. Stores the result and returns a lazy accessor — `yield* accessor` inside any test or other hook returns the resolved value:
 
 ```typescript
 const stack = beforeAll(deploy(Stack));
@@ -146,13 +127,11 @@ Default timeout is **120s**. Override with the second argument:
 beforeAll(deploy(Stack), { timeout: 300_000 });
 ```
 
-### `beforeEach(effect)`
+### beforeEach(effect)
 
-Runs the Effect before every test. No accessor returned — for
-side-effect setup only (truncate a table, reset a feature flag,
-…).
+Runs the Effect before every test. No accessor returned — for side-effect setup only (truncate a table, reset a feature flag, …).
 
-### `afterAll(effect)` and `afterAll.skipIf(predicate)`
+### afterAll(effect) and afterAll.skipIf(predicate)
 
 Cleanup hook with conditional teardown:
 
@@ -162,14 +141,11 @@ afterAll.skipIf(!process.env.CI)(destroy(Stack));  // CI only
 afterAll.skipIf(true)(destroy(Stack));             // never (debugging)
 ```
 
-`afterAll.skipIf(true)` short-circuits without registering a
-hook at all — there's no risk of an `Effect` being constructed
-and dropped.
+`afterAll.skipIf(true)` short-circuits without registering a hook at all — there’s no risk of an `Effect` being constructed and dropped.
 
-### `afterEach(effect)`
+### afterEach(effect)
 
-Runs after every test. Combine with `beforeEach` for
-test-isolated fixtures.
+Runs after every test. Combine with `beforeEach` for test-isolated fixtures.
 
 ## Test variants
 
@@ -189,23 +165,16 @@ test.only(
 test.todo("backfill once R2 has multipart helper");
 ```
 
-`test.provider` mirrors the same shape (semantics in
-[Testing Providers](testing-providers.md)):
+`test.provider` mirrors the same shape (semantics in [Testing Providers](testing-providers.md)):
 
 ```typescript
 test.provider.skip(name, fn);
 test.provider.skipIf(condition)(name, fn);
 ```
 
-:::note[Vitest differences]
-On Vitest, `test.only` is supported but `test.todo` is a stub
-(maps to `it.todo`). `test.skip` / `test.skipIf` work identically.
-:::
-
 ## HttpClient is in scope
 
-`HttpClient` is wired into every `test` Effect, so you can call
-it directly:
+`HttpClient` is wired into every `test` Effect, so you can call it directly:
 
 ```typescript
 import * as HttpClient from "effect/unstable/http/HttpClient";
@@ -214,26 +183,23 @@ test(
   "health check",
   Effect.gen(function* () {
     const { url } = yield* stack;
-    const res = yield* HttpClient.get(`${url}/health`);
+    const res = yield* HttpClient.get(\`${url}/health\`);
     expect(res.status).toBe(200);
   }),
 );
 ```
 
-The implementation comes from
-`effect/unstable/http/FetchHttpClient` — same client the CLI
-uses. For a full PUT/GET round-trip against a deployed stack,
-see [Testing a Stack → Drive the live URL](testing-a-stack.md).
+The implementation comes from `effect/unstable/http/FetchHttpClient` — same client the CLI uses. For a full PUT/GET round-trip against a deployed stack, see [Testing a Stack → Drive the live URL](testing-a-stack.md).
 
 ## Bun vs Vitest
 
 The two adapters expose the **same API**:
 
-```diff lang="typescript"
--import * as Test from "alchemy/Test/Bun";
--import { expect } from "bun:test";
-+import * as Test from "alchemy/Test/Vitest";
-+import { expect } from "@effect/vitest";
+```typescript
+import * as Test from "alchemy/Test/Bun";
+import { expect } from "bun:test";
+import * as Test from "alchemy/Test/Vitest";
+import { expect } from "@effect/vitest";
 
 const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
   providers: Cloudflare.providers(),
@@ -241,14 +207,10 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-- **Bun** uses `bun:test` directly. Every `test(...)` becomes a
-  `bun.test(...)` call wrapped with `Effect.runPromise`.
-- **Vitest** uses `@effect/vitest`'s `it.live`, so Effect-aware
-  tests stay first-class. Default hook timeout is the same
-  (120s).
+- **Bun** uses `bun:test` directly. Every `test(...)` becomes a `bun.test(...)` call wrapped with `Effect.runPromise`.
+- **Vitest** uses `@effect/vitest` ’s `it.live`, so Effect-aware tests stay first-class. Default hook timeout is the same (120s).
 
-Pick whichever runner your project already uses; nothing in the
-test code changes.
+Pick whichever runner your project already uses; nothing in the test code changes.
 
 ## Where next
 

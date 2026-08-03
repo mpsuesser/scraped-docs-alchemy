@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/layers
 title: "Layers"
 description: "A Layer defines a service contract with swappable implementations. In Alchemy, a Layer can encapsulate Resources and Bindings, so shared services carry their own infrastructure and permissions."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 As your application grows, you'll need to start sharing components of

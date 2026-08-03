@@ -2,8 +2,8 @@
 url: https://alchemy.run/command/memoization
 title: "Memoization: builds & one-off commands"
 description: "Content-hash memoization shared by Command.Build and Command.Exec — what gets hashed, when a command re-runs, and the outdir contract on destroy."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 `Command.Build` and `Command.Exec` content-hash their inputs so a

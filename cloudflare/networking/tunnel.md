@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/tunnel
 title: "Expose private origins with Tunnel"
 description: "Connect a private origin to Cloudflare's edge with a Tunnel, declare its ingress rules as a Configuration resource, and point DNS at it with a proxied CNAME."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 A Cloudflare Tunnel establishes an outbound connection from your

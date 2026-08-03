@@ -2,11 +2,9 @@
 url: https://alchemy.run/cli/deploy
 title: "deploy"
 description: "Compute a plan, ask for approval, and create/update/delete resources to match the desired state."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
-
-import Terminal from "../../../components/Terminal.astro";
 
 ```sh
 alchemy deploy [file] [options]
@@ -14,50 +12,54 @@ alchemy deploy [file] [options]
 
 `deploy` computes a plan, asks for approval, and creates/updates/deletes resources to match the desired state.
 
-<Terminal content={`[u]Plan[/u]: [g]2 to create[/g]
+```
+Plan: 2 to create
 
-[g]+[/g] [b]Bucket[/b] [d](Cloudflare.R2.Bucket)[/d]
-[g]+[/g] [b]Worker[/b] [d](Cloudflare.Worker)[/d] [c](1 bindings)[/c]
-[s2][g]+[/g] [c]Bucket[/c]
++ Bucket (Cloudflare.R2.Bucket)
++ Worker (Cloudflare.Worker) (1 bindings)
+  + Bucket
 
 Proceed?
 ◉ Yes ○ No
-[g]✓[/g] [b]Bucket[/b] [d](Cloudflare.R2.Bucket)[/d] [g]created[/g]
-[g]✓[/g] [b]Worker[/b] [d](Cloudflare.Worker)[/d] [g]created[/g]
-[s2][d]• Uploading worker (14.20 KB) ...[/d]
-[s2][d]• Enabling workers.dev subdomain...[/d]
+✓ Bucket (Cloudflare.R2.Bucket) created
+✓ Worker (Cloudflare.Worker) created
+  • Uploading worker (14.20 KB) ...
+  • Enabling workers.dev subdomain...
 {
-[s2]url: "https://myapp-worker-dev-you-abc123.workers.dev",
-}`} />
+  url: "https://myapp-worker-dev-you-abc123.workers.dev",
+}
+```
 
 On subsequent deploys, only changed resources are updated:
 
-<Terminal content={`[u]Plan[/u]: [y]1 to update[/y]
+```
+Plan: 1 to update
 
-[y]~[/y] [b]Worker[/b] [d](Cloudflare.Worker)[/d]
+~ Worker (Cloudflare.Worker)
 
 Proceed?
 ◉ Yes ○ No
-[g]✓[/g] [b]Worker[/b] [d](Cloudflare.Worker)[/d] [y]updated[/y]
-[s2][d]• Uploading worker (15.10 KB) ...[/d]
+✓ Worker (Cloudflare.Worker) updated
+  • Uploading worker (15.10 KB) ...
 {
-[s2]url: "https://myapp-worker-dev-you-abc123.workers.dev",
-}`} />
+  url: "https://myapp-worker-dev-you-abc123.workers.dev",
+}
+```
 
 When the plan contains no changes, the approval prompt is skipped automatically.
 
 ## Flags
 
-| Option              | Description                                                                                                                |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `[file]`            | Stack file to deploy (defaults to `alchemy.run.ts`)                                                                        |
-| `--stage <name>`    | Stage to deploy to (defaults to `dev_$USER`)                                                                               |
-| `--yes`             | Skip the approval prompt                                                                                                   |
-| `--dry-run`         | Show the plan without applying (same as `alchemy plan`)                                                                    |
-| `--force`           | Force updates for resources that would otherwise no-op                                                                     |
-| `--adopt`           | Adopt pre-existing cloud resources that conflict with this stack instead of failing. Useful for re-importing into a fresh state store. |
-| `--profile <name>`  | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`)                                                          |
-| `--env-file <path>` | Load environment variables from a file                                                                                     |
+| Option | Description |
+| --- | --- |
+| `[file]` | Stack file to deploy (defaults to `alchemy.run.ts`) |
+| `--stage <name>` | Stage to deploy to (defaults to `dev_$USER`) |
+| `--yes` | Skip the approval prompt |
+| `--dry-run` | Show the plan without applying (same as `alchemy plan`) |
+| `--force` | Force updates for resources that would otherwise no-op |
+| `--adopt` | Adopt pre-existing cloud resources that conflict with this stack instead of failing. Useful for re-importing into a fresh state store. |
+| `--profile <name>` | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`) |
+| `--env-file <path>` | Load environment variables from a file |
 
 How `--adopt` decides what to take over is covered in [Adopting Resources](adopting-resources.md).
 

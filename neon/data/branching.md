@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/branching
 title: "Branching"
 description: "Neon branches are copy-on-write forks of a parent branch — create them per stage or preview, pin them to a point in time, copy schema only, and let them expire on their own."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 A `Neon.Branch` is a copy-on-write fork of a parent branch. It shares

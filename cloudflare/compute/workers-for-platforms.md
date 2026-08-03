@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers-for-platforms
 title: "Workers for Platforms"
 description: "Run your customers' Workers in your own account — create a dispatch namespace, upload user Workers into it, and route requests from a platform Worker with the Get binding."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 Workers for Platforms lets you run your customers' code on Cloudflare's

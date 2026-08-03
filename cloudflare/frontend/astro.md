@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare with Alchemy — static output via StaticSite today; Vite-resource support is a TODO."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 :::caution[Not yet supported by Cloudflare.Website.Vite]

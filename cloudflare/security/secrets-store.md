@@ -2,51 +2,37 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-Cloudflare's Secrets Store is an account-level container for secrets.
-Unlike a plain env var, a stored secret is shared across Workers,
-redacted in the dashboard, and read live at runtime — bound Workers
-see the current value without a redeploy.
+Cloudflare’s Secrets Store is an account-level container for secrets. Unlike a plain env var, a stored secret is shared across Workers, redacted in the dashboard, and read live at runtime — bound Workers see the current value without a redeploy.
 
-In this guide you'll build a bearer-token-protected Worker: a
-`Store`, a token minted with `Alchemy.Random`, a `Secret` holding it,
-and a `ReadSecret` binding that checks it on every request.
+In this guide you’ll build a bearer-token-protected Worker: a `Store`, a token minted with `Alchemy.Random`, a `Secret` holding it, and a `ReadSecret` binding that checks it on every request.
 
 ## Create the store
 
 ```typescript
-// src/auth.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 
 export const Store = Cloudflare.SecretsStore.Store("AuthSecrets");
 ```
 
-Cloudflare allows **one Secrets Store per account**, so the provider
-adopts the existing store if one exists (creating it only on a truly
-fresh account) and never deletes it on `alchemy destroy` — it's
-account-level infrastructure that outlives any single stack.
+Cloudflare allows **one Secrets Store per account**, so the provider adopts the existing store if one exists (creating it only on a truly fresh account) and never deletes it on `alchemy destroy` — it’s account-level infrastructure that outlives any single stack.
 
 ## Generate a stable token
 
 ```typescript
-// src/auth.ts
 import { Random } from "alchemy";
 
 export const AuthTokenValue = Random("AuthTokenValue");
 ```
 
-`Random` mints a random value once (32 bytes, hex-encoded — pass
-`bytes` to change the length) and persists it in state, so the token
-stays the same on every subsequent deploy. Its `text` attribute is a
-`Redacted<string>`, so it never leaks into logs.
+`Random` mints a random value once (32 bytes, hex-encoded — pass `bytes` to change the length) and persists it in state, so the token stays the same on every subsequent deploy. Its `text` attribute is a `Redacted<string>`, so it never leaks into logs.
 
 ## Put it in the store
 
 ```typescript
-// src/auth.ts
 import * as Effect from "effect/Effect";
 
 export const AuthToken = Effect.gen(function* () {
@@ -59,19 +45,13 @@ export const AuthToken = Effect.gen(function* () {
 });
 ```
 
-`Secret` writes the value into the store under the resource's logical
-ID (pass `name` to override). The value is any `Redacted<string>` —
-`Redacted.make(process.env.API_KEY!)` works just as well as a
-`Random` output. Changing the value updates the secret in place;
-renaming it or moving it to another store replaces it.
+`Secret` writes the value into the store under the resource’s logical ID (pass `name` to override). The value is any `Redacted<string>` — `Redacted.make(process.env.API_KEY!)` works just as well as a `Random` output. Changing the value updates the secret in place; renaming it or moving it to another store replaces it.
 
 ## Read it in a Worker
 
-Bind the secret in the Worker's init phase with `ReadSecret`, then
-check the `Authorization` header in `fetch`:
+Bind the secret in the Worker’s init phase with `ReadSecret`, then check the `Authorization` header in `fetch`:
 
 ```typescript
-// src/api.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
@@ -96,7 +76,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
           const expected = yield* authToken;
           if (
             !authHeader ||
-            authHeader !== `Bearer ${Redacted.value(expected)}`
+            authHeader !== \`Bearer ${Redacted.value(expected)}\`
           ) {
             return HttpServerResponse.text("unauthorized", { status: 401 });
           }
@@ -107,7 +87,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
       }).pipe(
         Effect.catchTag("SecretError", (err) =>
           Effect.succeed(
-            HttpServerResponse.text(`failed to read secret: ${err.message}`, {
+            HttpServerResponse.text(\`failed to read secret: ${err.message}\`, {
               status: 500,
             }),
           ),
@@ -118,24 +98,11 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-The client returned by `ReadSecret` is itself an Effect that resolves
-to the secret's current value, so `yield* authToken` reads it —
-`.get()` does the same thing as a callable, and `.raw` exposes the
-underlying Cloudflare `SecretsStoreSecret` binding. Reads can fail
-with a typed `SecretError`, handled here with `Effect.catchTag`.
-
-:::caution
-The value is a `Redacted<string>` — you MUST unwrap it with
-`Redacted.value(expected)` before comparing. Coercing a `Redacted`
-into a template literal yields the literal string `"<redacted>"`, so
-`` `Bearer ${expected}` `` would compare against `"Bearer <redacted>"`
-and silently reject every real token.
-:::
+The client returned by `ReadSecret` is itself an Effect that resolves to the secret’s current value, so `yield* authToken` reads it — `.get()` does the same thing as a callable, and `.raw` exposes the underlying Cloudflare `SecretsStoreSecret` binding. Reads can fail with a typed `SecretError`, handled here with `Effect.catchTag`.
 
 ## Add to the stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Output from "alchemy/Output";
@@ -162,10 +129,7 @@ export default Alchemy.Stack(
 );
 ```
 
-`authToken.text` is an `Output<Redacted<string>>`. Mapping over the
-Output with `Redacted.value` unwraps it so the stack output emits the
-real token — otherwise it JSON-serializes to the literal string
-`"<redacted>"`.
+`authToken.text` is an `Output<Redacted<string>>`. Mapping over the Output with `Redacted.value` unwraps it so the stack output emits the real token — otherwise it JSON-serializes to the literal string `"<redacted>"`.
 
 ## Deploy and test
 
@@ -182,12 +146,9 @@ curl -H "Authorization: Bearer <authToken from the deploy output>" \
 # → ok
 ```
 
-## Async Workers: bind via `env`
+## Async Workers: bind via env
 
-Async (non-Effect) Workers don't have an init phase to `yield*` a
-binding into. Declare the Secret on the Worker's `env` instead — the
-provider maps it to a native `secrets_store_secret` binding, so the
-runtime sees a real `SecretsStoreSecret` with a `.get()` method:
+Async (non-Effect) Workers don’t have an init phase to `yield*` a binding into. Declare the Secret on the Worker’s `env` instead — the provider maps it to a native `secrets_store_secret` binding, so the runtime sees a real `SecretsStoreSecret` with a `.get()` method:
 
 ```typescript
 import type { SecretsStoreSecret } from "@cloudflare/workers-types";
@@ -215,28 +176,16 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
 ## Env vars vs Secrets Store
 
-Both end up as bindings on the Worker — pick based on where the value
-lives and who shares it:
+Both end up as bindings on the Worker — pick based on where the value lives and who shares it:
 
-- **Env vars** ([`Config.redacted`](../../environments/secrets.md)) — the value
-  comes from *your* environment (`.env`, CI secrets) at deploy time
-  and is baked into that one Worker. Right for third-party API keys
-  and per-app config. See [Secrets & env](secrets-env.md)
-  for the step-by-step.
-- **Secrets Store** — the value lives in *Cloudflare's* account-level
-  store. One secret can be bound into many Workers, reads happen at
-  runtime so a rotation propagates without redeploying every
-  consumer, and the dashboard redacts it. Right for shared
-  credentials and tokens your infrastructure owns — like the bearer
-  token in this guide.
+- **Env vars** ([`Config.redacted`](../../environments/secrets.md)) — the value comes from *your* environment (`.env`, CI secrets) at deploy time and is baked into that one Worker. Right for third-party API keys and per-app config. See [Secrets & env](secrets-env.md) for the step-by-step.
+- **Secrets Store** — the value lives in *Cloudflare’s* account-level store. One secret can be bound into many Workers, reads happen at runtime so a rotation propagates without redeploying every consumer, and the dashboard redacts it. Right for shared credentials and tokens your infrastructure owns — like the bearer token in this guide.
 
 ## Where next
 
 - [Workers](../compute/workers.md) — the host the secret binds into.
-- [Secrets and Config](../../environments/secrets.md) — how env-var bindings
-  work under the hood.
-- [Secrets & env](secrets-env.md) — the category anchor:
-  Config, Random, and when to use the store.
+- [Secrets and Config](../../environments/secrets.md) — how env-var bindings work under the hood.
+- [Secrets & env](secrets-env.md) — the category anchor: Config, Random, and when to use the store.
 
 Reference:
 

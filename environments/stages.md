@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/stages
 title: "Stages"
 description: "Stages are isolated instances of a Stack — dev_sam, staging, prod, pr-42 — each with their own state and physical names."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 A **stage** is an isolated instance of a [Stack](../infrastructure-as-code/stack.md).

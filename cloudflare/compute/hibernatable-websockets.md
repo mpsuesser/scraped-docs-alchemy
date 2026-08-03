@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 The `Counter` Durable Object you added in the previous part holds

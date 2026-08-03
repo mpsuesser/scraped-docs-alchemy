@@ -2,20 +2,11 @@
 url: https://alchemy.run/apis/effect-rpc
 title: "Effect RPC"
 description: "Schema-first RPC for trust boundaries — declare procedures, construct handler Layers, derive typed clients from the same schema."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-Effect RPC is schema-first: every procedure declares `payload`,
-`success`, and `error` Schemas, and every request and response is
-validated against them. Use it when data crosses a **trust
-boundary** — a web app or an external service calling into your
-stack. That validation has a per-request price (a frame parse, a
-Schema decode of the payload, a Schema encode of the result —
-mirrored on the client), so for internal service-to-service calls it
-is **discouraged**: [Schemaless RPC](schemaless.md) gives you the
-same typed client with no schema, no runtime checking, and no
-per-request validation cost.
+Effect RPC is schema-first: every procedure declares `payload`, `success`, and `error` Schemas, and every request and response is validated against them. Use it when data crosses a **trust boundary** — a web app or an external service calling into your stack. That validation has a per-request price (a frame parse, a Schema decode of the payload, a Schema encode of the result — mirrored on the client), so for internal service-to-service calls it is **discouraged**: [Schemaless RPC](schemaless.md) gives you the same typed client with no schema, no runtime checking, and no per-request validation cost.
 
 ## The pieces
 
@@ -30,16 +21,13 @@ src/
 └── ApiClient.ts   # a typed client — the same schema + a Fetcher
 ```
 
-The schema files are plain values with no runtime concerns, so both
-the server and every client import them directly. Only
-`ApiService.ts` names a cloud — everything above it is host-agnostic.
+The schema files are plain values with no runtime concerns, so both the server and every client import them directly. Only `ApiService.ts` names a cloud — everything above it is host-agnostic.
 
 ## The domain types
 
 Domain model and error types — pure schemas:
 
 ```typescript
-// src/Task.ts
 import * as Schema from "effect/Schema";
 
 export class Task extends Schema.Class<Task>("Task")({
@@ -59,16 +47,13 @@ export class CreateTaskFailed extends Schema.TaggedClass<CreateTaskFailed>()(
 ) {}
 ```
 
-RPC errors are schema-backed tagged classes — the client receives
-them as typed values it can `catchTag` on, not raw HTTP status codes.
+RPC errors are schema-backed tagged classes — the client receives them as typed values it can `catchTag` on, not raw HTTP status codes.
 
 ## The procedures
 
-Each `Rpc.make` declares one procedure; `RpcGroup.make` collects them
-into the single value the server and the client will share:
+Each `Rpc.make` declares one procedure; `RpcGroup.make` collects them into the single value the server and the client will share:
 
 ```typescript
-// src/ApiSchema.ts
 import * as Schema from "effect/Schema";
 import { Rpc, RpcGroup } from "effect/unstable/rpc";
 import { CreateTaskFailed, Task, TaskNotFound } from "./Task.ts";
@@ -92,11 +77,9 @@ export class TaskRpcs extends RpcGroup.make(getTask, createTask) {}
 
 ## Handlers
 
-`TaskRpcs.toLayer` takes one handler per procedure and produces a
-`Layer`:
+`TaskRpcs.toLayer` takes one handler per procedure and produces a `Layer`:
 
 ```typescript
-// src/ApiHandlers.ts
 import * as Effect from "effect/Effect";
 import { TaskRpcs } from "./ApiSchema.ts";
 import { Task, TaskNotFound } from "./Task.ts";
@@ -111,18 +94,11 @@ export const TaskRpcsLive = TaskRpcs.toLayer({
 });
 ```
 
-`toLayer` is pure construction — it builds a value and never runs the
-server, so it is safe inside a host's Init phase (which also executes
-at plan time); each handler receives the decoded payload and returns
-an `Effect` that succeeds or fails with the declared schemas, and the
-storage-backed bodies live on the hub pages — R2 in
-[Effect RPC on Workers](../cloudflare/apis/effect-rpc.md), DynamoDB in
-[Effect RPC on Lambda](../aws/apis/effect-rpc.md).
+`toLayer` is pure construction — it builds a value and never runs the server, so it is safe inside a host’s Init phase (which also executes at plan time); each handler receives the decoded payload and returns an `Effect` that succeeds or fails with the declared schemas, and the storage-backed bodies live on the hub pages — R2 in [Effect RPC on Workers](../cloudflare/apis/effect-rpc.md), DynamoDB in [Effect RPC on Lambda](../aws/apis/effect-rpc.md).
 
 ## Serve it
 
-`RpcServer.toHttpEffect` needs exactly two layers — the handlers and
-a serialization:
+`RpcServer.toHttpEffect` needs exactly two layers — the handlers and a serialization:
 
 ```typescript
 // src/ApiHandlers.ts (continued)
@@ -134,24 +110,13 @@ export const ApiHttpEffect = RpcServer.toHttpEffect(TaskRpcs).pipe(
 );
 ```
 
-`toHttpEffect` compiles the group into the `{ fetch }` value every
-host serves — it imports nothing cloud-specific. `layerJson` buffers
-one body per request and suits plain request/response; streaming
-rpcs require `RpcSerialization.layerNdjson` — whichever you pick,
-the client's serialization layer must match the server's. A Lambda
-Function with `url: true` or a Cloudflare Worker returns it as
-`{ fetch }` — host wiring, storage binding Layers, and deploy live
-on [Workers](../cloudflare/apis/effect-rpc.md) and
-[Lambda](../aws/apis/effect-rpc.md).
+`toHttpEffect` compiles the group into the `{ fetch }` value every host serves — it imports nothing cloud-specific. `layerJson` buffers one body per request and suits plain request/response; streaming rpcs require `RpcSerialization.layerNdjson` — whichever you pick, the client’s serialization layer must match the server’s. A Lambda Function with `url: true` or a Cloudflare Worker returns it as `{ fetch }` — host wiring, storage binding Layers, and deploy live on [Workers](../cloudflare/apis/effect-rpc.md) and [Lambda](../aws/apis/effect-rpc.md).
 
 ## A typed client
 
-A client is the schema combined with a **Fetcher** — a plain URL for
-external consumers, or a platform Binding when the caller lives in
-the same account (see the Workers page). Here is the URL form:
+A client is the schema combined with a **Fetcher** — a plain URL for external consumers, or a platform Binding when the caller lives in the same account (see the Workers page). Here is the URL form:
 
 ```typescript
-// src/ApiClient.ts
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as FetchHttpClient from "effect/unstable/http/FetchHttpClient";
@@ -180,19 +145,11 @@ Effect.runPromise(
 );
 ```
 
-`RpcClient.make(TaskRpcs)` derives the whole client from the same
-group value — no codegen — with typed errors (`client.getTask`
-returns `Effect<Task, TaskNotFound>`); it runs inside `Effect.scoped`
-and the serialization layer must match the server's.
+`RpcClient.make(TaskRpcs)` derives the whole client from the same group value — no codegen — with typed errors (`client.getTask` returns `Effect<Task, TaskNotFound>`); it runs inside `Effect.scoped` and the serialization layer must match the server’s.
 
 ## Where next
 
-- [Effect RPC on Workers](../cloudflare/apis/effect-rpc.md) — full Worker
-  wiring: R2-backed handlers, streaming rpcs, the `RpcWorker` and
-  `RpcDurableObject` sugar, typed in-account bindings, the DO bridge.
-- [Effect RPC on Lambda](../aws/apis/effect-rpc.md) — full Lambda wiring:
-  DynamoDB bindings, IAM, Function URL, deploy.
-- [Effect HTTP](effect-http.md) — the same trust boundary as real
-  REST endpoints, for non-Effect consumers.
-- [Schemaless RPC](schemaless.md) — the default for internal
-  calls.
+- [Effect RPC on Workers](../cloudflare/apis/effect-rpc.md) — full Worker wiring: R2-backed handlers, streaming rpcs, the `RpcWorker` and `RpcDurableObject` sugar, typed in-account bindings, the DO bridge.
+- [Effect RPC on Lambda](../aws/apis/effect-rpc.md) — full Lambda wiring: DynamoDB bindings, IAM, Function URL, deploy.
+- [Effect HTTP](effect-http.md) — the same trust boundary as real REST endpoints, for non-Effect consumers.
+- [Schemaless RPC](schemaless.md) — the default for internal calls.

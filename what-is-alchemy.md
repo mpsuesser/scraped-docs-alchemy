@@ -2,8 +2,8 @@
 url: https://alchemy.run/what-is-alchemy
 title: "What is Alchemy?"
 description: "Alchemy is an Infrastructure-as-Effects framework that combines cloud infrastructure and application logic into a single type-safe program powered by Effect."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 Alchemy is an **[Infrastructure-as-Effects](infrastructure-as-effects.md)** framework. It extends

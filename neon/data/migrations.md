@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/migrations
 title: "Migrations"
 description: "Apply SQL migrations and seed data to Neon projects and branches as part of every deploy — ordered, hashed, and tracked in a neon_migrations table."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 Both `Neon.Project` and `Neon.Branch` accept a `migrationsDir` — a

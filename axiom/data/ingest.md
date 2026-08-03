@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/data/ingest
 title: "Datasets & ingest"
 description: "Axiom datasets per OTel signal with OTLP endpoints as outputs, least-privilege ingest tokens, and per-stage naming with Stack.useSync."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 A `Dataset` is Axiom's top-level container — it stores your events,

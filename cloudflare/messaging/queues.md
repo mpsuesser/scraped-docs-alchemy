@@ -2,36 +2,20 @@
 url: https://alchemy.run/cloudflare/messaging/queues
 title: "Queues"
 description: "Cloudflare Queues give you reliable, at-least-once message delivery between Workers — a WriteQueue producer binding on one side and an Effect-style consumeQueueMessages handler with automatic ack/retry on the other."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-A Cloudflare Queue decouples work from the request that triggered
-it: a Worker *produces* messages onto the queue, Cloudflare buffers
-them, and a consumer Worker receives them in batches with
-**at-least-once** delivery — failed batches are retried and
-eventually dead-lettered.
+A Cloudflare Queue decouples work from the request that triggered it: a Worker *produces* messages onto the queue, Cloudflare buffers them, and a consumer Worker receives them in batches with **at-least-once** delivery — failed batches are retried and eventually dead-lettered.
 
-Reach for a Queue whenever work shouldn't block a response: sending
-emails, processing uploads, fanning out webhooks, or smoothing
-bursty traffic. Both halves live in the same alchemy program: the
-producer side is the `Cloudflare.Queues.WriteQueue(...)` binding
-([reference](https://alchemy.run/providers/cloudflare/queues/queue)), and the consumer
-side is the Effect-style
-`Cloudflare.Queues.consumeQueueMessages(queue, handler)` API this
-page walks through.
+Reach for a Queue whenever work shouldn’t block a response: sending emails, processing uploads, fanning out webhooks, or smoothing bursty traffic. Both halves live in the same alchemy program: the producer side is the `Cloudflare.Queues.WriteQueue(...)` binding ([reference](https://alchemy.run/providers/cloudflare/queues/queue)), and the consumer side is the Effect-style `Cloudflare.Queues.consumeQueueMessages(queue, handler)` API this page walks through.
 
-`consumeQueueMessages(...)` does both halves in one call: it registers a
-runtime queue listener on the Worker, and it auto-creates the
-`Cloudflare.Queues.Consumer` resource that tells Cloudflare to
-dispatch messages from the queue to this Worker. No separate
-deploy-time wiring is needed.
+`consumeQueueMessages(...)` does both halves in one call: it registers a runtime queue listener on the Worker, and it auto-creates the `Cloudflare.Queues.Consumer` resource that tells Cloudflare to dispatch messages from the queue to this Worker. No separate deploy-time wiring is needed.
 
-By the end you'll have a Worker that:
+By the end you’ll have a Worker that:
 
 - Sends a JSON message via `POST /queue/send`.
-- Receives the message in a queue handler registered on the same
-  Worker, persists the body to R2, and acks the batch.
+- Receives the message in a queue handler registered on the same Worker, persists the body to R2, and acks the batch.
 - Reads the persisted body via `GET /queue/result/:id`.
 
 ## Create the Queue and Bucket
@@ -39,7 +23,6 @@ By the end you'll have a Worker that:
 Both resources are plain `yield*` calls — no special config.
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
@@ -48,18 +31,13 @@ export const Queue = Cloudflare.Queues.Queue("Queue");
 export const Bucket = Cloudflare.R2.Bucket("Bucket");
 ```
 
-The Queue's name is generated from the stack/stage/id. The Bucket
-will store each consumed message at `/queue/<id>` so the integ
-test can read it back.
+The Queue’s name is generated from the stack/stage/id. The Bucket will store each consumed message at `/queue/<id>` so the integ test can read it back.
 
 ## Bind the Queue producer
 
-In the Worker init phase, yield the queue resource and ask
-`Cloudflare.Queues.WriteQueue` for a typed sender. The sender exposes `send` /
-`sendBatch` that round-trip through Cloudflare's runtime.
+In the Worker init phase, yield the queue resource and ask `Cloudflare.Queues.WriteQueue` for a typed sender. The sender exposes `send` / `sendBatch` that round-trip through Cloudflare’s runtime.
 
 ```typescript
-// src/Api.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 import { Bucket } from "./Bucket.ts";
@@ -81,53 +59,42 @@ export default Cloudflare.Worker(
 );
 ```
 
-`queueResource` (the resolved `Queue` resource) is what you pass to
-`consumeQueueMessages(...)` next — it's the same handle, not a new one.
+`queueResource` (the resolved `Queue` resource) is what you pass to `consumeQueueMessages(...)` next — it’s the same handle, not a new one.
 
-## Subscribe to incoming messages
+`Cloudflare.Queues.consumeQueueMessages(queue, handler)` registers a queue event listener on the Worker. The handler receives a `Stream.Stream<Message<Body>>` — one stream per batch — and is expected to return `Effect.Effect<void>`.
 
-`Cloudflare.Queues.consumeQueueMessages(queue, handler)` registers a queue
-event listener on the Worker. The handler receives a
-`Stream.Stream<Message<Body>>` — one stream per batch — and is
-expected to return `Effect.Effect<void>`.
+```typescript
+import * as Stream from "effect/Stream";
 
-```diff lang="typescript"
-+import * as Stream from "effect/Stream";
-+
-+interface QueueMessageBody {
-+  id: string;
-+  text: string;
-+  sentAt: number;
-+}
+interface QueueMessageBody {
+  id: string;
+  text: string;
+  sentAt: number;
+}
 
- Effect.gen(function* () {
-   const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
-   const queueResource = yield* Queue;
-   const queue = yield* Cloudflare.Queues.WriteQueue(queueResource);
+Effect.gen(function* () {
+  const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
+  const queueResource = yield* Queue;
+  const queue = yield* Cloudflare.Queues.WriteQueue(queueResource);
 
-+  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-+    queueResource,
-+    (stream) =>
-+      Stream.runForEach(stream, (msg) =>
-+        bucket
-+          .put(`/queue/${msg.body.id}`, JSON.stringify(msg.body), {
-+            httpMetadata: { contentType: "application/json" },
-+          })
-+          .pipe(Effect.asVoid),
-+      ),
-+  );
+  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
+    queueResource,
+    (stream) =>
+      Stream.runForEach(stream, (msg) =>
+        bucket
+          .put(\`/queue/${msg.body.id}\`, JSON.stringify(msg.body), {
+            httpMetadata: { contentType: "application/json" },
+          })
+          .pipe(Effect.asVoid),
+      ),
+  );
 ```
 
-Acking is automatic: if the handler succeeds, every message in the
-batch is `ack()`ed; if it fails, every message is `retry()`ed and
-Cloudflare applies the consumer's `maxRetries` and `retryDelay`
-before dead-lettering. For finer control, call `msg.ack()` /
-`msg.retry()` per message inside the handler.
+Acking is automatic: if the handler succeeds, every message in the batch is `ack()` ed; if it fails, every message is `retry()` ed and Cloudflare applies the consumer’s `maxRetries` and `retryDelay` before dead-lettering. For finer control, call `msg.ack()` / `msg.retry()` per message inside the handler.
 
 ## Tune batching and backoff
 
-`consumeQueueMessages(queue, props)` accepts a settings object. Time fields are
-`Duration.Input` — any of these are accepted:
+`consumeQueueMessages(queue, props)` accepts a settings object. Time fields are `Duration.Input` — any of these are accepted:
 
 ```typescript
 maxWaitTime: Duration.seconds(5)   // a Duration value
@@ -136,46 +103,40 @@ maxWaitTime: "5 seconds"           // a "<number> <unit>" string
 retryDelay: "1 second"             // singular and plural units both work
 ```
 
-```diff lang="typescript"
-+import * as Duration from "effect/Duration";
+```typescript
+import * as Duration from "effect/Duration";
 
--  Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(queueResource, (stream) =>
-+  Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-+    queueResource,
-+    {
-+      batchSize: 25,
-+      maxRetries: 3,
-+      maxWaitTime: "5 seconds",
-+      retryDelay: Duration.seconds(30),
-+    },
-+    (stream) =>
+  Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(queueResource, (stream) =>
+  Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
+    queueResource,
+    {
+      batchSize: 25,
+      maxRetries: 3,
+      maxWaitTime: "5 seconds",
+      retryDelay: Duration.seconds(30),
+    },
+    (stream) =>
 ```
 
-`maxWaitTime` is rounded up to whole milliseconds and `retryDelay`
-to whole seconds when forwarded to Cloudflare.
+`maxWaitTime` is rounded up to whole milliseconds and `retryDelay` to whole seconds when forwarded to Cloudflare.
 
 ## Provide the runtime layer
 
-`consumeQueueMessages(...)` is a `Context.Service` call —
-`EventSourceLive` is the layer that registers the listener
-with the Worker's runtime context. Add it to the layer stack
-alongside the other binding lives.
+`consumeQueueMessages(...)` is a `Context.Service` call — `EventSourceLive` is the layer that registers the listener with the Worker’s runtime context. Add it to the layer stack alongside the other binding lives.
 
-```diff lang="typescript"
-  }).pipe(
-+   Effect.provide(Cloudflare.Queues.EventSourceLive),
-    Effect.provide(Cloudflare.Queues.WriteQueueBinding),
-    Effect.provide(Cloudflare.R2.ReadWriteBucketBinding),
-  ),
+```typescript
+}).pipe(
+  Effect.provide(Cloudflare.Queues.EventSourceLive),
+  Effect.provide(Cloudflare.Queues.WriteQueueBinding),
+  Effect.provide(Cloudflare.R2.ReadWriteBucketBinding),
+),
 ```
 
-Without the live layer, the `consumeQueueMessages` call fails at deploy with
-`Service not found: Cloudflare.Queues.EventSource`.
+Without the live layer, the `consumeQueueMessages` call fails at deploy with `Service not found: Cloudflare.Queues.EventSource`.
 
 ## Add the producer route
 
-`POST /queue/send` enqueues a message and returns the generated id.
-The integ test uses the id to poll for the consumed result.
+`POST /queue/send` enqueues a message and returns the generated id. The integ test uses the id to poll for the consumed result.
 
 ```typescript
 return {
@@ -198,14 +159,12 @@ return {
 
 ## Add the result-read route
 
-`GET /queue/result/:id` reads `/queue/<id>` from the bucket. The
-consumer runs asynchronously, so the test polls this route with a
-short backoff until the object appears.
+`GET /queue/result/:id` reads `/queue/<id>` from the bucket. The consumer runs asynchronously, so the test polls this route with a short backoff until the object appears.
 
 ```typescript
 if (request.url.startsWith("/queue/result/") && request.method === "GET") {
   const id = request.url.split("/queue/result/")[1];
-  return yield* bucket.get(`/queue/${id}`).pipe(
+  return yield* bucket.get(\`/queue/${id}\`).pipe(
     Effect.flatMap((object) =>
       object === null
         ? Effect.succeed(HttpServerResponse.text("not yet", { status: 404 }))
@@ -224,40 +183,30 @@ if (request.url.startsWith("/queue/result/") && request.method === "GET") {
 }
 ```
 
-## What's the difference vs. a native `queue()` handler?
+## What’s the difference vs. a native queue() handler?
 
-Cloudflare's runtime delivers queue events to a `queue(batch, env)`
-export on the worker module. You can write that directly — see
-[`examples/cloudflare-worker-async`](https://github.com/alchemy-run/alchemy/blob/main/examples/cloudflare-worker-async)
-for the plain async-handler shape:
+Cloudflare’s runtime delivers queue events to a `queue(batch, env)` export on the worker module. You can write that directly — see [`examples/cloudflare-worker-async`](https://github.com/alchemy-run/alchemy/blob/main/examples/cloudflare-worker-async) for the plain async-handler shape:
 
 ```typescript
 export default {
   async queue(batch, env) {
     for (const msg of batch.messages) {
-      await env.Bucket.put(`/queue/${msg.body.id}`, ...);
+      await env.Bucket.put(\`/queue/${msg.body.id}\`, ...);
       msg.ack();
     }
   },
 };
 ```
 
-`Cloudflare.Queues.consumeQueueMessages(queue, handler)` is the same primitive
-on the Effect side — the Worker bundle's runtime context routes
-the dispatch to the registered listener — but you get
-`Effect.gen` composition, typed errors, automatic batch
-ack/retry, and the same surface as `AWS.SQS.consumeQueueMessages(queue, handler)`.
+`Cloudflare.Queues.consumeQueueMessages(queue, handler)` is the same primitive on the Effect side — the Worker bundle’s runtime context routes the dispatch to the registered listener — but you get `Effect.gen` composition, typed errors, automatic batch ack/retry, and the same surface as `AWS.SQS.consumeQueueMessages(queue, handler)`.
 
 ## Where next
 
 Related:
 
-- [Workers](../compute/workers.md) — the runtime that produces and
-  consumes queue messages.
-- [Durable Objects](../compute/durable-objects.md) — for stateful
-  coordination instead of fire-and-forget work.
-- [Workflows](../compute/workflows.md) — multi-step orchestration with
-  checkpointed steps when fire-and-forget isn't enough.
+- [Workers](../compute/workers.md) — the runtime that produces and consumes queue messages.
+- [Durable Objects](../compute/durable-objects.md) — for stateful coordination instead of fire-and-forget work.
+- [Workflows](../compute/workflows.md) — multi-step orchestration with checkpointed steps when fire-and-forget isn’t enough.
 
 Reference:
 

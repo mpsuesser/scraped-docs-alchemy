@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/api-gateway
 title: "REST API (API Gateway v1)"
 description: "Expose a Lambda with a regional Amazon API Gateway REST API using RestApi, Resource, Method, Deployment, and Stage primitives."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 The [Deploy a Lambda Function](../compute/lambda.md) tutorial uses a **Function URL** for HTTP. Many teams still use **Amazon API Gateway** (REST, v1) as the front door.

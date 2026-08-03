@@ -2,17 +2,11 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local workerd execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
-import Terminal from "../../../components/Terminal.astro";
-
-`alchemy dev` runs your stack on your machine. Workers execute in
-workerd, KV Namespaces, R2 Buckets, D1 Databases, and Queues are
-emulated locally, and code changes hot reload in milliseconds.
-`Alchemy.remote()` runs any resource against the real cloud when you
-need it.
+`alchemy dev` runs your stack on your machine. Workers execute in workerd, KV Namespaces, R2 Buckets, D1 Databases, and Queues are emulated locally, and code changes hot reload in milliseconds. `Alchemy.remote()` runs any resource against the real cloud when you need it.
 
 ## How it works
 
@@ -20,74 +14,51 @@ need it.
 alchemy dev
 ```
 
-<Terminal content={`[g]✓[/g] [b]Bucket[/b] [d](Cloudflare.R2.Bucket)[/d] [g]created[/g] [d](local)[/d]
-[g]✓[/g] [b]DB[/b] [d](Cloudflare.D1.Database)[/d] [g]created[/g] [d](local)[/d]
-[g]✓[/g] [b]Worker[/b] [d](Cloudflare.Worker)[/d] [g]created[/g] [d](local → workerd)[/d]
-[s2][d]• http://localhost:1337[/d]
+```
+✓ Bucket (Cloudflare.R2.Bucket) created (local)
+✓ DB (Cloudflare.D1.Database) created (local)
+✓ Worker (Cloudflare.Worker) created (local → workerd)
+  • http://localhost:1337
 
-[d]Watching for changes ...[/d]`} />
+Watching for changes ...
+```
 
 Three things happen:
 
-1. **Emulatable services run locally** — KV Namespaces, R2 Buckets,
-   D1 Databases, and Queues are created as local simulators with
-   `dev:`-prefixed ids. No cloud calls. D1 applies `migrationsDir`
-   and `importFiles` against the local database.
-2. **Workers run locally in workerd** — your code executes in
-   workerd, the same runtime used in production, with bindings wired
-   to the local simulators.
-3. **File changes hot reload** — edit your code and the Worker
-   rebuilds instantly.
+1. **Emulatable services run locally** — KV Namespaces, R2 Buckets, D1 Databases, and Queues are created as local simulators with `dev:`\-prefixed ids. No cloud calls. D1 applies `migrationsDir` and `importFiles` against the local database.
+2. **Workers run locally in workerd** — your code executes in workerd, the same runtime used in production, with bindings wired to the local simulators.
+3. **File changes hot reload** — edit your code and the Worker rebuilds instantly.
 
-Resources whose provider has no local implementation (a Hyperdrive,
-a Vectorize index) deploy to the real cloud, into your personal
-[stage](stages.md) (`dev_$USER` by default), so your loop
-never collides with teammates or prod. A stack that mixes emulated
-and live-only resources just works.
+Resources whose provider has no local implementation (a Hyperdrive, a Vectorize index) deploy to the real cloud, into your personal [stage](stages.md) (`dev_$USER` by default), so your loop never collides with teammates or prod. A stack that mixes emulated and live-only resources just works.
 
 ## Hot module reloading
 
-<Terminal content={`[d]Watching for changes ...[/d]
+```
+Watching for changes ...
 
-[y]↻[/y] [d]src/worker.ts changed[/d]
-[s2][d]• Rebuilding worker ...[/d]
-[g]✓[/g] [b]Worker[/b] [d]reloaded in 42ms[/d]
+↻ src/worker.ts changed
+  • Rebuilding worker ...
+✓ Worker reloaded in 42ms
 
-[y]↻[/y] [d]src/api.ts changed[/d]
-[s2][d]• Rebuilding worker ...[/d]
-[g]✓[/g] [b]Worker[/b] [d]reloaded in 38ms[/d]`} />
+↻ src/api.ts changed
+  • Rebuilding worker ...
+✓ Worker reloaded in 38ms
+```
 
 - Code changes take effect in **milliseconds**, not minutes
-- Resources stay running across reloads — only your application
-  code is rebuilt
+- Resources stay running across reloads — only your application code is rebuilt
 
-Arbitrary dev processes — Vite, Next, anything with a dev server —
-join the loop via [Command.Dev](../command/dev-servers.md): started by
-`alchemy dev`, restarted when its inputs change, and a no-op on
-deploy.
+Arbitrary dev processes — Vite, Next, anything with a dev server — join the loop via [Command.Dev](../command/dev-servers.md): started by `alchemy dev`, restarted when its inputs change, and a no-op on deploy.
 
 ## Local by default, live on demand
 
-KV, R2, D1, and Queues ship a local provider. In dev they are
-simulators running inside workerd, the same runtime used in
-production, so binding behavior matches what you deploy. A local
-resource's id is `dev:`-prefixed, which doubles as proof that no
-cloud call ran.
+KV, R2, D1, and Queues ship a local provider. In dev they are simulators running inside workerd, the same runtime used in production, so binding behavior matches what you deploy. A local resource’s id is `dev:`\-prefixed, which doubles as proof that no cloud call ran.
 
-The local simulators reach beyond Worker bindings. Node-side
-capability clients follow the same rule: a seed script in an
-[Action](../infrastructure-as-code/action.md) that writes to a `dev:` KV
-Namespace lands in the same local simulator your Worker reads.
+The local simulators reach beyond Worker bindings. Node-side capability clients follow the same rule: a seed script in an [Action](../infrastructure-as-code/action.md) that writes to a `dev:` KV Namespace lands in the same local simulator your Worker reads.
 
-Every other resource runs live in dev automatically, and
-`Alchemy.remote()` (below) runs an emulatable resource against the
-real cloud when local fidelity isn't enough.
+Every other resource runs live in dev automatically, and `Alchemy.remote()` (below) runs an emulatable resource against the real cloud when local fidelity isn’t enough.
 
-Bindings whose only job is a side effect stay stubbed: a
-[`send_email` binding](../cloudflare/email/send-and-receive.md) defaults
-to a local stub in dev, so `send()` logs the message to the dev
-console instead of delivering mail. Set `dev: { remote: true }` on
-the binding to send real mail from the dev loop.
+Bindings whose only job is a side effect stay stubbed: a [`send_email` binding](../cloudflare/email/send-and-receive.md) defaults to a local stub in dev, so `send()` logs the message to the dev console instead of delivering mail. Set `dev: { remote: true }` on the binding to send real mail from the dev loop.
 
 ## Debugging
 
@@ -101,21 +72,15 @@ Because Workers run locally in workerd, you can attach a debugger:
 
 Resources adapt their behavior in dev mode:
 
-- **Cloudflare Workers** — run locally in workerd with a cloud proxy
-  instead of deploying to the edge
-- **Vite dev servers** — integrate with Alchemy's dev server for
-  frontend hot reloading alongside your backend
-- **D1 Databases** — emulate locally, with `migrationsDir` and
-  `importFiles` applied to the local database on every reconcile
+- **Cloudflare Workers** — run locally in workerd with a cloud proxy instead of deploying to the edge
+- **Vite dev servers** — integrate with Alchemy’s dev server for frontend hot reloading alongside your backend
+- **D1 Databases** — emulate locally, with `migrationsDir` and `importFiles` applied to the local database on every reconcile
 
-A resource emulates locally when its provider ships a local
-implementation; everything else is live in dev automatically. See
-[Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) to build one.
+A resource emulates locally when its provider ships a local implementation; everything else is live in dev automatically. See [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) to build one.
 
 ## Running a resource live in dev
 
-`Alchemy.remote()` opts a resource out of local emulation — "run this live
-even in dev":
+`Alchemy.remote()` opts a resource out of local emulation — “run this live even in dev”:
 
 ```typescript
 import * as Alchemy from "alchemy";
@@ -134,22 +99,13 @@ yield* Effect.gen(function* () {
 }).pipe(Alchemy.remote());
 ```
 
-The policy is ambient and captured at registration (like `adopt()`), so
-everything inside the scope runs live. Resources with no local emulation
-(a Hyperdrive, a Vectorize index) already run live in dev — `remote()` on
-them is a no-op.
+The policy is ambient and captured at registration (like `adopt()`), so everything inside the scope runs live. Resources with no local emulation (a Hyperdrive, a Vectorize index) already run live in dev — `remote()` on them is a no-op.
 
-Queues support `remote()` in both directions: a local Worker binding a
-live queue produces real messages, and a local `queue()` handler drains
-the live queue through a pull consumer — with the usual local batching,
-retry, and dead-letter semantics.
+Queues support `remote()` in both directions: a local Worker binding a live queue produces real messages, and a local `queue()` handler drains the live queue through a pull consumer — with the usual local batching, retry, and dead-letter semantics.
 
 ### Switching is a replacement
 
-When a resource moves between local and live — you deploy after a dev
-session, or add/remove `remote()` — it's planned as a **replacement**: the
-new instance is created live, and the local one (the workerd instance, the
-dev process) is torn down.
+When a resource moves between local and live — you deploy after a dev session, or add/remove `remote()` — it’s planned as a **replacement**: the new instance is created live, and the local one (the workerd instance, the dev process) is torn down.
 
 ## Custom port
 
@@ -165,14 +121,14 @@ export default Cloudflare.Worker("Worker", {
 
 ## Dev vs Deploy
 
-|                        | `alchemy dev`                          | `alchemy deploy`   |
-| ---------------------- | -------------------------------------- | ------------------ |
-| KV, R2, D1, Queues     | Local simulators (`remote()` for live) | Deployed to cloud  |
-| Everything else        | Deployed to cloud                      | Deployed to cloud  |
-| Application code       | Runs locally in workerd                | Deployed to cloud  |
-| File watching          | Hot reload on change                   | Manual redeploy    |
-| Debugging              | Attach local debugger                  | Tail logs          |
-| Speed                  | Milliseconds                           | Seconds to minutes |
+|  | `alchemy dev` | `alchemy deploy` |
+| --- | --- | --- |
+| KV, R2, D1, Queues | Local simulators (`remote()` for live) | Deployed to cloud |
+| Everything else | Deployed to cloud | Deployed to cloud |
+| Application code | Runs locally in workerd | Deployed to cloud |
+| File watching | Hot reload on change | Manual redeploy |
+| Debugging | Attach local debugger | Tail logs |
+| Speed | Milliseconds | Seconds to minutes |
 
 To automate the deploy side, see the [CI guide](ci.md).
 

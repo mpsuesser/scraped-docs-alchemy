@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/setup
 title: "Setup"
 description: "Connect alchemy to Neon — account, credentials, and profiles."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 Sign up at [neon.tech](https://neon.tech) and create an API key in

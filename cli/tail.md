@@ -2,11 +2,9 @@
 url: https://alchemy.run/cli/tail
 title: "tail"
 description: "Stream live logs from deployed resources in real time, interleaved and color-coded by resource."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
-
-import Terminal from "../../../components/Terminal.astro";
 
 ```sh
 alchemy tail [file] [options]
@@ -14,27 +12,29 @@ alchemy tail [file] [options]
 
 Stream live logs from deployed resources in real time.
 
-<Terminal content={`Tailing: Worker, Api
+```
+Tailing: Worker, Api
 
-[c]2026-04-15 14:32:01.123 PST [Worker][/c] GET /hello.txt 200
-[c]2026-04-15 14:32:01.456 PST [Worker][/c] PUT /world.txt 201
-[y]2026-04-15 14:32:02.789 PST [Api][/y] POST /api/data 200`} />
+2026-04-15 14:32:01.123 PST [Worker] GET /hello.txt 200
+2026-04-15 14:32:01.456 PST [Worker] PUT /world.txt 201
+2026-04-15 14:32:02.789 PST [Api] POST /api/data 200
+```
 
 Logs from multiple resources are interleaved and color-coded by resource. The command streams indefinitely until you interrupt it with `Ctrl+C`.
 
-`--filter` values are validated against the stack's logical IDs — an unknown ID fails the command and lists the available IDs.
+`--filter` values are validated against the stack’s logical IDs — an unknown ID fails the command and lists the available IDs.
 
 Only deployed resources whose provider implements tailing are streamed; if none qualify, the command prints `No tailable resources found. Deploy first, then run tail.` and exits.
 
 ## Flags
 
-| Option              | Description                                                         |
-| ------------------- | ------------------------------------------------------------------- |
-| `--stage <name>`    | Stage to tail (defaults to `dev_$USER`)                             |
-| `--filter <ids>`    | Comma-separated logical resource IDs to include (e.g. `Worker,Api`) |
-| `--profile <name>`  | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`)   |
-| `--env-file <path>` | Load environment variables from a file                              |
-| `[file]`            | Stack file to tail (defaults to `alchemy.run.ts`)                   |
+| Option | Description |
+| --- | --- |
+| `--stage <name>` | Stage to tail (defaults to `dev_$USER`) |
+| `--filter <ids>` | Comma-separated logical resource IDs to include (e.g. `Worker,Api`) |
+| `--profile <name>` | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`) |
+| `--env-file <path>` | Load environment variables from a file |
+| `[file]` | Stack file to tail (defaults to `alchemy.run.ts`) |
 
 ## Examples
 

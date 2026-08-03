@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Worker."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 In [Part 2](part-2.md) you deployed a Worker with R2 Bucket

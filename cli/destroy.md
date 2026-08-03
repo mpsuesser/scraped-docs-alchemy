@@ -2,11 +2,9 @@
 url: https://alchemy.run/cli/destroy
 title: "destroy"
 description: "Delete every resource in a stack — plan all existing resources for deletion, ask for approval, and remove them in dependency order."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
-
-import Terminal from "../../../components/Terminal.astro";
 
 ```sh
 alchemy destroy [file] [options]
@@ -16,26 +14,28 @@ alchemy destroy [file] [options]
 
 Under the hood, `destroy` is `deploy` with the desired state zeroed out — every resource in state plans as a deletion.
 
-<Terminal content={`[u]Plan[/u]: [r]2 to delete[/r]
+```
+Plan: 2 to delete
 
-[r]-[/r] [b]Worker[/b] [d](Cloudflare.Worker)[/d]
-[r]-[/r] [b]Bucket[/b] [d](Cloudflare.R2.Bucket)[/d]
+- Worker (Cloudflare.Worker)
+- Bucket (Cloudflare.R2.Bucket)
 
 Proceed?
 ◉ Yes ○ No
-[r]✗[/r] [b]Worker[/b] [d](Cloudflare.Worker)[/d] [r]deleted[/r]
-[r]✗[/r] [b]Bucket[/b] [d](Cloudflare.R2.Bucket)[/d] [r]deleted[/r]`} />
+✗ Worker (Cloudflare.Worker) deleted
+✗ Bucket (Cloudflare.R2.Bucket) deleted
+```
 
 ## Flags
 
-| Option              | Description                                                       |
-| ------------------- | ----------------------------------------------------------------- |
-| `[file]`            | Stack file to destroy (defaults to `alchemy.run.ts`)              |
-| `--stage <name>`    | Stage to destroy (defaults to `dev_$USER`)                        |
-| `--yes`             | Skip the approval prompt                                          |
-| `--dry-run`         | Show what would be deleted without actually deleting              |
-| `--profile <name>`  | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`) |
-| `--env-file <path>` | Load environment variables from a file                            |
+| Option | Description |
+| --- | --- |
+| `[file]` | Stack file to destroy (defaults to `alchemy.run.ts`) |
+| `--stage <name>` | Stage to destroy (defaults to `dev_$USER`) |
+| `--yes` | Skip the approval prompt |
+| `--dry-run` | Show what would be deleted without actually deleting |
+| `--profile <name>` | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`) |
+| `--env-file <path>` | Load environment variables from a file |
 
 ## Examples
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/release-agent
 title: "Build a release-automation agent"
 description: "Case study of the cloudflare-agent example — GitHub push events routed through a Worker to a per-release Durable Object that drives an AI agent with container-backed tools."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 The [`cloudflare-agent` example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-agent)

@@ -2,18 +2,15 @@
 url: https://alchemy.run/cli/profile
 title: "profile"
 description: "Inspect or clear credentials stored in ~/.alchemy/profiles.json."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
-
-import Terminal from "../../../components/Terminal.astro";
 
 ```sh
 alchemy profile <subcommand> [options]
 ```
 
-Inspect and manage credentials stored in `~/.alchemy/profiles.json`.
-See [Profiles](../environments/profiles.md).
+Inspect and manage credentials stored in `~/.alchemy/profiles.json`. See [Profiles](../environments/profiles.md).
 
 ## profile show
 
@@ -21,35 +18,31 @@ See [Profiles](../environments/profiles.md).
 alchemy profile show [options]
 ```
 
-Print every auth method configured under a profile, along with its
-resolved credentials (redacted). Unlike `login`, this does **not**
-import your stack file — it reads the profile store directly and uses
-the bundled providers (AWS, Axiom, Cloudflare, GitHub, Neon,
-Planetscale) to pretty-print each entry.
+Print every auth method configured under a profile, along with its resolved credentials (redacted). Unlike `login`, this does **not** import your stack file — it reads the profile store directly and uses the bundled providers (AWS, Axiom, Cloudflare, GitHub, Neon, Planetscale) to pretty-print each entry.
 
-<Terminal content={`Profile: default
+```
+Profile: default
 
 ── AWS ──
-  accessKeyId:     ASIA****
-  secretAccessKey: Pj5T****
-  sessionToken:    IQoJ****
-  region:          us-west-2
-  source: sso - default
+accessKeyId:     ASIA****
+secretAccessKey: Pj5T****
+sessionToken:    IQoJ****
+region:          us-west-2
+source: sso - default
 
 ── Cloudflare ──
-  accessToken: Xl06****
-  expires: in 59m 58s 999ms (2026-04-27T20:45:47.937Z)
-  accountId: 123456789...
-  source: oauth`} />
+accessToken: Xl06****
+expires: in 59m 58s 999ms (2026-04-27T20:45:47.937Z)
+accountId: 123456789...
+source: oauth
+```
 
-If the profile doesn't exist, the command lists the available profile
-names — or suggests running [`alchemy login`](login.md) when none are
-configured.
+If the profile doesn’t exist, the command lists the available profile names — or suggests running [`alchemy login`](login.md) when none are configured.
 
-| Option              | Description                                                   |
-| ------------------- | ------------------------------------------------------------- |
-| `--profile <name>`  | Profile to show (defaults to `default` or `$ALCHEMY_PROFILE`) |
-| `--env-file <path>` | Load environment variables from a file                        |
+| Option | Description |
+| --- | --- |
+| `--profile <name>` | Profile to show (defaults to `default` or `$ALCHEMY_PROFILE`) |
+| `--env-file <path>` | Load environment variables from a file |
 
 ```sh
 # Show the default profile
@@ -65,12 +58,10 @@ alchemy profile show --profile prod
 alchemy profile clear [options]
 ```
 
-Delete a profile from `~/.alchemy/profiles.json` **and** remove its
-credentials directory. If the profile isn't in `profiles.json`, the
-command still removes any stray credentials directory.
+Delete a profile from `~/.alchemy/profiles.json` **and** remove its credentials directory. If the profile isn’t in `profiles.json`, the command still removes any stray credentials directory.
 
-| Option             | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
+| Option | Description |
+| --- | --- |
 | `--profile <name>` | Profile to clear (defaults to `default` or `$ALCHEMY_PROFILE`) |
 
 ```sh

@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql
 title: "SQL"
 description: "One home for SQL in alchemy — low-level effect-sql clients, Drizzle ORM, schema migrations in the deploy graph, and the per-execution connection lifecycle."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 An alchemy app talks SQL at whichever level fits: a raw tagged-template client, an ORM, or both against the same connection. The schema rides the same deploy graph as the infrastructure, so `alchemy deploy` regenerates and applies pending migrations alongside everything else.

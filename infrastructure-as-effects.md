@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects
 title: "Infrastructure as Effects"
 description: "One Effect program models both your runtime code and the infrastructure it runs on — Functions carry code, Bindings wire resources into them, Phases split deploy from runtime, Layers package it all behind typed services."
-access_date: 2026-08-03T19:38:24.228Z
-current_date: 2026-08-03T19:38:24.228Z
+access_date: 2026-08-03T19:43:15.086Z
+current_date: 2026-08-03T19:43:15.086Z
 ---
 
 Infrastructure as Effects extends Infrastructure as Code by combining application code and infrastructure configuration into a single type-safe program built from **Effects** and **Layers**.
