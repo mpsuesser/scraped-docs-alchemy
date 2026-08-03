@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query from a Worker with Drizzle.Postgres over Hyperdrive."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema`

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/setup
 title: "Setup"
 description: "Install Alchemy and connect it to your AWS account — SSO, environment variables, or stored access keys."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 ## Prerequisites

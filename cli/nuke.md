@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/nuke
 title: "nuke"
 description: "Enumerate and delete every live resource across the stack's providers."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 ```sh

@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis
 title: "APIs"
 description: "Every Function and Server returns { fetch, ...rpcs } — schemaless typed calls are the default for internal communication; Effect RPC and Effect HTTP add schemas where data crosses a trust boundary."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 Every Function and Server in alchemy returns `{ fetch, ...rpcs }` from its [Effectful Constructor](infrastructure-as-effects/functions-and-servers.md#the-effectful-constructor-pattern) — you already saw the “return what you expose” half. The `rpcs` are the other half: plain functions returning `Effect` or `Stream`, no schema, no decorators:

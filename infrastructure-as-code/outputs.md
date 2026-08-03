@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/outputs
 title: "Inputs & Outputs"
 description: "Output<T> is alchemy's lazy reference type — the lazy values that flow between resources, get composed with .pipe, mapped, interpolated, and resolved during deploy."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 A [Resource](resource.md)'s **inputs** are the props you pass

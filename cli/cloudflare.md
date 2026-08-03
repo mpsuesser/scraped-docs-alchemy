@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/cloudflare
 title: "cloudflare"
 description: "Cloudflare provider commands — bootstrap the state-store worker, mint API tokens, and inspect state-store logs."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

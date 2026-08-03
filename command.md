@@ -2,8 +2,8 @@
 url: https://alchemy.run/command
 title: "Command"
 description: "Alchemy's cloud-agnostic primitives for local processes in the deploy graph — memoized builds, one-off commands, and dev servers."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 The Command provider puts local child processes into the Stack’s dependency graph: `Build` for a command that produces an output asset, `Exec` for a command run purely for its side effects, and `Dev` for a long-lived dev server. There is no setup — no credentials, nothing to configure. `Command.providers()` is already merged into both `AWS.providers()` and `Cloudflare.providers()`, so big-hub users have it for free; a standalone Stack registers it with `{ providers: Command.providers(), state: Alchemy.localState() }`. Import from `alchemy/Command`.

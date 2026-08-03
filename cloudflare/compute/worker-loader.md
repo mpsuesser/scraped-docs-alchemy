@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/worker-loader
 title: "Worker Loader"
 description: "Load and run ephemeral Workers at runtime from inline source — each in its own sandboxed isolate, with optional outbound-network control and typed RPC entrypoints."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 A Worker Loader lets a deployed Worker spin up other Workers at

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/python-workers
 title: "Python Workers"
 description: "Deploy Cloudflare Python Workers by pointing main at a .py file — alchemy uploads the modules, vendors pyproject.toml dependencies with uv, and serves them locally through workerd's built-in Pyodide."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 Cloudflare [Python Workers](https://developers.cloudflare.com/workers/languages/python/)

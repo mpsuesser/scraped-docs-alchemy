@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/state
 title: "state"
 description: "Inspect and manage the state store — list stacks, stages, and resources, print persisted state, and clear entries."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 ```sh

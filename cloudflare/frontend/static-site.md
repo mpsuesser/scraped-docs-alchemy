@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/static-site
 title: "Static sites"
 description: "Deploy any build command's output directory as Cloudflare Worker static assets with Cloudflare.Website.StaticSite — custom edge Workers, framework-native local dev, and memoized rebuilds."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 `Cloudflare.Website.StaticSite` runs a build command, content-hashes the

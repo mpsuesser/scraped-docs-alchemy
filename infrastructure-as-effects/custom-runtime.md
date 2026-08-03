@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/custom-runtime
 title: "Custom Runtime"
 description: "Implement your own Function/Server resource on the Platform type — a Provider that provisions the compute and bundles the runtime Effect."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 Worker, Lambda, and Container cover the common cases. This guide is

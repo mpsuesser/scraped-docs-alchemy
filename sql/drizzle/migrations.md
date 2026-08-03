@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Drizzle.Schema runs drizzle-kit generate as part of deploy — unambiguous schema changes regenerate automatically, ambiguous ones stop and ask you."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 `Drizzle.Schema` puts `drizzle-kit generate` inside the deploy

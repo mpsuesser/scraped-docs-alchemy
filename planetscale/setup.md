@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/setup
 title: "Setup"
 description: "Connect alchemy to PlanetScale — account, credentials, and profiles."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 Sign up at [planetscale.com](https://planetscale.com) and create a

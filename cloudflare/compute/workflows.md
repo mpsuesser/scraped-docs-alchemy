@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workflows
 title: "Workflows"
 description: "Cloudflare Workflows run durable multi-step jobs — define a typed workflow class, checkpoint steps with task and sleep, trigger instances from a Worker, and poll status until completion."
-access_date: 2026-08-03T19:00:17.443Z
-current_date: 2026-08-03T19:00:17.443Z
+access_date: 2026-08-03T19:08:21.153Z
+current_date: 2026-08-03T19:08:21.153Z
 ---
 
 A Cloudflare Workflow is a multi-step job where each named step's
