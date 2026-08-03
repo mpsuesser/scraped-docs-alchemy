@@ -1,0 +1,65 @@
+---
+url: https://alchemy.run/neon
+title: "Neon"
+description: "Serverless Postgres with copy-on-write branching — projects and branches as Stack resources, with built-in SQL migrations."
+access_date: 2026-08-03T17:26:38.937Z
+current_date: 2026-08-03T17:26:38.937Z
+---
+
+Neon is serverless Postgres with copy-on-write branching. With alchemy you declare the project and its branches as resources in the same Stack as your Workers — each preview stage forks its own branch in seconds and destroys it just as fast, and SQL migrations run as part of the deploy.
+
+New here? [Set up credentials](https://alchemy.run/neon/setup) first.
+
+## Resources
+
+A `Neon.Project` is the top-level container — creating it also provisions a default branch, role, database, and compute endpoint. A `Neon.Branch` is a copy-on-write fork with its own connection string:
+
+```typescript
+const project = yield* Neon.Project("app-db", {
+  region: "aws-us-east-1",
+});
+
+const branch = yield* Neon.Branch("app-branch", {
+  project,
+});
+```
+
+Branches can fork from any parent, pin to a point in time, copy schema only, and expire on their own — see [Branching](https://alchemy.run/neon/data/branching).
+
+Both resources accept a `migrationsDir` of SQL files applied in order on deploy:
+
+```typescript
+const featureBranch = yield* Neon.Branch("feature", {
+  project,
+  migrationsDir: "./migrations",
+});
+```
+
+Migrations are ordered, hashed, and tracked in a `neon_migrations` table so each file runs exactly once — see [Migrations](https://alchemy.run/neon/data/migrations).
+
+## Pooled vs direct
+
+Every project and branch exposes its connection details twice: `origin` points straight at the branch’s compute endpoint, while `pooledOrigin` routes through Neon’s pgbouncer pooler. Hyperdrive is itself a pooler, so hand it the direct origin — and hand the pooled one to everything that connects without Hyperdrive in front, like local dev, CI jobs, and containers:
+
+```typescript
+const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
+  origin: branch.origin, //    direct — Hyperdrive does the pooling
+  dev: branch.pooledOrigin, // local dev bypasses Hyperdrive
+});
+```
+
+See [Connections](https://alchemy.run/neon/data/connections) for the raw URIs, the parsed origin shape, and when each applies.
+
+## The Neon path
+
+On Cloudflare, Neon slots into a four-step path:
+
+1. [Hyperdrive](https://alchemy.run/cloudflare/data/hyperdrive) pools the branch’s direct origin at the edge
+2. [Drizzle](https://alchemy.run/cloudflare/data/drizzle) gives the Worker a typed query layer over that connection
+3. [Shared database](https://alchemy.run/cloudflare/data/shared-database) keeps one long-lived project instead of provisioning a cluster per stage
+4. [Branch from a shared database](https://alchemy.run/cloudflare/data/branch-from-shared-database) forks a copy-on-write preview branch per PR off that shared project
+
+## Reference
+
+- [Project](https://alchemy.run/providers/neon/project)
+- [Branch](https://alchemy.run/providers/neon/branch)

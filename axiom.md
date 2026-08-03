@@ -1,0 +1,71 @@
+---
+url: https://alchemy.run/axiom
+title: "Axiom"
+description: "Observability as resources — OTEL datasets, ingest tokens, monitors, notifiers, and dashboards declared next to the code that emits the data."
+access_date: 2026-08-03T17:26:38.937Z
+current_date: 2026-08-03T17:26:38.937Z
+---
+
+Axiom is an event and observability store for logs, traces, and metrics. Effect already emits OpenTelemetry, and with alchemy the receiving end is code too: datasets, ingest tokens, monitors, notifiers, and dashboards live in the same Stack as the Workers and Functions they observe, so a threshold change is a reviewable diff.
+
+New here? [Set up credentials](https://alchemy.run/axiom/setup) first.
+
+## Resources
+
+A `Dataset` is the top-level container. Pick a `kind` per OTEL signal — it exposes the OTLP endpoints as outputs:
+
+```typescript
+const traces  = yield* Axiom.Dataset("traces",  { name: "app-traces",  kind: "otel:traces:v1"  });
+const logs    = yield* Axiom.Dataset("logs",    { name: "app-logs",    kind: "otel:logs:v1"    });
+const metrics = yield* Axiom.Dataset("metrics", { name: "app-metrics", kind: "otel:metrics:v1" });
+```
+
+An `ApiToken` mints a least-privilege ingest credential for your runtime to ship with:
+
+```typescript
+const ingest = yield* Axiom.ApiToken("ingest", {
+  name: "prod-ingest",
+  datasetCapabilities: {
+    "app-traces": { ingest: ["create"] },
+  },
+});
+```
+
+`Monitor` + `Notifier` turn queries into alerts — see [Monitors & Alerting](https://alchemy.run/axiom/guides/alerting) for threshold and anomaly monitors:
+
+```typescript
+const slack = yield* Axiom.Notifier("ops-slack", {
+  name: "ops-channel",
+  properties: {
+    slack: { slackUrl: process.env.SLACK_WEBHOOK_URL! },
+  },
+});
+
+yield* Axiom.Monitor("panics", {
+  name: "Service panic",
+  type: "MatchEvent",
+  aplQuery: \`['app-logs'] | where message contains "panic:"\`,
+  intervalMinutes: 1,
+  rangeMinutes: 1,
+  notifierIds: [slack.id],
+});
+```
+
+Beyond alerts, `Dashboard` declares charts as code, `View` saves an APL query as a virtual dataset, and `Annotation` marks deploys on your charts — see [Dashboards as Code](https://alchemy.run/axiom/guides/dashboards). `VirtualField` derives computed fields on a dataset at query time.
+
+## Compose with your cloud
+
+Wire the dataset’s OTLP endpoints and the ingest token into your Worker or Lambda’s environment, and Effect’s OpenTelemetry output flows into Axiom with no code changes — see [Observability](https://alchemy.run/testing/observability) for the exporter-as-a-Layer pattern:
+
+```typescript
+vars: {
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: traces.otelTracesEndpoint,
+  OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: logs.otelLogsEndpoint,
+},
+```
+
+For a full end-to-end walkthrough — dataset, token, Worker wiring, and a monitor on top — follow [Observability with Axiom](https://alchemy.run/cloudflare/observability/axiom-observability).
+
+## Reference
+
+[Dataset](https://alchemy.run/providers/axiom/dataset) · [ApiToken](https://alchemy.run/providers/axiom/apitoken) · [Monitor](https://alchemy.run/providers/axiom/monitor) · [Notifier](https://alchemy.run/providers/axiom/notifier) · [Dashboard](https://alchemy.run/providers/axiom/dashboard) · [Annotation](https://alchemy.run/providers/axiom/annotation) · [View](https://alchemy.run/providers/axiom/view) · [VirtualField](https://alchemy.run/providers/axiom/virtualfield)
