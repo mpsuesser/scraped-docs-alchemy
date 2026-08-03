@@ -2,15 +2,15 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Nuxt is not yet supported by Cloudflare.Website.Vite. For fully static sites, an untested workaround may deploy the nuxt generate output with StaticSite."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 :::caution[Nuxt is not yet supported]
 `Cloudflare.Website.Vite` cannot deploy Nuxt apps — support is a TODO. Nuxt's
 build is driven by the `nuxi` CLI, not a plain `vite build` of your project
 root, so it falls outside the
-[pure-Vite criterion](/cloudflare/frontend/vite#what-pure-vite-means) the Vite
+[pure-Vite criterion](vite.md#what-pure-vite-means) the Vite
 resource relies on. There is currently no verified Nuxt deployment with
 Alchemy of any kind.
 :::
@@ -19,7 +19,7 @@ Alchemy of any kind.
 
 For fully static Nuxt sites, `nuxt generate` prerenders the app into a plain
 directory of files under `.output/public`, and
-[`Cloudflare.Website.StaticSite`](/cloudflare/frontend/static-site) deploys
+[`Cloudflare.Website.StaticSite`](static-site.md) deploys
 any directory produced by any build command:
 
 ```typescript
@@ -45,7 +45,7 @@ export default Alchemy.Stack(
 ```
 
 This is a suggestion, not a verified recipe. Unlike
-[Astro](/cloudflare/frontend/astro) — where the same `StaticSite` workaround
+[Astro](astro.md) — where the same `StaticSite` workaround
 is proven by alchemy.run itself — no Nuxt project has been deployed with
 Alchemy, so treat this shape as a starting point and verify the deployed
 output yourself.

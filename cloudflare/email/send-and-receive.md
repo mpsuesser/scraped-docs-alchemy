@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:
@@ -12,10 +12,10 @@ forwarded, dropped, or handed to a Worker — and once routing is
 enabled, Workers can also *send* mail from that domain through a
 `send_email` binding. This guide wires up both directions. For the
 full Email surface — sending subdomains, Email Security — see
-[Email](/cloudflare/email).
+[Email](../email.md).
 
 You need a zone on Cloudflare first — see
-[Custom domains & routes](/cloudflare/networking/custom-domains) for
+[Custom domains & routes](../networking/custom-domains.md) for
 creating or adopting one. The resource snippets below run inside a
 Stack's `Effect.gen` body:
 
@@ -243,17 +243,17 @@ is clicked, sends fail with a `SendEmailError`.
 
 ## Where next
 
-- [Email](/cloudflare/email) — the concept map for the category.
-- [Custom domains & routes](/cloudflare/networking/custom-domains) — get
+- [Email](../email.md) — the concept map for the category.
+- [Custom domains & routes](../networking/custom-domains.md) — get
   the zone the mail routes through.
-- [Domains](/cloudflare/networking/domains) — zones and DNS records.
-- [Workers](/cloudflare/compute/workers) — the runtime that sends and
+- [Domains](../networking/domains.md) — zones and DNS records.
+- [Workers](../compute/workers.md) — the runtime that sends and
   receives.
 
 Reference:
 
-- [Routing API reference](/providers/cloudflare/email/routing)
-- [Address API reference](/providers/cloudflare/email/address)
-- [Rule API reference](/providers/cloudflare/email/rule)
-- [CatchAll API reference](/providers/cloudflare/email/catchall)
-- [Send API reference](/providers/cloudflare/email/send)
+- [Routing API reference](https://alchemy.run/providers/cloudflare/email/routing)
+- [Address API reference](https://alchemy.run/providers/cloudflare/email/address)
+- [Rule API reference](https://alchemy.run/providers/cloudflare/email/rule)
+- [CatchAll API reference](https://alchemy.run/providers/cloudflare/email/catchall)
+- [Send API reference](https://alchemy.run/providers/cloudflare/email/send)

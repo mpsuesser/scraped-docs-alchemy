@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/drizzle
 title: "Drizzle ORM with Neon"
 description: "Manage your Drizzle schema as a resource — alchemy regenerates migration SQL on deploy and Neon applies it transactionally on the project or branch."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Drizzle gives you a typed Postgres schema in plain TypeScript;
@@ -77,7 +77,7 @@ first, then `Neon.Branch` scans the directory and applies any new
 files transactionally, recording each in the `neon_migrations`
 tracking table so it runs exactly once. The same prop works on
 `Neon.Project` if you migrate the default branch directly — see
-[Migrations](/neon/data/migrations) for the tracking and hashing
+[Migrations](../data/migrations.md) for the tracking and hashing
 details.
 
 ## Iterate
@@ -97,7 +97,7 @@ Neon resource isn't touched.
 
 The branch's outputs carry everything a client needs:
 `connectionUri` / `pooledConnectionUri` plus the parsed `origin` /
-`pooledOrigin` shapes (see [Connections](/neon/data/connections)). On
+`pooledOrigin` shapes (see [Connections](../data/connections.md)). On
 Cloudflare, front the **direct** origin with Hyperdrive and keep
 the pooled one for local dev:
 
@@ -110,7 +110,7 @@ const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
 
 Inside the Worker, `Drizzle.Postgres(conn.connectionString)`
 returns a typed `EffectPgDatabase` whose queries you `yield*`
-directly — the [Add Drizzle ORM](/cloudflare/data/drizzle) guide
+directly — the [Add Drizzle ORM](../../cloudflare/data/drizzle.md) guide
 walks through the whole Worker side: binding the connection,
 relations for typed `db.query`, and the `nodejs_compat` flag.
 
@@ -118,21 +118,21 @@ relations for typed `db.query`, and the `nodejs_compat` flag.
 
 Guides:
 
-- [Add Drizzle ORM](/cloudflare/data/drizzle) — the full
+- [Add Drizzle ORM](../../cloudflare/data/drizzle.md) — the full
   Cloudflare Worker walkthrough on top of this pipeline.
-- [Preview branches per PR](/neon/guides/preview-branches) — fork a
+- [Preview branches per PR](preview-branches.md) — fork a
   migrated branch per PR stage off a shared project.
 
 Related:
 
-- [Drizzle migrations](/sql/drizzle/migrations) — the canonical
+- [Drizzle migrations](../../sql/drizzle/migrations.md) — the canonical
   explanation of `Drizzle.Schema`'s generation, diffing, and
   never-delete semantics.
-- [Migrations](/neon/data/migrations) — how Neon orders, hashes, and
+- [Migrations](../data/migrations.md) — how Neon orders, hashes, and
   tracks the generated files.
-- [Connections](/neon/data/connections) — direct vs pooled origins.
+- [Connections](../data/connections.md) — direct vs pooled origins.
 
 Reference:
 
-- [Project API reference](/providers/neon/project)
-- [Branch API reference](/providers/neon/branch)
+- [Project API reference](https://alchemy.run/providers/neon/project)
+- [Branch API reference](https://alchemy.run/providers/neon/branch)

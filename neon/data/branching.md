@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/branching
 title: "Branching"
 description: "Neon branches are copy-on-write forks of a parent branch — create them per stage or preview, pin them to a point in time, copy schema only, and let them expire on their own."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A `Neon.Branch` is a copy-on-write fork of a parent branch. It shares
@@ -22,7 +22,7 @@ With no other props, the branch forks from the project's default
 branch and gets a unique name generated from the app, stage, and
 logical ID. Pass `name` to control it. The outputs include
 `connectionUri`, `pooledConnectionUri`, and parsed `origin` /
-`pooledOrigin` components — see [Connections](/neon/data/connections) for
+`pooledOrigin` components — see [Connections](connections.md) for
 how to use them.
 
 ## Choose the parent
@@ -131,17 +131,17 @@ controls how long the endpoint idles before suspending.
 
 Guides:
 
-- [Branch from a shared database](/cloudflare/data/branch-from-shared-database)
+- [Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
   — fork a preview branch per stage off a long-lived staging
   project.
 
 Related:
 
-- [Connections](/neon/data/connections) — direct vs pooled URIs and
+- [Connections](connections.md) — direct vs pooled URIs and
   feeding `origin` into Hyperdrive.
-- [Migrations](/neon/data/migrations) — apply SQL migrations on the
+- [Migrations](migrations.md) — apply SQL migrations on the
   branch as part of the deploy.
 
 Reference:
 
-- [Branch API reference](/providers/neon/branch)
+- [Branch API reference](https://alchemy.run/providers/neon/branch)

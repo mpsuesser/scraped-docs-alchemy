@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
 description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **EventBridge** is AWS's event router — producers publish events onto
@@ -273,7 +273,7 @@ yield* AWS.ECS.every("HourlyJob", "1 hour", {
 ```
 
 `cluster` and `task` are the outputs of `AWS.ECS.Cluster` and
-`AWS.ECS.Task` (see [ECS](/aws/compute/ecs) for standing those up). Under the
+`AWS.ECS.Task` (see [ECS](../compute/ecs.md) for standing those up). Under the
 hood this is `Scheduler.every(...).named("HourlyJob").toEcsTask(...)`:
 a schedule plus an execution role with `ecs:RunTask` on the task
 definition and `iam:PassRole` for its task and execution roles. Plain
@@ -297,13 +297,13 @@ and an optional static `input` forwarded to the task.
 
 ## Where next
 
-- [Lambda](/aws/compute/lambda) — the runtime both the consumer and scheduled
+- [Lambda](../compute/lambda.md) — the runtime both the consumer and scheduled
   targets above deploy to.
-- [SNS](/aws/messaging/sns) — pub/sub fan-out when you want subscriptions
+- [SNS](sns.md) — pub/sub fan-out when you want subscriptions
   rather than pattern-matching rules.
-- [ECS](/aws/compute/ecs) — the cluster, task, and networking that
+- [ECS](../compute/ecs.md) — the cluster, task, and networking that
   `ECS.every` schedules onto.
-- [`EventBus`](/providers/aws/eventbridge/eventbus),
-  [`Rule`](/providers/aws/eventbridge/rule), and
-  [`Schedule`](/providers/aws/scheduler/schedule) references — every
+- [`EventBus`](https://alchemy.run/providers/aws/eventbridge/eventbus),
+  [`Rule`](https://alchemy.run/providers/aws/eventbridge/rule), and
+  [`Schedule`](https://alchemy.run/providers/aws/scheduler/schedule) references — every
   prop and attribute.

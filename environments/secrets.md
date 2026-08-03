@@ -2,18 +2,18 @@
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
 description: "Use effect/Config to read env vars at init time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)
-to automatically bind env vars to your Worker or Lambda environment ([Functions & Servers](/infrastructure-as-effects/functions-and-servers)).
+to automatically bind env vars to your Worker or Lambda environment ([Functions & Servers](../infrastructure-as-effects/functions-and-servers.md)).
 Bound values come from the env of whoever runs the deploy, so they naturally
-vary per [stage](/environments/stages) and [profile](/environments/profiles).
+vary per [stage](stages.md) and [profile](profiles.md).
 
 ## Bind a secret to your Worker
 
-Any `Config` value that is evaluated with `yield*` in the [Init phase](/infrastructure-as-effects/phases)
+Any `Config` value that is evaluated with `yield*` in the [Init phase](../infrastructure-as-effects/phases.md)
 of (for example) a Worker, is automatically bound to its environment
 at deploy time. It is always bound as a secret (`secret_text` on
 Cloudflare) regardless of which `Config` constructor you use.
@@ -41,12 +41,12 @@ export default Cloudflare.Worker(
 ```
 
 :::tip
-See [Phases](/infrastructure-as-effects/phases) for why Init and Runtime run separately.
+See [Phases](../infrastructure-as-effects/phases.md) for why Init and Runtime run separately.
 :::
 
 ## Use the value during Init
 
-Unlike an [Output](/infrastructure-as-code/outputs), the value can be used immediately
+Unlike an [Output](../infrastructure-as-code/outputs.md), the value can be used immediately
 within the Init phase. For example, to initialize a client:
 
 ```typescript
@@ -173,11 +173,11 @@ the `secret_text` value to the async handler directly, no
 transformation semantics from the previous sections still apply.
 
 For the step-by-step "wire up `OPENAI_API_KEY` from `.env`" walk,
-see [Secrets & env on Cloudflare](/cloudflare/security/secrets-env) or
-[on AWS](/aws/security/secrets-env).
+see [Secrets & env on Cloudflare](../cloudflare/security/secrets-env.md) or
+[on AWS](../aws/security/secrets-env.md).
 
 ## Where next
 
-- [Local development](/environments/local-development) — `alchemy dev`: local code, real cloud resources.
-- [Secrets & env on Cloudflare](/cloudflare/security/secrets-env) — wire a real key from `.env` into a Worker.
-- [Secrets & env on AWS](/aws/security/secrets-env) — the same walk for Lambda.
+- [Local development](local-development.md) — `alchemy dev`: local code, real cloud resources.
+- [Secrets & env on Cloudflare](../cloudflare/security/secrets-env.md) — wire a real key from `.env` into a Worker.
+- [Secrets & env on AWS](../aws/security/secrets-env.md) — the same walk for Lambda.

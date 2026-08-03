@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/vectorize
 title: "Vector search with Vectorize"
 description: "Create a Vectorize index, bind it to a Worker with SearchIndex, and run filtered nearest-neighbor queries over vector embeddings."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Vectorize is Cloudflare's globally distributed vector database.
@@ -190,11 +190,11 @@ bun alchemy deploy
 
 ## Where next
 
-- [AI Search](/cloudflare/ai/ai-search) — managed RAG that
+- [AI Search](ai-search.md) — managed RAG that
   handles embedding and indexing for you; reach for Vectorize when
   you want control over the vectors themselves.
-- [Workers](/cloudflare/compute/workers) — the two-phase Worker model the
+- [Workers](../compute/workers.md) — the two-phase Worker model the
   `SearchIndex` binding lives inside.
-- Reference: [Index](/providers/cloudflare/vectorize/index),
-  [MetadataIndex](/providers/cloudflare/vectorize/metadataindex),
-  [SearchIndex](/providers/cloudflare/vectorize/searchindex)
+- Reference: [Index](https://alchemy.run/providers/cloudflare/vectorize/index),
+  [MetadataIndex](https://alchemy.run/providers/cloudflare/vectorize/metadataindex),
+  [SearchIndex](https://alchemy.run/providers/cloudflare/vectorize/searchindex)

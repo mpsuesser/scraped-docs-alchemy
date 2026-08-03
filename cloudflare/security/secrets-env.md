@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-env
 title: "Secrets & env"
 description: "Bind env vars and secrets to Workers with effect/Config, generate stable tokens with Alchemy.Random, and graduate to Secrets Store when secrets are shared across Workers."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Three ways to get a secret into a Worker, by where the value lives.
@@ -74,7 +74,7 @@ const port = yield* Config.number("PORT").pipe(
 
 The raw source value is bound; combinators re-run at runtime against
 it, and a default is never bound. See
-[Secrets and Config](/environments/secrets) for the full semantics.
+[Secrets and Config](../../environments/secrets.md) for the full semantics.
 
 ## Resolve Config in init, not in fetch
 
@@ -205,23 +205,23 @@ export default Cloudflare.Worker(
 Reads fail with a typed `SecretError` — handle it with
 `Effect.catchTag`. For the full bearer-token walkthrough — store
 adoption semantics, stack outputs, deploy and curl — see the
-[Secrets Store guide](/cloudflare/security/secrets-store).
+[Secrets Store guide](secrets-store.md).
 
 ## Where next
 
 Related:
 
-- [Secrets Store & auth tokens](/cloudflare/security/secrets-store) —
+- [Secrets Store & auth tokens](secrets-store.md) —
   full bearer-token walkthrough.
-- [Turnstile](/cloudflare/security/turnstile) — a real third-party
+- [Turnstile](turnstile.md) — a real third-party
   secret key in practice.
-- [Secrets and Config](/environments/secrets) — binding semantics under
+- [Secrets and Config](../../environments/secrets.md) — binding semantics under
   the hood.
-- [Workers](/cloudflare/compute/workers) — the host every binding lands on.
-- [Secrets & env on AWS](/aws/security/secrets-env) — the same spine on AWS.
+- [Workers](../compute/workers.md) — the host every binding lands on.
+- [Secrets & env on AWS](../../aws/security/secrets-env.md) — the same spine on AWS.
 
 Reference:
 
-- [Store API reference](/providers/cloudflare/secretsstore/store)
-- [Secret API reference](/providers/cloudflare/secretsstore/secret)
-- [ReadSecret API reference](/providers/cloudflare/secretsstore/readsecret)
+- [Store API reference](https://alchemy.run/providers/cloudflare/secretsstore/store)
+- [Secret API reference](https://alchemy.run/providers/cloudflare/secretsstore/secret)
+- [ReadSecret API reference](https://alchemy.run/providers/cloudflare/secretsstore/readsecret)

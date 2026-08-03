@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/deploy
 title: "deploy"
 description: "Compute a plan, ask for approval, and create/update/delete resources to match the desired state."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -59,9 +59,9 @@ When the plan contains no changes, the approval prompt is skipped automatically.
 | `--profile <name>`  | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`)                                                          |
 | `--env-file <path>` | Load environment variables from a file                                                                                     |
 
-How `--adopt` decides what to take over is covered in [Adopting Resources](/cli/adopting-resources).
+How `--adopt` decides what to take over is covered in [Adopting Resources](adopting-resources.md).
 
-`--dry-run` runs the exact same code path as [`alchemy plan`](/cli/plan) — see that page for the plan output format.
+`--dry-run` runs the exact same code path as [`alchemy plan`](plan.md) — see that page for the plan output format.
 
 ## Examples
 
@@ -84,7 +84,7 @@ alchemy deploy --adopt
 
 ## Where next
 
-- [plan](/cli/plan) — preview changes without applying
-- [destroy](/cli/destroy) — delete everything in a stack
-- [Adopting Resources](/cli/adopting-resources) — take over pre-existing infrastructure
-- [Resource Lifecycle](/infrastructure-as-code/resource-lifecycle) — what happens inside a deploy
+- [plan](plan.md) — preview changes without applying
+- [destroy](destroy.md) — delete everything in a stack
+- [Adopting Resources](adopting-resources.md) — take over pre-existing infrastructure
+- [Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md) — what happens inside a deploy

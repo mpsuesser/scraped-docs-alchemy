@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/annotations
 title: "Deploy markers & annotations"
 description: "Overlay deploys, incidents, and flag flips as vertical markers on Axiom charts — point or range annotations, scoped to one or more datasets, declared as alchemy resources."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 An Axiom `Annotation` is a vertical marker overlaid on every chart
@@ -12,8 +12,8 @@ feature-flag flip, correlated with your telemetry at a glance. In
 alchemy it's one resource: declare it next to the services it
 annotates, and each stage gets its own markers.
 
-You'll need the Axiom provider registered ([setup](/axiom/setup))
-and a dataset to annotate ([ingest](/axiom/data/ingest)).
+You'll need the Axiom provider registered ([setup](../setup.md))
+and a dataset to annotate ([ingest](../data/ingest.md)).
 
 ## Drop a point marker
 
@@ -102,9 +102,9 @@ the resource form for markers you want reproducible per stage.
 
 ## Where next
 
-- [Dashboards as code](/axiom/guides/dashboards) — the charts your
+- [Dashboards as code](dashboards.md) — the charts your
   markers land on, plus saved views.
-- [Ingest](/axiom/data/ingest) — datasets, tokens, and wiring OTEL output
+- [Ingest](../data/ingest.md) — datasets, tokens, and wiring OTEL output
   into Axiom.
-- [Annotation API reference](/providers/axiom/annotation) — full
+- [Annotation API reference](https://alchemy.run/providers/axiom/annotation) — full
   props and attributes.

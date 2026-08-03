@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/static-site
 title: "Deploy a static site"
 description: "Ship a static site to S3 + CloudFront with AWS.Website.StaticSite — build-step support, Router composition, and cache invalidation on deploy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `AWS.Website.StaticSite` deploys a directory of files as a website: it uploads
@@ -74,9 +74,9 @@ const site = yield* AWS.Website.StaticSite("Web", {
 });
 ```
 
-The build step is a [Command.Build](/providers/command/build) resource —
+The build step is a [Command.Build](https://alchemy.run/providers/command/build) resource —
 memoized, so unchanged inputs skip the build
-([details](/command/memoization)). The input hash covers, by default, all
+([details](../../command/memoization.md)). The input hash covers, by default, all
 files under `path` (filtered by your gitignore rules) plus the nearest
 package-manager lockfile. Tune the hash with `build.include`, `build.exclude`, and
 `build.lockfile` — e.g. `include: ["src/**", "package.json"]` to re-run only
@@ -157,8 +157,8 @@ const site = yield* AWS.Website.StaticSite("MarketingSite", {
 
 ## Where next
 
-- [Websites on AWS](/aws/frontend/websites) — the full websites surface, including
+- [Websites on AWS](websites.md) — the full websites surface, including
   server-side rendering
-- [StaticSite reference](/providers/aws/website/staticsite) and
-  [Router reference](/providers/aws/website/router) — every prop and attribute
-- [AWS on Alchemy](/aws) — the AWS provider hub
+- [StaticSite reference](https://alchemy.run/providers/aws/website/staticsite) and
+  [Router reference](https://alchemy.run/providers/aws/website/router) — every prop and attribute
+- [AWS on Alchemy](../../aws.md) — the AWS provider hub

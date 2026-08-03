@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/login
 title: "login"
 description: "Configure and log in to each cloud provider used by your stack."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 ```sh
@@ -21,7 +21,7 @@ Credentials are written to `~/.alchemy/profiles.json`, keyed by
 `$ALCHEMY_PROFILE` or `--profile`).
 
 When done, the resulting profile is printed with the same renderer as
-[`alchemy profile show`](/cli/profile). If the stack registers no
+[`alchemy profile show`](profile.md). If the stack registers no
 `AuthProvider`s, the command prints a hint to add `AuthProviderLayer`
 entries to the stack's `providers()` layer.
 
@@ -52,5 +52,5 @@ alchemy login --configure
 
 ## Where next
 
-- [profile](/cli/profile) — inspect or clear stored credentials.
-- [Profiles](/environments/profiles) — how profiles isolate credentials across accounts and environments.
+- [profile](profile.md) — inspect or clear stored credentials.
+- [Profiles](../environments/profiles.md) — how profiles isolate credentials across accounts and environments.

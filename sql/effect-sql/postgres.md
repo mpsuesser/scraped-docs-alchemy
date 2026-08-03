@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/postgres
 title: "Postgres"
 description: "SQL.Postgres turns a connection string into an @effect/sql-pg client — tagged-template queries with typed errors, one pool per execution."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `SQL.Postgres` opens an `@effect/sql-pg` client (a connection pool)
@@ -51,7 +51,7 @@ Everything else in `@effect/sql-pg`'s pool config passes through —
 `maxConnections`, `idleTimeout`, `types`, and friends. The pool is
 built lazily on the first query of an execution and closed when the
 event settles — see
-[Connection lifecycle](/sql/effect-sql/lifecycle).
+[Connection lifecycle](lifecycle.md).
 
 ## Queries
 
@@ -126,16 +126,16 @@ The layer provides two tags from one per-execution pool: the generic
 `SqlClient.SqlClient`, and `@effect/sql-pg`'s `PgClient` for code
 that needs Postgres-specific capabilities — including drizzle's
 `effect-postgres` driver. Swapping `SQL.PostgresLayer` for
-[`SQL.D1Layer`](/sql/effect-sql/d1#provide-as-a-service) moves the
+[`SQL.D1Layer`](d1.md#provide-as-a-service) moves the
 same service graph to D1 unchanged.
 
 ## Where next
 
-- [Migrations](/sql/effect-sql/migrations) — apply `.sql` files as
+- [Migrations](migrations.md) — apply `.sql` files as
   part of deploy.
-- [Connection lifecycle](/sql/effect-sql/lifecycle) — when the pool
+- [Connection lifecycle](lifecycle.md) — when the pool
   is built and torn down.
-- [Drizzle on Postgres](/sql/drizzle/postgres) — the same driver
+- [Drizzle on Postgres](../drizzle/postgres.md) — the same driver
   behind a typed schema.
-- [Add Drizzle ORM](/cloudflare/data/drizzle) — full Worker wiring
+- [Add Drizzle ORM](../../cloudflare/data/drizzle.md) — full Worker wiring
   with Neon / PlanetScale via Hyperdrive.

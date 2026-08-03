@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/actions-config
 title: "Actions secrets & variables"
 description: "Manage GitHub Actions secrets and variables as Stack resources — encrypted secrets, plain-text variables, bulk helpers, and CI credentials provisioned as code."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 GitHub Actions workflows read configuration from two places:
@@ -227,33 +227,33 @@ alchemy deploy stacks/github.ts --profile admin
 ```
 
 Re-run it only when you want to rotate the credential or change its
-permissions. [Part 5: CI/CD](/cloudflare/tutorial/part-5) walks
+permissions. [Part 5: CI/CD](../cloudflare/tutorial/part-5.md) walks
 through the full Cloudflare version step by step;
-[Continuous Integration](/environments/ci) covers the AWS equivalents
+[Continuous Integration](../environments/ci.md) covers the AWS equivalents
 (OIDC role ARNs as variables, access keys as secrets).
 
 ## Token scope
 
 Writing secrets and variables uses the GitHub credential from
 `GitHub.providers()` — env vars, a stored PAT, the `gh` CLI, or
-OAuth (see [Setup](/github/setup)). The token needs the `repo` scope
+OAuth (see [Setup](setup.md)). The token needs the `repo` scope
 for private repositories, or `public_repo` for public ones.
 
 ## Where next
 
-- [Continuous Integration](/environments/ci) — the full GitHub Actions
+- [Continuous Integration](../environments/ci.md) — the full GitHub Actions
   setup: deploy workflow, PR previews, and provider credentials.
-- [Part 5: CI/CD (Cloudflare)](/cloudflare/tutorial/part-5) — mint a
+- [Part 5: CI/CD (Cloudflare)](../cloudflare/tutorial/part-5.md) — mint a
   scoped API token and push it into your repo, step by step.
-- [Part 5: CI/CD (AWS)](/aws/tutorial/part-5) — the OIDC-based AWS
+- [Part 5: CI/CD (AWS)](../aws/tutorial/part-5.md) — the OIDC-based AWS
   version.
-- [Repository](/github/repository) — manage the repo itself as a
+- [Repository](repository.md) — manage the repo itself as a
   resource.
 
 Reference:
 
-- [Environment](/providers/github/environment) ·
-  [Secret](/providers/github/secret) ·
-  [Secrets](/providers/github/secrets) ·
-  [Variable](/providers/github/variable) ·
-  [Variables](/providers/github/variables)
+- [Environment](https://alchemy.run/providers/github/environment) ·
+  [Secret](https://alchemy.run/providers/github/secret) ·
+  [Secrets](https://alchemy.run/providers/github/secrets) ·
+  [Variable](https://alchemy.run/providers/github/variable) ·
+  [Variables](https://alchemy.run/providers/github/variables)

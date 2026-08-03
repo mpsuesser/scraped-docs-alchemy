@@ -2,15 +2,15 @@
 url: https://alchemy.run/cli/logs
 title: "logs"
 description: "Fetch historical logs from deployed resources — a batch of past entries, merged and sorted by timestamp."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 ```sh
 alchemy logs [file] [options]
 ```
 
-Fetch historical logs from deployed resources. Unlike [tail](/cli/tail), `logs` fetches a batch of past log entries and exits.
+Fetch historical logs from deployed resources. Unlike [tail](tail.md), `logs` fetches a batch of past log entries and exits.
 
 Entries from all resources are merged and sorted by timestamp, color-coded by resource.
 
@@ -45,6 +45,6 @@ alchemy logs --stage prod --since 2026-04-01T00:00:00Z
 
 ## Where next
 
-- [tail](/cli/tail) — stream live logs instead of fetching a batch
-- [dev](/cli/dev) — run your stack with hot reloading
-- [cloudflare](/cli/cloudflare) — inspect the state-store worker's own logs
+- [tail](tail.md) — stream live logs instead of fetching a batch
+- [dev](dev.md) — run your stack with hot reloading
+- [cloudflare](cloudflare.md) — inspect the state-store worker's own logs

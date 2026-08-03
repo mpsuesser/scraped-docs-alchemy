@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Durable Object is _hosted_ by exactly one Worker, but any
@@ -81,7 +81,7 @@ export class Counter extends Cloudflare.DurableObject<
 :::note
 The `state` *reference* is resolved in the outer (init) Effect, but
 `state.storage` is
-[colored with `RuntimeContext`](/infrastructure-as-effects/layers#runtime-as-a-colored-function)
+[colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#runtime-as-a-colored-function)
 — so the storage reads/writes stay in the inner (runtime) Effect.
 :::
 

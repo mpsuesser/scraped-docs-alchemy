@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-search
 title: "Add AI Search (AutoRAG)"
 description: "Stand up a Cloudflare AI Search (AutoRAG) pipeline over an R2 bucket with one Search call, bind it into your Worker as a typed Effect client, and answer questions over your own documents."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Cloudflare **AI Search** indexes the documents in an
@@ -53,7 +53,7 @@ into several resources so you don't have to wire them up by hand.
 Passing a URL as `source` (instead of a bucket) indexes a website by
 crawling it, with optional `parse` / `crawl` / `store` options and no
 service token. This tutorial focuses on the R2 source — see the
-[`Search` reference](/providers/cloudflare/ai/search) for the
+[`Search` reference](https://alchemy.run/providers/cloudflare/ai/search) for the
 web-crawler options.
 :::
 
@@ -320,4 +320,4 @@ no behavior you lose by dropping down.
 
 For the full prop surface — embedding/generation models, R2 prefix and
 include/exclude filters, reranking, query rewriting, and similarity
-caching — see the [AI Search resource reference](/providers/cloudflare/ai/search).
+caching — see the [AI Search resource reference](https://alchemy.run/providers/cloudflare/ai/search).

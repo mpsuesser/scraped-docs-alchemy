@@ -2,20 +2,20 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 This guide builds a Workflow end to end: a durable multi-step job
 that writes to KV and broadcasts each task's progress back to a chat
 `Room` Durable Object. For the concept, start at
-[Workflows](/cloudflare/compute/workflows).
+[Workflows](workflows.md).
 
 ## How a Workflow looks
 
 The two-phase shape — an init `Effect.gen` that returns an
 `Effect.fn` body — plus `task`, `sleep`, and the replay caution are
-covered on [Workflows](/cloudflare/compute/workflows).
+covered on [Workflows](workflows.md).
 
 ## Create the workflow file
 
@@ -274,7 +274,7 @@ into the workflow as `secret_text`. Set it in your local `.env`:
 API_KEY=sk-test-123
 ```
 
-See [Concepts › Secrets](/environments/secrets) for the full set of
+See [Concepts › Secrets](../../environments/secrets.md) for the full set of
 input shapes (literals, `Effect`, `Config`, …).
 
 ## Use the secret in a task
@@ -455,6 +455,6 @@ is the `sleep("cooldown", "2 seconds")` cooldown).
 
 Your app now spans a Worker, a Vite frontend, Durable Objects,
 hibernatable WebSockets, a Container, and a Workflow — all
-deploying from CI thanks to [Part 5](/cloudflare/tutorial/part-5). From here,
-browse the [Concepts](/infrastructure-as-code/stack), [Guides](/cli), and
-[Providers](/providers) sections for whatever you need next.
+deploying from CI thanks to [Part 5](../tutorial/part-5.md). From here,
+browse the [Concepts](../../infrastructure-as-code/stack.md), [Guides](../../cli.md), and
+[Providers](https://alchemy.run/providers) sections for whatever you need next.

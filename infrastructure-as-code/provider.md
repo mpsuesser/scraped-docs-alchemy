@@ -2,15 +2,15 @@
 url: https://alchemy.run/infrastructure-as-code/provider
 title: "Providers"
 description: "Providers implement the lifecycle operations for a resource type — reconcile, delete, diff, read, and more."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A **Provider** implements the lifecycle operations for a resource
 type. When you `yield*` a resource inside a Stack, alchemy looks up
 the provider for that resource's type and calls the appropriate
 lifecycle method. This is what gives meaning to a
-[Resource](/infrastructure-as-code/resource) declaration — the engine plans, the
+[Resource](resource.md) declaration — the engine plans, the
 provider acts.
 
 ## Provider layers
@@ -110,7 +110,7 @@ state persistence failure. Deterministic physical names plus the
 observe step ensure a retry finds the existing resource and re-syncs
 any drifted fields.
 
-See the [custom provider guide](/infrastructure-as-code/custom-provider#implement-reconcile)
+See the [custom provider guide](custom-provider.md#implement-reconcile)
 for the full walkthrough.
 
 ### `delete`
@@ -150,7 +150,7 @@ The shape is one of:
   update. `stables` lists props that are guaranteed not to change
   during this update.
 - **`{ action: "replace", deleteFirst?: boolean }`** — destroy and
-  recreate (see [Resource Lifecycle › Replace](/infrastructure-as-code/resource-lifecycle#replace)).
+  recreate (see [Resource Lifecycle › Replace](resource-lifecycle.md#replace)).
   Set `deleteFirst: true` for resources that can't coexist with
   their replacement (e.g. unique-name constraints).
 - **`void` / `undefined`** — fall back to the default behavior
@@ -235,7 +235,7 @@ resources) should brand foreign-owned attributes with `Unowned`.
 
 Optional. Reserves a physical name (or stub resource) before
 `create` runs. This is what enables [circular
-bindings](/infrastructure-as-effects/circular-bindings) — Worker A can know Worker B's
+bindings](../infrastructure-as-effects/circular-bindings.md) — Worker A can know Worker B's
 URL before either is fully created.
 
 ### `list`
@@ -244,7 +244,7 @@ Enumerates every existing resource of this type in the ambient
 scope (account, region, or zone), returning the same `Attributes`
 shape `read` produces — so each item is directly usable with
 `delete`. This powers account-wide operations like
-[`alchemy unsafe nuke`](/cli/nuke). It must paginate exhaustively;
+[`alchemy unsafe nuke`](../cli/nuke.md). It must paginate exhaustively;
 resources with no enumeration API (singletons, existence-only
 resources) return an empty array. Providers can opt out of nuke
 with `nuke.singleton` (delete only resets always-present config)
@@ -269,22 +269,22 @@ Alchemy combines every provider's lifecycle operations into a single
   the matching lifecycle operation on each provider, surfacing the
   results as `Output`s for downstream resources.
 
-See [Resource Lifecycle](/infrastructure-as-code/resource-lifecycle) for how a
+See [Resource Lifecycle](resource-lifecycle.md) for how a
 resource moves through these phases over time.
 
 ## Authoring a custom provider
 
 Providers are just Layers, so adding a new cloud or third-party API
-is "declare a [Resource type](/infrastructure-as-code/resource), implement a
+is "declare a [Resource type](resource.md), implement a
 Layer" — and merge it alongside `Cloudflare.providers()` or
-`AWS.providers()`. The [custom provider guide](/infrastructure-as-code/custom-provider)
+`AWS.providers()`. The [custom provider guide](custom-provider.md)
 builds a Stripe `Product` provider end-to-end.
 
 ## Where next
 
-- [Custom Provider](/infrastructure-as-code/custom-provider) — step-by-step
+- [Custom Provider](custom-provider.md) — step-by-step
   walkthrough of a Stripe `Product` provider.
-- [Actions](/infrastructure-as-code/action) — deploy-time work that isn't a
+- [Actions](action.md) — deploy-time work that isn't a
   resource.
-- [Resource lifecycle](/infrastructure-as-code/resource-lifecycle) — when each
+- [Resource lifecycle](resource-lifecycle.md) — when each
   operation fires.

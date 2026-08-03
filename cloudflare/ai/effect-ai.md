@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/effect-ai
 title: "Effect AI"
 description: "Wire Effect's LanguageModel and Chat services into a Cloudflare Worker — read API keys with effect/Config, provide the model layer to your handler, plug in persistence."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect's [`@effect/ai`](https://effect.website/docs/ai/introduction)
@@ -15,7 +15,7 @@ provider-agnostic.
 
 This guide is about the *Alchemy* side of that picture: how to build
 the `LanguageModel` layer inside a Worker or Lambda
-([Functions & Servers](/infrastructure-as-effects/functions-and-servers))
+([Functions & Servers](../../infrastructure-as-effects/functions-and-servers.md))
 (`Cloudflare.Worker`, `AWS.Lambda.Function`), where to read the API
 key from, and how to plug `Chat.Persistence` into a backing store
 that matches the platform. For the AI calls themselves —
@@ -58,7 +58,7 @@ procedure, a Workflow, or any other Effect.
 
 Every upstream provider's client Layer (`OpenAiClient.layer`,
 `AnthropicClient.layer`, …) takes an `apiKey: Redacted<string>`.
-[`Config.redacted`](/environments/secrets) resolved in the Platform's
+[`Config.redacted`](../../environments/secrets.md) resolved in the Platform's
 Init phase gives you exactly that `Redacted<string>` — and Alchemy
 automatically binds the value as a `secret_text` binding
 (Cloudflare) or environment variable (Lambda) at deploy time:
@@ -73,7 +73,7 @@ const apiKey = yield* Config.redacted("OPENAI_API_KEY");
 `Config.redacted("OPENAI_API_KEY")` reads `OPENAI_API_KEY` from your
 `ConfigProvider` (e.g. `.env`) at deploy time, records the binding,
 and resolves from that binding again at runtime — one line, both
-phases. See [Concepts › Secrets and Config](/environments/secrets) for
+phases. See [Concepts › Secrets and Config](../../environments/secrets.md) for
 the Init/Runtime split, `.env`, and transformations.
 
 Because the value is in scope right in Init, the model Layer can be
@@ -163,7 +163,7 @@ backing layer does.
 ## Cloudflare Workers AI binding
 
 For Workers AI models on Cloudflare, the shortest path is the native
-[Workers AI binding](/cloudflare/ai/workers-ai): no API key, no HTTP
+[Workers AI binding](workers-ai.md): no API key, no HTTP
 client layer, no resource to declare. `yield*
 Cloudflare.Workers.AI()` in the Init phase attaches the binding, and
 `ai.model({...})` builds the `LanguageModel` Layer directly on top of
@@ -189,7 +189,7 @@ Effect.gen(function* () {
 }).pipe(Effect.provide(Cloudflare.Workers.AIBinding));
 ```
 
-The [Workers AI guide](/cloudflare/ai/workers-ai) covers the rest of
+The [Workers AI guide](workers-ai.md) covers the rest of
 the binding surface — raw `ai.run(...)` inference, listing models,
 and declaring the binding on a plain async Worker's `env`.
 
@@ -241,7 +241,7 @@ Effect.gen(function* () {
 }).pipe(Effect.provide(Cloudflare.AI.QueryGatewayBinding));
 ```
 
-The [AI Gateway tutorial](/cloudflare/ai/ai-gateway) walks
+The [AI Gateway tutorial](ai-gateway.md) walks
 through it end to end — declaring the resource, streaming with
 `streamText`, and tuning caching, rate limits, and DLP.
 
@@ -257,7 +257,7 @@ model })` — is the same.
 - [`@effect/ai-amazon-bedrock`](https://www.npmjs.com/package/@effect/ai-amazon-bedrock)
 - `Cloudflare.Workers.AI` (the native Workers AI binding, via Alchemy itself)
 - `Cloudflare.AI.Gateway` (Workers AI behind an AI Gateway, via Alchemy itself)
-- [`AWS.Bedrock.LanguageModel`](/aws/ai/bedrock) (Amazon Bedrock over the
+- [`AWS.Bedrock.LanguageModel`](https://alchemy.run/aws/ai/bedrock) (Amazon Bedrock over the
   Converse API with IAM-scoped bindings, via Alchemy itself)
 
 ## Where to go next
@@ -265,10 +265,10 @@ model })` — is the same.
 - [Effect AI documentation](https://effect.website/docs/ai/introduction)
   — the API surface (`generateText`, `streamText`, `Toolkit`,
   structured outputs, embeddings).
-- [Run Workers AI models](/cloudflare/ai/workers-ai) — the native
+- [Run Workers AI models](workers-ai.md) — the native
   Workers AI binding, with or without the `LanguageModel` layer.
-- [Add an AI Gateway](/cloudflare/ai/ai-gateway) — wire
+- [Add an AI Gateway](ai-gateway.md) — wire
   Workers AI behind a Cloudflare AI Gateway with caching and
   streaming.
-- [Secrets & env](/cloudflare/security/secrets-env) — how `Config.redacted`
+- [Secrets & env](../security/secrets-env.md) — how `Config.redacted`
   feeds the upstream providers' API keys at deploy and runtime.

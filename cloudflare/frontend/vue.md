@@ -2,12 +2,12 @@
 url: https://alchemy.run/cloudflare/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to Cloudflare with the Vite resource — one declaration, no Wrangler config."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Vue is pure Vite — the entire app builds from `@vitejs/plugin-vue`
-in your `vite.config.ts`, so [`Cloudflare.Website.Vite`](/cloudflare/frontend/vite)
+in your `vite.config.ts`, so [`Cloudflare.Website.Vite`](vite.md)
 deploys it with a single declaration: no `main` entrypoint, no
 build command, no output directory, no Wrangler configuration.
 
@@ -107,7 +107,7 @@ const worker = yield* Cloudflare.Website.Vite("Vue", {
 });
 ```
 
-See [Environment](/cloudflare/frontend/vite#environment) for the
+See [Environment](vite.md#environment) for the
 full inlining semantics.
 
 ## Deploy

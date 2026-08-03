@@ -2,13 +2,13 @@
 url: https://alchemy.run/infrastructure-as-code/custom-provider
 title: "Custom Provider"
 description: "Add support for a new cloud or third-party API by declaring a Resource type and implementing its lifecycle as an Effect Layer."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Providers are Effect `Layer`s — adding support for a new cloud or
 third-party API is "declare a type, implement a Layer". See
-[Providers](/infrastructure-as-code/provider) for the operation contract.
+[Providers](provider.md) for the operation contract.
 
 This guide walks through building a Stripe `Product` provider
 end-to-end: declaring props and attributes, defining the resource
@@ -16,7 +16,7 @@ type, implementing the lifecycle (`reconcile`, `delete`, `diff`,
 `read`), bundling it into a `providers()` layer, and writing a
 test.
 
-See [Resource lifecycle](/infrastructure-as-code/resource-lifecycle) for the
+See [Resource lifecycle](resource-lifecycle.md) for the
 semantics of when each lifecycle method fires.
 
 ## Declare props and attributes
@@ -146,7 +146,7 @@ A few patterns worth knowing:
 
 Handlers that call an authenticated API resolve a lazy credentials
 service — nothing touches the network until an operation actually runs.
-The [Custom Auth Provider](/environments/custom-auth-provider) guide
+The [Custom Auth Provider](../environments/custom-auth-provider.md) guide
 builds the `StripeCredentials` service the snippets below import;
 providers wrapping unauthenticated APIs skip this entirely.
 
@@ -303,7 +303,7 @@ drifted from `news`.
 `reconcile` also receives `bindings` — data attached by upstream policies
 and event sources (IAM grants, queue subscriptions). Read them here if
 your resource is a binding target; see
-[Binding](/infrastructure-as-effects/binding).
+[Binding](../infrastructure-as-effects/binding.md).
 :::
 
 ## Implement `delete`
@@ -440,14 +440,14 @@ If your provider can find an existing resource from props alone (tags,
 deterministic naming), brand foreign ones with `Unowned`. Plain attrs are
 silently imported as ours; `Unowned(attrs)` fails with `OwnedBySomeoneElse`
 unless the user opted into a takeover with `--adopt` — see
-[Resource Lifecycle › Adoption](/infrastructure-as-code/resource-lifecycle#adoption).
+[Resource Lifecycle › Adoption](resource-lifecycle.md#adoption).
 
 ## Implement `list`
 
 `list` enumerates every product in the account, returning the same
 `Attributes` shape as `read` — it powers account-wide operations
-like [`alchemy unsafe nuke`](/cli/nuke) and must paginate
-exhaustively (see [Providers › list](/infrastructure-as-code/provider#list)):
+like [`alchemy unsafe nuke`](../cli/nuke.md) and must paginate
+exhaustively (see [Providers › list](provider.md#list)):
 
 ```diff lang="typescript"
 return StripeProduct.Provider.of({
@@ -495,7 +495,7 @@ export const providers = () =>
 privately. A provider with no credentials service is done here.
 
 Ours isn't — the handlers' `StripeCredentials` requirement is still
-unmet. The [Custom Auth Provider](/environments/custom-auth-provider)
+unmet. The [Custom Auth Provider](../environments/custom-auth-provider.md)
 guide finishes this bundle by `Layer.provideMerge`-ing in the
 credential bridge and the `alchemy login` registration.
 
@@ -532,7 +532,7 @@ export default Alchemy.Stack(
 
 On first deploy, Alchemy walks them through `alchemy login` (or
 reads env vars on CI) — see
-[Auth Providers](/environments/auth-providers).
+[Auth Providers](../environments/auth-providers.md).
 
 To mix with another cloud, merge the layers:
 
@@ -544,7 +544,7 @@ providers: Layer.mergeAll(Cloudflare.providers(), Stripe.providers()),
 
 ## Test the lifecycle
 
-Full `test.provider` reference and patterns: [Testing Providers](/testing/testing-providers).
+Full `test.provider` reference and patterns: [Testing Providers](../testing/testing-providers.md).
 
 Alchemy's test harness (`alchemy/Test/Vitest` or `alchemy/Test/Bun`)
 configures providers + state once at the top of the file, then
@@ -632,18 +632,18 @@ If you'd rather start from a real provider:
 
 ## Where next
 
-- [Local Providers](/infrastructure-as-code/local-provider) — give your
+- [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — give your
   resource a second, dev-mode implementation that emulates it locally
   (`ProviderLayer.dual`, `LocalProvider.make`).
-- [Custom Auth Provider](/environments/custom-auth-provider) — build
+- [Custom Auth Provider](../environments/custom-auth-provider.md) — build
   the `StripeCredentials` service and `alchemy login` flow this guide
   consumes.
-- [Auth Providers](/environments/auth-providers) — how credentials
+- [Auth Providers](../environments/auth-providers.md) — how credentials
   resolve: lazy Effects, Profiles, auto-refresh.
-- [Actions](/infrastructure-as-code/action) — deploy-time work that isn't a
+- [Actions](action.md) — deploy-time work that isn't a
   resource.
-- [Testing Providers](/testing/testing-providers) — the harness
+- [Testing Providers](../testing/testing-providers.md) — the harness
   patterns behind `test.provider`.
-- [Providers](/infrastructure-as-code/provider) — the operation contract this
+- [Providers](provider.md) — the operation contract this
   guide implements.
-- [Bindings](/infrastructure-as-effects/binding) — next up: connecting Resources to Functions.
+- [Bindings](../infrastructure-as-effects/binding.md) — next up: connecting Resources to Functions.

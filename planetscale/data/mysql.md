@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/mysql
 title: "MySQL"
 description: "PlanetScale MySQL (Vitess) as Stack resources — databases, branches, and passwords, with SQL migrations per branch and a straight line into Cloudflare Hyperdrive."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 PlanetScale MySQL is Vitess-backed serverless MySQL with cheap,
@@ -11,8 +11,8 @@ instant database branches. In alchemy the database, its branches, and
 the passwords that grant access are all resources in your Stack —
 three types: `MySQLDatabase`, `MySQLBranch`, and `MySQLPassword`.
 
-Using Postgres instead? See [Postgres](/planetscale/data/postgres). New
-here? [Set up credentials](/planetscale/setup) first.
+Using Postgres instead? See [Postgres](postgres.md). New
+here? [Set up credentials](../setup.md) first.
 
 ## Create a database
 
@@ -110,7 +110,7 @@ replaces the password with a freshly minted one.
 ## Connect from Cloudflare
 
 The password's `origin` attribute is the exact shape
-[Hyperdrive](/cloudflare/data/hyperdrive) accepts, so wiring a Worker to
+[Hyperdrive](../../cloudflare/data/hyperdrive.md) accepts, so wiring a Worker to
 the branch is one resource:
 
 ```typescript
@@ -143,7 +143,7 @@ applied in order; applied migrations are tracked in a
 `__alchemy_migrations` table so each file runs once. `importFiles`
 lists extra `.sql` files (seed data) applied after migrations and
 re-applied only when their contents change. Full details in
-[Migrations](/planetscale/data/migrations).
+[Migrations](migrations.md).
 
 ## Branch per preview stage
 
@@ -166,20 +166,20 @@ const database = stage.startsWith("pr-")
 
 Tearing down a PR stage deletes its branch and password but leaves
 the shared database untouched. The
-[branch from a shared database](/cloudflare/data/branch-from-shared-database)
+[branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
 guide walks through the whole pattern.
 
 ## Where next
 
-- [Migrations](/planetscale/data/migrations) — SQL migrations and seed
+- [Migrations](migrations.md) — SQL migrations and seed
   files in depth.
-- [Hyperdrive](/cloudflare/data/hyperdrive) — pooled edge connections
+- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — pooled edge connections
   from Workers.
-- [Postgres](/planetscale/data/postgres) — the PostgreSQL side of
+- [Postgres](postgres.md) — the PostgreSQL side of
   PlanetScale.
 
 Reference:
 
-- [MySQLDatabase](/providers/planetscale/mysql/mysqldatabase) ·
-  [MySQLBranch](/providers/planetscale/mysql/mysqlbranch) ·
-  [MySQLPassword](/providers/planetscale/mysql/mysqlpassword)
+- [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql/mysqldatabase) ·
+  [MySQLBranch](https://alchemy.run/providers/planetscale/mysql/mysqlbranch) ·
+  [MySQLPassword](https://alchemy.run/providers/planetscale/mysql/mysqlpassword)

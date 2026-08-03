@@ -2,18 +2,18 @@
 url: https://alchemy.run/cloudflare/apis/effect-http-api
 title: "Effect HTTP API"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as a Cloudflare Worker."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect HTTP is the trust-boundary modality: schema-validated REST
 endpoints — real URLs, path params, query strings, payloads — that
 any HTTP client can call, no Effect or TypeScript required on the
 consumer's side. This page deploys one to a Cloudflare Worker; the
-concept home is [Effect HTTP](/apis/effect-http), and
-[RPC](/apis) covers choosing between the modalities.
+concept home is [Effect HTTP](../../apis/effect-http.md), and
+[RPC](../../apis.md) covers choosing between the modalities.
 
-In the [tutorial](/cloudflare/tutorial/part-2), you built a Worker with manual
+In the [tutorial](../tutorial/part-2.md), you built a Worker with manual
 `if/else` routing and raw request parsing. That works, but as your
 API grows you lose type safety at the boundary — request payloads
 aren't validated, response shapes aren't enforced, and errors slip
@@ -620,10 +620,10 @@ backends behind the scenes.
 
 ## Where next
 
-- [Effect HTTP](/apis/effect-http) — the concept home for this modality.
-- [RPC](/apis) — how to choose between Schemaless RPC, Effect RPC, and
+- [Effect HTTP](../../apis/effect-http.md) — the concept home for this modality.
+- [RPC](../../apis.md) — how to choose between Schemaless RPC, Effect RPC, and
   Effect HTTP.
-- [Effect RPC on Workers](/cloudflare/apis/effect-rpc) — the
+- [Effect RPC on Workers](effect-rpc.md) — the
   schema-first RPC shape for Effect/TypeScript consumers.
-- [Schemaless RPC](/cloudflare/compute/workers#schemaless-rpc) — the
+- [Schemaless RPC](../compute/workers.md#schemaless-rpc) — the
   default for internal Worker-to-Worker calls.

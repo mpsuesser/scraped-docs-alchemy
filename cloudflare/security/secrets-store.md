@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Cloudflare's Secrets Store is an account-level container for secrets.
@@ -218,10 +218,10 @@ export default class Api extends Cloudflare.Worker<Api>()(
 Both end up as bindings on the Worker — pick based on where the value
 lives and who shares it:
 
-- **Env vars** ([`Config.redacted`](/environments/secrets)) — the value
+- **Env vars** ([`Config.redacted`](../../environments/secrets.md)) — the value
   comes from *your* environment (`.env`, CI secrets) at deploy time
   and is baked into that one Worker. Right for third-party API keys
-  and per-app config. See [Secrets & env](/cloudflare/security/secrets-env)
+  and per-app config. See [Secrets & env](secrets-env.md)
   for the step-by-step.
 - **Secrets Store** — the value lives in *Cloudflare's* account-level
   store. One secret can be bound into many Workers, reads happen at
@@ -232,14 +232,14 @@ lives and who shares it:
 
 ## Where next
 
-- [Workers](/cloudflare/compute/workers) — the host the secret binds into.
-- [Secrets and Config](/environments/secrets) — how env-var bindings
+- [Workers](../compute/workers.md) — the host the secret binds into.
+- [Secrets and Config](../../environments/secrets.md) — how env-var bindings
   work under the hood.
-- [Secrets & env](/cloudflare/security/secrets-env) — the category anchor:
+- [Secrets & env](secrets-env.md) — the category anchor:
   Config, Random, and when to use the store.
 
 Reference:
 
-- [Store API reference](/providers/cloudflare/secretsstore/store)
-- [Secret API reference](/providers/cloudflare/secretsstore/secret)
-- [ReadSecret API reference](/providers/cloudflare/secretsstore/readsecret)
+- [Store API reference](https://alchemy.run/providers/cloudflare/secretsstore/store)
+- [Secret API reference](https://alchemy.run/providers/cloudflare/secretsstore/secret)
+- [ReadSecret API reference](https://alchemy.run/providers/cloudflare/secretsstore/readsecret)

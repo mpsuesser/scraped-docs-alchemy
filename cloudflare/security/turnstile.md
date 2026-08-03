@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/turnstile
 title: "Turnstile CAPTCHA"
 description: "Manage Cloudflare Turnstile widgets as resources — deploy a widget, embed its sitekey in HTML, and verify tokens server-side with the redacted secret."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Turnstile is Cloudflare's CAPTCHA alternative. A Turnstile widget is
@@ -110,8 +110,8 @@ Cloudflare zone.
 
 ## Where next
 
-- [Workers](/cloudflare/compute/workers) — host your siteverify call next to
+- [Workers](../compute/workers.md) — host your siteverify call next to
   the form it protects.
-- [Secrets & env](/cloudflare/security/secrets-env) — how the widget secret
+- [Secrets & env](secrets-env.md) — how the widget secret
   gets into the Worker.
-- [Widget API reference](/providers/cloudflare/turnstile/widget)
+- [Widget API reference](https://alchemy.run/providers/cloudflare/turnstile/widget)

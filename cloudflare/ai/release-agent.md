@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/release-agent
 title: "Build a release-automation agent"
 description: "Case study of the cloudflare-agent example — GitHub push events routed through a Worker to a per-release Durable Object that drives an AI agent with container-backed tools."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 The [`cloudflare-agent` example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-agent)
@@ -24,7 +24,7 @@ The pipeline is four pieces, each one file:
 ## The front door: push events
 
 `ReleaseService` subscribes to the repository's `push` webhook with
-[`GitHub.consumeRepositoryEvents`](/cloudflare/messaging/github-events)
+[`GitHub.consumeRepositoryEvents`](../messaging/github-events.md)
 and filters for release commits on `main` in ordinary handler code:
 
 ```typescript
@@ -54,7 +54,7 @@ just a string check on the commit title.
 ## One Durable Object per release
 
 `versions.getByName(commitId)` routes each release to a
-[Durable Object](/cloudflare/compute/durable-objects) keyed by the commit
+[Durable Object](../compute/durable-objects.md) keyed by the commit
 hash, so webhook redeliveries for the same commit land on the same
 instance instead of kicking off duplicate work:
 
@@ -114,7 +114,7 @@ example as the reference for the architecture, not a turnkey deploy.
 ## The DevBox: a container as tool backend
 
 Shell and filesystem tools need a real machine. `DevBox` is a
-[Cloudflare Container](/cloudflare/compute/run-a-container) with a typed
+[Cloudflare Container](../compute/run-a-container.md) with a typed
 RPC interface, implemented with Effect's `FileSystem` and
 `ChildProcessSpawner` running inside the container:
 
@@ -176,11 +176,11 @@ single typed program.
 
 ## Where next
 
-- [React to GitHub events](/cloudflare/messaging/github-events) — the
+- [React to GitHub events](../messaging/github-events.md) — the
   event source in depth: provisioning, signatures, typed payloads.
-- [Workflows](/cloudflare/compute/workflows) — durable multi-step
+- [Workflows](../compute/workflows.md) — durable multi-step
   execution if a release pipeline outgrows a single DO method.
-- [Containers](/cloudflare/compute/run-a-container) — the DevBox pattern:
+- [Containers](../compute/run-a-container.md) — the DevBox pattern:
   typed RPC into a Docker image.
-- [GitHub provider](/github) — repositories, Actions config, and the
+- [GitHub provider](../../github.md) — repositories, Actions config, and the
   rest of the CI/CD glue.

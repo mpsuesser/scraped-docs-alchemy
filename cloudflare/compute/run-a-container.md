@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a
@@ -116,7 +116,7 @@ environment.
 
 Containers have **RPC methods** — the same pattern you used on
 the `Counter` Durable Object in
-[Add a Durable Object](/cloudflare/compute/durable-objects).
+[Add a Durable Object](durable-objects.md).
 Anything you return from `Sandbox.of({ ... })` whose value is an
 `Effect` becomes a typed RPC method that callers can invoke
 through the typed handle.
@@ -371,8 +371,8 @@ The first deploy uploads the container image to Cloudflare and
 provisions the registry — expect it to take a minute or two longer
 than usual. The image here is built for you from the `main`
 entrypoint; to run a pre-built image instead, see
-[Bring your own image](/cloudflare/compute/containers#bring-your-own-image)
-and [Build & push images](/docker/build-and-push) in the Docker hub.
+[Bring your own image](containers.md#bring-your-own-image)
+and [Build & push images](../../docker/build-and-push.md) in the Docker hub.
 
 ## Verify
 
@@ -479,6 +479,6 @@ if (request.url === "/sandbox/exec" && request.method === "POST") {
 method retries with backoff while the container is still booting,
 so you don't have to coordinate readiness yourself.
 
-Next you'll [add a Workflow](/cloudflare/compute/workflows) to
+Next you'll [add a Workflow](workflows.md) to
 orchestrate multi-step durable work that the container or DOs can
 trigger — perfect for jobs that need to outlive any single request.

@@ -2,17 +2,17 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 This is the walkthrough for a plain React single-page app on
-[`Cloudflare.Website.Vite`](/cloudflare/frontend/vite): build the
+[`Cloudflare.Website.Vite`](vite.md): build the
 client assets, ship them to Cloudflare, and serve them through a
 Worker so your frontend and backend share one URL surface and one
 deploy. For the resource itself — what it does, its props, `memo`
 semantics, and dev mode — see the
-[Vite resource page](/cloudflare/frontend/vite).
+[Vite resource page](vite.md).
 
 Pick the path that fits where you're starting from:
 
@@ -193,7 +193,7 @@ Only `VITE_`-prefixed keys are inlined into the bundle, and
 time before the build runs. For the full semantics — `Redacted`
 unwrapping, what happens to non-prefixed keys, redeploys on
 env-only changes — see the
-[Vite resource's environment section](/cloudflare/frontend/vite#environment).
+[Vite resource's environment section](vite.md#environment).
 
 To inject the site's *own* URL — for canonical links, OG tags, or
 OAuth redirect URIs — use `Cloudflare.Worker.URL`. A site can't
@@ -257,7 +257,7 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 
 Your existing `vite.config.ts`, plugins, aliases, and `tsconfig`
 are all preserved — Alchemy merges its Cloudflare integration on
-top of your config (the [Vite resource page](/cloudflare/frontend/vite)
+top of your config (the [Vite resource page](vite.md)
 covers how). One thing to check first:
 
 :::caution[Remove @cloudflare/vite-plugin if present]
@@ -374,7 +374,7 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 });
 ```
 
-See [Local Development](/environments/local-development) for the full
+See [Local Development](../../environments/local-development.md) for the full
 model — how Workers run in `workerd`, how to attach a debugger, and
 how `dev` differs from `deploy`.
 
@@ -382,19 +382,19 @@ how `dev` differs from `deploy`.
 
 This page is the plain React SPA path. Other frameworks have
 their own landing pages, each flowing from the same
-[`Cloudflare.Website.Vite` resource](/cloudflare/frontend/vite):
+[`Cloudflare.Website.Vite` resource](vite.md):
 
-- [TanStack Start](/cloudflare/frontend/tanstack-start) — full-stack
+- [TanStack Start](tanstack-start.md) — full-stack
   React with server routes and runtime bindings
-- [React Router](/cloudflare/frontend/react-router) — SPA or React
+- [React Router](react-router.md) — SPA or React
   Server Components
-- [Vue](/cloudflare/frontend/vue) — Vue 3 SPA
-- [SolidStart](/cloudflare/frontend/solidstart) — SSR Solid
+- [Vue](vue.md) — Vue 3 SPA
+- [SolidStart](solidstart.md) — SSR Solid
 
 For frameworks whose build isn't driven by Vite alone, deploy the
 built output with
-[`Cloudflare.Website.StaticSite`](/cloudflare/frontend/static-site).
-The [Frontend overview](/cloudflare/frontend/frontends) lays out
+[`Cloudflare.Website.StaticSite`](static-site.md).
+The [Frontend overview](frontends.md) lays out
 which resource fits which framework.
 
 ## Add a backend resource
@@ -646,11 +646,11 @@ not a request, and the return value is the value itself (no
 `.json()`, no status codes to plumb).
 
 `toRpcAsync` is the async-consumer face of
-[Schemaless RPC](/apis/schemaless) — the same typed methods `Backend`
+[Schemaless RPC](../../apis/schemaless.md) — the same typed methods `Backend`
 exposes, decoded into `Promise`s instead of Effects.
 
 :::tip[Calling RPC from another Effect-native Worker?]
-Use [`Cloudflare.Workers.bindWorker(Backend)`](/providers/cloudflare/workers/worker)
+Use [`Cloudflare.Workers.bindWorker(Backend)`](https://alchemy.run/providers/cloudflare/workers/worker)
 instead of `toRpcAsync`. It returns the same shape with `Effect`
 return values, preserving typed errors and decoded streams instead
 of throwing them away.
@@ -658,6 +658,6 @@ of throwing them away.
 
 Your app now ships a Worker backend and a Vite frontend from the
 same `alchemy.run.ts`, deploying together with one command. Next
-you'll [run a Container](/cloudflare/compute/run-a-container) so each
+you'll [run a Container](../compute/run-a-container.md) so each
 Durable Object instance has its own long-lived process for
 executing untrusted code or running binaries.

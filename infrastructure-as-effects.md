@@ -2,13 +2,13 @@
 url: https://alchemy.run/infrastructure-as-effects
 title: "Infrastructure as Effects"
 description: "One Effect program models both your runtime code and the infrastructure it runs on — Functions carry code, Bindings wire resources into them, Phases split deploy from runtime, Layers package it all behind typed services."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Infrastructure as Effects extends Infrastructure as Code by combining application code and infrastructure configuration into a single type-safe program built from **Effects** and **Layers**.
 
-There is no separate “infra” project plus “handler” project — a Worker or Lambda Function is a [Resource](https://alchemy.run/infrastructure-as-code/resource) that ships its runtime code, with the resources it uses wired in as Bindings.
+There is no separate “infra” project plus “handler” project — a Worker or Lambda Function is a [Resource](infrastructure-as-code/resource.md) that ships its runtime code, with the resources it uses wired in as Bindings.
 
 ## The whole model in one Worker
 
@@ -38,21 +38,21 @@ export default Cloudflare.Worker(
 );
 ```
 
-- **[Functions & Servers](https://alchemy.run/infrastructure-as-effects/functions-and-servers)** — the Worker is a Resource that carries its handler; config and code deploy together.
-- **[Bindings](https://alchemy.run/infrastructure-as-effects/binding)** — `yield* Cloudflare.R2.ReadWriteBucket(Bucket)` declares the capability; the provided `ReadWriteBucketBinding` Layer is what wires it up — here as a native Worker binding — and hands back the typed client. The binding **is** the SDK; there is no `env.BUCKET`.
-- **[Phases](https://alchemy.run/infrastructure-as-effects/phases)** — the outer Effect runs at plantime to record bindings and again at cold start; the inner Effect runs per request.
-- **[Layers](https://alchemy.run/infrastructure-as-effects/layers)** — resources + bindings + runtime glue package into an Effect Layer behind a typed service, so implementations swap without touching consumers.
+- **[Functions & Servers](infrastructure-as-effects/functions-and-servers.md)** — the Worker is a Resource that carries its handler; config and code deploy together.
+- **[Bindings](infrastructure-as-effects/binding.md)** — `yield* Cloudflare.R2.ReadWriteBucket(Bucket)` declares the capability; the provided `ReadWriteBucketBinding` Layer is what wires it up — here as a native Worker binding — and hands back the typed client. The binding **is** the SDK; there is no `env.BUCKET`.
+- **[Phases](infrastructure-as-effects/phases.md)** — the outer Effect runs at plantime to record bindings and again at cold start; the inner Effect runs per request.
+- **[Layers](infrastructure-as-effects/layers.md)** — resources + bindings + runtime glue package into an Effect Layer behind a typed service, so implementations swap without touching consumers.
 
-Effect style is optional — bindings also work as plain props on an `async fetch` handler with a typed env via `InferEnv`; see [Effect handlers vs async handlers](https://alchemy.run/infrastructure-as-effects/functions-and-servers#effect-handlers-vs-async-handlers).
+Effect style is optional — bindings also work as plain props on an `async fetch` handler with a typed env via `InferEnv`; see [Effect handlers vs async handlers](infrastructure-as-effects/functions-and-servers.md#effect-handlers-vs-async-handlers).
 
 ## Where next
 
-1. [Functions & Servers](https://alchemy.run/infrastructure-as-effects/functions-and-servers) — Resources that carry runtime code.
-2. [Bindings](https://alchemy.run/infrastructure-as-effects/binding) — what `bind()` generates.
-3. [Event Sources](https://alchemy.run/infrastructure-as-effects/event-sources) — resources that trigger your Function, as Effect `Stream` s.
-4. [Sinks](https://alchemy.run/infrastructure-as-effects/sinks) — resources you write to, as Effect `Sink` s.
-5. [APIs](https://alchemy.run/apis) — schemaless RPC between your Functions and Servers, plus schema’d surfaces for trust boundaries.
-6. [Phases](https://alchemy.run/infrastructure-as-effects/phases) — plantime vs runtime in depth.
-7. [Layers](https://alchemy.run/infrastructure-as-effects/layers) — encapsulating infrastructure behind services.
-8. [Circular Bindings](https://alchemy.run/infrastructure-as-effects/circular-bindings) — two services that reference each other.
-9. [Custom Runtime](https://alchemy.run/infrastructure-as-effects/custom-runtime) — bring the model to a new compute target.
+1. [Functions & Servers](infrastructure-as-effects/functions-and-servers.md) — Resources that carry runtime code.
+2. [Bindings](infrastructure-as-effects/binding.md) — what `bind()` generates.
+3. [Event Sources](infrastructure-as-effects/event-sources.md) — resources that trigger your Function, as Effect `Stream` s.
+4. [Sinks](infrastructure-as-effects/sinks.md) — resources you write to, as Effect `Sink` s.
+5. [APIs](apis.md) — schemaless RPC between your Functions and Servers, plus schema’d surfaces for trust boundaries.
+6. [Phases](infrastructure-as-effects/phases.md) — plantime vs runtime in depth.
+7. [Layers](infrastructure-as-effects/layers.md) — encapsulating infrastructure behind services.
+8. [Circular Bindings](infrastructure-as-effects/circular-bindings.md) — two services that reference each other.
+9. [Custom Runtime](infrastructure-as-effects/custom-runtime.md) — bring the model to a new compute target.

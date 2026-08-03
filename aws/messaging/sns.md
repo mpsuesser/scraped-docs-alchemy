@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sns
 title: "SNS"
 description: "Create an SNS Topic, publish to it from a Lambda with the Publish binding, fan messages out to SQS queues, and consume notifications as a typed Stream."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **SNS** is AWS's pub/sub layer: publishers send a message to a
@@ -273,14 +273,14 @@ yield* SNS.Subscription("AnalyticsSubscription", {
 Changing a subscription's `protocol`, `topicArn`, or `endpoint`
 **replaces** the subscription; `attributes` update in place.
 From here each queue is a normal SQS consumer —
-[`SQS.consumeQueueMessages`](/aws/messaging/sqs) picks the messages up on
+[`SQS.consumeQueueMessages`](sqs.md) picks the messages up on
 whatever Lambda you point at it.
 
 ## SNS vs EventBridge vs SQS
 
 All three move messages; they sit at different points:
 
-- **[SQS](/aws/messaging/sqs)** is one queue, one consumer group.
+- **[SQS](sqs.md)** is one queue, one consumer group.
   Point-to-point work distribution: producers enqueue, a pool of
   workers drains. No fan-out — a message is consumed once.
 - **SNS** is broadcast. Every subscriber gets its own copy, with
@@ -289,7 +289,7 @@ All three move messages; they sit at different points:
   want push delivery (Lambda, HTTPS, email) rather than polling.
   Pair it with SQS (fan-out above) when each subscriber also
   needs buffering and retries.
-- **[EventBridge](/aws/messaging/eventbridge)** is a routed event bus:
+- **[EventBridge](eventbridge.md)** is a routed event bus:
   rules match on the event *content* and route to targets, with
   first-class support for AWS service events, schedules, and
   third-party sources. Choose it for event-driven architectures
@@ -299,12 +299,12 @@ All three move messages; they sit at different points:
 
 ## Where next
 
-- [SQS](/aws/messaging/sqs) — the queue side of the fan-out pattern:
+- [SQS](sqs.md) — the queue side of the fan-out pattern:
   consumers, batching, dead-letter queues.
-- [EventBridge](/aws/messaging/eventbridge) — content-based routing when
+- [EventBridge](eventbridge.md) — content-based routing when
   one topic per channel stops scaling.
-- [Lambda](/aws/compute/lambda) — the runtime both the publisher and
+- [Lambda](../compute/lambda.md) — the runtime both the publisher and
   consumer above are built on.
-- [`Topic` reference](/providers/aws/sns/topic) and
-  [`Subscription` reference](/providers/aws/sns/subscription) —
+- [`Topic` reference](https://alchemy.run/providers/aws/sns/topic) and
+  [`Subscription` reference](https://alchemy.run/providers/aws/sns/subscription) —
   every prop and attribute.

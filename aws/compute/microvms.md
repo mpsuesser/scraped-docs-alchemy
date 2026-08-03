@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/microvms
 title: "Lambda MicroVMs"
 description: "Build a Firecracker MicroVM image from TypeScript or a Dockerfile, then launch and drive isolated stateful instances from a Lambda Function with typed lifecycle bindings and RPC."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Lambda **MicroVM image** is a Firecracker snapshot that boots a fully
@@ -37,7 +37,7 @@ orchestrator imports; the default-exported `.make()` is what gets bundled into
 the image. The shape can expose both a typed **RPC method** (`hello`) and a
 raw **`fetch`** route — the in-VM runtime serves RPC over an internal
 `/__rpc__/*` protocol and falls through to `fetch` for everything else. The
-`{ fetch, ...rpcs }` shape is [Schemaless RPC](/apis/schemaless) — the same
+`{ fetch, ...rpcs }` shape is [Schemaless RPC](../../apis/schemaless.md) — the same
 contract every Function and Server returns:
 
 ```typescript
@@ -157,7 +157,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 ) {}
 ```
 
-The stub is [Schemaless RPC](/apis/schemaless) — the same typed client you get
+The stub is [Schemaless RPC](../../apis/schemaless.md) — the same typed client you get
 binding a Durable Object or Container into a Worker, here a MicroVM into a
 Lambda Function.
 
@@ -239,8 +239,8 @@ build-affecting prop changes; otherwise the image is left untouched.
 
 ## Where next
 
-- [Lambda](/aws/compute/lambda) — the Function model the orchestrator is built on.
-- [MicrovmImage API reference](/providers/aws/lambda/microvmimage) — all props,
+- [Lambda](lambda.md) — the Function model the orchestrator is built on.
+- [MicrovmImage API reference](https://alchemy.run/providers/aws/lambda/microvmimage) — all props,
   build modes, sizing, logging, and VPC egress via `NetworkConnector`.
-- [RunMicrovm](/providers/aws/lambda/runmicrovm) and the other per-instance
+- [RunMicrovm](https://alchemy.run/providers/aws/lambda/runmicrovm) and the other per-instance
   lifecycle bindings.

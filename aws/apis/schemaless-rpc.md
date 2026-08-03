@@ -2,12 +2,12 @@
 url: https://alchemy.run/aws/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC from a Lambda Function into a MicroVM with no schema — declare the image's Shape, connect, get the client."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 The pattern — what a Shape member may be, how the typed client arises, what
-crosses the wire — lives at [Schemaless RPC](/apis/schemaless). This page
+crosses the wire — lives at [Schemaless RPC](../../apis/schemaless.md). This page
 covers the AWS pairings. There is one today: **Lambda → Firecracker MicroVM**,
 riding the generic fetch transport — each call is a
 `POST https://<endpoint>/__rpc__/{name}`.
@@ -87,7 +87,7 @@ reaches `RUNNING`, and mints a short-lived auth token scoped to the RPC port.
 Wrap the launched instance in `Effect.ensuring(terminateMicrovm(...))` so a
 failing step never leaks a running VM. The full lifecycle — suspend, resume,
 list, the raw `fetch` route via `microvmAuthHeaders` — is in
-[MicroVMs](/aws/compute/microvms#launch-and-drive-microvms-from-a-lambda).
+[MicroVMs](../compute/microvms.md#launch-and-drive-microvms-from-a-lambda).
 
 ## Connect and call
 
@@ -115,9 +115,9 @@ after the VM reports `RUNNING`.
 
 There is no schemaless stub between Lambda Functions — Lambda-to-Lambda calls
 go through the `AWS.Lambda.InvokeFunction` binding (see
-[Lambda](/aws/compute/lambda)) or a Function URL, and typed cross-Lambda APIs
-should use [Effect RPC](/apis/effect-rpc). There is also no typed connector
-for [ECS Tasks](/aws/compute/ecs) yet — a Task returns the same
+[Lambda](../compute/lambda.md)) or a Function URL, and typed cross-Lambda APIs
+should use [Effect RPC](../../apis/effect-rpc.md). There is also no typed connector
+for [ECS Tasks](../compute/ecs.md) yet — a Task returns the same
 `{ fetch, ...rpcs }` Shape, but with no `connectMicrovm` equivalent you reach
 it over plain HTTP through its load balancer or serve Effect RPC from its
 `fetch` handler.
@@ -126,14 +126,14 @@ it over plain HTTP through its load balancer or serve Effect RPC from its
 
 Schemaless calls do no runtime validation — nothing decodes or sanitizes what
 arrives. At a trust boundary, or when class identity must survive the hop, use
-[Effect RPC](/apis/effect-rpc).
+[Effect RPC](../../apis/effect-rpc.md).
 
 ## Where next
 
-- [Schemaless RPC](/apis/schemaless) — the pattern: allowed members, the wire
+- [Schemaless RPC](../../apis/schemaless.md) — the pattern: allowed members, the wire
   codec, streams, errors
-- [MicroVMs](/aws/compute/microvms) — build images, drive instances, both call
+- [MicroVMs](../compute/microvms.md) — build images, drive instances, both call
   surfaces
-- [Effect RPC](/apis/effect-rpc) — schema-first RPC for trust boundaries
-- [Cloudflare Schemaless RPC](/cloudflare/apis/schemaless-rpc) — the Cloudflare
+- [Effect RPC](../../apis/effect-rpc.md) — schema-first RPC for trust boundaries
+- [Cloudflare Schemaless RPC](../../cloudflare/apis/schemaless-rpc.md) — the Cloudflare
   pairings: Workers, Durable Objects, Containers

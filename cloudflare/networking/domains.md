@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/domains
 title: "Domains & DNS"
 description: "Manage Cloudflare zones, DNS records, DNSSEC, and zone settings as resources — and safely adopt the domains you already have."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Your domain is infrastructure too. Alchemy manages Cloudflare
@@ -68,7 +68,7 @@ one, and from then on manages it like any other resource. The
 same gate can be lifted for an entire deploy with
 `alchemy deploy --adopt`. How
 ownership gating works under the hood is covered in
-[Concepts › Provider](/infrastructure-as-code/provider).
+[Concepts › Provider](../../infrastructure-as-code/provider.md).
 
 ## DNS records
 
@@ -133,7 +133,7 @@ Cloudflare infers the zone from the hostname — the zone must
 already exist in the account. Declaring the `Zone` resource in
 the same stack (or adopting the existing one, as above) is what
 satisfies that requirement end-to-end. The
-[custom domains guide](/cloudflare/networking/custom-domains) walks
+[custom domains guide](custom-domains.md) walks
 through the full setup: zone, DNS, and Worker wired together.
 
 ## Zone settings and DNSSEC
@@ -170,19 +170,19 @@ first managed it.
 
 Guides:
 
-- [Custom domains](/cloudflare/networking/custom-domains) — serve a
+- [Custom domains](custom-domains.md) — serve a
   Worker from your own hostname, end to end.
 
 Related:
 
-- [Workers](/cloudflare/compute/workers) — the compute your DNS points
+- [Workers](../compute/workers.md) — the compute your DNS points
   at.
-- [Email](/cloudflare/email) — route mail on the zone and send from
+- [Email](../email.md) — route mail on the zone and send from
   Workers.
 
 Reference:
 
-- [Zone API reference](/providers/cloudflare/zone/zone)
-- [Record API reference](/providers/cloudflare/dns/record)
-- [Setting API reference](/providers/cloudflare/zone/setting)
-- [Dnssec API reference](/providers/cloudflare/dns/dnssec)
+- [Zone API reference](https://alchemy.run/providers/cloudflare/zone/zone)
+- [Record API reference](https://alchemy.run/providers/cloudflare/dns/record)
+- [Setting API reference](https://alchemy.run/providers/cloudflare/zone/setting)
+- [Dnssec API reference](https://alchemy.run/providers/cloudflare/dns/dnssec)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute runtime of every alchemy app — define infrastructure and runtime behavior in one Effect program, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Cloudflare Worker is serverless JavaScript running in every
@@ -14,8 +14,8 @@ Effect — one program describes what to deploy *and* what it does.
 
 Reach for a Worker whenever you need compute: HTTP APIs, frontends,
 queue consumers, cron jobs, RPC services. Every other building block
-— [Durable Objects](/cloudflare/compute/durable-objects), [D1](/cloudflare/data/d1),
-[R2](/cloudflare/data/r2), [Queues](/cloudflare/messaging/queues) — is reached
+— [Durable Objects](durable-objects.md), [D1](../data/d1.md),
+[R2](../data/r2.md), [Queues](../messaging/queues.md) — is reached
 *through* a Worker via bindings.
 
 ## Deploy a Worker
@@ -124,13 +124,13 @@ Three things make this different from a `wrangler.toml` binding:
   `ReadWriteBucket` depending on what the Worker actually needs.
 
 Every building block follows the same shape — see
-[D1](/cloudflare/data/d1), [Queues](/cloudflare/messaging/queues), and
-[Hyperdrive](/cloudflare/data/hyperdrive), or walk through it step by step
-in [tutorial part 2](/cloudflare/tutorial/part-2).
+[D1](../data/d1.md), [Queues](../messaging/queues.md), and
+[Hyperdrive](../data/hyperdrive.md), or walk through it step by step
+in [tutorial part 2](../tutorial/part-2.md).
 
 ## Schemaless RPC
 
-This is the Cloudflare shape of [Schemaless RPC](/apis/schemaless) —
+This is the Cloudflare shape of [Schemaless RPC](../../apis/schemaless.md) —
 see that page for the full concept.
 
 Workers can call each other's methods directly — no HTTP routes, no
@@ -195,10 +195,10 @@ fabric — never the public internet — and `b.greet("world")` is
 type-checked against WorkerB's declared shape end-to-end.
 
 The same pattern works for [Durable
-Objects](/cloudflare/compute/durable-objects#schemaless-rpc). For external
+Objects](durable-objects.md#schemaless-rpc). For external
 clients across a trust boundary — where payloads need schema
 validation before they touch your code — reach for
-[Effect RPC](/cloudflare/apis/effect-rpc) instead.
+[Effect RPC](../apis/effect-rpc.md) instead.
 
 ## Isolate scope vs request scope
 
@@ -225,9 +225,9 @@ init closure **never runs** — acquire anything that needs cleanup
 (connections, pools) inside handlers, where it's scoped to the
 event. `Drizzle.Postgres` follows this pattern: one pool per event,
 opened on the first query, closed when the event settles — the
-[SQL connection lifecycle](/sql/effect-sql/lifecycle) spells out the
+[SQL connection lifecycle](../../sql/effect-sql/lifecycle.md) spells out the
 contract. See
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
 for the model across all runtimes.
 
 ## URLs & domains
@@ -281,7 +281,7 @@ const api = yield* Cloudflare.Worker("Api", {
 ```
 
 For zone setup, DNS records, and route patterns, see the
-[custom domains guide](/cloudflare/networking/custom-domains).
+[custom domains guide](../networking/custom-domains.md).
 
 ## Static assets
 
@@ -338,8 +338,8 @@ automatically, and a `.assetsignore` file excludes files from the
 upload.
 
 If the directory comes from a build command, use
-[StaticSite](/cloudflare/frontend/static-site); for Vite projects,
-use the [Vite resource](/cloudflare/frontend/vite).
+[StaticSite](../frontend/static-site.md); for Vite projects,
+use the [Vite resource](../frontend/vite.md).
 
 ## The Worker's own URL
 
@@ -389,7 +389,7 @@ export const Worker = Cloudflare.Worker("Worker", {
 Because the URL exists before the build, a `VITE_`-prefixed entry
 (`VITE_PUBLIC_URL: Cloudflare.Worker.URL`) is also inlined into a
 Vite site's client bundle — see
-[the site's own URL](/cloudflare/frontend/vite#the-sites-own-url).
+[the site's own URL](../frontend/vite.md#the-sites-own-url).
 
 ## Typed env for async Workers
 
@@ -416,7 +416,7 @@ export type WorkerEnv = Cloudflare.InferEnv<typeof Worker>;
 `InferEnv` maps each `env` entry to its native `workers-types`
 client — an R2 bucket becomes `R2Bucket`, a D1 database becomes
 `D1Database`, a Durable Object (or a
-[Container](/cloudflare/compute/containers#bind-on-an-async-worker),
+[Container](containers.md#bind-on-an-async-worker),
 which declares a container-backed DO class) becomes a typed
 `DurableObjectNamespace`, and `Config`/`Redacted` values become
 `string`. The handler stays plain JavaScript but the env can never
@@ -442,7 +442,7 @@ and a deployment routes traffic across up to two versions. By default
 alchemy deploys each new version at 100%. The `version` prop unlocks the
 other shapes: preview versions of another Worker, canaries, and gradual
 rollouts of a Worker's own deploys. The
-[Gradual deployments](/cloudflare/compute/gradual-deployments) guide
+[Gradual deployments](gradual-deployments.md) guide
 covers the full rollout workflow — ramping, rollback, smoke testing
 with version overrides, and pinning users to a version with version
 affinity.
@@ -567,33 +567,33 @@ and `InferEnv` types the entry as the native
 
 Guides that build on Workers:
 
-- [Gradual deployments](/cloudflare/compute/gradual-deployments) —
+- [Gradual deployments](gradual-deployments.md) —
   canary and ramp deploys across versions instead of cutting over.
-- [Custom domains](/cloudflare/networking/custom-domains) — serve
+- [Custom domains](../networking/custom-domains.md) — serve
   Workers from your own hostnames and routes.
-- [Effect HTTP API](/cloudflare/apis/effect-http-api) — a
+- [Effect HTTP API](../apis/effect-http-api.md) — a
   schema-validated HTTP API with `HttpApi`.
-- [Effect RPC](/cloudflare/apis/effect-rpc) — schema-typed
+- [Effect RPC](../apis/effect-rpc.md) — schema-typed
   procedures served from a Worker.
-- [Add a React SPA](/cloudflare/frontend/vite-spa) — ship a frontend
+- [Add a React SPA](../frontend/vite-spa.md) — ship a frontend
   from the same Stack.
-- [Frontend frameworks](/cloudflare/frontend/frontends) — TanStack
+- [Frontend frameworks](../frontend/frontends.md) — TanStack
   Start, React Router, SolidStart, Vue, and static sites.
 
 Related:
 
-- [Durable Objects](/cloudflare/compute/durable-objects) — stateful instances
+- [Durable Objects](durable-objects.md) — stateful instances
   behind your Worker.
-- [KV](/cloudflare/data/kv) — low-latency key-value reads at the edge.
-- [Queues](/cloudflare/messaging/queues) — background work with at-least-once
+- [KV](../data/kv.md) — low-latency key-value reads at the edge.
+- [Queues](../messaging/queues.md) — background work with at-least-once
   delivery.
-- [Workflows](/cloudflare/compute/workflows) — durable multi-step jobs that
+- [Workflows](workflows.md) — durable multi-step jobs that
   outlive a request.
-- [Secrets & env](/cloudflare/security/secrets-env) — bind `.env` values and
+- [Secrets & env](../security/secrets-env.md) — bind `.env` values and
   secrets into the Worker.
-- [Domains](/cloudflare/networking/domains) — zones, DNS records, and
+- [Domains](../networking/domains.md) — zones, DNS records, and
   certificates.
 
 Reference:
 
-- [Worker API reference](/providers/cloudflare/workers/worker)
+- [Worker API reference](https://alchemy.run/providers/cloudflare/workers/worker)

@@ -2,11 +2,11 @@
 url: https://alchemy.run/testing/testing-a-stack
 title: "Testing a Stack"
 description: "Deploy your real Stack once per suite, drive it over HTTP, tear it down."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](/testing/test-harness), the model at [Testing](/testing), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](/cloudflare/tutorial/part-3) and [AWS Tutorial Part 3](/aws/tutorial/part-3).
+This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
 
 ## Set up the harness
 
@@ -33,7 +33,7 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-Bun vs Vitest is a two-line import swap — see [Bun vs Vitest](/testing/test-harness#bun-vs-vitest).
+Bun vs Vitest is a two-line import swap — see [Bun vs Vitest](test-harness.md#bun-vs-vitest).
 
 ## Deploy once with beforeAll
 
@@ -60,7 +60,7 @@ The default hook timeout is 120s — give slow stacks more room:
 const stack = beforeAll(deploy(Stack), { timeout: 600_000 });
 ```
 
-`beforeAll` accessors compose — seed data in a second `beforeAll` that tests `yield*` alongside the stack; see [Hooks](/testing/test-harness#hooks).
+`beforeAll` accessors compose — seed data in a second `beforeAll` that tests `yield*` alongside the stack; see [Hooks](test-harness.md#hooks).
 
 ## Run it
 
@@ -70,7 +70,7 @@ Run the suite with your runner:
 bun test test/integ.test.ts
 ```
 
-The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test` [stage](/environments/stages) so they never clobber your dev deployment.
+The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test` [stage](../environments/stages.md) so they never clobber your dev deployment.
 
 ## Drive the live URL
 
@@ -96,7 +96,7 @@ test(
 );
 ```
 
-How the client is wired is covered in [Test harness](/testing/test-harness#httpclient-is-in-scope).
+How the client is wired is covered in [Test harness](test-harness.md#httpclient-is-in-scope).
 
 ## Retry the first request
 
@@ -153,7 +153,7 @@ afterAll.skipIf(!!process.env.NO_DESTROY)(destroy(Stack)); // keep alive with NO
 afterAll.skipIf(!process.env.CI)(destroy(Stack));          // destroy on CI only
 ```
 
-Locally, the deployed Stack plus cached state make re-runs near-instant. Hook semantics live in [Hooks](/testing/test-harness#hooks).
+Locally, the deployed Stack plus cached state make re-runs near-instant. Hook semantics live in [Hooks](test-harness.md#hooks).
 
 ## Run against an existing deployment
 
@@ -180,7 +180,7 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-See [State store](/state-store) for choosing a remote store.
+See [State store](../state-store.md) for choosing a remote store.
 
 ## CI
 
@@ -193,14 +193,14 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-Harness `deploy`/`destroy` never prompt for approval — `--yes` is only for CI workflows invoking the CLI (`alchemy deploy --stage pr-42 --yes`); see [Stage](/testing/test-harness#stage) and the [CI guide](/environments/ci) for full workflow YAML.
+Harness `deploy`/`destroy` never prompt for approval — `--yes` is only for CI workflows invoking the CLI (`alchemy deploy --stage pr-42 --yes`); see [Stage](test-harness.md#stage) and the [CI guide](../environments/ci.md) for full workflow YAML.
 
 ## Where next
 
-- [Testing](/testing) — the model behind the harness.
-- [Test harness](/testing/test-harness) — every helper, hook, and option on `Test.make`.
-- [Testing Providers](/testing/testing-providers) — lifecycle-testing a custom provider with `test.provider`.
-- [CI](/environments/ci) — running these suites in CI with per-PR stages.
-- [Cloudflare Tutorial Part 3](/cloudflare/tutorial/part-3) / [AWS Tutorial Part 3](/aws/tutorial/part-3) — your first integration test, step by step.
-- [State store](/state-store) — local vs remote state.
-- [Stages](/environments/stages) — isolating deployments per stage.
+- [Testing](../testing.md) — the model behind the harness.
+- [Test harness](test-harness.md) — every helper, hook, and option on `Test.make`.
+- [Testing Providers](testing-providers.md) — lifecycle-testing a custom provider with `test.provider`.
+- [CI](../environments/ci.md) — running these suites in CI with per-PR stages.
+- [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) / [AWS Tutorial Part 3](../aws/tutorial/part-3.md) — your first integration test, step by step.
+- [State store](../state-store.md) — local vs remote state.
+- [Stages](../environments/stages.md) — isolating deployments per stage.

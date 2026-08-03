@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Drizzle.Schema runs drizzle-kit generate as part of deploy — unambiguous schema changes regenerate automatically, ambiguous ones stop and ask you."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `Drizzle.Schema` puts `drizzle-kit generate` inside the deploy
@@ -143,8 +143,8 @@ export class Users extends Cloudflare.DurableObject<Users>()(
 
 `Drizzle.DurableObject` opens drizzle over the instance's own SQLite
 storage using the `drizzle-orm/effect-sqlite-do` integration — the
-same effect-native query surface as [`Drizzle.D1`](/sql/drizzle/d1)
-and [`Drizzle.Postgres`](/sql/drizzle/postgres). It lives in the
+same effect-native query surface as [`Drizzle.D1`](d1.md)
+and [`Drizzle.Postgres`](postgres.md). It lives in the
 object's inner Effect — the instance init, which runs only in the
 deployed object, before any request reaches its methods. The config
 passes the driver's options through — the `relations` make
@@ -184,13 +184,13 @@ state to tear down.
 
 `dialect` selects drizzle-kit's target: `"postgres"` (the default)
 for [Neon / PlanetScale / Hyperdrive-fronted
-Postgres](/sql/drizzle/postgres), `"sqlite"` for
-[D1](/sql/drizzle/d1). `mysql` uses the run-it-yourself flow above.
+Postgres](postgres.md), `"sqlite"` for
+[D1](d1.md). `mysql` uses the run-it-yourself flow above.
 
 ## Where next
 
-- [Postgres](/sql/drizzle/postgres) / [D1](/sql/drizzle/d1) — the
+- [Postgres](postgres.md) / [D1](d1.md) — the
   full schema-to-queries flow per database.
-- [Effect SQL migrations](/sql/effect-sql/migrations) — the same
+- [Effect SQL migrations](../effect-sql/migrations.md) — the same
   `migrationsDir` application without an ORM.
-- [Schema API reference](/providers/drizzle/schema)
+- [Schema API reference](https://alchemy.run/providers/drizzle/schema)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/setup
 title: "Setup"
 description: "Point alchemy at a Docker daemon — the active CLI context and the DOCKER_BIN override."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Register the provider in your stack:
@@ -41,8 +41,8 @@ environment variable, falling back to `docker` on the `PATH`.
 ## Registry credentials
 
 Registry auth is a per-resource prop, not global configuration.
-[`Image`](/providers/docker/image) and
-[`RemoteImage`](/providers/docker/remoteimage) accept a `registry`
+[`Image`](https://alchemy.run/providers/docker/image) and
+[`RemoteImage`](https://alchemy.run/providers/docker/remoteimage) accept a `registry`
 with `{ server, username, password }`, where `password` is a
 `Redacted` value:
 
@@ -65,8 +65,8 @@ setup stay intact.
 
 ## Next steps
 
-- [Docker overview](/docker) — resources and compositions.
-- [Run local services](/docker/local-services) — Postgres with a
+- [Docker overview](../docker.md) — resources and compositions.
+- [Run local services](local-services.md) — Postgres with a
   network, volume, and healthcheck.
-- [Build and push an image](/docker/build-and-push) — Dockerfile
+- [Build and push an image](build-and-push.md) — Dockerfile
   builds and registry push.

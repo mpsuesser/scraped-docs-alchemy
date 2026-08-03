@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 The `Counter` Durable Object you added in the previous part holds
@@ -188,7 +188,7 @@ first message after hibernation would broadcast to nobody.
 :::note
 The `state` *reference* is resolved in the outer (init) Effect, but
 `state.getWebSockets()` is
-[colored with `RuntimeContext`](/infrastructure-as-effects/layers#runtime-as-a-colored-function),
+[colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#runtime-as-a-colored-function),
 so it can only run in the inner (runtime) Effect — which is exactly
 where it needs to be, since it must re-run every time Cloudflare
 reconstructs the instance after hibernation.
@@ -566,6 +566,6 @@ test(
 ```
 
 You now have an interesting backend. Next you'll
-[add a React SPA](/cloudflare/frontend/vite-spa) so users have a UI
+[add a React SPA](../frontend/vite-spa.md) so users have a UI
 to talk to it — frontend and backend deploying together from the
 same `alchemy.run.ts`.

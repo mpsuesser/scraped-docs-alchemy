@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **Lambda** is Alchemy's default AWS runtime: a class that bundles
@@ -18,15 +18,15 @@ through the same pattern: S3 notifications
 (`Lambda.TableEventSource`).
 
 This page stands up the smallest possible function — a public
-HTTP endpoint — which the [S3](/aws/data/s3),
-[DynamoDB](/aws/data/dynamodb), [SQS](/aws/messaging/sqs), and
-[Kinesis](/aws/messaging/kinesis) pages then grow into a small
+HTTP endpoint — which the [S3](../data/s3.md),
+[DynamoDB](../data/dynamodb.md), [SQS](../messaging/sqs.md), and
+[Kinesis](../messaging/kinesis.md) pages then grow into a small
 event-driven system.
 
 ## Prerequisites
 
 Install Alchemy and connect your AWS account — see
-[Setup](/aws/setup).
+[Setup](../setup.md).
 
 ## Create the Stack
 
@@ -60,7 +60,7 @@ uses when AWS asks for physical resource names.
 IAM policy binding that ships with Alchemy, and resolves
 credentials from your Alchemy profile — SSO, environment
 variables, or stored keys, whichever you picked in
-[Setup](/aws/setup).
+[Setup](../setup.md).
 
 `state: AWS.state()` stores deploy state in an account-regional
 S3 bucket (`alchemy-state-{accountId}-{region}-an`), created
@@ -319,20 +319,20 @@ delivered on hard failures (a timeout reset kills the runtime
 without the signal). Flush caches and close connections there;
 anything that *must* happen belongs in the handler, scoped to the
 invocation. See
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
 for the model across all runtimes.
 
 ## Where next
 
-- [S3](/aws/data/s3) — add a bucket and bind read/write operations
+- [S3](../data/s3.md) — add a bucket and bind read/write operations
   into this function; IAM policies generated from the call
   sites, no policy JSON to hand-write.
-- [Secrets & env](/aws/security/secrets-env) — API keys from .env and
+- [Secrets & env](../security/secrets-env.md) — API keys from .env and
   Secrets Manager credentials for this function.
-- [REST API (API Gateway v1)](/aws/apis/api-gateway) — put an
+- [REST API (API Gateway v1)](../apis/api-gateway.md) — put an
   API Gateway REST API with stages and custom domains in front
   instead of a Function URL.
-- [Choosing a runtime](/aws/compute/choosing-a-runtime) — when ECS,
+- [Choosing a runtime](choosing-a-runtime.md) — when ECS,
   EKS, or EC2 fits better than Lambda.
-- [`Function` reference](/providers/aws/lambda/function) — every
+- [`Function` reference](https://alchemy.run/providers/aws/lambda/function) — every
   prop and attribute.

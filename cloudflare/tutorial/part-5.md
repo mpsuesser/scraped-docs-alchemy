@@ -2,13 +2,13 @@
 url: https://alchemy.run/cloudflare/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated deployments, PR previews, and remote state — with Cloudflare credentials managed as code."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-In [Part 4](/cloudflare/tutorial/part-4) you ran your stack locally. Now you'll
+In [Part 4](part-4.md) you ran your stack locally. Now you'll
 hand it off to GitHub Actions: pushes to `main` deploy to production,
 pull requests get isolated preview environments, and merged PRs clean
 up after themselves.
@@ -23,7 +23,7 @@ secret — all from code, all checked in.
 
 CI needs to share state across runs, so a local `.alchemy/` directory
 won't cut it. You already configured `Cloudflare.state()` back in
-[Part 1](/cloudflare/tutorial/part-1#configure-state), which deploys a Worker
+[Part 1](part-1.md#configure-state), which deploys a Worker
 backed by a Durable Object with SQLite. Every deploy — local or
 from CI — reads and writes state remotely through that Worker.
 
@@ -475,21 +475,21 @@ You now know how to:
   `Cloudflare.ApiToken.AccountApiToken`, push them to GitHub with
   `GitHub.Secret`, and deploy from Actions
 
-In [Part 6](/cloudflare/tutorial/part-6), you'll ship the Worker's
+In [Part 6](https://alchemy.run/cloudflare/tutorial/part-6), you'll ship the Worker's
 traces and logs to Axiom — with the datasets and ingest token
 declared in the same Stack as the Worker they observe.
 
 ## What's next
 
 - Go deeper on Cloudflare in the
-  [Cloudflare track](/cloudflare/compute/durable-objects) — layer
+  [Cloudflare track](../compute/durable-objects.md) — layer
   Durable Objects, hibernatable WebSockets, Containers, Workflows,
   and Queues onto the Worker you built
-- Read the [Resource Lifecycle](/infrastructure-as-code/resource-lifecycle)
+- Read the [Resource Lifecycle](../../infrastructure-as-code/resource-lifecycle.md)
   guide for all CLI flags and options
-- Explore the [CI guide](/environments/ci) for the AWS equivalents
+- Explore the [CI guide](../../environments/ci.md) for the AWS equivalents
   (OIDC and access keys) and more workflow patterns
-- Check out the [Testing a Stack](/testing/testing-a-stack) guide for
+- Check out the [Testing a Stack](../../testing/testing-a-stack.md) guide for
   more advanced testing patterns
-- Browse the [Providers](/providers) reference for all available
+- Browse the [Providers](https://alchemy.run/providers) reference for all available
   resources

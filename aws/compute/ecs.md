@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **ECS** (Elastic Container Service) is AWS's managed container
@@ -23,10 +23,10 @@ ECS has four primitives:
   load balancer.
 
 Alchemy models these directly:
-[`Cluster`](/providers/aws/ecs/cluster),
-[`Task`](/providers/aws/ecs/task) — a task definition plus
+[`Cluster`](https://alchemy.run/providers/aws/ecs/cluster),
+[`Task`](https://alchemy.run/providers/aws/ecs/task) — a task definition plus
 everything needed to build and publish its image — and
-[`Service`](/providers/aws/ecs/service). Each can run a plain
+[`Service`](https://alchemy.run/providers/aws/ecs/service). Each can run a plain
 container image, or an Effect program that Alchemy bundles into
 one.
 
@@ -61,7 +61,7 @@ props:
 - `image` — run a pre-built registry reference, mirrored into ECR
   (pull → tag → push, content-addressed).
 - `context` — build your own Dockerfile with your
-  [local Docker](/docker/setup). `dockerfile` is always a **path**,
+  [local Docker](../../docker/setup.md). `dockerfile` is always a **path**,
   defaulting to `${context}/Dockerfile`:
 
   ```typescript
@@ -121,7 +121,7 @@ Lambda and Cloudflare Workers.
 
 A `Task` is the target of the ECS control-plane bindings. From a
 Lambda function, a Service, or any other host, bind
-[`RunTask`](/providers/aws/ecs/runtask) in the **init phase** —
+[`RunTask`](https://alchemy.run/providers/aws/ecs/runtask) in the **init phase** —
 this grants the host `ecs:RunTask` plus `iam:PassRole` on the
 task's roles — then call it from a handler at **runtime**, where
 the cluster and task definition ARNs are injected automatically:
@@ -193,9 +193,9 @@ omitted the account's **default VPC** (and its per-AZ subnets) is
 used, and when `securityGroups` is omitted with
 `loadBalancer: true`, Alchemy provisions a security group that
 admits the listener port. For a real deployment, build a
-dedicated VPC with the [`Network`](/providers/aws/ec2/network)
+dedicated VPC with the [`Network`](https://alchemy.run/providers/aws/ec2/network)
 helper and pass `vpcId` + `subnets` — see
-[VPC & networking](/aws/networking).
+[VPC & networking](../networking.md).
 
 An effectful `Service` is the server counterpart: where a `Task`
 impl returns `{ run }`, a `Service` impl returns `{ fetch }`:
@@ -240,7 +240,7 @@ deployment controller type, switching between `launchType` and
 cost-sensitive workers, swap `launchType` (default `"FARGATE"`)
 for a `capacityProviderStrategy` mixing `FARGATE_SPOT` and
 `FARGATE` — see the
-[`Service` reference](/providers/aws/ecs/service) for the
+[`Service` reference](https://alchemy.run/providers/aws/ecs/service) for the
 placement, deployment, and Service Connect knobs.
 
 ## Run background work
@@ -292,7 +292,7 @@ kill still skips finalizers, as in any process).
 Each HTTP request still gets its own request `Scope`, released when
 the response settles — the same per-event contract as every other
 runtime. See
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
 for the model across all runtimes.
 
 ## Bindings
@@ -307,13 +307,13 @@ function that fans work out to containers.
 
 ## Where next
 
-- [Choosing a runtime](/aws/compute/choosing-a-runtime) — when Lambda,
+- [Choosing a runtime](choosing-a-runtime.md) — when Lambda,
   EKS, or EC2 fits better than ECS.
-- [VPC & networking](/aws/networking) — what the `Network`
+- [VPC & networking](../networking.md) — what the `Network`
   helper creates, and the primitives underneath it.
-- [EKS](/aws/compute/eks) — the same platform model on managed
+- [EKS](eks.md) — the same platform model on managed
   Kubernetes.
-- [`Task` reference](/providers/aws/ecs/task),
-  [`Service` reference](/providers/aws/ecs/service),
-  [`Cluster` reference](/providers/aws/ecs/cluster) — every prop
+- [`Task` reference](https://alchemy.run/providers/aws/ecs/task),
+  [`Service` reference](https://alchemy.run/providers/aws/ecs/service),
+  [`Cluster` reference](https://alchemy.run/providers/aws/ecs/cluster) — every prop
   and attribute.

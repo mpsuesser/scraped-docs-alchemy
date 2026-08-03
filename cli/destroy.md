@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/destroy
 title: "destroy"
 description: "Delete every resource in a stack — plan all existing resources for deletion, ask for approval, and remove them in dependency order."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -47,11 +47,11 @@ alchemy destroy --stage pr-42 --yes
 alchemy destroy --stage dev_sam
 ```
 
-`destroy` is scoped to one stack + stage and driven by the state store; to enumerate and delete everything a set of providers can see in the live account, see [nuke](/cli/nuke).
+`destroy` is scoped to one stack + stage and driven by the state store; to enumerate and delete everything a set of providers can see in the live account, see [nuke](nuke.md).
 
 ## Where next
 
-- [deploy](/cli/deploy) — bring the stack back
-- [nuke](/cli/nuke) — account-wide teardown, not scoped to a stack
-- [state](/cli/state) — inspect and clear the state the plan is driven by
-- [Stages](/environments/stages) — how environments are isolated
+- [deploy](deploy.md) — bring the stack back
+- [nuke](nuke.md) — account-wide teardown, not scoped to a stack
+- [state](state.md) — inspect and clear the state the plan is driven by
+- [Stages](../environments/stages.md) — how environments are isolated

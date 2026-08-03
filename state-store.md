@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store
 title: "State Store"
 description: "How Alchemy persists resource state between deploys to compute diffs and track infrastructure."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Alchemy persists resource state between deploys so it can compute diffs — comparing the desired state in your code against the current state of your infrastructure.
@@ -67,9 +67,7 @@ Alchemy.Stack(
 
 The first time you run `alchemy deploy`, `plan`, or `dev` against a stack configured with `Cloudflare.state()`, Alchemy can’t find the state-store Worker on your account and pauses to ask permission before deploying it. Confirming kicks off a one-time deploy of the state-store and its supporting resources:
 
-```
-$
-```
+*Interactive demonstration unavailable in static documentation.*
 
 What gets created:
 
@@ -127,10 +125,10 @@ The test harness (`alchemy/Test/Bun` and `alchemy/Test/Vitest`) handles state se
 
 ## Writing your own state store
 
-A state store is just an Effect `Layer` that provides the `State` service — back it with Postgres, S3, Redis, DynamoDB, or any other backend. See [Custom State Store](https://alchemy.run/state-store/custom-state-store) for the full walkthrough.
+A state store is just an Effect `Layer` that provides the `State` service — back it with Postgres, S3, Redis, DynamoDB, or any other backend. See [Custom State Store](state-store/custom-state-store.md) for the full walkthrough.
 
 ## Where next
 
-- [Custom State Store](https://alchemy.run/state-store/custom-state-store) — implement the `StateService` interface end-to-end.
-- [Testing Providers](https://alchemy.run/testing/testing-providers) — the in-memory store in practice.
-- [References](https://alchemy.run/infrastructure-as-code/references) — reading another stack’s outputs.
+- [Custom State Store](state-store/custom-state-store.md) — implement the `StateService` interface end-to-end.
+- [Testing Providers](testing/testing-providers.md) — the in-memory store in practice.
+- [References](infrastructure-as-code/references.md) — reading another stack’s outputs.

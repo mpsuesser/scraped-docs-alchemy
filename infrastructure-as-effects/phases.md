@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/phases
 title: "Phases"
 description: "Alchemy programs run in two phases — plantime/init drives the deploy, runtime handles requests. Knowing which is which is the key to writing Workers and Lambda Functions."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import DAG from "../../../components/DAG.astro";
@@ -43,14 +43,14 @@ The `bucket` value is established once during init and captured by
 the runtime closure. Init runs at most once per cold start; the
 runtime body runs per request with everything already wired up.
 Each phase has its own `Scope` with very different lifetimes —
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[Instance scope vs request scope](functions-and-servers.md#instance-scope-vs-request-scope)
 covers where cleanup can (and cannot) happen.
 
 The runtime phase is the *only* place where `Alchemy.RuntimeContext`
 is available. Any Effect whose requirements include `RuntimeContext`
 can only execute inside the runtime closure — the type system
 rejects it everywhere else. The next page builds the
-[colored-function model](/infrastructure-as-effects/layers#runtime-as-a-colored-function)
+[colored-function model](layers.md#runtime-as-a-colored-function)
 on top of this split.
 
 ## What runs when
@@ -96,7 +96,7 @@ variable / config key:
 | `runtime` | Running inside a deployed Worker or Lambda Function.                 |
 
 Most user code never reads this directly — but providers and
-[Bindings](/infrastructure-as-effects/binding) use it internally to behave
+[Bindings](binding.md) use it internally to behave
 differently across phases.
 
 ## `ALCHEMY_DEV`
@@ -138,7 +138,7 @@ stays small because the planning branch never executes.
 
 Which wiring the guard protects is decided by the implementation
 Layer you provided
-([Bindings](/infrastructure-as-effects/binding#a-contract-and-a-layer)).
+([Bindings](binding.md#a-contract-and-a-layer)).
 
 This is also how alchemy can let you write `bucket.get(...)` inside a
 Worker without bundling AWS / Cloudflare provisioning code: the
@@ -156,11 +156,11 @@ The init/runtime split lets you write code that:
    variable in the runtime body already knows which resource to
    talk to.
 
-Next: [Layers](/infrastructure-as-effects/layers) turns this phase
+Next: [Layers](layers.md) turns this phase
 split into a type-level model — `RuntimeContext` as a colored
 function.
 
 ## Where next
 
-- [Layers](/infrastructure-as-effects/layers) — `RuntimeContext` as a colored function; infrastructure behind service interfaces.
-- [State Store](/state-store) — where deploy results persist between runs.
+- [Layers](layers.md) — `RuntimeContext` as a colored function; infrastructure behind service interfaces.
+- [State Store](../state-store.md) — where deploy results persist between runs.

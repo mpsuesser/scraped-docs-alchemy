@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/s3-events
 title: "React to S3 Events"
 description: "Subscribe a Lambda Function to S3 bucket notifications, process them as an Effect Stream, and let Alchemy wire up the IAM and event-source plumbing."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Reading and writing S3 objects on demand is one half of the story.
@@ -198,4 +198,4 @@ so you get the same composition story whether the batch is one
 event or a hundred.
 
 Next we'll trade blob storage for structured records and
-[add a DynamoDB table](/aws/data/dynamodb).
+[add a DynamoDB table](../data/dynamodb.md).

@@ -2,23 +2,23 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request,
 so reach for it when data needs sanitizing on its way in — a web app
 or an external service calling your Lambda. Internal calls use
-[Schemaless RPC](/apis/schemaless) instead (on AWS, a Lambda Function
-driving a [MicroVM](/aws/compute/microvms)); the
-[RPC overview](/apis) has the full decision.
+[Schemaless RPC](../../apis/schemaless.md) instead (on AWS, a Lambda Function
+driving a [MicroVM](../compute/microvms.md)); the
+[RPC overview](../../apis.md) has the full decision.
 
-The [HTTP API guide](/aws/apis/effect-http-api) showed how to
+The [HTTP API guide](effect-http-api.md) showed how to
 build REST-style endpoints with schema validation. Effect RPC takes
 a different angle — you define **procedures** instead of HTTP
 endpoints, and you get a fully typed client for free with no URL
 construction or manual serialization.
-[Effect RPC](/apis/effect-rpc) covers the host-agnostic core; this
+[Effect RPC](../../apis/effect-rpc.md) covers the host-agnostic core; this
 page covers the Lambda side — a public Function URL via `url: true`,
 and binding implementations provided with
 `Layer.mergeAll(AWS.DynamoDB.GetItemHttp, AWS.DynamoDB.PutItemHttp)`.
@@ -396,10 +396,10 @@ explicitly.
 
 - **External Effect/TypeScript consumers** — this page.
 - **External plain-HTTP consumers** (curl, non-TypeScript clients) —
-  [Effect HTTP API on Lambda](/aws/apis/effect-http-api).
+  [Effect HTTP API on Lambda](effect-http-api.md).
 - **Internal service-to-service calls** —
-  [Schemaless RPC](/apis/schemaless).
-- **The full decision** — [RPC overview](/apis).
+  [Schemaless RPC](../../apis/schemaless.md).
+- **The full decision** — [RPC overview](../../apis.md).
 
 ## Go further
 
@@ -410,17 +410,17 @@ a cloud-agnostic `JobStorage` service (with a drop-in S3
 implementation), publishes job-created notifications to SNS, fans
 table changes out to SQS via DynamoDB Streams, and adds a CloudWatch
 dashboard and alarm. The
-[Layers](/infrastructure-as-effects/layers) page
+[Layers](../../infrastructure-as-effects/layers.md) page
 explains the service-Layer pattern it uses.
 
 ## Where next
 
-- [Lambda](/aws/compute/lambda) — how the Function class, Function URLs, and
+- [Lambda](../compute/lambda.md) — how the Function class, Function URLs, and
   the test harness work.
-- [Effect HTTP API on Lambda](/aws/apis/effect-http-api) — the
+- [Effect HTTP API on Lambda](effect-http-api.md) — the
   REST-style sibling of this guide, same wiring.
-- [Effect RPC on Workers](/cloudflare/apis/effect-rpc) — the same
+- [Effect RPC on Workers](../../cloudflare/apis/effect-rpc.md) — the same
   `RpcGroup` deployed to Cloudflare, plus streaming and Durable
   Object routing.
-- [DynamoDB](/aws/data/dynamodb) — the table resource and the rest of its
+- [DynamoDB](../data/dynamodb.md) — the table resource and the rest of its
   bindings.

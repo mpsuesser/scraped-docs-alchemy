@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/websites
 title: "Websites"
 description: "Deploy static sites and Vite apps to S3 and CloudFront as a single StaticSite resource."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **`AWS.Website.StaticSite`** deploys a static site — plain HTML
@@ -17,7 +17,7 @@ an API) behind one distribution, compose it with
 ## Prerequisites
 
 Install Alchemy and connect your AWS account — see
-[Setup](/aws/setup).
+[Setup](../setup.md).
 
 ## Deploy a static site
 
@@ -174,10 +174,10 @@ One `StaticSite` fans out into the whole S3 + CloudFront stack:
 
 ## Where next
 
-- [Static site guide](/aws/frontend/static-site) — an end-to-end
+- [Static site guide](static-site.md) — an end-to-end
   walkthrough from empty directory to custom domain.
-- [Lambda](/aws/compute/lambda) — deploy an API to route behind the same
+- [Lambda](../compute/lambda.md) — deploy an API to route behind the same
   Router.
-- [`StaticSite` reference](/providers/aws/website/staticsite)
-  and [`Router` reference](/providers/aws/website/router) —
+- [`StaticSite` reference](https://alchemy.run/providers/aws/website/staticsite)
+  and [`Router` reference](https://alchemy.run/providers/aws/website/router) —
   every prop and attribute.

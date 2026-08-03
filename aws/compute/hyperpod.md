@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/hyperpod
 title: "HyperPod"
 description: "Provision SageMaker HyperPod clusters — Slurm or EKS orchestrated — and run ML workloads on them with sbatch, raw manifests, or effectful Jobs with task governance."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **SageMaker HyperPod** is AWS's persistent fleet for ML training
@@ -27,12 +27,12 @@ The HyperPod primitives:
   and per-team compute quotas reserve capacity.
 
 Alchemy models these with
-[`Cluster`](/providers/aws/sagemaker/cluster),
-[`ClusterSchedulerConfig`](/providers/aws/sagemaker/clusterschedulerconfig),
-and [`ComputeQuota`](/providers/aws/sagemaker/computequota), and
+[`Cluster`](https://alchemy.run/providers/aws/sagemaker/cluster),
+[`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker/clusterschedulerconfig),
+and [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker/computequota), and
 EKS workloads opt onto HyperPod nodes with the `hyperpod` prop on
-[`Deployment`](/providers/aws/eks/deployment) and
-[`Job`](/providers/aws/eks/job).
+[`Deployment`](https://alchemy.run/providers/aws/eks/deployment) and
+[`Job`](https://alchemy.run/providers/aws/eks/job).
 
 ## Choose an orchestrator
 
@@ -135,7 +135,7 @@ enforces a few constraints, all encoded in the example:
   must be installed on the EKS cluster before the HyperPod
   cluster attaches — SageMaker validates it. The example fetches
   the chart with an `Action` and applies it with
-  [`HelmChart`](/providers/aws/eks/helmchart).
+  [`HelmChart`](https://alchemy.run/providers/aws/eks/helmchart).
 
 ```typescript
 const eks = yield* AWS.EKS.Cluster("Orchestrator", {
@@ -169,14 +169,14 @@ const hyperpod = yield* AWS.SageMaker.Cluster("HyperPod", {
 ```
 
 HyperPod nodes must live in **private subnets** — the
-[`Network`](/providers/aws/ec2/network) helper with `nat:
+[`Network`](https://alchemy.run/providers/aws/ec2/network) helper with `nat:
 "single"` builds a suitable VPC.
 
 ## Run workloads on HyperPod nodes
 
 HyperPod nodes are ordinary EKS nodes carrying well-known labels.
-[`Deployment`](/providers/aws/eks/deployment) and
-[`Job`](/providers/aws/eks/job) opt onto them with the `hyperpod`
+[`Deployment`](https://alchemy.run/providers/aws/eks/deployment) and
+[`Job`](https://alchemy.run/providers/aws/eks/job) opt onto them with the `hyperpod`
 prop. The instance-group keys carry through to the cluster's
 attributes as types, so the reference is typed per key (a typo'd
 group name is a compile error), the workload is connected to the
@@ -203,7 +203,7 @@ const train = yield* AWS.EKS.Job(
 
 For anything the typed surface doesn't cover — a Kubeflow
 `PyTorchJob`, a custom operator — apply a raw
-[`Manifest`](/providers/aws/eks/manifest) pinned by the node
+[`Manifest`](https://alchemy.run/providers/aws/eks/manifest) pinned by the node
 labels directly:
 
 ```typescript
@@ -265,9 +265,9 @@ hyperpod: {
 
 - [`examples/aws-hyperpod`](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-hyperpod)
   — both orchestrators, every workload tier, task governance
-- [EKS](/aws/compute/eks) — the Kubernetes surface HyperPod
+- [EKS](eks.md) — the Kubernetes surface HyperPod
   workloads ride on
-- [`Cluster`](/providers/aws/sagemaker/cluster),
-  [`ClusterSchedulerConfig`](/providers/aws/sagemaker/clusterschedulerconfig),
-  [`ComputeQuota`](/providers/aws/sagemaker/computequota) — API
+- [`Cluster`](https://alchemy.run/providers/aws/sagemaker/cluster),
+  [`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker/clusterschedulerconfig),
+  [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker/computequota) — API
   reference

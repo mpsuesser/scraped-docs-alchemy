@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/schemaless
 title: "Schemaless RPC"
 description: "The pattern behind typed, schema-free RPC — what an RPC member may be, how the typed client arises, how calls travel over the wire, and where the limits are."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Schemaless RPC is the default for internal communication between the
@@ -15,7 +15,7 @@ per-request decode cost.
 ## The shape
 
 RPC is a feature of every
-[Functions & Servers](/infrastructure-as-effects/functions-and-servers)
+[Functions & Servers](../infrastructure-as-effects/functions-and-servers.md)
 runtime — the interface its Effectful Constructor returns may
 include methods alongside `fetch`:
 
@@ -165,10 +165,10 @@ The codec rules: tagged errors keep `_tag` and all own enumerable fields, and ar
 
 Arguments and results must survive the wire codec: structured clone on the native channel, JSON on the fetch transport. Stream elements must be JSON values or `Uint8Array` (binary is base64-tagged on the fetch transport so it round-trips). Functions and callbacks don't serialize. Class identity is always stripped. And because every property access on a stub dispatches remotely (bar the host's own `fetch`/`connect` pass-through), there are no local fields — the stub is only its methods.
 
-There is zero runtime validation anywhere in the stub or the server. That is the point — no schema to maintain, no per-request decode cost — and the trade-off: nothing sanitizes what arrives. Both sides are your code, deployed together and typed from the same Shape, which is why that trade is safe internally. At a trust boundary — external callers, versioned APIs, untrusted input — reach for schema-validated [Effect RPC](/apis/effect-rpc) instead.
+There is zero runtime validation anywhere in the stub or the server. That is the point — no schema to maintain, no per-request decode cost — and the trade-off: nothing sanitizes what arrives. Both sides are your code, deployed together and typed from the same Shape, which is why that trade is safe internally. At a trust boundary — external callers, versioned APIs, untrusted input — reach for schema-validated [Effect RPC](effect-rpc.md) instead.
 
 ## Where next
 
-- [Schemaless RPC on Cloudflare](/cloudflare/apis/schemaless-rpc) — every Cloudflare pairing: Worker → Worker, Worker → Durable Object, another script's Durable Object, Containers, and async consumers.
-- [Schemaless RPC on AWS](/aws/apis/schemaless-rpc) — Lambda → MicroVM, plus what AWS does not yet have a schemaless stub for.
-- [Effect RPC](/apis/effect-rpc) — schema-validated RPC for trust boundaries.
+- [Schemaless RPC on Cloudflare](../cloudflare/apis/schemaless-rpc.md) — every Cloudflare pairing: Worker → Worker, Worker → Durable Object, another script's Durable Object, Containers, and async consumers.
+- [Schemaless RPC on AWS](../aws/apis/schemaless-rpc.md) — Lambda → MicroVM, plus what AWS does not yet have a schemaless stub for.
+- [Effect RPC](effect-rpc.md) — schema-validated RPC for trust boundaries.

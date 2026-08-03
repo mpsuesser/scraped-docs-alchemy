@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/stack
 title: "Stacks"
 description: "A Stack is a collection of Resources deployed together as a unit."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import StackOutputsTerminal from "../../../components/marketing-islands/StackOutputsTerminal.tsx";
@@ -36,7 +36,7 @@ export default Alchemy.Stack(
 
 1. **Name** — identifies this stack in state storage
 2. **Options** — `providers` and `state`, both required (see
-   [State Store](/state-store) for the available state layers)
+   [State Store](../state-store.md) for the available state layers)
 3. **Effect** — a generator that declares resources and returns outputs
 
 :::note[`alchemy.run.ts` is a convention]
@@ -49,7 +49,7 @@ alchemy deploy infra/my-stack.ts
 alchemy destroy stacks/github.ts
 ```
 
-See the [CLI reference](/cli/deploy) for the full invocation
+See the [CLI reference](../cli/deploy.md) for the full invocation
 syntax.
 :::
 
@@ -93,8 +93,8 @@ $ alchemy deploy --stage prod        # -> myapp-prod-photos-7d4e
 ```
 
 For naming patterns, isolation, and per-stage configuration see
-[Stages](/environments/stages). Credentials per environment are managed
-via [Profiles](/environments/profiles).
+[Stages](../environments/stages.md). Credentials per environment are managed
+via [Profiles](../environments/profiles.md).
 
 ## Accessing the Stack
 
@@ -181,16 +181,16 @@ export default Alchemy.Stack(
 frontend reads `sam` backend, `pr-42` reads `pr-42`. Use
 `Backend.stage.<name>` to pin to a specific stage instead.
 
-See [References](/infrastructure-as-code/references) for the underlying
-operators and [Monorepo](/project-structure/monorepo) for the
+See [References](references.md) for the underlying
+operators and [Monorepo](../project-structure/monorepo.md) for the
 end-to-end walkthrough (package layout, schema sharing, deploy
 ordering).
 
 A stack is just the container — the things it deploys are
-[Resources](/infrastructure-as-code/resource).
+[Resources](resource.md).
 
 ## Where next
 
-- [Resources](/infrastructure-as-code/resource) — the named entities a stack deploys.
-- [Stages](/environments/stages) — naming, isolation, per-stage configuration.
-- [Monorepo](/project-structure/monorepo) — one stack or many across packages.
+- [Resources](resource.md) — the named entities a stack deploys.
+- [Stages](../environments/stages.md) — naming, isolation, per-stage configuration.
+- [Monorepo](../project-structure/monorepo.md) — one stack or many across packages.

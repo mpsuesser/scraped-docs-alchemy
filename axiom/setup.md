@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/setup
 title: "Setup"
 description: "Connect alchemy to Axiom — account, credentials, and profiles."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Sign up at [axiom.co](https://axiom.co) and create an API token in
@@ -25,9 +25,9 @@ The next `alchemy login` adds an `Axiom` step with two options:
 - **Stored token** — an API token or personal access token entered
   interactively, saved under `~/.alchemy/credentials/<profile>/`.
 
-See [Profiles](/environments/profiles) for how credentials are stored
+See [Profiles](../environments/profiles.md) for how credentials are stored
 and switched.
 
 ## Next steps
 
-- [Axiom overview](/axiom) — resources and compositions.
+- [Axiom overview](../axiom.md) — resources and compositions.

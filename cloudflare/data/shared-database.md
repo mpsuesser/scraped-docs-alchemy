@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/data/shared-database
 title: "Shared database across stages"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, copy-on-write branches, no extra clusters."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-[Stages](/environments/stages) make it cheap to spin up isolated copies
+[Stages](../../environments/stages.md) make it cheap to spin up isolated copies
 of a stack — per-developer, `pr-42`, `prod`. Most resources should
 be isolated. But some — a Neon Postgres project, a shared S3
 bucket, a global rate limiter — are too expensive or too stateful
@@ -16,7 +16,7 @@ shared instance instead.
 `Resource.ref(id, { stage })` reads a deployed resource's
 attributes from another stage of the same stack — typed, lazy,
 resolved at plan time against the persisted state store. See
-[References](/infrastructure-as-code/references) for the full reference surface
+[References](../../infrastructure-as-code/references.md) for the full reference surface
 (`Output.ref`, `Output.stackRef`, `Stack.stage`).
 
 The example we'll build: a Neon Postgres project that's owned by
@@ -190,7 +190,7 @@ stage's perspective.
 ## The same pattern with PlanetScale
 
 `Resource.ref` isn't Neon-specific. The
-[PlanetScale](/planetscale) examples use the identical shape — a
+[PlanetScale](../../planetscale.md) examples use the identical shape — a
 long-lived `PostgresDatabase` owned by a staging tier, referenced
 from `pr-*` stages that only own the ephemeral pieces (branch,
 role, Hyperdrive, Worker):
@@ -240,7 +240,7 @@ const project = yield* Neon.Project.ref("app-db", {
 The lookup is `{ stack, stage, id }` — change any of them and
 you're pointing at a different deployed resource. For pulling a
 whole stack's outputs (instead of a single resource) see the
-multi-stack section of [Monorepos](/project-structure/monorepo).
+multi-stack section of [Monorepos](../../project-structure/monorepo.md).
 
 ## When to use which
 
@@ -248,18 +248,18 @@ multi-stack section of [Monorepos](/project-structure/monorepo).
 | ------------------------------------------- | ---------------------------------------------- |
 | Reference a single resource, same stack, different stage | `Resource.ref(id, { stage })`            |
 | Reference a single resource, different stack | `Resource.ref(id, { stack, stage })`           |
-| Reference an entire stack's outputs         | `Backend.stage[name]` ([guide](/project-structure/monorepo))             |
-| Reference an arbitrary deployed Output      | [`Output.ref`](/infrastructure-as-code/outputs#ref)          |
+| Reference an entire stack's outputs         | `Backend.stage[name]` ([guide](../../project-structure/monorepo.md))             |
+| Reference an arbitrary deployed Output      | [`Output.ref`](../../infrastructure-as-code/outputs.md#ref)          |
 
 All four resolve through the same state store — they just differ
 in what shape they return.
 
 ## Related
 
-- [Resource](/infrastructure-as-code/resource#ref) — `Resource.ref` reference.
-- [Stages](/environments/stages) — naming conventions for `pr-*`,
+- [Resource](../../infrastructure-as-code/resource.md#ref) — `Resource.ref` reference.
+- [Stages](../../environments/stages.md) — naming conventions for `pr-*`,
   `dev_*`, `staging`, `prod`.
-- [Monorepos](/project-structure/monorepo) — whole-stack references via
+- [Monorepos](../../project-structure/monorepo.md) — whole-stack references via
   typed `Stack` handles.
-- [Neon](/neon) and [PlanetScale](/planetscale) — the two database
+- [Neon](../../neon.md) and [PlanetScale](../../planetscale.md) — the two database
   providers used in this guide.

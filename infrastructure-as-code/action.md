@@ -2,12 +2,12 @@
 url: https://alchemy.run/infrastructure-as-code/action
 title: "Actions"
 description: "A node in the dependency graph that runs an Effect during apply when its inputs change."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 An **Action** is a node in the stack's dependency graph that runs an
-arbitrary Effect during `apply`. Unlike a [Resource](/infrastructure-as-code/resource), it has
+arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has
 no provider lifecycle — no replace, no read, no delete. The engine just
 diffs the resolved input against the last persisted hash and either runs
 the body or skips it.
@@ -36,7 +36,7 @@ rows.rows // Output<number>
 ```
 
 The body Effect receives the **resolved** input — any
-[Output](/infrastructure-as-code/outputs) references in the input are evaluated against the
+[Output](outputs.md) references in the input are evaluated against the
 current tracker before the body runs.
 
 ### Init constructor (pulling in dependencies)
@@ -105,7 +105,7 @@ bindings and Output accessors below work here too.
 
 An Action's body often needs to *talk to* the resources in your stack —
 seed a database, warm a cache, enqueue a job. Bindings like
-[`Cloudflare.D1.QueryDatabase`](/cloudflare/data/d1) normally resolve
+[`Cloudflare.D1.QueryDatabase`](../cloudflare/data/d1.md) normally resolve
 against a deployed Worker's runtime environment, which an Action doesn't
 have. Provide the binding's **`*Local`** layer instead: it talks to the
 service over the provider's HTTP API using your current CLI credentials.
@@ -141,7 +141,7 @@ Version Metadata, service bindings, …) have no Local variant.
 ### Reading a resource's Outputs
 
 Inside an Action you can `yield*` a resource
-[Output](/infrastructure-as-code/outputs) to get an accessor that
+[Output](outputs.md) to get an accessor that
 resolves at apply time — after the resource exists:
 
 ```typescript
@@ -208,7 +208,7 @@ Cycles are rejected at plan time just like resource cycles.
 - **Not a Resource.** No `diff`/`read`/`reconcile`/`delete`. If you
   need lifecycle management of a cloud entity, model it as a Resource.
 - **Not a runtime function.** An Action runs at deploy time. To call code
-  from a deployed Worker or Lambda, see [Functions & Servers](/infrastructure-as-effects/functions-and-servers).
+  from a deployed Worker or Lambda, see [Functions & Servers](../infrastructure-as-effects/functions-and-servers.md).
 - **Not idempotent for free.** The engine guarantees the body runs
   only when inputs change, but the body itself must tolerate retries
   on apply restart (its `running` state is persisted but not its

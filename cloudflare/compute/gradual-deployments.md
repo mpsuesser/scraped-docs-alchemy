@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/gradual-deployments
 title: "Gradual deployments"
 description: "Roll out Worker deploys incrementally — upload preview versions, canary a percentage of live traffic, ramp to 100%, pin users to a version during the rollout, and verify which version served each request."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Every deploy of a Worker uploads an immutable
@@ -291,7 +291,7 @@ export default Cloudflare.Worker(
 );
 ```
 
-See [Version metadata](/cloudflare/compute/workers#version-metadata)
+See [Version metadata](workers.md#version-metadata)
 for the async-Worker variant.
 
 ## What a version carries
@@ -326,15 +326,15 @@ Platform limits to plan around:
   cannot ride a rollout (deploy them at 100% first), and a version
   worker cannot host DO or Workflow classes — host them on the parent
   and reference them
-  [cross-script](/cloudflare/compute/cross-worker-durable-object).
+  [cross-script](cross-worker-durable-object.md).
 - Workers that implement Durable Objects do not get preview URLs.
-- [Workers Cache](/cloudflare/compute/cache) is per-version by
+- [Workers Cache](cache.md) is per-version by
   default, so every version starts cold; `crossVersionCache: true`
   shares it across versions.
 
 ## Containers roll out by instance, not by request
 
-[Containers](/cloudflare/compute/containers) shift gradually by
+[Containers](containers.md) shift gradually by
 replacing running *instances* with the new image in steps — there is
 no request-level split between two images:
 
@@ -353,16 +353,16 @@ Alchemy creates the rollout automatically whenever the image or
 configuration changes. The fronting Worker cuts over immediately while
 instances roll, so keep the Worker-to-container protocol compatible
 across both images until the rollout completes. See
-[Rollouts](/cloudflare/compute/containers#rollouts) in the Containers
+[Rollouts](containers.md#rollouts) in the Containers
 guide.
 
 ## Where next
 
-- [Workers](/cloudflare/compute/workers) — the full Worker reference,
+- [Workers](workers.md) — the full Worker reference,
   including the `version` prop and URLs.
-- [Custom domains](/cloudflare/networking/custom-domains) — serve the
+- [Custom domains](../networking/custom-domains.md) — serve the
   rollout from your own hostnames.
-- [Workers Cache](/cloudflare/compute/cache) — edge caching and the
+- [Workers Cache](cache.md) — edge caching and the
   cross-version cache.
 - [Cloudflare's gradual deployments docs](https://developers.cloudflare.com/workers/configuration/versions-and-deployments/gradual-deployments/)
   — the underlying platform feature.

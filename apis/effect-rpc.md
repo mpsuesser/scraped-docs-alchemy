@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-rpc
 title: "Effect RPC"
 description: "Schema-first RPC for trust boundaries — declare procedures, construct handler Layers, derive typed clients from the same schema."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect RPC is schema-first: every procedure declares `payload`,
@@ -13,7 +13,7 @@ boundary** — a web app or an external service calling into your
 stack. That validation has a per-request price (a frame parse, a
 Schema decode of the payload, a Schema encode of the result —
 mirrored on the client), so for internal service-to-service calls it
-is **discouraged**: [Schemaless RPC](/apis/schemaless) gives you the
+is **discouraged**: [Schemaless RPC](schemaless.md) gives you the
 same typed client with no schema, no runtime checking, and no
 per-request validation cost.
 
@@ -116,8 +116,8 @@ server, so it is safe inside a host's Init phase (which also executes
 at plan time); each handler receives the decoded payload and returns
 an `Effect` that succeeds or fails with the declared schemas, and the
 storage-backed bodies live on the hub pages — R2 in
-[Effect RPC on Workers](/cloudflare/apis/effect-rpc), DynamoDB in
-[Effect RPC on Lambda](/aws/apis/effect-rpc).
+[Effect RPC on Workers](../cloudflare/apis/effect-rpc.md), DynamoDB in
+[Effect RPC on Lambda](../aws/apis/effect-rpc.md).
 
 ## Serve it
 
@@ -141,8 +141,8 @@ rpcs require `RpcSerialization.layerNdjson` — whichever you pick,
 the client's serialization layer must match the server's. A Lambda
 Function with `url: true` or a Cloudflare Worker returns it as
 `{ fetch }` — host wiring, storage binding Layers, and deploy live
-on [Workers](/cloudflare/apis/effect-rpc) and
-[Lambda](/aws/apis/effect-rpc).
+on [Workers](../cloudflare/apis/effect-rpc.md) and
+[Lambda](../aws/apis/effect-rpc.md).
 
 ## A typed client
 
@@ -187,12 +187,12 @@ and the serialization layer must match the server's.
 
 ## Where next
 
-- [Effect RPC on Workers](/cloudflare/apis/effect-rpc) — full Worker
+- [Effect RPC on Workers](../cloudflare/apis/effect-rpc.md) — full Worker
   wiring: R2-backed handlers, streaming rpcs, the `RpcWorker` and
   `RpcDurableObject` sugar, typed in-account bindings, the DO bridge.
-- [Effect RPC on Lambda](/aws/apis/effect-rpc) — full Lambda wiring:
+- [Effect RPC on Lambda](../aws/apis/effect-rpc.md) — full Lambda wiring:
   DynamoDB bindings, IAM, Function URL, deploy.
-- [Effect HTTP](/apis/effect-http) — the same trust boundary as real
+- [Effect HTTP](effect-http.md) — the same trust boundary as real
   REST endpoints, for non-Effect consumers.
-- [Schemaless RPC](/apis/schemaless) — the default for internal
+- [Schemaless RPC](schemaless.md) — the default for internal
   calls.

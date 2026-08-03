@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/monorepo
 title: "Monorepo"
 description: "Two ways to organize an Alchemy monorepo — one Stack at the workspace root, or one Stack per package wired with typed references."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A monorepo is a workspace with a backend package and a frontend
@@ -24,7 +24,7 @@ One `alchemy.run.ts` at the workspace root deploys everything in
 one plan. The frontend reads the Worker's URL directly off the
 in-memory Output — no references, no deploy ordering.
 
-Walkthrough: [Single Stack](/project-structure/monorepo-single-stack).
+Walkthrough: [Single Stack](https://alchemy.run/project-structure/monorepo-single-stack).
 
 ## Option B — Multiple Stacks
 
@@ -42,7 +42,7 @@ Each package owns its own Stack. The frontend reads the backend's
 deployed outputs through a typed cross-stack reference, so each
 package deploys and destroys independently.
 
-Walkthrough: [Multiple Stacks](/project-structure/monorepo-multi-stack).
+Walkthrough: [Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack).
 
 ## How to choose
 
@@ -56,11 +56,11 @@ Walkthrough: [Multiple Stacks](/project-structure/monorepo-multi-stack).
 
 ## Where next
 
-- [File layout](/project-structure/file-layout) — the single-package layout
+- [File layout](file-layout.md) — the single-package layout
   both options build on.
-- [Single Stack](/project-structure/monorepo-single-stack) — the full
+- [Single Stack](https://alchemy.run/project-structure/monorepo-single-stack) — the full
   two-package walkthrough.
-- [Multiple Stacks](/project-structure/monorepo-multi-stack) — typed Stack
+- [Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack) — typed Stack
   handles and cross-stack references.
-- [References](/infrastructure-as-code/references) — when to split
+- [References](../infrastructure-as-code/references.md) — when to split
   Stacks and how to pin stages.

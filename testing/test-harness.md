@@ -2,14 +2,14 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for alchemy/Test — every helper, hook, and option exposed by Test.make for Bun and Vitest."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same
 Effect-aware harness. For the end-to-end walkthrough, see
-[Testing a Stack](/testing/testing-a-stack); for provider-lifecycle
-testing, see [Testing Providers](/testing/testing-providers).
+[Testing a Stack](testing-a-stack.md); for provider-lifecycle
+testing, see [Testing Providers](testing-providers.md).
 
 ## What Test.make returns
 
@@ -27,7 +27,7 @@ const { test, beforeAll, beforeEach, afterAll, afterEach, deploy, destroy } =
 |---|---|
 | `test(name, effect)` | Effect-aware test. `HttpClient` and your providers Layer are in scope. |
 | `test.skip` / `test.skipIf` / `test.only` / `test.todo` | Skip / focus / todo modifiers (same shape as `bun.test`). |
-| `test.provider(name, fn)` | [Provider-lifecycle test](/testing/testing-providers) against a scratch in-memory stack. |
+| `test.provider(name, fn)` | [Provider-lifecycle test](testing-providers.md) against a scratch in-memory stack. |
 | `beforeAll(effect)` | Run an Effect once. Returns a lazy accessor (`yield* result`) usable inside tests. |
 | `beforeEach(effect)` | Run an Effect before every test. |
 | `afterAll(effect)` / `afterAll.skipIf(predicate)` | Cleanup hook with conditional teardown. |
@@ -36,7 +36,7 @@ const { test, beforeAll, beforeEach, afterAll, afterEach, deploy, destroy } =
 | `destroy(Stack, opts?)` | Plan + apply against an empty desired state. |
 
 `Test.getWhenReady` / `Test.executeWhenReady` are module-level HTTP
-cold-start helpers, taught in [Testing a Stack](/testing/testing-a-stack).
+cold-start helpers, taught in [Testing a Stack](testing-a-stack.md).
 
 `expect` (and `describe`) come from the underlying runner —
 `bun:test` or `@effect/vitest` — directly.
@@ -81,7 +81,7 @@ state: undefined,  // omit → defaults to localState()
 
 Persistent state lets `deploy(Stack)` skip recreating unchanged
 resources between runs. The run-against-an-existing-stack pattern
-built on it lives in [Testing a Stack](/testing/testing-a-stack).
+built on it lives in [Testing a Stack](testing-a-stack.md).
 
 ### `profile`
 
@@ -190,7 +190,7 @@ test.todo("backfill once R2 has multipart helper");
 ```
 
 `test.provider` mirrors the same shape (semantics in
-[Testing Providers](/testing/testing-providers)):
+[Testing Providers](testing-providers.md)):
 
 ```typescript
 test.provider.skip(name, fn);
@@ -223,7 +223,7 @@ test(
 The implementation comes from
 `effect/unstable/http/FetchHttpClient` — same client the CLI
 uses. For a full PUT/GET round-trip against a deployed stack,
-see [Testing a Stack → Drive the live URL](/testing/testing-a-stack).
+see [Testing a Stack → Drive the live URL](testing-a-stack.md).
 
 ## Bun vs Vitest
 
@@ -252,8 +252,8 @@ test code changes.
 
 ## Where next
 
-- [Testing a Stack](/testing/testing-a-stack) — deploy once, drive the live URL, tear down.
-- [Testing Providers](/testing/testing-providers) — exercise create / update / replace / delete with `test.provider`.
-- [Testing](/testing) — the testing overview.
-- [State Store](/state-store) — choosing between `localState()`, `Cloudflare.state()`, and friends.
-- [Profiles](/environments/profiles) — how `ALCHEMY_PROFILE` and the `profile` factory option resolve credentials.
+- [Testing a Stack](testing-a-stack.md) — deploy once, drive the live URL, tear down.
+- [Testing Providers](testing-providers.md) — exercise create / update / replace / delete with `test.provider`.
+- [Testing](../testing.md) — the testing overview.
+- [State Store](../state-store.md) — choosing between `localState()`, `Cloudflare.state()`, and friends.
+- [Profiles](../environments/profiles.md) — how `ALCHEMY_PROFILE` and the `profile` factory option resolve credentials.

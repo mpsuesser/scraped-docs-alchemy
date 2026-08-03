@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/preview-branches
 title: "Preview branches per PR"
 description: "Keep one long-lived Neon project in a staging stage and fork a copy-on-write branch per PR stage — isolated preview databases in seconds, destroyed with the stage."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Provisioning a whole `Neon.Project` per PR preview is slow and
@@ -82,7 +82,7 @@ app, stage, and logical ID, so `pr-147` and `pr-148` never collide.
 Branches are copy-on-write forks of the project's default branch —
 they share storage until they diverge, so creation takes seconds
 regardless of database size, and each PR gets fully isolated data.
-See [Branching](/neon/data/branching) for parents, point-in-time forks,
+See [Branching](../data/branching.md) for parents, point-in-time forks,
 and schema-only copies.
 
 ## Apply migrations on the branch
@@ -100,7 +100,7 @@ const branch = yield* Neon.Branch("app-branch", {
 Because the branch forks from an already-migrated parent, it
 inherits the parent's schema *and* its tracking table — only
 migrations added after the fork are applied. See
-[Migrations](/neon/data/migrations) for ordering, hashing, and the
+[Migrations](../data/migrations.md) for ordering, hashing, and the
 tracking table.
 
 ## Let stragglers expire
@@ -134,13 +134,13 @@ leaves the referenced project untouched: the PR stage doesn't own
 
 Everything above is runtime-agnostic — the branch exposes
 `origin` / `pooledOrigin` outputs ready to feed whatever connects
-to it (see [Connections](/neon/data/connections)). For the full
+to it (see [Connections](../data/connections.md)). For the full
 Cloudflare walkthrough — fronting the branch with
-[Hyperdrive](/cloudflare/data/hyperdrive) and binding it into a Worker —
+[Hyperdrive](../../cloudflare/data/hyperdrive.md) and binding it into a Worker —
 follow
-[Branch from a shared database](/cloudflare/data/branch-from-shared-database),
+[Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md),
 which builds this exact pattern step by step, and
-[Shared database across stages](/cloudflare/data/shared-database)
+[Shared database across stages](../../cloudflare/data/shared-database.md)
 for the general `Resource.ref` mechanics, including cross-stack
 references.
 
@@ -148,18 +148,18 @@ references.
 
 Guides:
 
-- [Branch from a shared database](/cloudflare/data/branch-from-shared-database)
+- [Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
   — the Cloudflare walkthrough of this pattern, end to end.
-- [Drizzle ORM with Neon](/neon/guides/drizzle) — generate the
+- [Drizzle ORM with Neon](drizzle.md) — generate the
   migrations the branch applies from a typed schema.
 
 Related:
 
-- [Branching](/neon/data/branching) — everything a `Neon.Branch` can do.
-- [Connections](/neon/data/connections) — direct vs pooled URIs and the
+- [Branching](../data/branching.md) — everything a `Neon.Branch` can do.
+- [Connections](../data/connections.md) — direct vs pooled URIs and the
   origin shape.
 
 Reference:
 
-- [Project API reference](/providers/neon/project)
-- [Branch API reference](/providers/neon/branch)
+- [Project API reference](https://alchemy.run/providers/neon/project)
+- [Branch API reference](https://alchemy.run/providers/neon/branch)

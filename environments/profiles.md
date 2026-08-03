@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/profiles
 title: "Profiles"
 description: "Profiles store cloud credentials per environment in ~/.alchemy/profiles.json — switch between work and personal accounts, or between staging and prod credentials."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A **profile** is a named bundle of cloud credentials stored locally
@@ -13,7 +13,7 @@ in `~/.alchemy/profiles.json`. Profiles let you:
 - Use a different IAM role for `prod` vs `dev`
 - Rotate or refresh tokens without losing other configurations
 
-Profiles are independent from [Stages](/environments/stages). A stage
+Profiles are independent from [Stages](stages.md). A stage
 controls **what** is deployed; a profile controls **how alchemy
 authenticates** to deploy it.
 
@@ -53,7 +53,7 @@ alchemy login --profile prod --configure
 `login` imports your stack file to discover which providers are
 needed, so the prompts match the providers you actually use. Each
 provider's prompts and credential resolution are implemented by its
-[Auth Provider](/environments/auth-providers).
+[Auth Provider](auth-providers.md).
 
 ## Inspecting a profile
 
@@ -112,8 +112,8 @@ shape each provider expects.
 
 ## Where next
 
-- [Auth Providers](/environments/auth-providers) — the machinery behind `login`: lazy credential resolution and auto-refresh.
-- [Stages](/environments/stages) — environment isolation; profiles pick the credentials, stages pick the instance.
-- [Secrets & Config](/environments/secrets) — bind env vars and secrets onto your deploy targets.
-- [CI](/environments/ci) — one profile per environment, minted and pushed to your repo as code.
-- [CLI](/cli) — every `login`, `profile`, and `--profile` flag.
+- [Auth Providers](auth-providers.md) — the machinery behind `login`: lazy credential resolution and auto-refresh.
+- [Stages](stages.md) — environment isolation; profiles pick the credentials, stages pick the instance.
+- [Secrets & Config](secrets.md) — bind env vars and secrets onto your deploy targets.
+- [CI](ci.md) — one profile per environment, minted and pushed to your repo as code.
+- [CLI](../cli.md) — every `login`, `profile`, and `--profile` flag.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/plan
 title: "plan"
 description: "Preview what would change without applying anything. Equivalent to alchemy deploy --dry-run."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -34,6 +34,6 @@ made.
 
 ## Where next
 
-- [deploy](/cli/deploy) — apply the plan
-- [destroy](/cli/destroy) — delete everything in a stack
-- [Inspecting State](/cli/inspecting-state) — examine what the plan diffs against
+- [deploy](deploy.md) — apply the plan
+- [destroy](destroy.md) — delete everything in a stack
+- [Inspecting State](inspecting-state.md) — examine what the plan diffs against

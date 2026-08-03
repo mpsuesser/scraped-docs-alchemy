@@ -2,11 +2,11 @@
 url: https://alchemy.run/aws/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Lambda Function URL."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-In [Part 2](/aws/tutorial/part-2) you deployed a Lambda with S3
+In [Part 2](part-2.md) you deployed a Lambda with S3
 bindings. Now you'll write integration tests that deploy the stack,
 hit the live Function URL over HTTP, and verify it works.
 
@@ -38,7 +38,7 @@ runner pieces.
 :::note[Using Vitest?]
 `alchemy/Test/Vitest` exposes the exact same API — swap the import
 and take `expect` from `@effect/vitest` instead. See
-[Test harness → Bun vs Vitest](/testing/test-harness#bun-vs-vitest).
+[Test harness → Bun vs Vitest](../../testing/test-harness.md#bun-vs-vitest).
 :::
 
 ## Deploy the stack before tests
@@ -94,7 +94,7 @@ skips unchanged resources.
 The test harness defaults to a stage named `test`, separate from the
 `dev_<user>` stage your `alchemy deploy` runs target — so tests never
 clobber your working deployment. More on stages in
-[Part 4](/aws/tutorial/part-4).
+[Part 4](part-4.md).
 :::
 
 ## Add HTTP assertions
@@ -206,6 +206,6 @@ You now have:
 - `afterAll.skipIf(!process.env.CI)(destroy(Stack))` for automatic
   cleanup on CI with fast iteration locally
 
-In [Part 4](/aws/tutorial/part-4), you'll use stages to give every
+In [Part 4](part-4.md), you'll use stages to give every
 developer, environment, and pull request its own isolated copy of the
 stack.

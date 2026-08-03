@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query from a Worker with Drizzle.Postgres over Hyperdrive."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema`
@@ -89,7 +89,7 @@ export const Hyperdrive = Effect.gen(function* () {
 
 `Planetscale.PostgresBranch` takes the same `migrationsDir` wiring.
 Register `Drizzle.providers()` alongside your cloud providers in the
-Stack. [Migrations](/sql/drizzle/migrations) covers what the schema
+Stack. [Migrations](migrations.md) covers what the schema
 resource does — and does not — decide on your behalf.
 
 ## Connect in a Worker
@@ -126,7 +126,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 Nothing connects at init — the pool opens on the first query of an
 event, is reused for every query in that event, and closes when the
 event settles (see
-[Connection lifecycle](/sql/effect-sql/lifecycle)). Plan and deploy
+[Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy
 never open a connection.
 
 ## Queries are Effects
@@ -158,12 +158,12 @@ const user = yield* db.query.Users.findFirst({
 
 ## Where next
 
-- [Migrations](/sql/drizzle/migrations) — what deploy-time schema
+- [Migrations](migrations.md) — what deploy-time schema
   generation actually does, and when it asks for a decision.
-- [Add Drizzle ORM (Cloudflare tutorial)](/cloudflare/data/drizzle)
+- [Add Drizzle ORM (Cloudflare tutorial)](../../cloudflare/data/drizzle.md)
   — the same flow in the Cloudflare hub, with Neon / PlanetScale
   tabs and deploy walkthrough.
 - [Example: cloudflare-neon-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle)
   — the complete runnable project.
-- [Effect SQL: Postgres](/sql/effect-sql/postgres) — tagged-template
+- [Effect SQL: Postgres](../effect-sql/postgres.md) — tagged-template
   SQL over the same pool, no ORM.

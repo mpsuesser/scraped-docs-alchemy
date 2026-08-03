@@ -2,20 +2,20 @@
 url: https://alchemy.run/planetscale
 title: "PlanetScale"
 description: "Serverless MySQL (Vitess) and Postgres with database branching — databases, branches, and credentials as Stack resources."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 PlanetScale gives you serverless MySQL (Vitess-backed) and managed Postgres with a branch-per-PR workflow. With alchemy you declare the database, its branches, and the credentials as resources in the same Stack as your Workers — branches fork per preview stage and tear down with it.
 
-New here? [Set up credentials](https://alchemy.run/planetscale/setup) first.
+New here? [Set up credentials](planetscale/setup.md) first.
 
 ## Choose an engine
 
 PlanetScale runs two engines, and alchemy models each as its own resource family:
 
-- [Postgres](https://alchemy.run/planetscale/data/postgres) — managed PostgreSQL. `PostgresDatabase`, `PostgresBranch`, and `PostgresRole` (a user + password with least-privilege inherited roles).
-- [MySQL](https://alchemy.run/planetscale/data/mysql) — Vitess-backed serverless MySQL. `MySQLDatabase`, `MySQLBranch`, and `MySQLPassword` (with `role: "readwriter"` instead of inherited roles).
+- [Postgres](planetscale/data/postgres.md) — managed PostgreSQL. `PostgresDatabase`, `PostgresBranch`, and `PostgresRole` (a user + password with least-privilege inherited roles).
+- [MySQL](planetscale/data/mysql.md) — Vitess-backed serverless MySQL. `MySQLDatabase`, `MySQLBranch`, and `MySQLPassword` (with `role: "readwriter"` instead of inherited roles).
 
 Both families share the same shape — only the credential model differs.
 
@@ -41,7 +41,7 @@ const role = yield* Planetscale.PostgresRole("app-role", {
 });
 ```
 
-Every database and branch also accepts a `migrationsDir` of `.sql` files applied in order on each deploy — see [Migrations](https://alchemy.run/planetscale/data/migrations) for ordering, hashing, and the Drizzle pairing.
+Every database and branch also accepts a `migrationsDir` of `.sql` files applied in order on each deploy — see [Migrations](planetscale/data/migrations.md) for ordering, hashing, and the Drizzle pairing.
 
 ## The PlanetScale path
 
@@ -55,9 +55,9 @@ const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
 
 The guides that take this to production live under Cloudflare — each covers PlanetScale directly, Postgres and MySQL alike:
 
-- [Hyperdrive](https://alchemy.run/cloudflare/data/hyperdrive) — provision the database, front it with Hyperdrive, and bind the connection into a Worker.
-- [Add Drizzle ORM](https://alchemy.run/cloudflare/data/drizzle) — schema as a resource, migrations generated and applied on every deploy.
-- [Shared database across stages](https://alchemy.run/cloudflare/data/shared-database) and [branch from a shared database](https://alchemy.run/cloudflare/data/branch-from-shared-database) — branch-per-PR preview environments off one long-lived database.
+- [Hyperdrive](cloudflare/data/hyperdrive.md) — provision the database, front it with Hyperdrive, and bind the connection into a Worker.
+- [Add Drizzle ORM](cloudflare/data/drizzle.md) — schema as a resource, migrations generated and applied on every deploy.
+- [Shared database across stages](cloudflare/data/shared-database.md) and [branch from a shared database](cloudflare/data/branch-from-shared-database.md) — branch-per-PR preview environments off one long-lived database.
 
 ## Reference
 

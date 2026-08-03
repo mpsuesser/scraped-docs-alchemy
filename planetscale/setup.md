@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/setup
 title: "Setup"
 description: "Connect alchemy to PlanetScale — account, credentials, and profiles."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Sign up at [planetscale.com](https://planetscale.com) and create a
@@ -30,7 +30,7 @@ environment-variables method automatically.
 There is no OAuth option — intentionally. PlanetScale does not publish a
 redirect-based OAuth client, so service tokens are the canonical credential.
 
-See [Profiles](/environments/profiles) for how credentials are stored
+See [Profiles](../environments/profiles.md) for how credentials are stored
 and switched.
 
 ## Programmatic credentials
@@ -58,4 +58,4 @@ different endpoint; `fromToken` takes an `apiBaseUrl` option instead.
 
 ## Next steps
 
-- [PlanetScale overview](/planetscale) — resources and compositions.
+- [PlanetScale overview](../planetscale.md) — resources and compositions.

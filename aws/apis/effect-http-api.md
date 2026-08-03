@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-http-api
 title: "Effect HTTP API on Lambda"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect HTTP defines real REST endpoints — URLs, path params, query
@@ -11,10 +11,10 @@ strings, typed bodies — behind an RPC-like typed interface, which
 makes it the natural fit when your consumers aren't Effect (or
 aren't TypeScript at all) and want a plain HTTP client. This page is
 the Lambda wiring; the concept lives at
-[Effect HTTP](/apis/effect-http), and [RPC](/apis) covers choosing
+[Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing
 between the RPC styles.
 
-The [Lambda](/aws/compute/lambda) page serves HTTP with a hand-rolled
+The [Lambda](../compute/lambda.md) page serves HTTP with a hand-rolled
 `fetch` handler — raw request parsing, manual routing. That works,
 but as your API grows you lose type safety at the boundary: request
 payloads aren't validated, response shapes aren't enforced, and
@@ -25,7 +25,7 @@ schemas for payloads, responses, and errors, then implement handlers
 against those schemas. The result is an `HttpEffect` — the same type
 a Lambda's `fetch` expects — so it plugs in directly. It's the exact
 same module used in the
-[Workers version of this guide](/cloudflare/apis/effect-http-api);
+[Workers version of this guide](../../cloudflare/apis/effect-http-api.md);
 the spec and handlers are portable, only the host changes.
 
 The mental model:
@@ -466,20 +466,20 @@ a cloud-agnostic `JobStorage` service (with a drop-in S3
 implementation), publishes job-created notifications to SNS, fans
 table changes out to SQS via DynamoDB Streams, and adds a CloudWatch
 dashboard and alarm. The
-[Layers](/infrastructure-as-effects/layers) page
+[Layers](../../infrastructure-as-effects/layers.md) page
 explains the service-Layer pattern it uses.
 
 ## Where next
 
-- [Effect HTTP](/apis/effect-http) — the concept home: endpoints,
+- [Effect HTTP](../../apis/effect-http.md) — the concept home: endpoints,
   groups, handlers, and typed clients, independent of any host.
-- [RPC](/apis) — deciding between schemaless RPC, Effect RPC, and
+- [RPC](../../apis.md) — deciding between schemaless RPC, Effect RPC, and
   Effect HTTP.
-- [Lambda](/aws/compute/lambda) — how the Function class, Function URLs,
+- [Lambda](../compute/lambda.md) — how the Function class, Function URLs,
   and the test harness work.
-- [Effect HTTP API on Workers](/cloudflare/apis/effect-http-api) —
+- [Effect HTTP API on Workers](../../cloudflare/apis/effect-http-api.md) —
   the same `HttpApi` spec deployed to Cloudflare.
-- [DynamoDB](/aws/data/dynamodb) — the table resource and the rest of
+- [DynamoDB](../data/dynamodb.md) — the table resource and the rest of
   its bindings.
-- [REST API (API Gateway v1)](/aws/apis/api-gateway) — put API
+- [REST API (API Gateway v1)](api-gateway.md) — put API
   Gateway in front instead of a Function URL.

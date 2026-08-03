@@ -2,21 +2,21 @@
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
 title: "Resource lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
 import DAG from "../../../components/DAG.astro";
 
-Every [Resource](/infrastructure-as-code/resource) goes through the same lifecycle:
+Every [Resource](resource.md) goes through the same lifecycle:
 **plan → reconcile → (replace) → delete**. The plan classifies each
 resource as create, update, replace, delete, or no-op, but the
 provider implements a single `reconcile` function that converges the
 cloud's actual state to what's declared — whether that's the first
 provisioning, a routine update, or an adoption takeover. For the CLI
 flags that drive these operations, see the
-[CLI reference](/cli).
+[CLI reference](../cli.md).
 
 ## The lifecycle, end-to-end
 
@@ -63,7 +63,7 @@ last persisted state and classifies each resource:
 [d]•[/d] [b]Bucket[/b] [d](Cloudflare.R2.Bucket)[/d]`} />
 
 The classification comes from each provider's `diff` function. See
-[Provider › diff](/infrastructure-as-code/provider#diff) for how providers decide
+[Provider › diff](provider.md#diff) for how providers decide
 between in-place updates and replacements.
 
 Use `alchemy plan` (or `alchemy deploy --dry-run`) to see the plan
@@ -175,8 +175,8 @@ the `Unowned(attrs)` brand. The engine routes:
 | owned (plain attrs) | silent adopt              | silent adopt          |
 | `Unowned(attrs)`    | fail `OwnedBySomeoneElse` | take over (silently)  |
 
-See [Provider › read](/infrastructure-as-code/provider#read) for the implementation
-contract and [Adopting Resources](/cli/adopting-resources) for the CLI flag.
+See [Provider › read](provider.md#read) for the implementation
+contract and [Adopting Resources](../cli/adopting-resources.md) for the CLI flag.
 
 ## Errors
 
@@ -197,17 +197,17 @@ The same engine powers all of these commands:
 | `alchemy destroy`  | Plan with everything marked deleted, apply    |
 | `alchemy dev`      | Plan + apply continuously on file changes     |
 
-See the [CLI reference](/cli) for the full set of flags
+See the [CLI reference](../cli.md) for the full set of flags
 (`--yes`, `--force`, `--dry-run`, `--stage`, `--profile`, ...).
 
 Every lifecycle operation on this page is implemented per resource
-type by a [Provider](/infrastructure-as-code/provider).
+type by a [Provider](provider.md).
 
 ## Where next
 
-- [Providers](/infrastructure-as-code/provider) — the object that implements
+- [Providers](provider.md) — the object that implements
   `reconcile`, `delete`, `diff`, and `read` for a resource type.
-- [CLI](/cli) — the commands and flags that drive the
+- [CLI](../cli.md) — the commands and flags that drive the
   lifecycle.
-- [State Store](/state-store) — where the persisted state
+- [State Store](../state-store.md) — where the persisted state
   behind the plan lives.

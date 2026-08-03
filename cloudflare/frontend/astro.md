@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare with Alchemy — static output via StaticSite today; Vite-resource support is a TODO."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 :::caution[Not yet supported by Cloudflare.Website.Vite]
@@ -11,7 +11,7 @@ current_date: 2026-08-03T17:26:38.937Z
 TODO. Astro's build is orchestrated by the `astro` CLI rather than a
 plain `vite build` of your `vite.config`, so it never enters the Vite
 resource's build path (see
-[what "pure Vite" means](/cloudflare/frontend/vite#what-pure-vite-means)).
+[what "pure Vite" means](vite.md#what-pure-vite-means)).
 :::
 
 ## Deploy the static output with StaticSite
@@ -74,7 +74,7 @@ and `runWorkerFirst`:
 The docs site uses this to rewrite OG and canonical tags with
 `HTMLRewriter` (so preview deployments unfurl themselves instead of
 production) and to serve 301 redirects — see
-[a custom Worker in front of your assets](/cloudflare/frontend/static-site#a-custom-worker-in-front-of-your-assets)
+[a custom Worker in front of your assets](static-site.md#a-custom-worker-in-front-of-your-assets)
 for the full pattern.
 
 ## What the workaround loses
@@ -103,12 +103,12 @@ instead of running the build:
 This is the same mechanism `StaticSite` uses for any framework's dev
 server (the docs site doesn't set `dev.command`, so treat the `astro
 dev` pairing as the standard recipe rather than a battle-tested one) —
-see [StaticSite](/cloudflare/frontend/static-site) for how external
+see [StaticSite](static-site.md) for how external
 dev mode works.
 
 ## Status
 
 Astro support in the Vite resource is tracked as a TODO; until it
 lands, the matrix on
-[Frontend frameworks](/cloudflare/frontend/frontends) reflects current
+[Frontend frameworks](frontends.md) reflects current
 status.

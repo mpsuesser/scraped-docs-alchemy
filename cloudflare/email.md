@@ -2,13 +2,13 @@
 url: https://alchemy.run/cloudflare/email
 title: "Email"
 description: "Cloudflare Email Routing turns a zone into a mail endpoint — enable routing, verify destinations, forward with rules and a catch-all, hand mail to a Worker, and send from Workers with the send_email binding."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Email Routing turns a zone you own into a mail endpoint: rules match inbound mail and forward it, drop it, or hand it to a Worker — and once routing is enabled, Workers can also *send* mail from the domain through a `send_email` binding.
 
-You need a zone first — see [Domains & DNS](https://alchemy.run/cloudflare/networking/domains). Receiving needs a verified destination address (or a Worker); sending needs routing enabled on the sender’s domain. The category also covers sending subdomains and the enterprise Email Security suite, both below.
+You need a zone first — see [Domains & DNS](networking/domains.md). Receiving needs a verified destination address (or a Worker); sending needs routing enabled on the sender’s domain. The category also covers sending subdomains and the enterprise Email Security suite, both below.
 
 ## Enable routing on the zone
 
@@ -174,13 +174,13 @@ The rest of the suite:
 
 The full walkthrough:
 
-- [Send & receive email](https://alchemy.run/cloudflare/email/send-and-receive) — wire both directions on one zone, end to end.
+- [Send & receive email](email/send-and-receive.md) — wire both directions on one zone, end to end.
 
 Related:
 
-- [Workers](https://alchemy.run/cloudflare/compute/workers) — the runtime that sends and receives.
-- [Domains & DNS](https://alchemy.run/cloudflare/networking/domains) — the zone mail routes through.
-- [Custom domains & routes](https://alchemy.run/cloudflare/networking/custom-domains) — get or adopt the zone first.
+- [Workers](compute/workers.md) — the runtime that sends and receives.
+- [Domains & DNS](networking/domains.md) — the zone mail routes through.
+- [Custom domains & routes](networking/custom-domains.md) — get or adopt the zone first.
 
 Reference:
 

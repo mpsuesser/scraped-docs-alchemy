@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing
 title: "Testing"
 description: "How Alchemy tests work — real clouds, one Stack deploy per suite, isolated stages, deploy → assert → destroy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Alchemy tests run against real clouds — no mocks, no emulators. A suite deploys a real Stack once, runs assertions against live resources, and tears it back down: deploy → assert → destroy.
@@ -31,9 +31,9 @@ test(
 );
 ```
 
-For the full walkthrough, see [Testing a Stack](https://alchemy.run/testing/testing-a-stack).
+For the full walkthrough, see [Testing a Stack](testing/testing-a-stack.md).
 
-For every option, hook, and variant, see the [Test harness](https://alchemy.run/testing/test-harness) reference.
+For every option, hook, and variant, see the [Test harness](testing/test-harness.md) reference.
 
 ## Stage isolation
 
@@ -43,12 +43,12 @@ Tests default to the `test` stage, so they never touch your dev or prod deployme
 Test.make({ providers, stage: "ci-pr-42" });
 ```
 
-The per-call form is covered in [Test harness → stage](https://alchemy.run/testing/test-harness#stage).
+The per-call form is covered in [Test harness → stage](testing/test-harness.md#stage).
 
 ## Where next
 
-- [Testing a Stack](https://alchemy.run/testing/testing-a-stack) — deploy a Stack and drive it over HTTP, end to end.
-- [Testing Providers](https://alchemy.run/testing/testing-providers) — exercise a provider’s create/update/replace/delete with `test.provider`.
-- [Test harness](https://alchemy.run/testing/test-harness) — every `Test.make` option, hook, and variant.
-- [Observability](https://alchemy.run/testing/observability) — wire exporters, monitors, and alarms into the same Stack.
-- [Tutorial Part 3](https://alchemy.run/cloudflare/tutorial/part-3) — your first integration test, walked through step by step.
+- [Testing a Stack](testing/testing-a-stack.md) — deploy a Stack and drive it over HTTP, end to end.
+- [Testing Providers](testing/testing-providers.md) — exercise a provider’s create/update/replace/delete with `test.provider`.
+- [Test harness](testing/test-harness.md) — every `Test.make` option, hook, and variant.
+- [Observability](testing/observability.md) — wire exporters, monitors, and alarms into the same Stack.
+- [Tutorial Part 3](cloudflare/tutorial/part-3.md) — your first integration test, walked through step by step.

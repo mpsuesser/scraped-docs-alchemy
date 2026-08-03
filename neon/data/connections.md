@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/connections
 title: "Connections"
 description: "Every Neon project and branch exposes direct and pooled connection URIs plus pre-parsed origin outputs — feed the direct origin to Hyperdrive and the pooled one to everything else."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Every Neon project and branch exposes its connection details as
@@ -88,12 +88,12 @@ return { databaseUrl: branch.pooledConnectionUri };
 
 Guides:
 
-- [Hyperdrive](/cloudflare/data/hyperdrive) — the full walkthrough:
+- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — the full walkthrough:
   provision Neon, front it with Hyperdrive, bind it into a Worker.
-- [Branching](/neon/data/branching) — copy-on-write branches, each with
+- [Branching](branching.md) — copy-on-write branches, each with
   its own connection outputs.
 
 Reference:
 
-- [Project API reference](/providers/neon/project)
-- [Branch API reference](/providers/neon/branch)
+- [Project API reference](https://alchemy.run/providers/neon/project)
+- [Branch API reference](https://alchemy.run/providers/neon/branch)

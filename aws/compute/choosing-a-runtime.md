@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/choosing-a-runtime
 title: "Choosing a runtime"
 description: "Lambda vs ECS vs EKS vs EC2 for Alchemy apps — cold starts, cost shape, packaging, and how much of each Alchemy currently covers."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Every Alchemy app on AWS needs somewhere for its code to run.
@@ -31,7 +31,7 @@ blocks to it:
 ## Lambda — the default
 
 Serverless, event-driven, and the runtime this documentation is
-written around. You get the [`Function`](/providers/aws/lambda/function)
+written around. You get the [`Function`](https://alchemy.run/providers/aws/lambda/function)
 resource with a public Function URL, typed bindings that mint
 least-privilege IAM policies from your call sites, and
 `Stream`-shaped event sources for SQS, Kinesis, DynamoDB
@@ -41,7 +41,7 @@ and zero idle cost are the payoff.
 
 Choose Lambda unless you have a specific reason not to.
 
-→ [Lambda](/aws/compute/lambda)
+→ [Lambda](lambda.md)
 
 ## ECS — long-running containers
 
@@ -50,25 +50,25 @@ WebSocket server, a worker that holds connections open, anything
 that should be always-on — run it as a container. Alchemy models
 ECS with three resources:
 
-- [`Cluster`](/providers/aws/ecs/cluster) — an ECS cluster for
+- [`Cluster`](https://alchemy.run/providers/aws/ecs/cluster) — an ECS cluster for
   running tasks and services.
-- [`Task`](/providers/aws/ecs/task) — bundles an inline Effect
+- [`Task`](https://alchemy.run/providers/aws/ecs/task) — bundles an inline Effect
   program, builds and pushes a Docker image to a generated ECR
   repository, provisions task + execution IAM roles and a
   CloudWatch log group, and registers a Fargate task definition.
   Tasks can serve HTTP directly and accept the same
   binding contract (env + IAM policy statements) as Lambda.
-- [`Service`](/providers/aws/ecs/service) — keeps a task
+- [`Service`](https://alchemy.run/providers/aws/ecs/service) — keeps a task
   definition running with awsvpc networking; set `public: true`
   and Alchemy provisions a public ALB + listener + target group
   for you.
 
 You pay for running tasks whether or not they're serving
 traffic, and you bring a VPC (subnets + security groups) — the
-[`Network`](/providers/aws/ec2/network) helper builds one in a
+[`Network`](https://alchemy.run/providers/aws/ec2/network) helper builds one in a
 single call.
 
-→ [ECS](/aws/compute/ecs)
+→ [ECS](ecs.md)
 
 ## EKS — when your platform is Kubernetes
 
@@ -78,30 +78,30 @@ speaking Deployments and Jobs — Alchemy targets **EKS Auto Mode**,
 where AWS manages the control plane, nodes, storage, and
 load-balancer integration. Alchemy models it with:
 
-- [`Cluster`](/providers/aws/eks/cluster) — the control plane;
+- [`Cluster`](https://alchemy.run/providers/aws/eks/cluster) — the control plane;
   `compute: "auto"` turns on Auto Mode with sensible defaults.
-- [`Deployment`](/providers/aws/eks/deployment) — a replicated
+- [`Deployment`](https://alchemy.run/providers/aws/eks/deployment) — a replicated
   Kubernetes server (the Kubernetes analog of `AWS.ECS.Service`)
   with the same three image sources as ECS: a registry `image`, a
   Dockerfile `context`, or an inline Effect program via `main`.
-- [`Job`](/providers/aws/eks/job) — run-to-completion work, or a
+- [`Job`](https://alchemy.run/providers/aws/eks/job) — run-to-completion work, or a
   `CronJob` when you set `schedule`.
-- [`Manifest`](/providers/aws/eks/manifest) and
-  [`HelmChart`](/providers/aws/eks/helmchart) — any raw Kubernetes
+- [`Manifest`](https://alchemy.run/providers/aws/eks/manifest) and
+  [`HelmChart`](https://alchemy.run/providers/aws/eks/helmchart) — any raw Kubernetes
   object or a rendered Helm chart, applied via server-side apply.
 
 Bindings work the same as on Lambda and ECS — env vars plus IAM
 policy statements, delivered through an EKS Pod Identity role —
 and there is no YAML and no `kubectl` step. You pay for the
 control plane and the nodes Auto Mode provisions, you bring a VPC
-(the [`Network`](/providers/aws/ec2/network) helper builds one),
+(the [`Network`](https://alchemy.run/providers/aws/ec2/network) helper builds one),
 and the control plane takes ~10 minutes to create.
 
-→ [EKS](/aws/compute/eks)
+→ [EKS](eks.md)
 
 For ML training fleets specifically — persistent, health-checked
 GPU clusters rather than application containers — EKS pairs with
-[SageMaker HyperPod](/aws/compute/hyperpod): the HyperPod nodes
+[SageMaker HyperPod](hyperpod.md): the HyperPod nodes
 join your EKS cluster, and `Deployment`/`Job` opt onto them with
 the `hyperpod` prop.
 
@@ -109,19 +109,19 @@ the `hyperpod` prop.
 
 Full-control VMs for workloads that need an OS, a GPU, custom
 daemons, or just predictable dedicated capacity. The
-[`Instance`](/providers/aws/ec2/instance) resource can act as a
+[`Instance`](https://alchemy.run/providers/aws/ec2/instance) resource can act as a
 low-level compute primitive or run a bundled long-lived Effect
 program directly on the machine (including serving HTTP), and
 Alchemy ships the complete networking toolkit around it:
-[`Vpc`](/providers/aws/ec2/vpc),
-[`Subnet`](/providers/aws/ec2/subnet),
-[`SecurityGroup`](/providers/aws/ec2/securitygroup), NAT and
+[`Vpc`](https://alchemy.run/providers/aws/ec2/vpc),
+[`Subnet`](https://alchemy.run/providers/aws/ec2/subnet),
+[`SecurityGroup`](https://alchemy.run/providers/aws/ec2/securitygroup), NAT and
 internet gateways, route tables, EIPs, and VPC endpoints (see
-[VPC & networking](/aws/networking)).
+[VPC & networking](../networking.md)).
 
 You own patching, scaling, and availability.
 
-→ [EC2](/aws/compute/ec2)
+→ [EC2](ec2.md)
 
 ## Rule of thumb
 
@@ -138,7 +138,7 @@ You own patching, scaling, and availability.
 
 ## Where next
 
-- [Lambda](/aws/compute/lambda) — deploy a function with a public URL.
-- [AWS overview](/aws) — resources and recipes.
-- [Providers reference](/providers) — generated docs for every
+- [Lambda](lambda.md) — deploy a function with a public URL.
+- [AWS overview](../../aws.md) — resources and recipes.
+- [Providers reference](https://alchemy.run/providers) — generated docs for every
   ECS, EKS, and EC2 resource.

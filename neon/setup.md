@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/setup
 title: "Setup"
 description: "Connect alchemy to Neon — account, credentials, and profiles."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Sign up at [neon.tech](https://neon.tech) and create an API key in
@@ -26,9 +26,9 @@ The next `alchemy login` adds a `Neon` step with two options:
 In CI (`CI=true`), the environment-variable method is selected
 automatically — no prompt, just set `NEON_API_KEY`.
 
-See [Profiles](/environments/profiles) for how credentials are stored
+See [Profiles](../environments/profiles.md) for how credentials are stored
 and switched.
 
 ## Next steps
 
-- [Neon overview](/neon) — resources and compositions.
+- [Neon overview](../neon.md) — resources and compositions.

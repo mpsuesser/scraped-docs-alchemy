@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/aws
 title: "aws"
 description: "AWS provider commands — bootstrap the per-account assets bucket that Lambda deployments rely on."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -66,5 +66,5 @@ alchemy aws bootstrap --destroy
 
 ## Where next
 
-- [cloudflare](/cli/cloudflare) — provider commands for Cloudflare
-- [AWS](/aws) — the AWS provider hub
+- [cloudflare](cloudflare.md) — provider commands for Cloudflare
+- [AWS](../aws.md) — the AWS provider hub

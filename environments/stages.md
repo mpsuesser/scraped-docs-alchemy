@@ -2,11 +2,11 @@
 url: https://alchemy.run/environments/stages
 title: "Stages"
 description: "Stages are isolated instances of a Stack — dev_sam, staging, prod, pr-42 — each with their own state and physical names."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-A **stage** is an isolated instance of a [Stack](/infrastructure-as-code/stack).
+A **stage** is an isolated instance of a [Stack](../infrastructure-as-code/stack.md).
 Every deploy targets exactly one stage, and resources from different
 stages never overlap. This is how Alchemy gives every developer their
 own sandbox, every PR its own preview, and production its own
@@ -89,7 +89,7 @@ Effect.gen(function* () {
 ```
 
 For resources declared at module scope, use
-[`Stack.useSync`](/infrastructure-as-code/stack#stackusesync-for-module-scope-resources):
+[`Stack.useSync`](../infrastructure-as-code/stack.md#stackusesync-for-module-scope-resources):
 
 ```typescript
 export class JobFunction extends AWS.Lambda.Function<JobFunction>()(
@@ -114,12 +114,12 @@ the URL on the PR, and tear it down on merge.
 - run: alchemy destroy --stage pr-${{ github.event.number }} --yes
 ```
 
-See the [CI guide](/environments/ci) for a complete example.
+See the [CI guide](ci.md) for a complete example.
 
 ## Stage vs profile
 
 Stages isolate **what** is deployed (state, physical names).
-[Profiles](/environments/profiles) isolate **how** alchemy authenticates
+[Profiles](profiles.md) isolate **how** alchemy authenticates
 to your cloud providers. They're orthogonal — you can pair a `prod`
 stage with a `prod` profile, or use the same credentials across many
 stages:
@@ -130,4 +130,4 @@ alchemy deploy --stage pr-42 --profile default
 ```
 
 For the full set of CLI flags, see the
-[CLI reference](/cli#common-options).
+[CLI reference](../cli.md#common-options).

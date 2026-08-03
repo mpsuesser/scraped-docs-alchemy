@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/repository
 title: "Repositories"
 description: "Manage GitHub repositories as Stack resources — create or adopt a repo, converge its settings on every deploy, rename in place, and opt into deletion explicitly."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `GitHub.Repository` manages the lifecycle of a repository owned by a
@@ -14,7 +14,7 @@ in code next to the infrastructure it hosts.
 
 Repositories are treated as precious: destroying the stack retains
 the repository by default, and deleting it is an explicit opt-in.
-New here? [Set up credentials](/github/setup) first.
+New here? [Set up credentials](setup.md) first.
 
 ## Create a repository
 
@@ -199,7 +199,7 @@ const program = Effect.gen(function* () {
 hence the double `yield*`.)
 
 Inside a stack, `GitHub.providers()` already carries
-`GitHubCredentials`, resolved via [the login flow](/github/setup).
+`GitHubCredentials`, resolved via [the login flow](setup.md).
 Outside one, build the layer directly:
 
 - **`GitHub.fromEnv()`** — reads `GITHUB_ACCESS_TOKEN` or
@@ -215,13 +215,13 @@ program.pipe(Effect.provide(GitHub.fromEnv()));
 
 Related:
 
-- [Actions secrets & variables](/github/actions-config) — seed the
+- [Actions secrets & variables](actions-config.md) — seed the
   CI configuration your repository's workflows read.
-- [Repository events](/github/events) — subscribe a Worker to the
+- [Repository events](events.md) — subscribe a Worker to the
   repository's webhooks with typed payloads.
-- [CI/CD guide](/environments/ci) — deploy the stack itself from GitHub
+- [CI/CD guide](../environments/ci.md) — deploy the stack itself from GitHub
   Actions.
 
 Reference:
 
-- [Repository API reference](/providers/github/repository)
+- [Repository API reference](https://alchemy.run/providers/github/repository)

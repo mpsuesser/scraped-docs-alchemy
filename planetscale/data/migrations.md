@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/migrations
 title: "Migrations"
 description: "Apply SQL migrations and seed data to PlanetScale databases and branches as part of every deploy — ordered, hashed, tracked, and run over short-lived credentials."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Every PlanetScale database and branch resource — `PostgresDatabase`,
@@ -145,19 +145,19 @@ const branch = yield* Planetscale.PostgresBranch("app-branch", {
 
 Guides:
 
-- [Add Drizzle ORM](/cloudflare/data/drizzle) — typed schemas and
+- [Add Drizzle ORM](../../cloudflare/data/drizzle.md) — typed schemas and
   generated migrations.
-- [Branch from a shared database](/cloudflare/data/branch-from-shared-database)
+- [Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
   — branch-per-PR preview environments.
 
 Related:
 
-- [Postgres](/planetscale/data/postgres) — databases, branches, and roles.
-- [MySQL](/planetscale/data/mysql) — the Vitess-backed family.
+- [Postgres](postgres.md) — databases, branches, and roles.
+- [MySQL](mysql.md) — the Vitess-backed family.
 
 Reference:
 
-- [PostgresDatabase](/providers/planetscale/postgres/postgresdatabase) ·
-  [PostgresBranch](/providers/planetscale/postgres/postgresbranch)
-- [MySQLDatabase](/providers/planetscale/mysql/mysqldatabase) ·
-  [MySQLBranch](/providers/planetscale/mysql/mysqlbranch)
+- [PostgresDatabase](https://alchemy.run/providers/planetscale/postgres/postgresdatabase) ·
+  [PostgresBranch](https://alchemy.run/providers/planetscale/postgres/postgresbranch)
+- [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql/mysqldatabase) ·
+  [MySQLBranch](https://alchemy.run/providers/planetscale/mysql/mysqlbranch)

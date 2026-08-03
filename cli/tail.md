@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/tail
 title: "tail"
 description: "Stream live logs from deployed resources in real time, interleaved and color-coded by resource."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -48,5 +48,5 @@ alchemy tail --stage prod
 
 ## Where next
 
-- [logs](/cli/logs) — fetch a batch of past log entries instead of streaming
-- [dev](/cli/dev) — run your stack with hot reloading
+- [logs](logs.md) — fetch a batch of past log entries instead of streaming
+- [dev](dev.md) — run your stack with hot reloading

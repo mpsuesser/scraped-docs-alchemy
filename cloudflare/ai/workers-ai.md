@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/workers-ai
 title: "Run Workers AI models"
 description: "Bind Workers AI into your Worker with Cloudflare.Workers.AI — run inference and list models directly, or turn the binding into a typed Effect LanguageModel, no gateway required."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **Workers AI** runs open-weight models (Llama, Mistral, Whisper,
@@ -15,7 +15,7 @@ Alchemy piece is the binding itself: `Cloudflare.Workers.AI`.
 This is the plain `{ type: "ai" }` Worker binding, the same one you
 would declare in `wrangler.json`. If you want requests routed through
 an **AI Gateway** — caching, rate limiting, retries, a request log —
-use [`Cloudflare.AI.Gateway`](/cloudflare/ai/ai-gateway) instead; the
+use [`Cloudflare.AI.Gateway`](ai-gateway.md) instead; the
 binding here talks to Workers AI directly.
 
 ## Effect-style Worker
@@ -84,7 +84,7 @@ failure surfaces as a 500 — for typed handling use
 ## Build a `LanguageModel` layer
 
 `ai.model({...})` turns the binding into an
-[Effect AI](/cloudflare/ai/effect-ai) `LanguageModel` Layer — the
+[Effect AI](effect-ai.md) `LanguageModel` Layer — the
 provider-agnostic service behind `generateText`, `streamText`,
 `Toolkit`, and structured outputs. It is the same adapter that AI
 Gateway's `QueryGateway` uses, minus the gateway routing, so no API
@@ -141,7 +141,7 @@ return HttpServerResponse.stream(stream, {
 Because the Layer satisfies Effect's standard `LanguageModel`
 service, swapping Workers AI for OpenAI, Anthropic, or a
 gateway-fronted model later is a layer-level change — the handler
-code doesn't move. See [Effect AI](/cloudflare/ai/effect-ai) for the
+code doesn't move. See [Effect AI](effect-ai.md) for the
 full pattern, including chat persistence.
 
 ## Async Workers: bind via `env`
@@ -188,7 +188,7 @@ key it resolves to) and defaults to `"AI"`.
 
 The plain binding is the shortest path to inference, but every
 request goes straight to Workers AI. Put an
-[AI Gateway](/cloudflare/ai/ai-gateway) in front when you want:
+[AI Gateway](ai-gateway.md) in front when you want:
 
 - **Caching** — identical prompts served from cache in milliseconds.
 - **Rate limiting and retries** — protect quota, smooth over blips.
@@ -203,9 +203,9 @@ change in the Init phase.
 
 ## Where to go next
 
-- [Effect AI](/cloudflare/ai/effect-ai) — the `LanguageModel` /
+- [Effect AI](effect-ai.md) — the `LanguageModel` /
   `Chat` pattern this binding plugs into.
-- [Add an AI Gateway](/cloudflare/ai/ai-gateway) — caching, rate
+- [Add an AI Gateway](ai-gateway.md) — caching, rate
   limiting, and logs in front of the same models.
-- [API reference: Cloudflare.Workers.AI](/providers/cloudflare/workers/ai)
+- [API reference: Cloudflare.Workers.AI](https://alchemy.run/providers/cloudflare/workers/ai)
   — the full binding surface (`run`, `models`, `model`, `raw`).

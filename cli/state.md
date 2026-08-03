@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/state
 title: "state"
 description: "Inspect and manage the state store — list stacks, stages, and resources, print persisted state, and clear entries."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 ```sh
@@ -14,7 +14,7 @@ Inspect and manage the state store — the record of which resources
 alchemy thinks exist for each stack/stage. Reads from whatever state
 layer the stack file configures (e.g. `Cloudflare.state(...)`), or
 from the on-disk `.alchemy/state` directory with `--local`. See
-[State Store](/state-store).
+[State Store](../state-store.md).
 
 The stack file is imported only to resolve its configured state layer
 — pass it via the standard `[file]` positional (defaults to
@@ -79,7 +79,7 @@ alchemy state tree [file] [options]
 ```
 
 Render the entire state store as a tree of stacks → stages →
-resources. See [Inspecting State](/cli/inspecting-state) for a worked
+resources. See [Inspecting State](inspecting-state.md) for a worked
 example.
 
 ## `state clear`
@@ -106,13 +106,13 @@ deleted.
 **Destructive but local-only** — the actual cloud resources are not
 touched, only alchemy's record of them. A subsequent `deploy`
 re-imports owned resources automatically; see
-[Inspecting State](/cli/inspecting-state) for the recovery workflow
-and [Adopting Resources](/cli/adopting-resources) for when `--adopt`
+[Inspecting State](inspecting-state.md) for the recovery workflow
+and [Adopting Resources](adopting-resources.md) for when `--adopt`
 is needed.
 :::
 
 ## Where next
 
-- [Inspecting State](/cli/inspecting-state) — debugging and recovery workflows
-- [Adopting Resources](/cli/adopting-resources) — how deploy reclaims existing infrastructure
-- [State Store](/state-store) — where resource state lives
+- [Inspecting State](inspecting-state.md) — debugging and recovery workflows
+- [Adopting Resources](adopting-resources.md) — how deploy reclaims existing infrastructure
+- [State Store](../state-store.md) — where resource state lives

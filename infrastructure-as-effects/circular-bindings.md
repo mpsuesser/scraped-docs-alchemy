@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/circular-bindings
 title: "Circular Bindings"
 description: "How to model two services that reference each other (Worker A ↔ Worker B, Lambda ↔ Lambda) using tagged classes and Layers."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import DAG from "../../../components/DAG.astro";
@@ -17,8 +17,8 @@ needs B's URL, but B needs A's URL too. Alchemy resolves the
 deadlock by separating **identity** (a class used as a Tag) from
 **implementation** (a Layer attached via `.make()`).
 
-This guide builds on [Bindings](/infrastructure-as-effects/binding) and
-[Layers](/infrastructure-as-effects/layers): two Workers that call each
+This guide builds on [Bindings](binding.md) and
+[Layers](layers.md): two Workers that call each
 other, one step at a time.
 
 ## Sketch the cycle
@@ -108,7 +108,7 @@ own `work` RPC method so B can call back into it.
 ```
 
 The `import { B }` line pulls in B's Tag only. `bindWorker(B)`
-returns a [typed RPC stub](/apis/schemaless) — at plan time it
+returns a [typed RPC stub](../apis/schemaless.md) — at plan time it
 registers the service binding; at runtime `b.work()` round-trips to
 B's deployed Worker as a native RPC call.
 
@@ -194,7 +194,7 @@ Under the hood, alchemy plans the cycle in two passes:
 
 1. The **Tags** are registered up front, so the graph knows that A
    and B both exist.
-2. Each provider's [`precreate`](/infrastructure-as-code/provider#precreate) hook
+2. Each provider's [`precreate`](../infrastructure-as-code/provider.md#precreate) hook
    reserves the resource (and its physical URL) without needing the
    other side's outputs.
 3. `create` runs in parallel using deferred Outputs — bindings see
@@ -205,7 +205,7 @@ Under the hood, alchemy plans the cycle in two passes:
 
 The same pattern works for Lambda↔Lambda, Worker↔Container, or any
 mix — the Tag/Layer split is a property of every Function resource
-([Functions & Servers](/infrastructure-as-effects/functions-and-servers)), not just Workers.
+([Functions & Servers](functions-and-servers.md)), not just Workers.
 
 ## When you don't need this
 
@@ -224,12 +224,12 @@ export default Cloudflare.Worker(
 
 The tagged-class pattern only pays off when something else needs to
 reference the Worker before its implementation is in scope. For
-non-circular reuse across files, see [Layers](/infrastructure-as-effects/layers).
+non-circular reuse across files, see [Layers](layers.md).
 
 The deferred `Output` mechanism behind the two-phase plan is covered
-in [Inputs & Outputs](/infrastructure-as-code/outputs).
+in [Inputs & Outputs](../infrastructure-as-code/outputs.md).
 
 ## Where next
 
-- [Inputs & Outputs](/infrastructure-as-code/outputs) — the deferred references that make the cycle resolvable.
-- [Providers](/infrastructure-as-code/provider) — the `precreate` hook that reserves resources up front.
+- [Inputs & Outputs](../infrastructure-as-code/outputs.md) — the deferred references that make the cycle resolvable.
+- [Providers](../infrastructure-as-code/provider.md) — the `precreate` hook that reserves resources up front.

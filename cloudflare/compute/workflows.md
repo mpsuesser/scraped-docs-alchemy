@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workflows
 title: "Workflows"
 description: "Cloudflare Workflows run durable multi-step jobs — define a typed workflow class, checkpoint steps with task and sleep, trigger instances from a Worker, and poll status until completion."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Cloudflare Workflow is a multi-step job where each named step's
@@ -15,10 +15,10 @@ same two-phase shape as Workers and Durable Objects.
 Reach for a Workflow when a job must outlive any single request and
 survive crashes — a checkout flow, a multi-stage pipeline, a "send a
 reminder in 24 hours" job. If you only need request/response
-compute, a [Worker](/cloudflare/compute/workers) is enough; per-entity
-state, a [Durable Object](/cloudflare/compute/durable-objects); buffered
-fan-out of messages, [Queues](/cloudflare/messaging/queues); a fixed schedule,
-[cron](/cloudflare/messaging/cron).
+compute, a [Worker](workers.md) is enough; per-entity
+state, a [Durable Object](durable-objects.md); buffered
+fan-out of messages, [Queues](../messaging/queues.md); a fixed schedule,
+[cron](../messaging/cron.md).
 
 ## Define a workflow
 
@@ -121,7 +121,7 @@ exactly once. Outside a task it runs on every replay.
 ## Use bindings inside tasks
 
 Bind a resource in the outer init phase to get a typed client, then
-use it inside a step — here a [KV](/cloudflare/data/kv) namespace:
+use it inside a step — here a [KV](../data/kv.md) namespace:
 
 ```typescript
 Effect.gen(function* () {
@@ -157,10 +157,10 @@ execute.
 Per-run resources like `Drizzle.Postgres` pools follow this: the
 pool opens on the first query inside a step, is reused by every
 later step in the same invocation, and closes when the invocation
-settles (the [SQL connection lifecycle](/sql/effect-sql/lifecycle)
+settles (the [SQL connection lifecycle](../../sql/effect-sql/lifecycle.md)
 in workflow terms). The workflow's init closure shares the isolate-lifetime
 layer build with the hosting Worker — pure assembly, no cleanup; see
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope).
+[Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope).
 
 ## Trigger from a Worker
 
@@ -224,7 +224,7 @@ is one of `queued`, `running`, `paused`, `waiting`, `complete`,
 `errored`, or `terminated`, and `output` is what the body returned.
 Instances also expose `pause()`, `resume()`, `restart()`,
 `terminate()`, and `sendEvent()` — see the
-[Workflow API reference](/providers/cloudflare/workflows/workflow).
+[Workflow API reference](https://alchemy.run/providers/cloudflare/workflows/workflow).
 
 ## Poll to completion
 
@@ -269,18 +269,18 @@ example lives in the API reference.
 
 The full walkthrough:
 
-- [Add a Workflow](/cloudflare/compute/add-a-workflow) — KV-backed steps,
+- [Add a Workflow](add-a-workflow.md) — KV-backed steps,
   secrets in steps, DO broadcast, and a full integration test.
 
 Related:
 
-- [Durable Objects](/cloudflare/compute/durable-objects) — per-entity state
+- [Durable Objects](durable-objects.md) — per-entity state
   workflows call into.
-- [Queues](/cloudflare/messaging/queues) — when buffered messages are enough
+- [Queues](../messaging/queues.md) — when buffered messages are enough
   (no checkpointed steps).
-- [Cron triggers](/cloudflare/messaging/cron) — trigger workflows on a
+- [Cron triggers](../messaging/cron.md) — trigger workflows on a
   schedule.
 
 Reference:
 
-- [Workflow API reference](/providers/cloudflare/workflows/workflow)
+- [Workflow API reference](https://alchemy.run/providers/cloudflare/workflows/workflow)

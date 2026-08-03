@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/nuke
 title: "nuke"
 description: "Enumerate and delete every live resource across the stack's providers."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 ```sh
@@ -13,14 +13,14 @@ bun alchemy unsafe nuke [file] [options]
 `nuke` enumerates and deletes every live resource across the stack's providers. The command nests under `unsafe` and is deliberately hidden from `--help` — it's dangerous and we don't want agents to discover and use it. This page is its only discovery surface.
 
 :::caution
-`nuke` is **not** scoped to a stack, a stage, or the state store. The stack file is imported only to learn which providers are registered; each provider's `list()` then enumerates **every** resource of that type in the ambient account/region/zone — including resources alchemy never created — and deletes them all. This cannot be undone. What you usually want is [`alchemy destroy`](/cli/destroy), which is stack-scoped and state-driven.
+`nuke` is **not** scoped to a stack, a stage, or the state store. The stack file is imported only to learn which providers are registered; each provider's `list()` then enumerates **every** resource of that type in the ambient account/region/zone — including resources alchemy never created — and deletes them all. This cannot be undone. What you usually want is [`alchemy destroy`](destroy.md), which is stack-scoped and state-driven.
 :::
 
 ## What it destroys
 
 `nuke` walks the built provider context and collects every provider that exposes both `list` and `delete` — everything those providers can enumerate is a deletion candidate.
 
-The state store is never read or written: enumeration is live cloud state only. State entries are left stale, so follow up with `alchemy state clear` — see [Inspecting State](/cli/inspecting-state).
+The state store is never read or written: enumeration is live cloud state only. State entries are left stale, so follow up with `alchemy state clear` — see [Inspecting State](inspecting-state.md).
 
 ## What survives
 
@@ -82,6 +82,6 @@ Deletion runs in passes: each pass attempts every remaining resource, failures a
 
 ## Where next
 
-- [destroy](/cli/destroy) — the stack-scoped, state-driven teardown you usually want
-- [Inspecting State](/cli/inspecting-state) — clear the stale state entries nuke leaves behind
-- [State Store](/state-store) — why nuke bypasses it entirely
+- [destroy](destroy.md) — the stack-scoped, state-driven teardown you usually want
+- [Inspecting State](inspecting-state.md) — clear the stale state entries nuke leaves behind
+- [State Store](../state-store.md) — why nuke bypasses it entirely

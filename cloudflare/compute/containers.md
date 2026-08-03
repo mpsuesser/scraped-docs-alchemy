@@ -2,19 +2,19 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a
-[Durable Object](/cloudflare/compute/durable-objects): the DO owns the
+[Durable Object](durable-objects.md): the DO owns the
 container's lifecycle, and callers reach the container through it.
 In alchemy a container is a class with a typed RPC surface — the
 same tagged-shape ceremony as a Durable Object — plus a runtime
 implementation that alchemy bundles into a Docker image and pushes
 to Cloudflare's registry for you.
 
-Reach for a container when a [Worker](/cloudflare/compute/workers) isn't
+Reach for a container when a [Worker](workers.md) isn't
 enough: you need a real OS process — a sandboxed shell, a binary you
 can't compile to wasm, an HTTP server listening on a port, a
 runtime Workers doesn't offer. If you only need per-entity state
@@ -172,7 +172,7 @@ process, so treat instance-level cleanup as best-effort.
 Each incoming request to the container's HTTP server still gets its
 own request `Scope`, released when the response settles — the same
 per-event contract as every other runtime. See
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
 for the model across all runtimes.
 
 ## Bring your own image
@@ -195,7 +195,7 @@ export class Echo extends Cloudflare.Container<Echo>()("Echo", {
 Arbitrary images expose no RPC methods — the DO talks to them purely
 over their TCP port via `getTcpPort`. To build, tag, and push that
 image as part of the same Stack, see
-[Build & push images](/docker/build-and-push) in the Docker hub.
+[Build & push images](../../docker/build-and-push.md) in the Docker hub.
 
 When `image` already references Cloudflare's managed registry —
 for example a digest reference pushed by CI, like
@@ -249,7 +249,7 @@ The Durable Object class name defaults to the binding name (the
 differently. The type parameter (`Container<Sandbox>`) is the class
 from `worker.ts` above — it types `env.Sandbox` as
 `DurableObjectNamespace<Sandbox>` through
-[`InferEnv`](/cloudflare/compute/workers#typed-env-for-async-workers),
+[`InferEnv`](workers.md#typed-env-for-async-workers),
 so the handler reaches the container with full types:
 
 ```typescript
@@ -273,7 +273,7 @@ Durable Object host.
 ## ContainerApplication
 
 Under the hood every container is backed by a
-[ContainerApplication](/providers/cloudflare/containers/containerapplication)
+[ContainerApplication](https://alchemy.run/providers/cloudflare/containers/containerapplication)
 — the deployed, scalable unit that carries the image, instance
 type, instance counts, and observability settings. You typically
 extend `Cloudflare.Container` rather than using it directly, but
@@ -307,24 +307,24 @@ cut over immediately while instances roll, so keep the
 Worker-to-container protocol compatible across both image versions
 until the rollout completes. Request-level traffic splitting exists
 one layer up, on the Worker — see
-[Gradual deployments](/cloudflare/compute/gradual-deployments).
+[Gradual deployments](gradual-deployments.md).
 
 ## Where next
 
 The full walkthrough:
 
-- [Run a Container](/cloudflare/compute/run-a-container) — build the
+- [Run a Container](run-a-container.md) — build the
   sandbox above out to a shell-executing container with RPC, HTTP
   proxying, stage-dependent config, and tests.
 
 Related:
 
-- [Durable Objects](/cloudflare/compute/durable-objects) — every container
+- [Durable Objects](durable-objects.md) — every container
   is fronted by one.
-- [Workers](/cloudflare/compute/workers) — the entrypoint that reaches the
+- [Workers](workers.md) — the entrypoint that reaches the
   DO (and through it, the container).
 
 Reference:
 
-- [Container API reference](/providers/cloudflare/containers/container)
-- [ContainerApplication API reference](/providers/cloudflare/containers/containerapplication)
+- [Container API reference](https://alchemy.run/providers/cloudflare/containers/container)
+- [ContainerApplication API reference](https://alchemy.run/providers/cloudflare/containers/containerapplication)

@@ -2,17 +2,17 @@
 url: https://alchemy.run/aws/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod instances of your stack with --stage, and tune resources per stage."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../../components/Terminal.astro";
 
-In [Part 3](/aws/tutorial/part-3) you wrote integration tests against
+In [Part 3](part-3.md) you wrote integration tests against
 a deployed stack. But so far everything has landed in a single
 environment. In this part you'll use **stages** — isolated instances
 of the same Stack — to give every developer, environment, and (in
-[Part 5](/aws/tutorial/part-5)) every pull request its own copy of
+[Part 5](part-5.md)) every pull request its own copy of
 the infrastructure.
 
 ## The default stage
@@ -143,13 +143,13 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-See [Test harness → stage](/testing/test-harness#stage) for the per-call form
+See [Test harness → stage](../../testing/test-harness.md#stage) for the per-call form
 (`deploy(Stack, { stage: "ci-pr-42" })`).
 
 ## Stage vs profile
 
 Stages isolate **what** is deployed (state, physical names).
-[Profiles](/environments/profiles) isolate **how** Alchemy authenticates
+[Profiles](../../environments/profiles.md) isolate **how** Alchemy authenticates
 to AWS. They're orthogonal — you can pair a `prod` stage with a
 `prod` profile that points at a separate AWS account, or use the same
 credentials across many stages:
@@ -169,6 +169,6 @@ You now have:
 - Per-stage Lambda memory via `Stack.useSync`
 - Tests pinned to their own stage
 
-In [Part 5](/aws/tutorial/part-5), you'll put stages to work in CI:
+In [Part 5](part-5.md), you'll put stages to work in CI:
 GitHub Actions deploys `prod` on pushes to `main` and an isolated
 `pr-<n>` preview stage for every pull request.

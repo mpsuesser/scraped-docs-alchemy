@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource
 title: "Resources"
 description: "Resources are named cloud entities with input properties and output attributes."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import DAG from "../../../components/DAG.astro";
@@ -36,7 +36,7 @@ Every resource has two sides:
 - **Output Attributes** — the values produced after creation
   (e.g. `queueUrl`, `queueArn`)
 
-Output attributes are available as [`Output`](/infrastructure-as-code/outputs)
+Output attributes are available as [`Output`](outputs.md)
 expressions on the resource — lazy, typed references that resolve
 once the upstream resource has been created:
 
@@ -45,7 +45,7 @@ const bucket = yield* Cloudflare.R2.Bucket("Bucket");
 bucket.bucketName; // Output<string>
 ```
 
-See [Inputs & Outputs](/infrastructure-as-code/outputs) for the full set of
+See [Inputs & Outputs](outputs.md) for the full set of
 operators (`map`, `mapEffect`, `all`, `interpolate`, `ref`).
 
 These are lazy references that resolve after the resource is created.
@@ -56,9 +56,9 @@ dependencies.
 
 A resource declaration like `Cloudflare.R2.Bucket("Bucket")` is just
 an `Effect` — calling it doesn't talk to the cloud. `yield*`-ing it
-inside a [Stack](/infrastructure-as-code/stack) doesn't either; it just **registers
+inside a [Stack](stack.md) doesn't either; it just **registers
 the resource on the stack** and hands you back a typed
-[`Output`](/infrastructure-as-code/outputs) reference for its attributes:
+[`Output`](outputs.md) reference for its attributes:
 
 ```typescript
 // 1. Build the Effect. No API calls. No state mutation.
@@ -78,7 +78,7 @@ export default Alchemy.Stack(
 
 The cloud is only touched later, when `alchemy deploy` runs the
 collected graph through plan and apply. See
-[Resource Lifecycle](/infrastructure-as-code/resource-lifecycle) for what happens
+[Resource Lifecycle](resource-lifecycle.md) for what happens
 after registration.
 
 ### Sharing across files
@@ -137,9 +137,9 @@ const project = stage.startsWith("pr-")
   : yield* Neon.Project("app-db", { region: "aws-us-east-1" });
 ```
 
-See [References](/infrastructure-as-code/references) for the full reference
+See [References](references.md) for the full reference
 surface and the [Shared database across
-stages](/cloudflare/data/shared-database) guide for the canonical
+stages](../cloudflare/data/shared-database.md) guide for the canonical
 walkthrough.
 
 ## Logical ID
@@ -235,11 +235,11 @@ When the next plan runs, alchemy:
 2. Updates downstream resources to reference the new one
 3. Deletes the old table
 
-The resource's [provider](/infrastructure-as-code/provider) decides which property
+The resource's [provider](provider.md) decides which property
 changes trigger replacement vs in-place update (via
-[`diff`](/infrastructure-as-code/provider#diff)). For the full lifecycle
+[`diff`](provider.md#diff)). For the full lifecycle
 (reconcile / replace / delete) see
-[Resource Lifecycle](/infrastructure-as-code/resource-lifecycle).
+[Resource Lifecycle](resource-lifecycle.md).
 
 ## Defining your own Resource type
 
@@ -248,7 +248,7 @@ third-party API, declare a `Resource` type with its input props and
 output attributes — then implement its provider as a `Layer`. Same
 engine plans, deploys, and destroys it.
 
-See [Writing a Custom Resource Provider](/infrastructure-as-code/custom-provider)
+See [Writing a Custom Resource Provider](custom-provider.md)
 for a step-by-step walkthrough of declaring the type and
 implementing each lifecycle hook (`reconcile`, `delete`, `diff`,
 `read`).
@@ -278,12 +278,12 @@ const Pro = yield* StripeProduct("Pro", {
 
 The lifecycle hooks the provider implements — `reconcile`,
 `delete`, `diff`, `read` — are documented in
-[Provider](/infrastructure-as-code/provider#lifecycle-operations).
+[Provider](provider.md#lifecycle-operations).
 
 ## The resource graph
 
 Every attribute a resource exposes (`Bucket.bucketName`,
-`Worker.url`) is an [Output](/infrastructure-as-code/outputs) — a lazy,
+`Worker.url`) is an [Output](outputs.md) — a lazy,
 typed reference that resolves at deploy time. Passing an Output from
 one resource as input to another draws an edge in the dependency
 graph. Take this stack:
@@ -328,16 +328,16 @@ It then deploys in topological order:
 3. `Worker` depends on all three → created last, after every
    upstream Output has resolved.
 
-Outputs draw the edges. [Bindings](/infrastructure-as-effects/binding) attach
+Outputs draw the edges. [Bindings](../infrastructure-as-effects/binding.md) attach
 resources to Workers and Lambdas — and when bindings form a cycle,
 alchemy handles it with a two-phase plan; see
-[Circular Bindings](/infrastructure-as-effects/circular-bindings).
+[Circular Bindings](../infrastructure-as-effects/circular-bindings.md).
 
 ## Circular references
 
 Real systems have cycles — two Workers that call each other, a
 Lambda that invokes another Lambda. Alchemy resolves them by
-splitting each Function resource ([Functions & Servers](/infrastructure-as-effects/functions-and-servers)) into a
+splitting each Function resource ([Functions & Servers](../infrastructure-as-effects/functions-and-servers.md)) into a
 **class** that acts as the Tag (the identity) and a **`.make(...)`**
 Layer that supplies the runtime implementation — so the class can be
 referenced before its implementation exists:
@@ -353,11 +353,11 @@ referenced before its implementation exists:
   ]}
 />
 
-See [Circular Bindings](/infrastructure-as-effects/circular-bindings) for the full A↔B
+See [Circular Bindings](../infrastructure-as-effects/circular-bindings.md) for the full A↔B
 build-up and how alchemy plans the two-phase create-then-wire deploy.
 
 ## Where next
 
-- [Actions](/infrastructure-as-code/action) — deploy-time work without a lifecycle.
-- [Inputs & Outputs](/infrastructure-as-code/outputs) — the lazy references that draw the graph.
-- [Resource lifecycle](/infrastructure-as-code/resource-lifecycle) — what happens on deploy.
+- [Actions](action.md) — deploy-time work without a lifecycle.
+- [Inputs & Outputs](outputs.md) — the lazy references that draw the graph.
+- [Resource lifecycle](resource-lifecycle.md) — what happens on deploy.

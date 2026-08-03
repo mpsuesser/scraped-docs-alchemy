@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-effects/event-sources
 title: "Event Sources"
 description: "An event source is a binding that runs your Function when something happens on a resource — one call wires the event-source mapping, the permissions, and a typed handler."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-An **Event Source** is a [Binding](/infrastructure-as-effects/binding) that
+An **Event Source** is a [Binding](binding.md) that
 *triggers* your Function when something happens on a resource — a
 message lands on a queue, an object lands in a bucket, a table row
 changes. Batch sources hand your handler the records as an Effect
@@ -15,12 +15,12 @@ batch, and pipe. Per-event sources (cron, webhooks) instead call a
 function you provide with each event, returning an Effect.
 Everything on this page builds on the binding mechanics — the
 deploy-time/runtime split, the generated permissions — covered in
-[Bindings](/infrastructure-as-effects/binding).
+[Bindings](binding.md).
 
 ## Consuming a queue
 
 Event sources are declared inside the
-[Effectful Constructor](/infrastructure-as-effects/functions-and-servers#the-effectful-constructor-pattern),
+[Effectful Constructor](functions-and-servers.md#the-effectful-constructor-pattern),
 like any other binding:
 
 ```typescript
@@ -49,7 +49,7 @@ nothing — it just declares what it listens to. The `consume*`
 callable is the contract; `AWS.Lambda.QueueEventSource` is one of
 its interchangeable implementation Layers — the same
 contract-plus-Layer split every binding has
-([Bindings](/infrastructure-as-effects/binding#a-contract-and-a-layer)).
+([Bindings](binding.md#a-contract-and-a-layer)).
 
 ## What one call wires
 
@@ -68,7 +68,7 @@ contract-plus-Layer split every binding has
 There is no separate mapping resource to declare, no policy JSON,
 and no `event.Records` unpacking — the deploy-time half is fenced
 behind the same `__ALCHEMY_RUNTIME__` guard as every binding (see
-[Phases](/infrastructure-as-effects/phases#the-__alchemy_runtime__-guard)).
+[Phases](phases.md#the-__alchemy_runtime__-guard)).
 
 ## The same shape on Cloudflare
 
@@ -121,12 +121,12 @@ guide in the provider hub:
 
 | Source          | Callable                                        | Stream element        | Runtime layer                 |
 | --------------- | ----------------------------------------------- | --------------------- | ----------------------------- |
-| [SQS Queue](/aws/messaging/sqs)       | `SQS.consumeQueueMessages(queue, fn)`           | `SQSRecord`           | `Lambda.QueueEventSource`     |
-| [Kinesis Stream](/aws/messaging/kinesis)  | `Kinesis.consumeStreamRecords(stream, props, fn)` | `KinesisEventRecord`  | `Lambda.StreamEventSource`    |
-| [DynamoDB Table](/aws/messaging/dynamodb-streams)  | `DynamoDB.consumeTableChanges(table, props, fn)`  | `StreamRecord<T>`     | `Lambda.TableEventSource`     |
-| [S3 Bucket](/aws/messaging/s3-events)       | `S3.consumeBucketEvents(bucket, fn)`            | `BucketNotification`  | `Lambda.BucketEventSource`    |
-| [SNS Topic](/aws/messaging/sns)       | `SNS.consumeTopicNotifications(topic, fn)`      | `TopicNotification`   | `Lambda.TopicEventSource`     |
-| [EventBridge Bus](/aws/messaging/eventbridge) | `EventBridge.consumeBusEvents(bus, pattern, fn)` | `EventRecord<Detail>` | `Lambda.EventSource`          |
+| [SQS Queue](../aws/messaging/sqs.md)       | `SQS.consumeQueueMessages(queue, fn)`           | `SQSRecord`           | `Lambda.QueueEventSource`     |
+| [Kinesis Stream](../aws/messaging/kinesis.md)  | `Kinesis.consumeStreamRecords(stream, props, fn)` | `KinesisEventRecord`  | `Lambda.StreamEventSource`    |
+| [DynamoDB Table](../aws/messaging/dynamodb-streams.md)  | `DynamoDB.consumeTableChanges(table, props, fn)`  | `StreamRecord<T>`     | `Lambda.TableEventSource`     |
+| [S3 Bucket](../aws/messaging/s3-events.md)       | `S3.consumeBucketEvents(bucket, fn)`            | `BucketNotification`  | `Lambda.BucketEventSource`    |
+| [SNS Topic](../aws/messaging/sns.md)       | `SNS.consumeTopicNotifications(topic, fn)`      | `TopicNotification`   | `Lambda.TopicEventSource`     |
+| [EventBridge Bus](../aws/messaging/eventbridge.md) | `EventBridge.consumeBusEvents(bus, pattern, fn)` | `EventRecord<Detail>` | `Lambda.EventSource`          |
 
 EventBridge can also *route* matching events to another resource
 instead of consuming them locally:
@@ -138,9 +138,9 @@ targets.
 
 | Source            | Callable                                       | Handler receives              | Runtime layer                                    |
 | ----------------- | ---------------------------------------------- | ----------------------------- | ------------------------------------------------ |
-| [Queue](/cloudflare/messaging/queues)             | `Queues.consumeQueueMessages(queue, fn)`       | `Stream` of `Message<Body>`   | `Queues.EventSourceLive`                         |
-| [Cron Trigger](/cloudflare/messaging/cron)      | `Workers.cron(expression, fn)`                 | `ScheduledController` per fire | `Workers.CronEventSourceLive`                    |
-| [GitHub repository](/cloudflare/messaging/github-events) | `GitHub.consumeRepositoryEvents(props, fn)`    | `WebhookEvent` per delivery   | `Workers.GitHubRepositoryEventSourceLive`        |
+| [Queue](../cloudflare/messaging/queues.md)             | `Queues.consumeQueueMessages(queue, fn)`       | `Stream` of `Message<Body>`   | `Queues.EventSourceLive`                         |
+| [Cron Trigger](../cloudflare/messaging/cron.md)      | `Workers.cron(expression, fn)`                 | `ScheduledController` per fire | `Workers.CronEventSourceLive`                    |
+| [GitHub repository](../cloudflare/messaging/github-events.md) | `GitHub.consumeRepositoryEvents(props, fn)`    | `WebhookEvent` per delivery   | `Workers.GitHubRepositoryEventSourceLive`        |
 
 ## Not every source is a Stream
 
@@ -198,10 +198,10 @@ yield* AWS.DynamoDB.consumeTableChanges(
 );
 ```
 
-*(layers elided — see [Sinks](/infrastructure-as-effects/sinks) for
+*(layers elided — see [Sinks](sinks.md) for
 the full constructor)*
 
-That `sink` is a [Sink](/infrastructure-as-effects/sinks) — the
+That `sink` is a [Sink](sinks.md) — the
 write-side dual of an event source — turning source → transform →
 sink into one expression.
 
@@ -225,10 +225,10 @@ individual messages inside the handler.
 
 ## Where next
 
-- [Sinks](/infrastructure-as-effects/sinks) — the write-side dual:
+- [Sinks](sinks.md) — the write-side dual:
   resources as Effect `Sink`s, with batching and IAM generated the
   same way.
-- [Bindings](/infrastructure-as-effects/binding) — the deploy-time
+- [Bindings](binding.md) — the deploy-time
   mechanics every event source is built on.
-- [Functions & Servers](/infrastructure-as-effects/functions-and-servers) —
+- [Functions & Servers](functions-and-servers.md) —
   the Effectful Constructor these examples live inside.

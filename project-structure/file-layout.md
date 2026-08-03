@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/file-layout
 title: "File layout"
 description: "How to organize an Alchemy project — one file per Resource or Layer, group Resources that travel together by concern, and keep alchemy.run.ts as the composition root."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A typical alchemy app ([`examples/cloudflare-neon-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle)):
@@ -100,7 +100,7 @@ there is no separate `wrangler.toml` pointing at a script.
 
 Layers follow the same rule — the `SandboxLive` Layer lives in
 `src/Sandbox.ts` (see
-[Layers](/infrastructure-as-effects/layers)).
+[Layers](../infrastructure-as-effects/layers.md)).
 
 ## Group by concern
 
@@ -170,7 +170,7 @@ const sandbox = yield* Cloudflare.Container("Sandbox", {
 The decision lives next to the Resource it affects, not in
 `alchemy.run.ts`. The most common case — `pr-*` stages borrowing
 staging's database via `.ref` — is covered in
-[References](/infrastructure-as-code/references).
+[References](../infrastructure-as-code/references.md).
 
 ## alchemy.run.ts is the composition root
 
@@ -235,15 +235,15 @@ If `alchemy.run.ts` is growing, something is missing a home in
 ```
 
 Tests mirror the tree under `test/`; the tutorial builds this
-shape step by step ([Part 2](/cloudflare/tutorial/part-2)).
+shape step by step ([Part 2](../cloudflare/tutorial/part-2.md)).
 
 ## Where next
 
-- [Monorepo](/project-structure/monorepo) — the workspace-level version of
+- [Monorepo](monorepo.md) — the workspace-level version of
   this question: one Stack or one per package.
-- [References](/infrastructure-as-code/references) — when the split
+- [References](../infrastructure-as-code/references.md) — when the split
   crosses Stack boundaries.
-- [Layers](/infrastructure-as-effects/layers) — promote
+- [Layers](../infrastructure-as-effects/layers.md) — promote
   a multi-Resource unit into a swappable Layer.
-- [Stacks](/infrastructure-as-code/stack) — the Stack service, stages, and
+- [Stacks](../infrastructure-as-code/stack.md) — the Stack service, stages, and
   outputs used by the composition root.

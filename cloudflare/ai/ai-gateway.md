@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-gateway
 title: "Add an AI Gateway"
 description: "Wire an AI Gateway into your Worker, turn it into a typed Effect LanguageModel, and run generations and streams through Workers AI with caching, rate limiting, and logs."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 You've now wired Durable Objects, hibernatable WebSockets, a
@@ -19,7 +19,7 @@ Layer — and from there you're using the same `generateText` /
 `streamText` APIs you'd use against any other provider.
 
 Don't need caching, rate limiting, or the request log? The plain
-[Workers AI binding](/cloudflare/ai/workers-ai)
+[Workers AI binding](workers-ai.md)
 (`Cloudflare.Workers.AI`) calls the same models directly, with no
 gateway resource — and its `ai.model({...})` produces the same
 `LanguageModel` Layer, so you can start there and add the gateway
@@ -279,4 +279,4 @@ across requests, restarts, and hibernation.
 
 For the wider API surface — `generateObject`, `Toolkit`, structured
 outputs, and how the same `LanguageModel` composes inside an HTTP
-API or RPC handler — see the [Effect AI guide](/cloudflare/ai/effect-ai).
+API or RPC handler — see the [Effect AI guide](effect-ai.md).

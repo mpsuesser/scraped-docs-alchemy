@@ -2,17 +2,17 @@
 url: https://alchemy.run/github
 title: "GitHub"
 description: "Repositories, Actions secrets and variables, webhooks, and repository event sources as Stack resources — the glue for CI/CD."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 The GitHub provider manages repositories, Actions secrets and variables, and webhooks as resources. It’s the glue for CI/CD: your Stack can mint a scoped cloud credential and store it as an Actions secret in the same deploy — no pasting tokens into repo settings. Workers can even subscribe to repository events directly.
 
-New here? [Set up credentials](https://alchemy.run/github/setup) first.
+New here? [Set up credentials](github/setup.md) first.
 
 ## Resources
 
-`Repository` creates and converges a repo’s settings — see [Repositories](https://alchemy.run/github/repository). Destroying the stack retains the repository by default, protecting its history:
+`Repository` creates and converges a repo’s settings — see [Repositories](github/repository.md). Destroying the stack retains the repository by default, protecting its history:
 
 ```typescript
 const repo = yield* GitHub.Repository("api", {
@@ -23,7 +23,7 @@ const repo = yield* GitHub.Repository("api", {
 });
 ```
 
-`Secrets` and `Variables` bulk-seed GitHub Actions configuration — values can be outputs of other resources. See [Actions secrets & variables](https://alchemy.run/github/actions-config):
+`Secrets` and `Variables` bulk-seed GitHub Actions configuration — values can be outputs of other resources. See [Actions secrets & variables](github/actions-config.md):
 
 ```typescript
 yield* GitHub.Secrets({
@@ -55,7 +55,7 @@ const production = yield* GitHub.Environment("production", {
 });
 ```
 
-`Webhook` manages a repository webhook pointed at any URL, and `consumeRepositoryEvents` subscribes a host (e.g. a Cloudflare Worker) to repository webhooks with typed payloads — see [Webhooks & events](https://alchemy.run/github/events) and [React to GitHub events from a Worker](https://alchemy.run/cloudflare/messaging/github-events):
+`Webhook` manages a repository webhook pointed at any URL, and `consumeRepositoryEvents` subscribes a host (e.g. a Cloudflare Worker) to repository webhooks with typed payloads — see [Webhooks & events](github/events.md) and [React to GitHub events from a Worker](cloudflare/messaging/github-events.md):
 
 ```typescript
 yield* GitHub.consumeRepositoryEvents(
@@ -88,11 +88,11 @@ if (process.env.PULL_REQUEST) {
 }
 ```
 
-The body is dedented automatically, so indented template literals render as clean Markdown. [CI](https://alchemy.run/environments/ci) walks through the full workflow: a `pr-{n}` stage per pull request, with this comment tracking its preview URL on each push.
+The body is dedented automatically, so indented template literals render as clean Markdown. [CI](environments/ci.md) walks through the full workflow: a `pr-{n}` stage per pull request, with this comment tracking its preview URL on each push.
 
 ## Compose with your cloud
 
-The canonical pattern: a one-shot stack mints a scoped cloud credential and stores it as an Actions secret, so CI deploys with a credential that was itself provisioned as code. Walk through it in [Part 5: CI/CD (Cloudflare)](https://alchemy.run/cloudflare/tutorial/part-5) or [Part 5: CI/CD (AWS)](https://alchemy.run/aws/tutorial/part-5), and see [CI](https://alchemy.run/environments/ci) for the general GitHub Actions setup.
+The canonical pattern: a one-shot stack mints a scoped cloud credential and stores it as an Actions secret, so CI deploys with a credential that was itself provisioned as code. Walk through it in [Part 5: CI/CD (Cloudflare)](cloudflare/tutorial/part-5.md) or [Part 5: CI/CD (AWS)](aws/tutorial/part-5.md), and see [CI](environments/ci.md) for the general GitHub Actions setup.
 
 ## Reference
 

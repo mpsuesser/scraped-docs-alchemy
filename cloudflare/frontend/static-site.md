@@ -2,18 +2,18 @@
 url: https://alchemy.run/cloudflare/frontend/static-site
 title: "Static sites"
 description: "Deploy any build command's output directory as Cloudflare Worker static assets with Cloudflare.Website.StaticSite — custom edge Workers, framework-native local dev, and memoized rebuilds."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `Cloudflare.Website.StaticSite` runs a build command, content-hashes the
 output directory, and deploys it as a Cloudflare Worker serving static
 assets. The build is a plain shell command (a
-[`Command.Build`](/providers/command/build) resource under the hood — see
-[Memoization](/command/memoization) for what gets hashed and when it
+[`Command.Build`](https://alchemy.run/providers/command/build) resource under the hood — see
+[Memoization](../../command/memoization.md) for what gets hashed and when it
 re-runs), so it works for anything that produces a directory of files — a
 Zola or Hugo site, a bash script, or the static output of a framework the
-[Vite resource](/cloudflare/frontend/vite) doesn't support yet.
+[Vite resource](vite.md) doesn't support yet.
 
 If you provide neither `main` nor `script`, the site deploys as an
 **assets-only Worker**: no Worker code is uploaded at all. Cloudflare's
@@ -24,7 +24,7 @@ Provide `main` to put a real Worker in front instead (see
 [below](#a-custom-worker-in-front-of-your-assets)).
 
 If your files need no build step at all, you can skip `StaticSite` and
-give a plain [Worker](/cloudflare/compute/workers) just an assets
+give a plain [Worker](../compute/workers.md) just an assets
 directory:
 
 ```typescript
@@ -96,7 +96,7 @@ The build contract is two required props, plus a handful of optional ones:
 - `assets` — asset routing behavior (`notFoundHandling`, `htmlHandling`,
   `runWorkerFirst`, ...), passed flat.
 
-Everything else a [Worker](/cloudflare/compute/workers) accepts —
+Everything else a [Worker](../compute/workers.md) accepts —
 `domain`, `compatibility`, bindings via `env` — applies too, since a
 `StaticSite` is a Worker underneath.
 
@@ -140,7 +140,7 @@ const Website = Cloudflare.Website.StaticSite(
 `assets: { runWorkerFirst: true }` — the docs site uses it to rewrite OG and
 canonical tags with `HTMLRewriter` and serve 301 redirects, then delegates
 everything else to `env.ASSETS.fetch(request)`. For the Astro-specific
-framing of this setup, see [Astro on Cloudflare](/cloudflare/frontend/astro).
+framing of this setup, see [Astro on Cloudflare](astro.md).
 
 ## Local dev
 
@@ -162,17 +162,17 @@ scope — the build is skipped and the Worker runs in external mode against
 the dev server's URL, detected from the command's stdout. `dev` also accepts
 `cwd` and `env` overrides for the dev process, and `dev.url` to pin the URL
 explicitly when stdout detection fails. The sidecar mechanics — spawn, URL
-detection, teardown — are covered in [Dev servers](/command/dev-servers).
+detection, teardown — are covered in [Dev servers](../../command/dev-servers.md).
 
 ## Frameworks the Vite resource doesn't support yet
 
 `StaticSite` is the documented workaround for frameworks whose build isn't
-pure Vite. [Astro](/cloudflare/frontend/astro) is the verified case — its
+pure Vite. [Astro](astro.md) is the verified case — its
 build is driven by the `astro` CLI, so the Vite resource can't build it, but
 `command: "astro build"` + `outdir: "dist"` deploys it exactly as shown
-above. [Nuxt](/cloudflare/frontend/nuxt) has no example or test in the repo
+above. [Nuxt](nuxt.md) has no example or test in the repo
 yet; deploying a statically generated (`nuxt generate`) output through
 `StaticSite` is an untested suggestion, not a verified path. If your app
 *is* pure Vite — `vite build` with framework plugins in `vite.config.ts` —
-use [`Cloudflare.Website.Vite`](/cloudflare/frontend/vite) instead and skip
+use [`Cloudflare.Website.Vite`](vite.md) instead and skip
 the build contract entirely.

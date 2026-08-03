@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/observability
 title: "Observability"
 description: "Effect emits OpenTelemetry natively and the exporter is a Layer. Provision the receiving end — datasets, monitors, notifiers, alarms — as resources in the same Stack as the code that emits the signals."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect already emits traces, metrics, and logs, and every alchemy
@@ -41,13 +41,13 @@ OTLP-compatible vendor. Swap the layer, ship somewhere else; the code
 emitting the signals never changes. Buffered telemetry is flushed
 when each request's scope closes (via `waitUntil` on Cloudflare, so
 export never delays a response). See
-[Telemetry](/infrastructure-as-effects/telemetry) for the full
+[Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) for the full
 mechanics.
 
 ## Provision the receiving end
 
 The endpoint the exporter targets is a resource. An
-[Axiom](/axiom) `Dataset` is declared per OTEL signal and exposes its
+[Axiom](../axiom.md) `Dataset` is declared per OTEL signal and exposes its
 OTLP endpoints as outputs:
 
 ```typescript
@@ -65,7 +65,7 @@ export const Logs = Axiom.Dataset("Logs", {
 ```
 
 Each dataset's `otelTracesEndpoint` / `otelLogsEndpoint` /
-`otelMetricsEndpoint` attributes are [Outputs](/infrastructure-as-code/outputs) —
+`otelMetricsEndpoint` attributes are [Outputs](../infrastructure-as-code/outputs.md) —
 references you wire into whatever runs the exporter.
 
 ## Bind the datasets to the runtime
@@ -97,7 +97,7 @@ Effect.provide(
 
 Building the layer binds each dataset's OTLP endpoint and the
 token's `Authorization` header onto the Worker — the bearer travels
-as a `secret_text` binding (see [Secrets](/environments/secrets)) and
+as a `secret_text` binding (see [Secrets](../environments/secrets.md)) and
 never appears in plaintext. At runtime the built-in exporter ships
 each signal to its dataset — no exporter code in the Worker.
 
@@ -212,8 +212,8 @@ ALARM("HighLatency")'`), and because stacks are per-stage, `prod`,
 
 ## Where next
 
-- [Telemetry](/infrastructure-as-effects/telemetry) — how the built-in exporters work across every runtime, and the override API
-- [Axiom](/axiom) — datasets, tokens, monitors, notifiers, and dashboards as resources
-- [Axiom observability guide](/cloudflare/observability/axiom-observability) — end-to-end setup for a Cloudflare Worker
-- [Tutorial Part 6](/cloudflare/tutorial/part-6) — the step-by-step version
-- [Secrets](/environments/secrets) — how `Redacted` values like ingest tokens are bound
+- [Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) — how the built-in exporters work across every runtime, and the override API
+- [Axiom](../axiom.md) — datasets, tokens, monitors, notifiers, and dashboards as resources
+- [Axiom observability guide](../cloudflare/observability/axiom-observability.md) — end-to-end setup for a Cloudflare Worker
+- [Tutorial Part 6](https://alchemy.run/cloudflare/tutorial/part-6) — the step-by-step version
+- [Secrets](../environments/secrets.md) — how `Redacted` values like ingest tokens are bound

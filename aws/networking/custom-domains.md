@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/networking/custom-domains
 title: "Custom domains with Route53 + ACM"
 description: "Serve your site or API from your own domain — DNS-validated ACM certificates, Route 53 alias records, and the domain prop on Website resources."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A custom domain on AWS is three moving parts: a TLS certificate (ACM), DNS
@@ -183,13 +183,13 @@ for regional endpoint configurations.
 
 ## Where next
 
-- [Websites on AWS](/aws/frontend/websites) — the `domain` prop in the context of the
+- [Websites on AWS](../frontend/websites.md) — the `domain` prop in the context of the
   full websites surface
-- [Deploy a static site](/aws/frontend/static-site) — Router composition and
+- [Deploy a static site](../frontend/static-site.md) — Router composition and
   cache invalidation
-- [REST API (API Gateway v1)](/aws/apis/api-gateway) — the API this
+- [REST API (API Gateway v1)](../apis/api-gateway.md) — the API this
   domain fronts
-- Reference: [Certificate](/providers/aws/acm/certificate),
-  [Record](/providers/aws/route53/record),
-  [HostedZone](/providers/aws/route53/hostedzone),
-  [DomainName](/providers/aws/apigateway/domainname)
+- Reference: [Certificate](https://alchemy.run/providers/aws/acm/certificate),
+  [Record](https://alchemy.run/providers/aws/route53/record),
+  [HostedZone](https://alchemy.run/providers/aws/route53/hostedzone),
+  [DomainName](https://alchemy.run/providers/aws/apigateway/domainname)

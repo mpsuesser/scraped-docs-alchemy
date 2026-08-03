@@ -2,23 +2,23 @@
 url: https://alchemy.run/aws/compute/ec2
 title: "EC2"
 description: "Launch virtual machines with the Instance resource — as a raw compute primitive, or hosting a bundled long-lived Effect program served straight off the box."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **EC2** is for when you need the machine itself: an OS you
 control, GPUs, custom daemons, software that expects a host, or
 predictable dedicated capacity. The
-[`Instance`](/providers/aws/ec2/instance) resource plays two
+[`Instance`](https://alchemy.run/providers/aws/ec2/instance) resource plays two
 roles — a **low-level compute primitive** (launch an AMI, attach
 networking, done), or a **host for a bundled Effect program**
 that Alchemy deploys onto the machine and keeps running.
 
 This is the lowest-level of Alchemy's four runtimes: unlike
-[Lambda](/aws/compute/lambda), [ECS](/aws/compute/ecs), and
-[EKS](/aws/compute/eks), you own patching,
+[Lambda](lambda.md), [ECS](ecs.md), and
+[EKS](eks.md), you own patching,
 scaling, and availability. Reach for it deliberately — see
-[Choosing a runtime](/aws/compute/choosing-a-runtime).
+[Choosing a runtime](choosing-a-runtime.md).
 
 ## Launch an instance
 
@@ -39,7 +39,7 @@ const instance = yield* AWS.EC2.Instance("AppInstance", {
 
 The resolved instance exposes `instanceId`, `publicIpAddress`,
 `privateIpAddress`, DNS names, and the rest of the observed
-state — see the [`Instance` reference](/providers/aws/ec2/instance)
+state — see the [`Instance` reference](https://alchemy.run/providers/aws/ec2/instance)
 for every prop and attribute.
 
 ## Host an Effect program
@@ -119,7 +119,7 @@ environment from S3 on every start and runs with
 `Restart=always`, so a flaky network install self-heals and the
 service survives reboots. The `{ fetch }` handler is served by
 the instance's HTTP server on `port`; `ServerHost` + `host.run`
-background loops work exactly as they do on [ECS](/aws/compute/ecs).
+background loops work exactly as they do on [ECS](ecs.md).
 
 Hosted instances also get an Alchemy-managed IAM role and
 instance profile. Bindings use the same contract as Lambda —
@@ -136,7 +136,7 @@ roleManagedPolicyArns: [
 ## SSH access
 
 For direct access, create an Alchemy-managed
-[`KeyPair`](/providers/aws/ec2/keypair) and pass its name to the
+[`KeyPair`](https://alchemy.run/providers/aws/ec2/keypair) and pass its name to the
 instance. The generated private key comes back as a `Redacted`
 output on the resource:
 
@@ -153,19 +153,19 @@ const key = yield* AWS.EC2.KeyPair("AppKeyPair", {
 
 An instance is only as reachable as the network you launch it
 into. The example above leans on the
-[`Network`](/providers/aws/ec2/network) helper for a
+[`Network`](https://alchemy.run/providers/aws/ec2/network) helper for a
 public-subnet VPC; when you need explicit control — private
 subnets, NAT, VPC endpoints, custom route tables — compose the
-primitives directly. [VPC & networking](/aws/networking) walks
+primitives directly. [VPC & networking](../networking.md) walks
 through the whole set.
 
 ## Where next
 
-- [Choosing a runtime](/aws/compute/choosing-a-runtime) — Lambda first,
+- [Choosing a runtime](choosing-a-runtime.md) — Lambda first,
   ECS for containers, EKS for Kubernetes, EC2 when you need the
   machine.
-- [VPC & networking](/aws/networking) — the `Network` helper and
+- [VPC & networking](../networking.md) — the `Network` helper and
   the VPC primitives an instance lives in.
-- [`Instance` reference](/providers/aws/ec2/instance),
-  [`KeyPair` reference](/providers/aws/ec2/keypair) — every prop
+- [`Instance` reference](https://alchemy.run/providers/aws/ec2/instance),
+  [`KeyPair` reference](https://alchemy.run/providers/aws/ec2/keypair) — every prop
   and attribute.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/worker-loader
 title: "Worker Loader"
 description: "Load and run ephemeral Workers at runtime from inline source — each in its own sandboxed isolate, with optional outbound-network control and typed RPC entrypoints."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Worker Loader lets a deployed Worker spin up other Workers at
@@ -124,7 +124,7 @@ const greeting = yield* api.greet("world");
 The caller supplies the shape as a type argument since there is no
 statically bound class to infer it from. The full pattern — what
 makes a member callable and what crosses the wire — is covered in
-[Schemaless RPC](/cloudflare/apis/schemaless-rpc).
+[Schemaless RPC](../apis/schemaless-rpc.md).
 
 ## Declare the binding as env metadata
 
@@ -162,12 +162,12 @@ export default {
 
 ## Where next
 
-- [Workers](/cloudflare/compute/workers) — the two-phase Worker model
+- [Workers](workers.md) — the two-phase Worker model
   the binding lives inside.
-- [Schemaless RPC](/cloudflare/apis/schemaless-rpc) — typed calls into
+- [Schemaless RPC](../apis/schemaless-rpc.md) — typed calls into
   dynamically loaded Workers.
-- [Workers for Platforms](/cloudflare/compute/workers-for-platforms) —
+- [Workers for Platforms](workers-for-platforms.md) —
   deploy tenant Workers as persistent resources instead of loading
   them at runtime.
-- [WorkerLoader API reference](/providers/cloudflare/workers/workerloader) —
+- [WorkerLoader API reference](https://alchemy.run/providers/cloudflare/workers/workerloader) —
   every option on `load` and `get`.

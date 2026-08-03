@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/queues
 title: "Queues"
 description: "Cloudflare Queues give you reliable, at-least-once message delivery between Workers — a WriteQueue producer binding on one side and an Effect-style consumeQueueMessages handler with automatic ack/retry on the other."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Cloudflare Queue decouples work from the request that triggered
@@ -16,7 +16,7 @@ Reach for a Queue whenever work shouldn't block a response: sending
 emails, processing uploads, fanning out webhooks, or smoothing
 bursty traffic. Both halves live in the same alchemy program: the
 producer side is the `Cloudflare.Queues.WriteQueue(...)` binding
-([reference](/providers/cloudflare/queues/queue)), and the consumer
+([reference](https://alchemy.run/providers/cloudflare/queues/queue)), and the consumer
 side is the Effect-style
 `Cloudflare.Queues.consumeQueueMessages(queue, handler)` API this
 page walks through.
@@ -252,14 +252,14 @@ ack/retry, and the same surface as `AWS.SQS.consumeQueueMessages(queue, handler)
 
 Related:
 
-- [Workers](/cloudflare/compute/workers) — the runtime that produces and
+- [Workers](../compute/workers.md) — the runtime that produces and
   consumes queue messages.
-- [Durable Objects](/cloudflare/compute/durable-objects) — for stateful
+- [Durable Objects](../compute/durable-objects.md) — for stateful
   coordination instead of fire-and-forget work.
-- [Workflows](/cloudflare/compute/workflows) — multi-step orchestration with
+- [Workflows](../compute/workflows.md) — multi-step orchestration with
   checkpointed steps when fire-and-forget isn't enough.
 
 Reference:
 
-- [Queue API reference](/providers/cloudflare/queues/queue)
-- [Consumer API reference](/providers/cloudflare/queues/consumer)
+- [Queue API reference](https://alchemy.run/providers/cloudflare/queues/queue)
+- [Consumer API reference](https://alchemy.run/providers/cloudflare/queues/consumer)

@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-A **Binding** connects a [Resource](/infrastructure-as-code/resource)
+A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)
 to a Worker, Lambda Function, or Container. You yield the resource and
 get back a typed client:
 
@@ -98,7 +98,7 @@ On AWS, each capability is a single Layer — `DynamoDB.GetItemHttp`,
 `S3.GetObjectHttp` — that attaches least-privilege IAM statements at
 deploy time and calls the service over HTTP at runtime.
 
-[Layers](/infrastructure-as-effects/layers) builds on this same
+[Layers](layers.md) builds on this same
 tag/Layer split, one level up.
 
 ## What one binding call does at deploy time
@@ -137,9 +137,9 @@ The typed client resolves them for you.
 
 ## Event Sources and Sinks
 
-An **[Event Source](/infrastructure-as-effects/event-sources)** runs
+An **[Event Source](event-sources.md)** runs
 your Function when something happens on a resource — the records arrive
-as an Effect `Stream`. A **[Sink](/infrastructure-as-effects/sinks)**
+as an Effect `Stream`. A **[Sink](sinks.md)**
 is the write side — the resource exposed as an Effect `Sink`. Both wire
 their own permissions, like every other binding:
 
@@ -164,7 +164,7 @@ if (!globalThis.__ALCHEMY_RUNTIME__) {
 // always: return the typed runtime client
 ```
 
-[Phases](/infrastructure-as-effects/phases#the-__alchemy_runtime__-guard)
+[Phases](phases.md#the-__alchemy_runtime__-guard)
 covers the guard in depth.
 
 ## All of Effect, on every binding
@@ -182,13 +182,13 @@ const sendWithRetry = enqueue({ MessageBody: msg }).pipe(
 
 And because every binding has the same shape, you can hide one behind a
 service interface and swap implementations without touching handler
-code — that's [Layers](/infrastructure-as-effects/layers). Two Functions
+code — that's [Layers](layers.md). Two Functions
 can even bind each other —
-[Circular Bindings](/infrastructure-as-effects/circular-bindings).
+[Circular Bindings](circular-bindings.md).
 
 ## Where next
 
-- [Event Sources](/infrastructure-as-effects/event-sources) — bindings that trigger your Function. Next page.
-- [Sinks](/infrastructure-as-effects/sinks) — bindings you write Streams into.
-- [Phases](/infrastructure-as-effects/phases) — when the deploy-time wiring runs vs the runtime client.
-- [Layers](/infrastructure-as-effects/layers) — hide bindings behind a service interface.
+- [Event Sources](event-sources.md) — bindings that trigger your Function. Next page.
+- [Sinks](sinks.md) — bindings you write Streams into.
+- [Phases](phases.md) — when the deploy-time wiring runs vs the runtime client.
+- [Layers](layers.md) — hide bindings behind a service interface.

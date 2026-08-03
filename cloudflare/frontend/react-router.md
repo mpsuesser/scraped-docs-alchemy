@@ -2,12 +2,12 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 React Router v7 builds through Vite, so
-[`Cloudflare.Website.Vite`](/cloudflare/frontend/vite) deploys it — one
+[`Cloudflare.Website.Vite`](vite.md) deploys it — one
 resource, no Wrangler config, no manual entrypoint. In React Server
 Components mode the build emits **multiple server environments** (`rsc`
 and `ssr`) instead of the single `ssr` environment most SSR frameworks

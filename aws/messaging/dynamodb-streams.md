@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/dynamodb-streams
 title: "Process DynamoDB Streams"
 description: "Enable a DynamoDB Stream on your table and consume change records as a typed Effect Stream from the same Lambda."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 The DynamoDB table from the previous part stores records, but
@@ -189,6 +189,6 @@ The same operators work for DynamoDB Streams, S3 events, SQS
 messages, and Kinesis records — the only thing that changes is
 the element type.
 
-Next we'll add an [SQS Queue](/aws/messaging/sqs) so the Lambda
+Next we'll add an [SQS Queue](sqs.md) so the Lambda
 can fan changes (or anything else) out to a different consumer
 process and pick them up downstream.

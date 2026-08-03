@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-code/outputs
 title: "Inputs & Outputs"
 description: "Output<T> is alchemy's lazy reference type — the lazy values that flow between resources, get composed with .pipe, mapped, interpolated, and resolved during deploy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-A [Resource](/infrastructure-as-code/resource)'s **inputs** are the props you pass
+A [Resource](resource.md)'s **inputs** are the props you pass
 in. Its **outputs** are the attributes the cloud returns after
 creation. The catch: outputs don't exist when you write the code.
 They only exist after the resource is deployed.
@@ -19,7 +19,7 @@ graph is built from these dependencies.
 
 This page is a reference for every operator. For the bigger picture
 of how the graph deploys, see
-[Resource Lifecycle](/infrastructure-as-code/resource-lifecycle).
+[Resource Lifecycle](resource-lifecycle.md).
 
 ## What an Output is
 
@@ -252,7 +252,7 @@ with `InvalidReferenceError` when the target is missing. In
 day-to-day code prefer `Resource.ref` — same primitive, more
 ergonomic surface.
 
-See [References](/infrastructure-as-code/references) for the full reference
+See [References](references.md) for the full reference
 surface (`Output.ref`, `Resource.ref`, `Output.stackRef`,
 `Stack.stage`) and how each is resolved.
 
@@ -348,13 +348,13 @@ declared.
 | Inspect dependencies                        | `Output.upstream(output)`                    |
 
 For the surrounding model — what an `Output` actually flows into,
-and how the graph deploys — see [Resources](/infrastructure-as-code/resource) and
-[Resource lifecycle](/infrastructure-as-code/resource-lifecycle). To hide
+and how the graph deploys — see [Resources](resource.md) and
+[Resource lifecycle](resource-lifecycle.md). To hide
 resources and their Outputs behind a service interface, continue to
-[Layers](/infrastructure-as-effects/layers).
+[Layers](../infrastructure-as-effects/layers.md).
 
 ## Where next
 
-- [References](/infrastructure-as-code/references) — read Outputs across stacks and stages.
-- [Resource lifecycle](/infrastructure-as-code/resource-lifecycle) — how the graph deploys.
-- [Layers](/infrastructure-as-effects/layers) — hide resources and their Outputs behind a service interface.
+- [References](references.md) — read Outputs across stacks and stages.
+- [Resource lifecycle](resource-lifecycle.md) — how the graph deploys.
+- [Layers](../infrastructure-as-effects/layers.md) — hide resources and their Outputs behind a service interface.

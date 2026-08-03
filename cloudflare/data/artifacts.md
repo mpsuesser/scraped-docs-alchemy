@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/artifacts
 title: "Store Git Repos with Artifacts"
 description: "Use Cloudflare Artifacts to create Git repos at runtime and hand out clone tokens, all from a tiny Worker."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **Cloudflare Artifacts** is a Git server you can drive from a
@@ -149,8 +149,8 @@ can `git clone` against the repo right away.
 
 From here you can layer on the things a real Git host needs:
 
-- Front the Worker with a schema-typed [HttpApi](/cloudflare/apis/effect-http-api)
+- Front the Worker with a schema-typed [HttpApi](../apis/effect-http-api.md)
   so every route is validated end-to-end.
-- Add a [Durable Object](/cloudflare/compute/durable-objects) per
+- Add a [Durable Object](../compute/durable-objects.md) per
   repo to hold metadata that doesn't live in Git — description,
   topics, stars.

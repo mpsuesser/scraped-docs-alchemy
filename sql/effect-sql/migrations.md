@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/migrations
 title: "Migrations"
 description: "Commit a directory of ordered .sql files and point a database resource's migrationsDir at it — pending files apply as part of every deploy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Migrations without an ORM: commit `.sql` files to a directory and
@@ -56,13 +56,13 @@ transactionality, and quirks:
 
 | Database | Mechanics |
 | --- | --- |
-| Cloudflare D1 | [D1 migrations](/cloudflare/data/d1#migrations) — wrangler-compatible tracking table, `migrationsTable` for drizzle compatibility |
-| Neon | [Neon migrations](/neon/data/migrations) — applied transactionally on the branch |
-| PlanetScale | [PlanetScale migrations](/planetscale/data/migrations) — the same contract on Postgres and MySQL branches |
+| Cloudflare D1 | [D1 migrations](../../cloudflare/data/d1.md#migrations) — wrangler-compatible tracking table, `migrationsTable` for drizzle compatibility |
+| Neon | [Neon migrations](../../neon/data/migrations.md) — applied transactionally on the branch |
+| PlanetScale | [PlanetScale migrations](../../planetscale/data/migrations.md) — the same contract on Postgres and MySQL branches |
 
 ## Generated migrations target the same contract
 
-[`Drizzle.Schema`](/sql/drizzle/migrations) emits into the same
+[`Drizzle.Schema`](../drizzle/migrations.md) emits into the same
 shape: its `out` output is a migrations directory, so
 `migrationsDir: schema.out` orders generation before application in
 one deploy. Any tool that writes ordered `.sql` files into a
@@ -70,9 +70,9 @@ directory already works.
 
 ## Where next
 
-- [Postgres](/sql/effect-sql/postgres) /
-  [D1](/sql/effect-sql/d1) — query the migrated database.
-- [Drizzle migrations](/sql/drizzle/migrations) — generate the
+- [Postgres](postgres.md) /
+  [D1](d1.md) — query the migrated database.
+- [Drizzle migrations](../drizzle/migrations.md) — generate the
   files from a schema module instead of writing them by hand.
-- [Branch from a shared database](/cloudflare/data/branch-from-shared-database)
+- [Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
   — per-stage databases built on the same contract.

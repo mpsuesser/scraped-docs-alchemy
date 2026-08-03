@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/tutorial/part-4
 title: "Part 4: Local Dev"
 description: "Run your stack locally with alchemy dev for hot reloading and instant feedback."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-In [Part 3](/cloudflare/tutorial/part-3) you wrote integration tests against
+In [Part 3](part-3.md) you wrote integration tests against
 your deployed stack. But deploying to Cloudflare on every code change
 is slow. In this part you'll use `bun alchemy dev` to run everything
 locally with hot reloading.
@@ -110,5 +110,5 @@ You now have:
 - Hot reloading on file changes
 - Local emulation of Cloudflare resources
 
-In [Part 5](/cloudflare/tutorial/part-5), you'll set up GitHub Actions for
+In [Part 5](part-5.md), you'll set up GitHub Actions for
 automated deployments and PR preview environments.

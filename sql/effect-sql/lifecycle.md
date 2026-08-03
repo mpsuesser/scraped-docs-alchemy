@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/lifecycle
 title: "Connection lifecycle"
 description: "SQL clients build lazily on first query, memoize per execution, and tear down when the event settles — why, and what that means on workerd and Lambda."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Every alchemy SQL client — `SQL.Postgres`, `SQL.D1`,
@@ -60,7 +60,7 @@ memo makes it cost one build per event instead of one per query.
 Cross-request pooling is Hyperdrive's job: it holds the warm
 connections at the edge, and the Worker opens a cheap local
 connection to it each event. See
-[Hyperdrive](/cloudflare/data/hyperdrive).
+[Hyperdrive](../../cloudflare/data/hyperdrive.md).
 
 D1 is a native binding rather than a socket, but its client carries a
 prepared-statement cache with the same per-request constraint — same
@@ -90,15 +90,15 @@ they cannot disagree.
 The contract is identical off Cloudflare: each Lambda invocation and
 each server request gets a fresh execution scope, clients build on
 first query and release on settle.
-[Functions & Servers](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[Functions & Servers](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
 covers the instance-scope rules — what init may do, when instance
 finalizers run, and the Lambda SIGTERM window.
 
 ## Where next
 
-- [Postgres](/sql/effect-sql/postgres) / [D1](/sql/effect-sql/d1) —
+- [Postgres](postgres.md) / [D1](d1.md) —
   the clients this contract governs.
-- [Workers: isolate scope vs request scope](/cloudflare/compute/workers#isolate-scope-vs-request-scope)
+- [Workers: isolate scope vs request scope](../../cloudflare/compute/workers.md#isolate-scope-vs-request-scope)
   — the same rules from the Worker's point of view.
-- [Functions & Servers](/infrastructure-as-effects/functions-and-servers)
+- [Functions & Servers](../../infrastructure-as-effects/functions-and-servers.md)
   — the cross-cloud runtime model.

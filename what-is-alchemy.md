@@ -2,11 +2,11 @@
 url: https://alchemy.run/what-is-alchemy
 title: "What is Alchemy?"
 description: "Alchemy is an Infrastructure-as-Effects framework that combines cloud infrastructure and application logic into a single type-safe program powered by Effect."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-Alchemy is an **[Infrastructure-as-Effects](/infrastructure-as-effects)** framework. It extends
+Alchemy is an **[Infrastructure-as-Effects](infrastructure-as-effects.md)** framework. It extends
 Infrastructure-as-Code by combining your cloud resources and the
 application logic that uses them into a single, type-safe program
 powered by [Effect](https://effect.website).
@@ -151,7 +151,7 @@ Bindings also enable **circular references** between resources —
 Worker A can hold a typed client to Worker B and vice versa — which
 plain props, a directed acyclic graph, can't express.
 
-See [Bindings](/infrastructure-as-effects/binding) for event sources, sinks, and the
+See [Bindings](infrastructure-as-effects/binding.md) for event sources, sinks, and the
 deploy-time mechanics.
 
 ## Stacks and stages
@@ -180,8 +180,8 @@ every resource is a provider implementing four lifecycle operations:
 
 The engine drives these in a **plan → apply** loop: `read` and
 `diff` build the plan, then `reconcile` and `delete` apply it in
-dependency order. See [Providers](/infrastructure-as-code/provider) and
-[Resource lifecycle](/infrastructure-as-code/resource-lifecycle).
+dependency order. See [Providers](infrastructure-as-code/provider.md) and
+[Resource lifecycle](infrastructure-as-code/resource-lifecycle.md).
 
 Providers are Effect Layers, wired into a Stack with
 `Cloudflare.providers()` or `AWS.providers()`:
@@ -197,7 +197,7 @@ The type system checks the wiring — using a Cloudflare resource
 without `Cloudflare.providers()`, or providing the wrong cloud's
 providers, is a compile-time error. To support a new cloud or
 third-party API, see [Writing a Custom Resource
-Provider](/infrastructure-as-code/custom-provider).
+Provider](infrastructure-as-code/custom-provider.md).
 
 ## Two styles: Effect and async
 
@@ -252,7 +252,7 @@ and the same deployment pipeline. Choose whichever fits your team.
 
 ## Where next
 
-- [Getting started](/getting-started) — install and deploy in two minutes
-- Pick your provider: [Cloudflare](/cloudflare) or [AWS](/aws)
-- [Migrating from v1](/migrating-from-v1) — upgrade from
+- [Getting started](getting-started.md) — install and deploy in two minutes
+- Pick your provider: [Cloudflare](cloudflare.md) or [AWS](aws.md)
+- [Migrating from v1](migrating-from-v1.md) — upgrade from
   Alchemy v1

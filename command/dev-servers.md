@@ -2,15 +2,15 @@
 url: https://alchemy.run/command/dev-servers
 title: "Dev servers"
 description: "Run a framework dev server as a Command.Dev resource — started by alchemy dev, a no-op on alchemy deploy, with the server's URL surfaced back into your stack."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `Command.Dev` is a long-lived process scoped to the stack instance:
-started during [`alchemy dev`](/cli/dev), restarted when its inputs
+started during [`alchemy dev`](../cli/dev.md), restarted when its inputs
 change, and a literal no-op during `alchemy deploy` — the deploy
 provider returns `{ url: undefined }` without spawning anything.
-This page assumes the [Command provider](/command) is registered.
+This page assumes the [Command provider](../command.md) is registered.
 
 ## Declare a dev server
 
@@ -68,15 +68,15 @@ You rarely declare `Command.Dev` by hand for a frontend:
 `StaticSite`'s `dev` prop declares one for you during `alchemy dev`
 and skips the build entirely, letting your framework's own dev
 server serve the site. See
-[Static sites](/cloudflare/frontend/static-site) for the full story.
+[Static sites](../cloudflare/frontend/static-site.md) for the full story.
 
 ## Where next
 
-- [`alchemy dev`](/cli/dev) — the CLI mode that activates `Dev`
+- [`alchemy dev`](../cli/dev.md) — the CLI mode that activates `Dev`
   resources.
-- [Memoized builds](/command/memoization) — `Command.Build` and
+- [Memoized builds](memoization.md) — `Command.Build` and
   `Command.Exec`, the deploy-time counterparts.
 
 Reference:
 
-- [Dev API reference](/providers/command/dev)
+- [Dev API reference](https://alchemy.run/providers/command/dev)

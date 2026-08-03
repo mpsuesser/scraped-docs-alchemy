@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/dynamodb
 title: "DynamoDB"
 description: "Add a DynamoDB Table, bind GetItem and PutItem to your Lambda, and serve a typed key/value HTTP API backed by DynamoDB."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **DynamoDB** is AWS's serverless key/value store — structured
@@ -15,10 +15,10 @@ Each binding attaches a least-privilege IAM statement scoped to
 the table's ARN. Tables are also an event source: enable
 **DynamoDB Streams** and consume change records in a Lambda with
 `DynamoDB.consumeTableChanges` (see the
-[DynamoDB Streams guide](/aws/messaging/dynamodb-streams)).
+[DynamoDB Streams guide](../messaging/dynamodb-streams.md)).
 
-The walkthrough below builds on the [Lambda](/aws/compute/lambda) and
-[S3](/aws/data/s3) pages: it adds a **Table** and binds `GetItem` +
+The walkthrough below builds on the [Lambda](../compute/lambda.md) and
+[S3](s3.md) pages: it adds a **Table** and binds `GetItem` +
 `PutItem` to the function — same pattern as S3, different
 storage.
 
@@ -191,11 +191,11 @@ specific table — alongside the S3 grants.
 
 ## Where next
 
-- [Process DynamoDB Streams](/aws/messaging/dynamodb-streams) —
+- [Process DynamoDB Streams](../messaging/dynamodb-streams.md) —
   fan table changes out into a Lambda-side `Stream` you can
   react to.
-- [SQS](/aws/messaging/sqs) — a general-purpose queue for background
+- [SQS](../messaging/sqs.md) — a general-purpose queue for background
   work, fed from the same Lambda.
-- [`Table` reference](/providers/aws/dynamodb/table) — every
+- [`Table` reference](https://alchemy.run/providers/aws/dynamodb/table) — every
   prop and attribute, including secondary indexes, TTL, and
   point-in-time recovery.

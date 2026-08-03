@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/inspecting-state
 title: "Inspecting State"
 description: "See what alchemy thinks is deployed, debug a bad diff, and recover from bad state."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -23,8 +23,8 @@ bun alchemy state tree
    └─ Worker`} />
 
 This is the record the next plan diffs against — not the live cloud
-(see [State Store](/state-store)). Full flag reference:
-[state](/cli/state).
+(see [State Store](../state-store.md)). Full flag reference:
+[state](state.md).
 
 Drill down one level at a time:
 
@@ -54,7 +54,7 @@ bun alchemy state get --stack myapp --stage dev_sam --fqn Bucket
 ```
 
 This is the persisted props/attrs the planner diffs against — see
-[state](/cli/state) for the output encoding. Compare it with what
+[state](state.md) for the output encoding. Compare it with what
 `alchemy plan` says it wants to change. Three usual causes:
 
 **Wrong stage.** `--stage` defaults to `dev_$USER` (e.g. `dev_sam`),
@@ -67,7 +67,7 @@ state.
 resource in a console or another tool. `state get` shows what alchemy
 last persisted; the reconciler converges observed cloud state to the
 desired state on the next deploy (see
-[Resource Lifecycle](/infrastructure-as-code/resource-lifecycle)).
+[Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md)).
 
 **Stale state from a partially-failed deploy.** If a deploy crashed
 after mutating the cloud but before persisting, the record lags
@@ -100,7 +100,7 @@ If the deploy fails with `OwnedBySomeoneElse`, escalate:
 bun alchemy deploy --adopt
 ```
 
-See [Adopting Resources](/cli/adopting-resources) for why the flag is
+See [Adopting Resources](adopting-resources.md) for why the flag is
 usually unnecessary.
 
 ## Orphaned local state
@@ -115,11 +115,11 @@ and left resources recorded only locally.
 bun alchemy state clear --local
 ```
 
-See [cloudflare](/cli/cloudflare) for bootstrap repair.
+See [cloudflare](cloudflare.md) for bootstrap repair.
 
 ## Where next
 
-- [state](/cli/state) — full subcommand and flag reference
-- [Adopting Resources](/cli/adopting-resources) — ownership and `--adopt`
-- [cloudflare](/cli/cloudflare) — state-store bootstrap
-- [State Store](/state-store) — where resource state lives
+- [state](state.md) — full subcommand and flag reference
+- [Adopting Resources](adopting-resources.md) — ownership and `--adopt`
+- [cloudflare](cloudflare.md) — state-store bootstrap
+- [State Store](../state-store.md) — where resource state lives

@@ -2,21 +2,21 @@
 url: https://alchemy.run/environments/custom-auth-provider
 title: "Custom Auth Provider"
 description: "Plug a third-party API into alchemy login — a lazy credentials service backed by an AuthProvider that resolves keys from a Profile, env vars, or a refreshable session."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-The [Custom Provider](/infrastructure-as-code/custom-provider) guide builds a
+The [Custom Provider](../infrastructure-as-code/custom-provider.md) guide builds a
 Stripe `Product` provider whose lifecycle handlers need an API key. This guide
 builds the credentials side properly: a lazy `StripeCredentials` service backed
 by an Auth Provider, so the key comes from the configured
-[Profile](/environments/profiles), from env vars in CI, or from a refreshable
+[Profile](profiles.md), from env vars in CI, or from a refreshable
 session — never from props or hardcoded config. The steps below mirror the
 in-repo [Neon Auth Provider](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/Neon/AuthProvider.ts),
 the smallest real implementation.
 
 For what an Auth Provider *is* — the five-method contract, the registry, lazy
-resolution — see [Auth Providers](/environments/auth-providers).
+resolution — see [Auth Providers](auth-providers.md).
 
 ## Declare a lazy credentials service
 
@@ -239,7 +239,7 @@ OAuth or session method is just another `Match.when` branch: read the stored
 session, refresh proactively when near expiry, persist the refreshed session,
 return the fresh token. Cloudflare's provider does exactly this — see the
 refresh walkthrough in
-[Auth Providers › Refresh in practice](/environments/auth-providers#refresh-in-practice).
+[Auth Providers › Refresh in practice](auth-providers.md#refresh-in-practice).
 
 ## Implement `login`, `logout`, and `prettyPrint`
 
@@ -418,9 +418,9 @@ In CI, `configure` returns `{ method: "env" }` without prompting, so setting
 
 ## Where next
 
-- [Auth Providers](/environments/auth-providers) — the concept: the five-method
+- [Auth Providers](auth-providers.md) — the concept: the five-method
   contract, the registry, and lazy resolution.
-- [Custom Provider](/infrastructure-as-code/custom-provider) — the lifecycle
+- [Custom Provider](../infrastructure-as-code/custom-provider.md) — the lifecycle
   handlers these credentials feed.
-- [Profiles](/environments/profiles) — switching, inspecting, and storing the
+- [Profiles](profiles.md) — switching, inspecting, and storing the
   per-provider config.

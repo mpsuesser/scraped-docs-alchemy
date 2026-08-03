@@ -2,13 +2,13 @@
 url: https://alchemy.run/infrastructure-as-code/references
 title: "References"
 description: "Read an already-deployed Resource or Stack at plan time — Resource.ref by Logical ID with optional stack/stage props, or import a Stack tag and depend on its outputs."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A reference reads something **already deployed** — a different
 stage, a different Stack, or both — from the persisted
-[state store](/state-store) at plan time. References are
+[state store](../state-store.md) at plan time. References are
 lazy and don't drift: every plan re-reads the upstream's state, so
 downstream always sees whatever was actually last deployed.
 
@@ -70,7 +70,7 @@ Every successful `apply` persists what the Stack's effect returned
 as a per-stage output record; `yield* Backend` reads it back as a
 proxy of typed Outputs, so `(yield* Backend).url` is
 `Output<string>`. Full two-package walkthrough:
-[Multiple Stacks](/project-structure/monorepo-multi-stack).
+[Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack).
 
 ## Escape hatches
 
@@ -109,17 +109,17 @@ alchemy deploy --stage pr-147    # borrows staging's app-db
 ```
 
 Destroy in reverse order. Resolution itself is the in-stack
-[Output](/infrastructure-as-code/outputs) flow with one difference: a reference's
+[Output](outputs.md) flow with one difference: a reference's
 upstream was reconciled by a previous deploy, so only its persisted
 attributes participate in this plan.
 
 ## Where next
 
-- [Multiple Stacks](/project-structure/monorepo-multi-stack) — typed Stack
+- [Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack) — typed Stack
   handles wiring a monorepo.
-- [Shared database across stages](/cloudflare/data/shared-database) —
+- [Shared database across stages](../cloudflare/data/shared-database.md) —
   the owner/borrower pattern end to end.
-- [Inputs & Outputs](/infrastructure-as-code/outputs) — the Output model
+- [Inputs & Outputs](outputs.md) — the Output model
   references plug into.
-- [State Store](/state-store) — where the persisted state
+- [State Store](../state-store.md) — where the persisted state
   that refs read lives.

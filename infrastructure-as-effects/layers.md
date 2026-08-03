@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/layers
 title: "Layers"
 description: "A Layer defines a service contract with swappable implementations. In Alchemy, a Layer can encapsulate Resources and Bindings, so shared services carry their own infrastructure and permissions."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 As your application grows, you'll need to start sharing components of
@@ -11,8 +11,8 @@ your code using Layers. A **Layer** lets you define a service contract
 and swap different implementations of that service in and out across
 your code — a different storage backend or a different cloud.
 
-In Alchemy, [Resources](/infrastructure-as-code/resource) and
-[Bindings](/infrastructure-as-effects/binding) can be encapsulated inside
+In Alchemy, [Resources](../infrastructure-as-code/resource.md) and
+[Bindings](binding.md) can be encapsulated inside
 a Layer, meaning you can create shareable services that carry their own
 infrastructure and permissions. You can share these within your
 codebase, across packages, or publish them to npm for others to consume.
@@ -131,7 +131,7 @@ export default Cloudflare.Worker(
 
 Providing the Layer is what brings the infrastructure in. On the next
 deploy, the `MyKV` namespace is created in the
-[Stack](/infrastructure-as-code/stack) and bound to this Worker, so
+[Stack](../infrastructure-as-code/stack.md) and bound to this Worker, so
 `kv.get` works inside its handlers.
 
 The inner `Layer.provide` satisfies `JobServiceKV`'s dependency on the KV
@@ -180,7 +180,7 @@ jobs now come from a DynamoDB table on AWS, with the credentials and
 permissions wired up automatically.
 
 Alchemy's own Bindings follow the same tag/Layer split
-([a contract and a Layer](/infrastructure-as-effects/binding#a-contract-and-a-layer)).
+([a contract and a Layer](binding.md#a-contract-and-a-layer)).
 
 ## The types hold the boundary
 
@@ -198,7 +198,7 @@ export default Cloudflare.Worker(
 ```
 
 And `Alchemy.RuntimeContext` marks methods that only work inside a
-deployed handler ([Phases](/infrastructure-as-effects/phases)):
+deployed handler ([Phases](phases.md)):
 
 ```typescript
 Effect.gen(function* () {
@@ -236,7 +236,7 @@ another.
 
 ## Where next
 
-- [Circular Bindings](/infrastructure-as-effects/circular-bindings) —
+- [Circular Bindings](circular-bindings.md) —
   the tag/Layer split applied to two services that reference each other.
-- [Bindings](/infrastructure-as-effects/binding) — the deploy-time
+- [Bindings](binding.md) — the deploy-time
   mechanics Layers are built on.

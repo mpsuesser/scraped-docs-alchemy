@@ -2,77 +2,40 @@
 url: https://alchemy.run/aws/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with an AWS S3 Bucket, and deploy it."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-import Terminal from "../../../../components/Terminal.astro";
-import { Code, Tabs, TabItem } from "@astrojs/starlight/components";
-import { effectVersion } from "../../../../versions";
-
-export const pkgs = `"alchemy@next" "effect@${effectVersion}" "@effect/platform-bun@${effectVersion}" "@effect/platform-node@${effectVersion}"`;
-
-In this first part you'll install Alchemy and Effect, create a Stack
-with an AWS S3 Bucket, and deploy it — all in under five minutes.
+In this first part you’ll install Alchemy and Effect, create a Stack with an AWS S3 Bucket, and deploy it — all in under five minutes.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) (recommended) or Node.js 22+
-- An AWS account and an IAM identity with permission to create the
-  resources you plan to deploy
+- [Bun](https://bun.sh/) (recommended) or Node.js 22+
+- An AWS account and an IAM identity with permission to create the resources you plan to deploy
 
 ## Create a project
 
 Start with an empty directory and initialize a `package.json`:
 
-<Tabs syncKey="pkgManager">
-  <TabItem label="bun" icon="bun">
-    <Code code="mkdir my-app && cd my-app && bun init -y" lang="sh" />
-  </TabItem>
-  <TabItem label="npm" icon="npm">
-    <Code code="mkdir my-app && cd my-app && npm init -y" lang="sh" />
-  </TabItem>
-  <TabItem label="pnpm" icon="pnpm">
-    <Code code="mkdir my-app && cd my-app && pnpm init" lang="sh" />
-  </TabItem>
-  <TabItem label="yarn" icon="seti:yarn">
-    <Code code="mkdir my-app && cd my-app && yarn init -y" lang="sh" />
-  </TabItem>
-</Tabs>
+```sh
+mkdir my-app && cd my-app && bun init -y
+```
 
 ## Install dependencies
 
-Install <code>alchemy@next</code> and <code>effect@{effectVersion}</code>:
+Install `alchemy@next` and `effect@>=4.0.0-beta.102 || >=4.0.0`:
 
-<Tabs syncKey="pkgManager">
-  <TabItem label="bun" icon="bun">
-    <Code code={`bun add ${pkgs}`} lang="sh" />
-  </TabItem>
-  <TabItem label="npm" icon="npm">
-    <Code code={`npm install ${pkgs}`} lang="sh" />
-  </TabItem>
-  <TabItem label="pnpm" icon="pnpm">
-    <Code code={`pnpm add ${pkgs}`} lang="sh" />
-  </TabItem>
-  <TabItem label="yarn" icon="seti:yarn">
-    <Code code={`yarn add ${pkgs}`} lang="sh" />
-  </TabItem>
-</Tabs>
-
-:::tip
-We recommend Bun for the best development experience, but Node.js
-works too.
-:::
+```sh
+bun add "alchemy@next" "effect@>=4.0.0-beta.102 || >=4.0.0" "@effect/platform-bun@>=4.0.0-beta.102 || >=4.0.0" "@effect/platform-node@>=4.0.0-beta.102 || >=4.0.0"
+```
 
 ## Create the Stack
 
-Every Alchemy program starts with a `Stack` — a collection of
-Resources managed by Providers with state tracked between deploys.
+Every Alchemy program starts with a `Stack` — a collection of Resources managed by Providers with state tracked between deploys.
 
 Create an `alchemy.run.ts` file:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
@@ -89,43 +52,23 @@ export default Alchemy.Stack(
 );
 ```
 
-`Alchemy.Stack` is the root of every app. The first argument
-(`"MyApp"`) doubles as a logical id and as the prefix Alchemy uses
-when AWS asks for physical resource names.
+`Alchemy.Stack` is the root of every app. The first argument (`"MyApp"`) doubles as a logical id and as the prefix Alchemy uses when AWS asks for physical resource names.
 
 ## How credentials resolve
 
-`providers: AWS.providers()` registers every AWS resource and IAM
-policy binding that ships with Alchemy, and resolves credentials from
-your Alchemy [profile](/environments/profiles) — SSO, environment
-variables, or stored access keys. You'll pick one interactively the
-first time you deploy; see [Setup](/aws/setup) for the details of
-each method.
+`providers: AWS.providers()` registers every AWS resource and IAM policy binding that ships with Alchemy, and resolves credentials from your Alchemy [profile](../../environments/profiles.md) — SSO, environment variables, or stored access keys. You’ll pick one interactively the first time you deploy; see [Setup](../setup.md) for the details of each method.
 
 ## Where state lives
 
-`state: AWS.state()` stores deploy state in an account-regional S3
-bucket (`alchemy-state-{accountId}-{region}-an`), created lazily on
-the first deploy. Because the state lives in your AWS account rather
-than on disk, the same configuration works locally and in CI with no
-extra setup.
-
-:::note[Other state stores]
-For purely local iteration you can use `Alchemy.localState()`
-instead, which writes state under `.alchemy/` next to your code — or
-[write your own](/state-store).
-:::
+`state: AWS.state()` stores deploy state in an account-regional S3 bucket (`alchemy-state-{accountId}-{region}-an`), created lazily on the first deploy. Because the state lives in your AWS account rather than on disk, the same configuration works locally and in CI with no extra setup.
 
 ## Add a Resource
 
-Resources represent cloud infrastructure — buckets, tables, queues,
-functions, and so on. Each resource is `yield*`-ed inside the Stack's
-Effect generator.
+Resources represent cloud infrastructure — buckets, tables, queues, functions, and so on. Each resource is `yield*` -ed inside the Stack’s Effect generator.
 
 Add an S3 Bucket:
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 import * as Alchemy from "alchemy";
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
@@ -137,115 +80,78 @@ export default Alchemy.Stack(
     state: AWS.state(),
   },
   Effect.gen(function* () {
-+    const bucket = yield* AWS.S3.Bucket("Bucket");
+    const bucket = yield* AWS.S3.Bucket("Bucket");
   }),
 );
 ```
 
-`yield* AWS.S3.Bucket("Bucket")` registers the resource with the
-Stack under the logical id `Bucket` and returns a typed `Bucket`
-handle. We didn't pass a `bucketName`, so Alchemy generates a unique
-physical name from the app, stage, and logical id.
+`yield* AWS.S3.Bucket("Bucket")` registers the resource with the Stack under the logical id `Bucket` and returns a typed `Bucket` handle. We didn’t pass a `bucketName`, so Alchemy generates a unique physical name from the app, stage, and logical id.
 
 ## Return Stack outputs
 
-Stack outputs let you see important values after a deploy. Return an
-object from the generator to expose them:
+Stack outputs let you see important values after a deploy. Return an object from the generator to expose them:
 
-```diff lang="typescript"
-  Effect.gen(function* () {
-    const bucket = yield* AWS.S3.Bucket("Bucket");
-+
-+   return {
-+     bucketName: bucket.bucketName,
-+   };
-  }),
+```typescript
+Effect.gen(function* () {
+  const bucket = yield* AWS.S3.Bucket("Bucket");
+
+  return {
+    bucketName: bucket.bucketName,
+  };
+}),
 ```
 
-`bucket.bucketName` is an Output — a typed reference to an attribute
-the cloud will produce. It resolves during deploy and prints with the
-rest of the stack outputs.
+`bucket.bucketName` is an Output — a typed reference to an attribute the cloud will produce. It resolves during deploy and prints with the rest of the stack outputs.
 
 ## Deploy
 
 Run `alchemy deploy` to create the Bucket on AWS:
 
-<Tabs syncKey="pkgManager">
-  <TabItem label="bun" icon="bun">
-    <Code code="bun alchemy deploy" lang="sh" />
-  </TabItem>
-  <TabItem label="npm" icon="npm">
-    <Code code="npm run alchemy deploy" lang="sh" />
-  </TabItem>
-  <TabItem label="pnpm" icon="pnpm">
-    <Code code="pnpm alchemy deploy" lang="sh" />
-  </TabItem>
-  <TabItem label="yarn" icon="seti:yarn">
-    <Code code="yarn alchemy deploy" lang="sh" />
-  </TabItem>
-</Tabs>
+```sh
+bun alchemy deploy
+```
 
-The first time you deploy, Alchemy prompts you to pick an AWS
-authentication method — **SSO** (recommended), **environment
-variables**, or **stored access keys** — and saves the choice to your
-**`default`** [profile](/environments/profiles). The region and account
-come from whichever method you pick. See [Setup](/aws/setup) for a
-walkthrough of all three.
+The first time you deploy, Alchemy prompts you to pick an AWS authentication method — **SSO** (recommended), **environment variables**, or **stored access keys** — and saves the choice to your **`default`** [profile](../../environments/profiles.md). The region and account come from whichever method you pick. See [Setup](../setup.md) for a walkthrough of all three.
 
-:::tip
-To re-run the credential prompt later (e.g. to switch from stored
-keys to SSO, or to add a `prod` profile) use
-`alchemy login --configure` or
-`alchemy login --profile prod --configure`.
-:::
-
-<Terminal content={`[u]Plan[/u]: [g]1 to create[/g]
-[g]+[/g] [b]Bucket[/b] [d](AWS.S3.Bucket)[/d]
+```
+Plan: 1 to create
++ Bucket (AWS.S3.Bucket)
 
 Proceed?
 ◉ Yes ○ No
-[g]✓[/g] [b]Bucket[/b] [d](AWS.S3.Bucket)[/d] [g]created[/g]
+✓ Bucket (AWS.S3.Bucket) created
 {
-[s2]bucketName: "myapp-bucket-a1b2c3d4e5",
-}`} />
+  bucketName: "myapp-bucket-a1b2c3d4e5",
+}
+```
 
-Alchemy shows a plan, asks for confirmation, creates the resource,
-and prints the stack outputs. Your bucket is live on AWS.
-
-:::tip
-By convention, Alchemy looks for `alchemy.run.ts` at the root of your
-project. You can specify a different file with
-`alchemy deploy <file>`.
-:::
+Alchemy shows a plan, asks for confirmation, creates the resource, and prints the stack outputs. Your bucket is live on AWS.
 
 ## Verify it worked
 
-Your newly created bucket will be listed in the S3 section of the AWS
-Console (or via `aws s3 ls` if you have the AWS CLI installed).
+Your newly created bucket will be listed in the S3 section of the AWS Console (or via `aws s3 ls` if you have the AWS CLI installed).
 
-Run `alchemy deploy` again. Because nothing changed, the bucket shows
-as a no-op:
+Run `alchemy deploy` again. Because nothing changed, the bucket shows as a no-op:
 
-<Terminal content={`[u]Plan[/u]: [d]no changes[/d]
+```
+Plan: no changes
 
 {
-[s2]bucketName: "myapp-bucket-a1b2c3d4e5",
-}`} />
+  bucketName: "myapp-bucket-a1b2c3d4e5",
+}
+```
 
-This is the core loop — declare resources in code, deploy, and
-Alchemy figures out what changed.
+This is the core loop — declare resources in code, deploy, and Alchemy figures out what changed.
 
 ## Destroy (optional)
 
-The inverse of `deploy` is `destroy` — it plans against an empty
-desired state and deletes everything the stack created:
+The inverse of `deploy` is `destroy` — it plans against an empty desired state and deletes everything the stack created:
 
 ```sh
 bun alchemy destroy
 ```
 
-Try it if you like, then run `bun alchemy deploy` again to bring the
-bucket back — we'll build on it in Part 2.
+Try it if you like, then run `bun alchemy deploy` again to bring the bucket back — we’ll build on it in Part 2.
 
 ## Recap
 
@@ -255,5 +161,4 @@ You now have:
 - A live bucket deployed to your AWS account
 - Stack outputs showing the bucket name
 
-In [Part 2](/aws/tutorial/part-2), you'll add a Lambda Function with
-a public URL that reads and writes objects in this bucket.
+In [Part 2](part-2.md), you’ll add a Lambda Function with a public URL that reads and writes objects in this bucket.

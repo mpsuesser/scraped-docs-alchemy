@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/kinesis
 title: "Kinesis"
 description: "Add a Kinesis Data Stream, publish records from one Lambda, and consume them in order from another — wired through the same Stream-shaped event source."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **Kinesis Data Streams** are the tool for **ordered**, sharded,
@@ -15,10 +15,10 @@ the sink-shaped `StreamSink`) and a consumer side:
 `Kinesis.consumeStreamRecords` subscribes a Lambda to the stream
 as a typed Effect `Stream`, creating the event source mapping
 and granting the read permissions for you. Reach for
-[SQS](/aws/messaging/sqs) instead when the work is unordered.
+[SQS](sqs.md) instead when the work is unordered.
 
-The walkthrough below builds on the [Lambda](/aws/compute/lambda),
-[DynamoDB](/aws/data/dynamodb), and [SQS](/aws/messaging/sqs) pages: it adds a
+The walkthrough below builds on the [Lambda](../compute/lambda.md),
+[DynamoDB](../data/dynamodb.md), and [SQS](sqs.md) pages: it adds a
 Kinesis stream, publishes to it from the producer Lambda, and
 consumes it from a new worker.
 
@@ -129,7 +129,7 @@ export default class Audit extends AWS.Lambda.Function<Audit>()(
 ## Subscribe to records
 
 `Kinesis.consumeStreamRecords(stream, ...)` mirrors the
-[SQS `consumeQueueMessages(...)`](/aws/messaging/sqs) shape.
+[SQS `consumeQueueMessages(...)`](sqs.md) shape.
 Add the smallest possible subscription — log each record's
 partition key:
 
@@ -292,10 +292,10 @@ the matching `consume*` helper at it.
 
 ## Where next
 
-- [Process DynamoDB Streams](/aws/messaging/dynamodb-streams) —
+- [Process DynamoDB Streams](dynamodb-streams.md) —
   change data capture with the same consumer surface.
-- [React to S3 events](/aws/messaging/s3-events) — bucket
+- [React to S3 events](s3-events.md) — bucket
   notifications as an Effect `Stream`.
-- [`Stream` reference](/providers/aws/kinesis/stream) —
+- [`Stream` reference](https://alchemy.run/providers/aws/kinesis/stream) —
   provisioned vs on-demand mode, retention, and every other
   prop.

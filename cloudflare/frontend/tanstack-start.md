@@ -2,13 +2,13 @@
 url: https://alchemy.run/cloudflare/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Cloudflare with Cloudflare.Website.Vite — SSR, typed Worker bindings, and HMR dev with real cloud resources."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 TanStack Start is pure Vite — `tanstackStart()` and `viteReact()` are
 ordinary plugins in `vite.config.ts`, so
-[`Cloudflare.Website.Vite`](/cloudflare/frontend/vite) builds the client
+[`Cloudflare.Website.Vite`](vite.md) builds the client
 assets and the SSR server bundle in a single `vite build` pass, no
 adapter or Wrangler config required. Support is verified: the
 [examples/cloudflare-tanstack](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-tanstack)
@@ -161,7 +161,7 @@ const res = await env.BACKEND.fetch(
 
 `env.BACKEND` is a service binding to an Effect-native Worker — beyond
 `fetch`, you can call its typed RPC methods directly; see
-[Schemaless RPC](/cloudflare/apis/schemaless-rpc).
+[Schemaless RPC](../apis/schemaless-rpc.md).
 
 ## Deploy and dev
 

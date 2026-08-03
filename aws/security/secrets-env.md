@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only
@@ -72,7 +72,7 @@ const port = yield* Config.number("PORT").pipe(Config.withDefault(3000));
 Values JSON round-trip through the environment, so `port` comes
 back as a number. Combinators re-run at runtime against the bound
 source, and a default is never bound — see
-[Secrets and Config](/environments/secrets) for the full semantics.
+[Secrets and Config](../../environments/secrets.md) for the full semantics.
 
 ## Resolve Config in init, not in fetch
 
@@ -197,24 +197,24 @@ The binding adds `secretsmanager:GetSecretValue` and
 this secret's ARN only. `SecretString` comes back as `Redacted` —
 unwrap with `Redacted.value` at the point of use. The value is
 fetched per call, not baked into env, so putting a new version (the
-[`PutSecretValue` binding](/providers/aws/secretsmanager/putsecretvalue))
+[`PutSecretValue` binding](https://alchemy.run/providers/aws/secretsmanager/putsecretvalue))
 propagates on the next read.
 
 ## Where next
 
 Related:
 
-- [RDS](/aws/data/rds) — Aurora generates a password-backed secret in
+- [RDS](../data/rds.md) — Aurora generates a password-backed secret in
   exactly the `generateSecretString` shape; the `Connect` binding
   reads it at request time.
-- [Lambda](/aws/compute/lambda) — the function model env vars and bindings
+- [Lambda](../compute/lambda.md) — the function model env vars and bindings
   attach to.
-- [Secrets and Config](/environments/secrets) — the init/runtime split
+- [Secrets and Config](../../environments/secrets.md) — the init/runtime split
   and transformation semantics.
-- [Secrets & env on Cloudflare](/cloudflare/security/secrets-env) — the same
+- [Secrets & env on Cloudflare](../../cloudflare/security/secrets-env.md) — the same
   spine on Cloudflare.
 
 Reference:
 
-- [`Secret` reference](/providers/aws/secretsmanager/secret)
-- [`GetSecretValue` reference](/providers/aws/secretsmanager/getsecretvalue)
+- [`Secret` reference](https://alchemy.run/providers/aws/secretsmanager/secret)
+- [`GetSecretValue` reference](https://alchemy.run/providers/aws/secretsmanager/getsecretvalue)

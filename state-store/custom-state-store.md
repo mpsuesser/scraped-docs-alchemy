@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store/custom-state-store
 title: "Custom State Store"
 description: "Build a Postgres-backed Alchemy state store step by step — implement the StateService interface, plug it into a stack, and test it end-to-end."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A state store is just an Effect `Layer` that provides Alchemy's
@@ -16,7 +16,7 @@ This guide builds a Postgres-backed state store from scratch. By the
 end you'll have a `postgresState()` layer you can drop into any
 `Alchemy.Stack`, and a test that round-trips a resource through it.
 
-See [State Store](/state-store) for an overview of what
+See [State Store](../state-store.md) for an overview of what
 state Alchemy persists and why.
 
 ## Scaffold the layer
@@ -412,7 +412,7 @@ describe("postgresState", () => {
 ```
 
 For end-to-end testing of a real stack against your store, see
-[Testing a Stack](/testing/testing-a-stack).
+[Testing a Stack](../testing/testing-a-stack.md).
 
 ## Things to know
 

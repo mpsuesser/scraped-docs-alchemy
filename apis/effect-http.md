@@ -2,12 +2,12 @@
 url: https://alchemy.run/apis/effect-http
 title: "Effect HTTP"
 description: "Schema-validated REST endpoints with an rpc-like typed interface — for trust boundaries where consumers want a plain HTTP client."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect HTTP (`effect/unstable/httpapi`) is the same idea as
-[Effect RPC](/apis/effect-rpc): define a Schema, construct handler
+[Effect RPC](effect-rpc.md): define a Schema, construct handler
 Layers, return an `HttpEffect` from `fetch`, call it through an
 rpc-like typed interface. The difference is what goes on the wire —
 real HTTP endpoints, with URLs, path params, query strings, headers,
@@ -20,7 +20,7 @@ aren't Effect (or TypeScript) programs and want a plain HTTP client.
 The cost is also the same: every request pays for a schema decode
 and encode, so it's equally discouraged for internal
 service-to-service calls — that's what
-[schemaless RPC](/apis/schemaless) is for.
+[schemaless RPC](schemaless.md) is for.
 
 ## The pieces
 
@@ -170,8 +170,8 @@ return {
 the request handler — the same `{ fetch }` shape a Worker or a
 Lambda Function with `url: true` serves. The `platform` Layers are
 the host-specific part of the wiring — see
-[Workers](/cloudflare/apis/effect-http-api) and
-[Lambda](/aws/apis/effect-http-api) for the exact set, plus storage
+[Workers](../cloudflare/apis/effect-http-api.md) and
+[Lambda](../aws/apis/effect-http-api.md) for the exact set, plus storage
 bindings and deploy (and CORS, on Workers).
 
 ## Plain HTTP for everyone else
@@ -226,19 +226,19 @@ Request keys mirror the declarations — `payload` for bodies,
 `Effect<Task, TaskNotFound | HttpClientError>`: the 404 arrives as a
 typed value you pattern-match on, not a status code you interpret.
 The client can also ride a Binding instead of a URL — see the
-[Durable Object bridge](/cloudflare/apis/effect-http-api#bridge-the-do-into-a-typed-client)
+[Durable Object bridge](../cloudflare/apis/effect-http-api.md#bridge-the-do-into-a-typed-client)
 on the Workers page.
 
 ## Where next
 
-- [Effect HTTP on Workers](/cloudflare/apis/effect-http-api) — full
+- [Effect HTTP on Workers](../cloudflare/apis/effect-http-api.md) — full
   Worker wiring: R2 storage, the `HttpPlatform` stub, CORS, and the
   DO sub-API bridge.
-- [Effect HTTP on Lambda](/aws/apis/effect-http-api) — full Lambda
+- [Effect HTTP on Lambda](../aws/apis/effect-http-api.md) — full Lambda
   wiring: DynamoDB bindings, IAM, and a typed end-to-end test.
-- [Effect RPC](/apis/effect-rpc) — same trust boundary, leaner wire
+- [Effect RPC](effect-rpc.md) — same trust boundary, leaner wire
   protocol, for consumers that are Effect programs.
-- [Schemaless RPC](/apis/schemaless) — the default for internal
+- [Schemaless RPC](schemaless.md) — the default for internal
   calls: typed clients with no schema and no per-request validation.
-- [REST API (API Gateway v1)](/aws/apis/api-gateway) — put API
+- [REST API (API Gateway v1)](../aws/apis/api-gateway.md) — put API
   Gateway in front instead of a Function URL.

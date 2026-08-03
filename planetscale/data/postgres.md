@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/postgres
 title: "Postgres"
 description: "PlanetScale Postgres as Stack resources — databases, branches, roles with least-privilege inherited roles, and direct vs pooled connection origins."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 PlanetScale Postgres is managed PostgreSQL with database branching. In
@@ -13,8 +13,8 @@ preview stage and tears down with it, and a role's credentials flow
 into whatever consumes them (Cloudflare Hyperdrive, a Worker, a
 Lambda) as typed outputs.
 
-New here? [Set up credentials](/planetscale/setup) first. For the
-MySQL (Vitess) family, see [MySQL](/planetscale/data/mysql).
+New here? [Set up credentials](../setup.md) first. For the
+MySQL (Vitess) family, see [MySQL](mysql.md).
 
 ## Create a database
 
@@ -54,9 +54,9 @@ const branch = yield* Planetscale.PostgresBranch("app-branch", {
 `parentBranch` defaults to `"main"` and also accepts another
 `PostgresBranch`, so branches can chain. Branches take the same
 `migrationsDir` / `importFiles` props as the database — see
-[Migrations](/planetscale/data/migrations) for how SQL files are hashed
+[Migrations](migrations.md) for how SQL files are hashed
 and applied, and the
-[branch from a shared database](/cloudflare/data/branch-from-shared-database)
+[branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
 guide for the branch-per-PR pattern.
 
 ## Roles
@@ -121,7 +121,7 @@ role when a tool specifically needs it.
 ## `origin` vs `pooledOrigin`
 
 Both role resources expose parsed connection components ready to feed
-into consumers like [Cloudflare Hyperdrive](/cloudflare/data/hyperdrive):
+into consumers like [Cloudflare Hyperdrive](../../cloudflare/data/hyperdrive.md):
 
 - `role.origin` — the **direct** connection (port 5432). Use it where
   the consumer does its own pooling, e.g. as a Hyperdrive origin.
@@ -144,16 +144,16 @@ If you need a URL instead of components, `connectionUrl` and
 
 ## Where next
 
-- [Migrations](/planetscale/data/migrations) — `migrationsDir` and
+- [Migrations](migrations.md) — `migrationsDir` and
   `importFiles` on databases and branches.
-- [Hyperdrive](/cloudflare/data/hyperdrive) — edge-pooled connections from
+- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — edge-pooled connections from
   Workers to your PlanetScale database.
-- [Drizzle guide](/cloudflare/data/drizzle) — generate migration SQL
+- [Drizzle guide](../../cloudflare/data/drizzle.md) — generate migration SQL
   from a Drizzle schema and apply it on deploy.
 
 Reference:
 
-- [PostgresDatabase](/providers/planetscale/postgres/postgresdatabase) ·
-  [PostgresBranch](/providers/planetscale/postgres/postgresbranch) ·
-  [PostgresRole](/providers/planetscale/postgres/postgresrole) ·
-  [PostgresDefaultRole](/providers/planetscale/postgres/postgresdefaultrole)
+- [PostgresDatabase](https://alchemy.run/providers/planetscale/postgres/postgresdatabase) ·
+  [PostgresBranch](https://alchemy.run/providers/planetscale/postgres/postgresbranch) ·
+  [PostgresRole](https://alchemy.run/providers/planetscale/postgres/postgresrole) ·
+  [PostgresDefaultRole](https://alchemy.run/providers/planetscale/postgres/postgresdefaultrole)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cache
 title: "Workers Cache"
 description: "Serve responses from Cloudflare's edge cache before your Worker even runs — enable it with one yield, control it with standard headers, purge it by tag from inside a handler."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Workers Cache sits in front of a Worker: when it's enabled, Cloudflare
@@ -109,7 +109,7 @@ The handler shapes cache behavior the same way — through
 
 ## Where next
 
-- [Workers](/cloudflare/compute/workers) — the two-phase Worker model
+- [Workers](workers.md) — the two-phase Worker model
   the cache fronts.
-- [cache API reference](/providers/cloudflare/workers/cache) — options
+- [cache API reference](https://alchemy.run/providers/cloudflare/workers/cache) — options
   and purge types.

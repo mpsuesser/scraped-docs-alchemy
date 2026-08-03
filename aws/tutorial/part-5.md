@@ -2,11 +2,11 @@
 url: https://alchemy.run/aws/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated AWS deployments and PR previews — with OIDC credentials provisioned as code."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-In [Part 4](/aws/tutorial/part-4) you deployed isolated stages by
+In [Part 4](part-4.md) you deployed isolated stages by
 hand. Now you'll hand it off to GitHub Actions: pushes to `main`
 deploy to production, pull requests get isolated preview
 environments, and merged PRs clean up after themselves.
@@ -21,7 +21,7 @@ assumes the role at runtime and no secret ever exists to leak.
 
 CI needs to share state across runs, so a local `.alchemy/` directory
 won't cut it. You already configured `AWS.state()` back in
-[Part 1](/aws/tutorial/part-1#where-state-lives), which stores state
+[Part 1](part-1.md#where-state-lives), which stores state
 in an account-regional S3 bucket. Every deploy — local or from CI —
 reads and writes state through that bucket.
 
@@ -316,7 +316,7 @@ variables). No secrets required.
 - Other branches → the branch name
 
 The cleanup job includes a safety check so `prod` can never be
-accidentally destroyed — exactly the [stage isolation](/aws/tutorial/part-4)
+accidentally destroyed — exactly the [stage isolation](part-4.md)
 from Part 4, driven by CI events.
 :::
 
@@ -406,7 +406,7 @@ If OIDC isn't an option (some sandbox accounts disallow creating
 identity providers), fall back to IAM access keys stored as repo
 secrets and exposed to the deploy step as `AWS_ACCESS_KEY_ID` /
 `AWS_SECRET_ACCESS_KEY` / `AWS_REGION` environment variables. The
-[CI guide](/environments/ci#aws-with-access-keys) has the complete recipe,
+[CI guide](../../environments/ci.md#aws-with-access-keys) has the complete recipe,
 including a `stacks/github.ts` that pushes the keys into the repo as
 `GitHub.Secret`s.
 
@@ -426,17 +426,17 @@ You've completed the tutorial. You now know how to:
 ## What's next
 
 - Go deeper on AWS — grow this app with
-  [DynamoDB](/aws/data/dynamodb), [SQS](/aws/messaging/sqs),
-  [Kinesis](/aws/messaging/kinesis), and event-driven wiring like
-  [S3 events](/aws/messaging/s3-events) and
-  [DynamoDB Streams](/aws/messaging/dynamodb-streams)
-- Put an [API Gateway REST API](/aws/apis/api-gateway) with
+  [DynamoDB](../data/dynamodb.md), [SQS](../messaging/sqs.md),
+  [Kinesis](../messaging/kinesis.md), and event-driven wiring like
+  [S3 events](../messaging/s3-events.md) and
+  [DynamoDB Streams](../messaging/dynamodb-streams.md)
+- Put an [API Gateway REST API](../apis/api-gateway.md) with
   stages and custom domains in front of your function
-- Read [Choosing a runtime](/aws/compute/choosing-a-runtime) for when ECS,
+- Read [Choosing a runtime](../compute/choosing-a-runtime.md) for when ECS,
   EKS, or EC2 fits better than Lambda
-- Explore the [CI guide](/environments/ci) for more workflow patterns,
+- Explore the [CI guide](../../environments/ci.md) for more workflow patterns,
   including the Cloudflare equivalents
-- Check out the [Testing a Stack](/testing/testing-a-stack) guide for
+- Check out the [Testing a Stack](../../testing/testing-a-stack.md) guide for
   more advanced testing patterns
-- Browse the [Providers](/providers) reference for all available
+- Browse the [Providers](https://alchemy.run/providers) reference for all available
   resources

@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local workerd execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -41,7 +41,7 @@ Three things happen:
 
 Resources whose provider has no local implementation (a Hyperdrive,
 a Vectorize index) deploy to the real cloud, into your personal
-[stage](/environments/stages) (`dev_$USER` by default), so your loop
+[stage](stages.md) (`dev_$USER` by default), so your loop
 never collides with teammates or prod. A stack that mixes emulated
 and live-only resources just works.
 
@@ -62,7 +62,7 @@ and live-only resources just works.
   code is rebuilt
 
 Arbitrary dev processes — Vite, Next, anything with a dev server —
-join the loop via [Command.Dev](/command/dev-servers): started by
+join the loop via [Command.Dev](../command/dev-servers.md): started by
 `alchemy dev`, restarted when its inputs change, and a no-op on
 deploy.
 
@@ -76,7 +76,7 @@ cloud call ran.
 
 The local simulators reach beyond Worker bindings. Node-side
 capability clients follow the same rule: a seed script in an
-[Action](/infrastructure-as-code/action) that writes to a `dev:` KV
+[Action](../infrastructure-as-code/action.md) that writes to a `dev:` KV
 Namespace lands in the same local simulator your Worker reads.
 
 Every other resource runs live in dev automatically, and
@@ -84,7 +84,7 @@ Every other resource runs live in dev automatically, and
 real cloud when local fidelity isn't enough.
 
 Bindings whose only job is a side effect stay stubbed: a
-[`send_email` binding](/cloudflare/email/send-and-receive) defaults
+[`send_email` binding](../cloudflare/email/send-and-receive.md) defaults
 to a local stub in dev, so `send()` logs the message to the dev
 console instead of delivering mail. Set `dev: { remote: true }` on
 the binding to send real mail from the dev loop.
@@ -110,7 +110,7 @@ Resources adapt their behavior in dev mode:
 
 A resource emulates locally when its provider ships a local
 implementation; everything else is live in dev automatically. See
-[Local Providers](/infrastructure-as-code/local-provider) to build one.
+[Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) to build one.
 
 ## Running a resource live in dev
 
@@ -174,11 +174,11 @@ export default Cloudflare.Worker("Worker", {
 | Debugging              | Attach local debugger                  | Tail logs          |
 | Speed                  | Milliseconds                           | Seconds to minutes |
 
-To automate the deploy side, see the [CI guide](/environments/ci).
+To automate the deploy side, see the [CI guide](ci.md).
 
 ## Where next
 
-- [CI](/environments/ci) — deploy the same stack from GitHub Actions with PR previews.
-- [Stages](/environments/stages) — how `dev_$USER`, `pr-42`, and `prod` stay isolated.
-- [Dev servers](/command/dev-servers) — run any framework dev server as a `Command.Dev` resource in the dev loop.
-- [Local Providers](/infrastructure-as-code/local-provider) — build the local implementation of a resource.
+- [CI](ci.md) — deploy the same stack from GitHub Actions with PR previews.
+- [Stages](stages.md) — how `dev_$USER`, `pr-42`, and `prod` stay isolated.
+- [Dev servers](../command/dev-servers.md) — run any framework dev server as a `Command.Dev` resource in the dev loop.
+- [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — build the local implementation of a resource.

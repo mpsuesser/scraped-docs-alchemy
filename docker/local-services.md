@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/local-services
 title: "Local services: Postgres with containers, networks, and volumes"
 description: "Run a local Postgres for development as alchemy resources — a pinned image, a named network and volume, a Redacted password, and a healthchecked container that converges on every deploy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Docker `Container` runs an image; a `Network` gives containers a
@@ -16,8 +16,8 @@ converges Docker to the declared state, and one destroy that tears
 it all down.
 
 You'll need a Docker daemon reachable from your CLI and the provider
-registered — see [Setup](/docker/setup) and the
-[Docker overview](/docker). The full program below is the checked-in
+registered — see [Setup](setup.md) and the
+[Docker overview](../docker.md). The full program below is the checked-in
 [`examples/docker-postgres`](https://github.com/alchemy-run/alchemy/tree/main/examples/docker-postgres).
 
 ## Pin the image
@@ -140,16 +140,16 @@ container by name, bound host ports included.
 
 ## Where next
 
-- [Build & push an image](/docker/build-and-push) — build your own
+- [Build & push an image](build-and-push.md) — build your own
   image from a Dockerfile and push it to a registry.
-- [Docker overview](/docker) — all Docker resources at a glance,
+- [Docker overview](../docker.md) — all Docker resources at a glance,
   including how adoption of pre-existing containers, networks, and
   volumes is gated behind `adopt`.
 
 Reference:
 
-- [Container API reference](/providers/docker/container)
-- [RemoteImage API reference](/providers/docker/remoteimage)
-- [Image API reference](/providers/docker/image)
-- [Network API reference](/providers/docker/network)
-- [Volume API reference](/providers/docker/volume)
+- [Container API reference](https://alchemy.run/providers/docker/container)
+- [RemoteImage API reference](https://alchemy.run/providers/docker/remoteimage)
+- [Image API reference](https://alchemy.run/providers/docker/image)
+- [Network API reference](https://alchemy.run/providers/docker/network)
+- [Volume API reference](https://alchemy.run/providers/docker/volume)

@@ -2,13 +2,13 @@
 url: https://alchemy.run/testing/testing-providers
 title: "Testing Providers"
 description: "Exercise a provider's create, update, replace, and delete paths with test.provider and a scratch in-memory stack."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 You built a provider — now prove its lifecycle. `test.provider` gives each test a private scratch stack, so create / update / replace / delete runs never touch `.alchemy/` or a shared stage.
 
-Building the provider itself? Start at [Build a custom provider](/infrastructure-as-code/custom-provider).
+Building the provider itself? Start at [Build a custom provider](../infrastructure-as-code/custom-provider.md).
 
 ## Scratch stacks with test.provider
 
@@ -41,11 +41,11 @@ test.provider(
 );
 ```
 
-For a full walkthrough with a real custom provider, see [Build a custom provider → Test the lifecycle](/infrastructure-as-code/custom-provider#test-the-lifecycle).
+For a full walkthrough with a real custom provider, see [Build a custom provider → Test the lifecycle](../infrastructure-as-code/custom-provider.md#test-the-lifecycle).
 
 ## Assert against the real cloud
 
-Inside the test body the configured `providers` Layer is already in scope, so out-of-band SDK calls (`DynamoDB.describeTable`, `stripe.products.retrieve`, …) work without extra setup — assert the cloud actually matches the resource's reported outputs, as in the [Stripe walkthrough](/infrastructure-as-code/custom-provider#test-the-lifecycle).
+Inside the test body the configured `providers` Layer is already in scope, so out-of-band SDK calls (`DynamoDB.describeTable`, `stripe.products.retrieve`, …) work without extra setup — assert the cloud actually matches the resource's reported outputs, as in the [Stripe walkthrough](../infrastructure-as-code/custom-provider.md#test-the-lifecycle).
 
 ## Verify replacement
 
@@ -63,7 +63,7 @@ expect(v2.id).not.toBe(v1.id);
 | Survives runs | yes (the point) | no |
 | Use case | end-to-end against a real stack | provider unit tests |
 
-For end-to-end tests against a real deployed Stack, see [Testing a Stack](/testing/testing-a-stack).
+For end-to-end tests against a real deployed Stack, see [Testing a Stack](testing-a-stack.md).
 
 ## Seed pre-existing resources
 
@@ -71,7 +71,7 @@ For end-to-end tests against a real deployed Stack, see [Testing a Stack](/testi
 
 ## Where next
 
-- [Build a custom provider](/infrastructure-as-code/custom-provider) — the provider this page tests, end to end.
-- [Providers](/infrastructure-as-code/provider) — the operation contract under test.
-- [Test harness](/testing/test-harness) — everything `Test.make` returns.
-- [Testing](/testing) — the full harness reference.
+- [Build a custom provider](../infrastructure-as-code/custom-provider.md) — the provider this page tests, end to end.
+- [Providers](../infrastructure-as-code/provider.md) — the operation contract under test.
+- [Test harness](test-harness.md) — everything `Test.make` returns.
+- [Testing](../testing.md) — the full harness reference.

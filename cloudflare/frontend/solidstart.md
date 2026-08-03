@@ -2,14 +2,14 @@
 url: https://alchemy.run/cloudflare/frontend/solidstart
 title: "SolidStart"
 description: "Deploy SolidStart to Cloudflare with Cloudflare.Website.Vite — plus the hand-rolled SolidJS SSR variant for full control over the server entry."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 SolidStart builds through Vite: the `solidStart()` plugin in your
 `vite.config.ts` owns routing, SSR, and the server entry, and a
 single `vite build` produces the whole app. That makes it a pure-Vite
-project, so [`Cloudflare.Website.Vite`](/cloudflare/frontend/vite)
+project, so [`Cloudflare.Website.Vite`](vite.md)
 deploys it directly — no adapter config, no Wrangler file, no manual
 entrypoint.
 
@@ -23,7 +23,7 @@ verified against Alchemy.
 :::
 
 Using TanStack Start with Solid instead? See
-[TanStack Start](/cloudflare/frontend/tanstack-start).
+[TanStack Start](tanstack-start.md).
 
 ## Configure Vite
 
@@ -184,5 +184,5 @@ Both env channels of the Vite resource apply unchanged: `VITE_`-prefixed
 `env` entries are inlined into the client bundle as
 `import.meta.env.<KEY>` at build time, and everything else attaches
 to the SSR Worker as runtime bindings. See
-[the Vite resource page](/cloudflare/frontend/vite) for how each
+[the Vite resource page](vite.md) for how each
 channel works.

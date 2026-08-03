@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/guides/preview-branches
 title: "Preview branches per PR"
 description: "Give every pull request its own PlanetScale branch — a long-lived database owned by a staging stage, referenced by ephemeral PR stages that fork, migrate, and tear down a branch each."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 PlanetScale's branch model maps directly onto alchemy stages: the
@@ -17,7 +17,7 @@ and data set without provisioning a cluster per preview:
 
 The pattern is identical for both engines; only the resource names
 and the credential model differ. New here? [Set up
-credentials](/planetscale/setup) first.
+credentials](../setup.md) first.
 
 ## Read the active stage
 
@@ -77,7 +77,7 @@ const branch = yield* Planetscale.PostgresBranch("app-branch", {
 Branches fork from `main` by default and carry their own
 `migrationsDir`: pending `.sql` files are applied to the branch on
 every deploy, so each preview migrates itself independently — see
-[Migrations](/planetscale/data/migrations) for ordering, hashing, and the
+[Migrations](../data/migrations.md) for ordering, hashing, and the
 tracking table. To fork data as well as schema, `seedData:
 "last_successful_backup"` restores the last backup into the new
 branch.
@@ -96,7 +96,7 @@ const role = yield* Planetscale.PostgresRole("app-role", {
 
 `role.origin` (direct) and `role.pooledOrigin` (PSBouncer) are what
 you hand to the runtime consumer — see
-[Postgres](/planetscale/data/postgres) for the role model and the
+[Postgres](../data/postgres.md) for the role model and the
 direct-vs-pooled distinction.
 
 ## The MySQL variant
@@ -133,7 +133,7 @@ Non-production branches run on the `PS_DEV` size, and the password's
 `"readwriter"`) rather than inherited Postgres roles. Migrations
 behave slightly differently on Vitess — DDL commits implicitly, so
 prefer one schema change per file — see the engine differences in
-[Migrations](/planetscale/data/migrations).
+[Migrations](../data/migrations.md).
 
 ## Deploy the owner first
 
@@ -164,12 +164,12 @@ doesn't own it, so it can't delete it.
 The snippets above end at a credential. Connecting it to compute is
 runtime-specific:
 
-- [Shared database across stages](/cloudflare/data/shared-database)
+- [Shared database across stages](../../cloudflare/data/shared-database.md)
   — the general `Resource.ref` pattern, step by step.
-- [Branch from a shared database](/cloudflare/data/branch-from-shared-database)
+- [Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
   — the full walkthrough of this pattern with a Cloudflare Worker on
   the other end.
-- [Hyperdrive](/cloudflare/data/hyperdrive) — `role.origin` /
+- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — `role.origin` /
   `password.origin` plug straight into a
   `Cloudflare.Hyperdrive.Connection`.
 
@@ -180,9 +180,9 @@ and
 
 ## Where next
 
-- [Drizzle ORM with PlanetScale](/planetscale/guides/drizzle) —
+- [Drizzle ORM with PlanetScale](drizzle.md) —
   generate the migrations each preview branch applies.
-- [Migrations](/planetscale/data/migrations) — how `migrationsDir` files
+- [Migrations](../data/migrations.md) — how `migrationsDir` files
   are ordered, hashed, and tracked.
-- [Postgres](/planetscale/data/postgres) and [MySQL](/planetscale/data/mysql)
+- [Postgres](../data/postgres.md) and [MySQL](../data/mysql.md)
   — the two resource families used above.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/observability/cloudwatch
 title: "CloudWatch"
 description: "Declare CloudWatch dashboards as structured widget documents and metric alarms that fire SNS topics — versioned next to the Lambda functions and queues they observe."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 CloudWatch is AWS's built-in metrics store: every Lambda function,
@@ -61,7 +61,7 @@ their own copy. Renaming a dashboard replaces it.
 
 Hard-coding `"api"` works until the function is renamed. Metric rows
 reference metrics by dimension value, so build the body from the
-function's [Output](/infrastructure-as-code/outputs) instead:
+function's [Output](../../infrastructure-as-code/outputs.md) instead:
 
 ```typescript
 import * as Output from "alchemy/Output";
@@ -100,7 +100,7 @@ tracks the deployed function — including across replacements.
 An `Alarm` watches one metric and changes state when it crosses a
 threshold. Props are PascalCase, extending the `PutMetricAlarm` API
 input directly; `AlarmActions` is a list of ARN strings — most
-commonly an [SNS](/aws/messaging/sns) topic that fans out to email, Slack, or
+commonly an [SNS](../messaging/sns.md) topic that fans out to email, Slack, or
 PagerDuty:
 
 ```typescript
@@ -158,28 +158,28 @@ You rarely have to publish anything: AWS services emit metrics on
 their own. Every Lambda function reports `Invocations`, `Errors`,
 `Duration`, and `Throttles` under the `AWS/Lambda` namespace, keyed
 by the `FunctionName` dimension — which is why the snippets above
-work against a stock [Lambda](/aws/compute/lambda) function with zero
+work against a stock [Lambda](../compute/lambda.md) function with zero
 instrumentation. Other services follow suit (`AWS/SQS`,
 `AWS/DynamoDB`, ...).
 
 For application-level signals — spans, structured logs, custom
 metrics from your Effect code — see
-[Observability](/testing/observability): Effect emits OpenTelemetry
+[Observability](../../testing/observability.md): Effect emits OpenTelemetry
 natively, and the receiving end (datasets, monitors, notifiers) is
 provisioned as resources in the same Stack, exactly like the alarms
 here.
 
 ## Where next
 
-- [Observability](/testing/observability) — OTel exporters as
+- [Observability](../../testing/observability.md) — OTel exporters as
   Layers, plus the cross-cloud version of alerts-in-code.
-- [Lambda](/aws/compute/lambda) — the functions these dashboards and alarms
+- [Lambda](../compute/lambda.md) — the functions these dashboards and alarms
   watch.
-- [Axiom](/axiom) — datasets, monitors, and notifiers when you want
+- [Axiom](../../axiom.md) — datasets, monitors, and notifiers when you want
   telemetry outside CloudWatch.
 
 Reference:
 
-- [`Alarm` reference](/providers/aws/cloudwatch/alarm)
-- [`Dashboard` reference](/providers/aws/cloudwatch/dashboard)
-- [`CompositeAlarm` reference](/providers/aws/cloudwatch/compositealarm)
+- [`Alarm` reference](https://alchemy.run/providers/aws/cloudwatch/alarm)
+- [`Dashboard` reference](https://alchemy.run/providers/aws/cloudwatch/dashboard)
+- [`CompositeAlarm` reference](https://alchemy.run/providers/aws/cloudwatch/compositealarm)

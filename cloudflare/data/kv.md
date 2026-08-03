@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/kv
 title: "KV"
 description: "Cloudflare Workers KV is edge key-value storage — create a namespace, bind it into a Worker with read/write-scoped bindings, and get/put values with metadata."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Workers KV is Cloudflare's key-value store: values addressed by key,
@@ -13,9 +13,9 @@ reach it through typed, access-scoped bindings.
 
 Reach for KV when reads dominate and a little staleness is fine —
 config, feature flags, sessions, cached API responses, redirects. If
-you need relational queries, use [D1](/cloudflare/data/d1); if you need
+you need relational queries, use [D1](d1.md); if you need
 strongly-consistent state coordinated per object, use
-[Durable Object storage](/cloudflare/compute/durable-objects).
+[Durable Object storage](../compute/durable-objects.md).
 
 ## Create a namespace
 
@@ -191,13 +191,13 @@ doesn't touch the handlers.
 
 Related:
 
-- [Workers](/cloudflare/compute/workers) — how namespaces get read and
+- [Workers](../compute/workers.md) — how namespaces get read and
   written.
-- [D1](/cloudflare/data/d1) — serverless SQLite when you need relational
+- [D1](d1.md) — serverless SQLite when you need relational
   queries.
-- [Durable Objects](/cloudflare/compute/durable-objects) —
+- [Durable Objects](../compute/durable-objects.md) —
   strongly-consistent per-object state.
 
 Reference:
 
-- [Namespace API reference](/providers/cloudflare/kv/namespace)
+- [Namespace API reference](https://alchemy.run/providers/cloudflare/kv/namespace)

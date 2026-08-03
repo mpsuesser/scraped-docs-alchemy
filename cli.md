@@ -2,15 +2,15 @@
 url: https://alchemy.run/cli
 title: "CLI"
 description: "Every alchemy command at a glance — the command map, common options, and how the interactive TUI decides when to render."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 ```sh
 bun alchemy <command> [file] [options]
 ```
 
-Every command operates on an `alchemy.run.ts` stack file (or a custom entrypoint passed as the positional `[file]`, which must exist) and targets a [stage](https://alchemy.run/environments/stages).
+Every command operates on an `alchemy.run.ts` stack file (or a custom entrypoint passed as the positional `[file]`, which must exist) and targets a [stage](environments/stages.md).
 
 ## Command map
 
@@ -34,7 +34,7 @@ alchemy
 └─ cloudflare bootstrap|create-token|state logs   # state-store worker, API tokens, its logs
 ```
 
-Each command has its own page: [deploy](https://alchemy.run/cli/deploy), [plan](https://alchemy.run/cli/plan), [destroy](https://alchemy.run/cli/destroy), [unsafe nuke](https://alchemy.run/cli/nuke), [dev](https://alchemy.run/cli/dev), [tail](https://alchemy.run/cli/tail), [logs](https://alchemy.run/cli/logs), [login](https://alchemy.run/cli/login), [profile](https://alchemy.run/cli/profile), [state](https://alchemy.run/cli/state), [aws](https://alchemy.run/cli/aws), [cloudflare](https://alchemy.run/cli/cloudflare) — plus two workflow guides, [Adopting Resources](https://alchemy.run/cli/adopting-resources) and [Inspecting State](https://alchemy.run/cli/inspecting-state).
+Each command has its own page: [deploy](cli/deploy.md), [plan](cli/plan.md), [destroy](cli/destroy.md), [unsafe nuke](cli/nuke.md), [dev](cli/dev.md), [tail](cli/tail.md), [logs](cli/logs.md), [login](cli/login.md), [profile](cli/profile.md), [state](cli/state.md), [aws](cli/aws.md), [cloudflare](cli/cloudflare.md) — plus two workflow guides, [Adopting Resources](cli/adopting-resources.md) and [Inspecting State](cli/inspecting-state.md).
 
 ## Common options
 
@@ -64,13 +64,13 @@ The TUI module is lazily imported only when selected, so plain runs never pay th
 
 Plain mode never prompts — it prints the plan, makes no changes, and reports: `Non-interactive terminal detected. Pass --yes to approve, or set ALCHEMY_TUI=1 for the interactive UI.` In CI, always pass `--yes`.
 
-Running these commands in a pipeline? See [CI](https://alchemy.run/environments/ci).
+Running these commands in a pipeline? See [CI](environments/ci.md).
 
 ## Where next
 
-- [deploy](https://alchemy.run/cli/deploy) — plan, approve, and apply changes
-- [dev](https://alchemy.run/cli/dev) — hot-reloading development loop
-- [login](https://alchemy.run/cli/login) — authenticate your stack’s providers
-- [state](https://alchemy.run/cli/state) — inspect and manage the state store
-- [Stages](https://alchemy.run/environments/stages) — how environments are isolated
-- [CI](https://alchemy.run/environments/ci) — run the CLI in pipelines
+- [deploy](cli/deploy.md) — plan, approve, and apply changes
+- [dev](cli/dev.md) — hot-reloading development loop
+- [login](cli/login.md) — authenticate your stack’s providers
+- [state](cli/state.md) — inspect and manage the state store
+- [Stages](environments/stages.md) — how environments are isolated
+- [CI](environments/ci.md) — run the CLI in pipelines

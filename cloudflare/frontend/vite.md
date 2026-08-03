@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite
 title: "Vite"
 description: "Deploy any pure-Vite app to Cloudflare Workers with a single resource."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `Cloudflare.Website.Vite` deploys any app that is pure Vite — a
@@ -51,9 +51,9 @@ A framework is supported if — and only if — a `vite build` of your
 `vite.config.ts` builds the whole app. Frameworks whose build is
 orchestrated by their own CLI (`astro build`, `nuxi build`) never
 enter this path, so they are not yet supported by this resource —
-see [Astro](/cloudflare/frontend/astro) and
-[Nuxt](/cloudflare/frontend/nuxt) for their current status and
-workarounds, or [StaticSite](/cloudflare/frontend/static-site) as
+see [Astro](astro.md) and
+[Nuxt](nuxt.md) for their current status and
+workarounds, or [StaticSite](static-site.md) as
 the general fallback for any build command that produces a
 directory of files.
 
@@ -104,7 +104,7 @@ const site = yield* Cloudflare.Website.Vite("Website", {
   Worker there is no `directory` to configure.
 - Everything else is inherited from the Worker — `domain`, `env`,
   `compatibility`, `crons`, and so on. See
-  [Workers](/cloudflare/compute/workers).
+  [Workers](../compute/workers.md).
 
 :::caution[index.html must be at rootDir]
 Vite resolves `index.html` relative to its project root. `rootDir`
@@ -124,7 +124,7 @@ export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
 }) {}
 ```
 
-See [TanStack Start](/cloudflare/frontend/tanstack-start) for the
+See [TanStack Start](tanstack-start.md) for the
 class form in a real app.
 
 ## Environment
@@ -191,7 +191,7 @@ export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>;
 ```
 
-See [TanStack Start](/cloudflare/frontend/tanstack-start) for the
+See [TanStack Start](tanstack-start.md) for the
 full pattern of consuming these bindings from server routes.
 
 ## Multiple server environments (RSC)
@@ -211,7 +211,7 @@ const app = yield* Cloudflare.Website.Vite("ReactRouterRSC", {
 The `entry` environment becomes the deployed Worker entry,
 `children` chunks are bundled alongside it, and the `client`
 environment is always deployed as static assets. See
-[React Router](/cloudflare/frontend/react-router) for the worked
+[React Router](react-router.md) for the worked
 example.
 
 ## Rebuilds and memo
@@ -255,18 +255,18 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 Each supported framework has its own landing page building on this
 resource:
 
-- [React SPA](/cloudflare/frontend/vite-spa) — single-page apps,
+- [React SPA](vite-spa.md) — single-page apps,
   from a bare `index.html` to the `create-vite` template.
-- [TanStack Start](/cloudflare/frontend/tanstack-start) —
+- [TanStack Start](tanstack-start.md) —
   full-stack React and Solid with server routes and typed bindings.
-- [React Router](/cloudflare/frontend/react-router) — including
+- [React Router](react-router.md) — including
   React Server Components via `viteEnvironments`.
-- [Vue](/cloudflare/frontend/vue) — Vue 3 SPAs.
-- [SolidStart](/cloudflare/frontend/solidstart) — SolidStart and
+- [Vue](vue.md) — Vue 3 SPAs.
+- [SolidStart](solidstart.md) — SolidStart and
   hand-rolled SolidJS SSR.
 
-Not yet supported by this resource: [Astro](/cloudflare/frontend/astro)
-and [Nuxt](/cloudflare/frontend/nuxt) — their builds are driven by
+Not yet supported by this resource: [Astro](astro.md)
+and [Nuxt](nuxt.md) — their builds are driven by
 their own CLIs, not `vite build`. Their pages document the current
 workarounds, generally deploying build output with
-[StaticSite](/cloudflare/frontend/static-site).
+[StaticSite](static-site.md).

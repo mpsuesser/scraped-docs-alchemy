@@ -2,8 +2,8 @@
 url: https://alchemy.run/migrating-from-v1
 title: "Migrating from v1"
 description: "Migrate your Alchemy v1 (async/await) project to Alchemy v2."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Alchemy v1 uses `async/await` with top-level `await` for
@@ -117,7 +117,7 @@ first, then optionally adopt Effect for runtime code later.
 Your v1 state is not compatible with v2, so v2 starts from an empty
 state store. Without extra steps, the first deploy would create
 brand-new resources alongside your existing ones. Instead, you
-[adopt](/cli/adopting-resources) the resources v1 already deployed —
+[adopt](cli/adopting-resources.md) the resources v1 already deployed —
 no destroy, no downtime.
 
 Adoption works by physical name: when a resource has no prior state,
@@ -175,7 +175,7 @@ For each resource, the engine finds the existing one by its physical
 name and adopts it into v2 state, then reconciles it to the declared
 config. `--adopt` tells the engine to take over resources it cannot
 prove it owns — which is exactly the situation for everything v1
-created. See [Adopting Resources](/cli/adopting-resources) for the
+created. See [Adopting Resources](cli/adopting-resources.md) for the
 full ownership rules.
 
 :::tip
@@ -285,10 +285,10 @@ export default Alchemy.Stack(
 ## Where next
 
 - Tutorial — build a full app on v2 from scratch, on
-  [Cloudflare](/cloudflare/tutorial/part-1) or [AWS](/aws/tutorial/part-1)
-- [Adopting Resources](/cli/adopting-resources) — the full ownership
+  [Cloudflare](cloudflare/tutorial/part-1.md) or [AWS](aws/tutorial/part-1.md)
+- [Adopting Resources](cli/adopting-resources.md) — the full ownership
   rules behind `--adopt`
-- [Bindings](/infrastructure-as-effects/binding) — what replaced v1 `bindings:`
-- [Cloudflare](/cloudflare) — the Cloudflare provider hub
-- [AWS](/aws) — the AWS provider hub
+- [Bindings](infrastructure-as-effects/binding.md) — what replaced v1 `bindings:`
+- [Cloudflare](cloudflare.md) — the Cloudflare provider hub
+- [AWS](aws.md) — the AWS provider hub
 - [v1.alchemy.run](https://v1.alchemy.run) — the v1 documentation

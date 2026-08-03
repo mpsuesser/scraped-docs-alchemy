@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/setup
 title: "Setup"
 description: "Connect alchemy to GitHub — account, credentials, and profiles."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Register the provider next to your cloud's:
@@ -26,7 +26,7 @@ The next `alchemy login` adds a `GitHub` step with three options:
 When `CI=true`, the login step skips the prompt and selects the
 environment-variables method automatically.
 
-See [Profiles](/environments/profiles) for how credentials are stored
+See [Profiles](../environments/profiles.md) for how credentials are stored
 and switched.
 
 ## GitHub Enterprise
@@ -84,8 +84,8 @@ is a different physical resource.
 ## Token scopes
 
 - `repo` — always required.
-- `workflow` — when you manage [Actions secrets and variables](/github/actions-config).
-- `delete_repo` — only when you opt a [repository](/github/repository)
+- `workflow` — when you manage [Actions secrets and variables](actions-config.md).
+- `delete_repo` — only when you opt a [repository](repository.md)
   into deletion via `destroy()`. Repositories default to retain on
   removal, so most tokens never need it.
 
@@ -112,4 +112,4 @@ the enterprise host from `GITHUB_BASE_URL` / `GITHUB_API_URL` /
 
 ## Next steps
 
-- [GitHub overview](/github) — resources and compositions.
+- [GitHub overview](../github.md) — resources and compositions.

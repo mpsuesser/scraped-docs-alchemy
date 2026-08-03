@@ -2,14 +2,14 @@
 url: https://alchemy.run/cloudflare/frontend/foldkit
 title: "Foldkit"
 description: "Deploy a Foldkit app to Cloudflare with the Vite resource — one declaration, no Wrangler config."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 [Foldkit](https://foldkit.dev) is an Elm-architecture frontend
 framework built on Effect. Its apps are client-only Vite projects —
 the Foldkit Vite plugin only adds HMR and devtools wiring — so
-[`Cloudflare.Website.Vite`](/cloudflare/frontend/vite) deploys them
+[`Cloudflare.Website.Vite`](vite.md) deploys them
 with a single declaration: no `main` entrypoint, no build command,
 no output directory, no Wrangler configuration.
 
@@ -101,7 +101,7 @@ const worker = yield* Cloudflare.Website.Vite("Foldkit", {
 });
 ```
 
-See [Environment](/cloudflare/frontend/vite#environment) for the
+See [Environment](vite.md#environment) for the
 full inlining semantics.
 
 ## Deploy

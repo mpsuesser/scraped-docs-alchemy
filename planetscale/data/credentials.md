@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/credentials
 title: "Credentials"
 description: "PlanetScale credentials as Stack resources — Postgres roles, the default role and forceReset, MySQL passwords, TTLs, CIDR allowlists, and direct vs pooled connection origins."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 PlanetScale credentials are resources: Postgres branches use **roles**
@@ -94,7 +94,7 @@ password syncs in place on the next deploy.
 ## `origin` vs `pooledOrigin`
 
 Credentials expose parsed connection components ready to feed into
-consumers like [Cloudflare Hyperdrive](/cloudflare/data/hyperdrive).
+consumers like [Cloudflare Hyperdrive](../../cloudflare/data/hyperdrive.md).
 `PostgresRole` has two: `origin` is the direct connection (port
 5432), `pooledOrigin` goes through PSBouncer (port 6432):
 
@@ -113,14 +113,14 @@ carries the same direct/pooled endpoints as `Redacted` URL strings
 
 ## Where next
 
-- [Postgres](/planetscale/data/postgres) — databases, branches, and roles
+- [Postgres](postgres.md) — databases, branches, and roles
   in context.
-- [MySQL](/planetscale/data/mysql) — the Vitess side, end to end.
-- [Hyperdrive](/cloudflare/data/hyperdrive) — edge-pooled connections from
+- [MySQL](mysql.md) — the Vitess side, end to end.
+- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — edge-pooled connections from
   Workers to your PlanetScale database.
 
 Reference:
 
-- [PostgresRole](/providers/planetscale/postgres/postgresrole) ·
-  [PostgresDefaultRole](/providers/planetscale/postgres/postgresdefaultrole) ·
-  [MySQLPassword](/providers/planetscale/mysql/mysqlpassword)
+- [PostgresRole](https://alchemy.run/providers/planetscale/postgres/postgresrole) ·
+  [PostgresDefaultRole](https://alchemy.run/providers/planetscale/postgres/postgresdefaultrole) ·
+  [MySQLPassword](https://alchemy.run/providers/planetscale/mysql/mysqlpassword)

@@ -2,13 +2,13 @@
 url: https://alchemy.run/cloudflare/observability/axiom-observability
 title: "Ship Worker telemetry to Axiom"
 description: "Declare Axiom datasets, a least-privilege ingest token, and monitors in the same Stack as the Worker that emits the telemetry — or let Cloudflare push Workers Logs to Axiom natively."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect already emits OpenTelemetry — every span, `Metric`, and
 `logInfo` in your Worker is OTel data waiting for somewhere to go
-(see [Observability](/testing/observability)). With alchemy the
+(see [Observability](../../testing/observability.md)). With alchemy the
 receiving end is resources too: the Axiom datasets, the ingest
 token, and the alert that pages you all live in the same Stack as
 the Worker they observe. A retention or threshold change is a
@@ -17,7 +17,7 @@ reviewable diff, not a dashboard click.
 This guide wires a Worker's telemetry into Axiom two ways:
 
 1. **From the Worker** — the `Axiom.Telemetry` binding layer; the
-   [built-in telemetry](/infrastructure-as-effects/telemetry) exports
+   [built-in telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) exports
    your Effect spans, logs, and metrics directly.
 2. **From Cloudflare** — an `ObservabilityDestination` that pushes
    Workers Logs telemetry to Axiom.
@@ -37,7 +37,7 @@ providers: Layer.mergeAll(Cloudflare.providers(), Axiom.providers()),
 ```
 
 If you haven't connected an Axiom account yet, run through
-[Axiom setup](/axiom/setup) first — `alchemy login` picks up
+[Axiom setup](../../axiom/setup.md) first — `alchemy login` picks up
 `AXIOM_TOKEN` or a stored credential.
 
 ## Create a dataset per signal
@@ -231,7 +231,7 @@ yield* Axiom.Monitor("panics", {
 
 `MatchEvent` fires for every matching event; `Threshold` and
 `AnomalyDetection` monitors cover rate-based and baseline-deviation
-alerting — see the [Axiom overview](/axiom) for those shapes.
+alerting — see the [Axiom overview](../../axiom.md) for those shapes.
 Changing a monitor's `type` replaces it; everything else updates in
 place.
 
@@ -239,29 +239,29 @@ place.
 
 Two adjacent Cloudflare-native options, in brief:
 
-- **[Logpush Job](/providers/cloudflare/logpush/job)** — push raw
+- **[Logpush Job](https://alchemy.run/providers/cloudflare/logpush/job)** — push raw
   `workers_trace_events` (and other Cloudflare datasets) as batched
   log files to R2, S3, GCS, or an HTTP endpoint. Bulk archival
   rather than OTLP.
-- **[Alerting NotificationPolicy](/providers/cloudflare/alerting/notificationpolicy)** —
+- **[Alerting NotificationPolicy](https://alchemy.run/providers/cloudflare/alerting/notificationpolicy)** —
   alerts on Cloudflare platform events (certificate renewals, health
   checks, …) delivered to email or a
-  [NotificationWebhook](/providers/cloudflare/alerting/notificationwebhook).
+  [NotificationWebhook](https://alchemy.run/providers/cloudflare/alerting/notificationwebhook).
   Complements Axiom monitors, which alert on your telemetry.
 
 ## Where next
 
-- [Axiom overview](/axiom) — dashboards, annotations, views, and the
+- [Axiom overview](../../axiom.md) — dashboards, annotations, views, and the
   full resource list.
-- [Axiom setup](/axiom/setup) — credentials and profiles.
-- [Telemetry](/infrastructure-as-effects/telemetry) — how the
+- [Axiom setup](../../axiom/setup.md) — credentials and profiles.
+- [Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) — how the
   built-in exporters work across every runtime.
-- [Tutorial Part 6](/cloudflare/tutorial/part-6) — the step-by-step
+- [Tutorial Part 6](https://alchemy.run/cloudflare/tutorial/part-6) — the step-by-step
   version of this setup.
-- [Observability](/testing/observability) — OTel across clouds and
+- [Observability](../../testing/observability.md) — OTel across clouds and
   the receiving end as resources.
-- Reference: [Dataset](/providers/axiom/dataset) ·
-  [ApiToken](/providers/axiom/apitoken) ·
-  [Monitor](/providers/axiom/monitor) ·
-  [Notifier](/providers/axiom/notifier) ·
-  [ObservabilityDestination](/providers/cloudflare/workers/observabilitydestination)
+- Reference: [Dataset](https://alchemy.run/providers/axiom/dataset) ·
+  [ApiToken](https://alchemy.run/providers/axiom/apitoken) ·
+  [Monitor](https://alchemy.run/providers/axiom/monitor) ·
+  [Notifier](https://alchemy.run/providers/axiom/notifier) ·
+  [ObservabilityDestination](https://alchemy.run/providers/cloudflare/workers/observabilitydestination)

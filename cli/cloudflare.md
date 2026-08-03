@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/cloudflare
 title: "cloudflare"
 description: "Cloudflare provider commands — bootstrap the state-store worker, mint API tokens, and inspect state-store logs."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -174,7 +174,7 @@ alchemy cloudflare state logs --since 30m --limit 200
 
 ## Where next
 
-- [aws](/cli/aws) — provider commands for AWS
-- [Inspecting State](/cli/inspecting-state) — read and manage the state store from the CLI
-- [State Store](/state-store) — where resource state lives
-- [Cloudflare](/cloudflare) — the Cloudflare provider hub
+- [aws](aws.md) — provider commands for AWS
+- [Inspecting State](inspecting-state.md) — read and manage the state store from the CLI
+- [State Store](../state-store.md) — where resource state lives
+- [Cloudflare](../cloudflare.md) — the Cloudflare provider hub

@@ -2,11 +2,11 @@
 url: https://alchemy.run/aws/networking
 title: "VPC & networking"
 description: "The Network helper for a production-shaped VPC in one call, and the full set of EC2 networking primitives — VPCs, subnets, gateways, routes, security groups, and endpoints — for explicit control."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-Most Alchemy apps on AWS never touch a VPC. Lambda functions serve public traffic from Function URLs, and bindings wire access to tables, buckets, and queues without a single subnet. Networking becomes your problem when you run an [ECS Service](https://alchemy.run/aws/compute/ecs), an [EKS Cluster](https://alchemy.run/aws/compute/eks), or an [EC2 Instance](https://alchemy.run/aws/compute/ec2) — all need a VPC, subnets, and security groups — or when you attach to anything that lives inside one.
+Most Alchemy apps on AWS never touch a VPC. Lambda functions serve public traffic from Function URLs, and bindings wire access to tables, buckets, and queues without a single subnet. Networking becomes your problem when you run an [ECS Service](compute/ecs.md), an [EKS Cluster](compute/eks.md), or an [EC2 Instance](compute/ec2.md) — all need a VPC, subnets, and security groups — or when you attach to anything that lives inside one.
 
 Alchemy gives you two altitudes: the **`Network` helper**, which builds the standard public/private layout in one call, and the **canonical primitives** underneath it, for when you need explicit control.
 
@@ -204,6 +204,6 @@ yield* AWS.EC2.VpcEndpoint("S3Endpoint", {
 
 ## Where next
 
-- [ECS](https://alchemy.run/aws/compute/ecs) — run containers in the network you just built, with an Alchemy-managed public ALB.
-- [EC2](https://alchemy.run/aws/compute/ec2) — launch instances into it, raw or hosting an Effect program.
+- [ECS](compute/ecs.md) — run containers in the network you just built, with an Alchemy-managed public ALB.
+- [EC2](compute/ec2.md) — launch instances into it, raw or hosting an Effect program.
 - [`Network` reference](https://alchemy.run/providers/aws/ec2/network) — every prop and everything the helper returns.

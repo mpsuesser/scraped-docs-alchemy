@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/data/ingest
 title: "Datasets & ingest"
 description: "Axiom datasets per OTel signal with OTLP endpoints as outputs, least-privilege ingest tokens, and per-stage naming with Stack.useSync."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A `Dataset` is Axiom's top-level container — it stores your events,
@@ -54,7 +54,7 @@ event store — for anything that isn't OTLP.
 
 Each dataset exposes Axiom's OTLP/HTTP endpoints as output
 attributes, and alchemy runtimes have
-[telemetry built in](/infrastructure-as-effects/telemetry) — wiring
+[telemetry built in](https://alchemy.run/infrastructure-as-effects/telemetry) — wiring
 an exporter is providing the `Axiom.Telemetry` binding layer on the
 Function/Worker:
 
@@ -83,7 +83,7 @@ Building the layer binds each dataset's endpoint and the ingest
 token's `Authorization` header (as a secret) onto the host; at
 runtime the built-in exporter ships each signal to its dataset,
 flushed per request. See the
-[end-to-end guide](/cloudflare/observability/axiom-observability)
+[end-to-end guide](../../cloudflare/observability/axiom-observability.md)
 for the full pattern.
 
 - `otelTracesEndpoint` / `otelLogsEndpoint` / `otelMetricsEndpoint` —
@@ -139,7 +139,7 @@ it in resource state — otherwise later deploys couldn't rewire it
 into consumers. Treat your state store as sensitive: anyone with
 read access can recover the bearer. Pass `ingest.token` to secret
 sinks (a Worker env var becomes a `secret_text` binding; or a
-[secrets store](/cloudflare/security/secrets-env)) rather than ever unwrapping it
+[secrets store](../../cloudflare/security/secrets-env.md)) rather than ever unwrapping it
 yourself.
 :::
 
@@ -166,16 +166,16 @@ export const Traces = Axiom.Dataset(
 
 Now `dev-sam` telemetry never lands in the `prod` dataset, and
 tearing down a preview stage deletes its data with it. See
-[Stack](/infrastructure-as-code/stack) for the full `useSync` semantics.
+[Stack](../../infrastructure-as-code/stack.md) for the full `useSync` semantics.
 
 ## Where next
 
-- [Ship Worker telemetry to Axiom](/cloudflare/observability/axiom-observability) —
+- [Ship Worker telemetry to Axiom](../../cloudflare/observability/axiom-observability.md) —
   the end-to-end guide: datasets, token, env wiring, and the
   zero-exporter Cloudflare push path.
-- [Alerting](/axiom/guides/alerting) — monitors and notifiers over
+- [Alerting](../guides/alerting.md) — monitors and notifiers over
   the data you just ingested.
-- [Telemetry](/infrastructure-as-effects/telemetry) — the built-in
+- [Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) — the built-in
   OTel exporters and how they flush per request.
-- Reference: [Dataset](/providers/axiom/dataset) ·
-  [ApiToken](/providers/axiom/apitoken)
+- Reference: [Dataset](https://alchemy.run/providers/axiom/dataset) ·
+  [ApiToken](https://alchemy.run/providers/axiom/apitoken)

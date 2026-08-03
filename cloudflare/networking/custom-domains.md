@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/custom-domains
 title: "Custom domains & routes"
 description: "Serve Workers from your own domain — create or adopt a Zone, attach custom domains, route hostname patterns, manage DNS records, and control the workers.dev subdomain."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Every Worker gets a `workers.dev` URL by default, but production apps
@@ -267,14 +267,14 @@ manage this resource on accounts where that is acceptable.
 
 ## Where next
 
-- [Domains & DNS](/cloudflare/networking/domains) — the full domain-management
+- [Domains & DNS](domains.md) — the full domain-management
   surface: zone settings, DNSSEC, certificates, and more.
-- [Workers](/cloudflare/compute/workers) — the Worker resource itself and its
+- [Workers](../compute/workers.md) — the Worker resource itself and its
   binding system.
 
 Reference:
 
-- [Zone API reference](/providers/cloudflare/zone/zone)
-- [WorkerRoute API reference](/providers/cloudflare/workers/workerroute)
-- [Record API reference](/providers/cloudflare/dns/record)
-- [Subdomain API reference](/providers/cloudflare/workers/subdomain)
+- [Zone API reference](https://alchemy.run/providers/cloudflare/zone/zone)
+- [WorkerRoute API reference](https://alchemy.run/providers/cloudflare/workers/workerroute)
+- [Record API reference](https://alchemy.run/providers/cloudflare/dns/record)
+- [Subdomain API reference](https://alchemy.run/providers/cloudflare/workers/subdomain)

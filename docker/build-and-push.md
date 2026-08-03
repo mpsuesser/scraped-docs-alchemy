@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/build-and-push
 title: "Build & push images"
 description: "Build a container image from a Dockerfile, push it to a registry, and hand the resulting image reference to Cloudflare Containers or AWS ECS."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 This page is the canonical home for producing a **registry image
@@ -11,11 +11,11 @@ reference** — the artifact that cloud container platforms consume.
 `Docker.Image` builds and pushes through your active Docker context;
 what comes out the other end is an `imageRef` (and, after a push, a
 `repoDigest`) that you pass to
-[Cloudflare Containers](/cloudflare/compute/containers) or an
-[AWS ECS task definition](/aws/compute/ecs).
+[Cloudflare Containers](../cloudflare/compute/containers.md) or an
+[AWS ECS task definition](../aws/compute/ecs.md).
 
 All you need is a Docker daemon reachable from the CLI — see
-[Setup](/docker/setup) if you haven't wired one up yet.
+[Setup](setup.md) if you haven't wired one up yet.
 
 ## Build from a Dockerfile
 
@@ -115,8 +115,8 @@ unrelated stacks or developer workflows.
 
 Pass `image.imageRef` (or `repoDigest`, for an immutable pin) to
 whatever runs the container:
-[Cloudflare Containers](/cloudflare/compute/containers) accept it as
-a bring-your-own image, and an [ECS task definition](/aws/compute/ecs)
+[Cloudflare Containers](../cloudflare/compute/containers.md) accept it as
+a bring-your-own image, and an [ECS task definition](../aws/compute/ecs.md)
 takes it as the container image. The registry reference is the
 boundary — Cloudflare and AWS pull from the registry; no further
 Docker wiring is involved. A reference already in Cloudflare's
@@ -127,5 +127,5 @@ the Container skips its own pull-and-push round-trip.
 
 Reference:
 
-- [Image API reference](/providers/docker/image)
-- [RemoteImage API reference](/providers/docker/remoteimage)
+- [Image API reference](https://alchemy.run/providers/docker/image)
+- [RemoteImage API reference](https://alchemy.run/providers/docker/remoteimage)

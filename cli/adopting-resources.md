@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/adopting-resources
 title: "Adopting Resources"
 description: "How alchemy takes ownership of pre-existing cloud resources — recovery by default, --adopt for foreign resources, and the programmatic AdoptPolicy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Two situations put alchemy in front of a cloud resource it has no state for: existing infrastructure you want alchemy to start managing, and a fresh (or wiped) state store sitting in front of resources alchemy already created.
@@ -26,7 +26,7 @@ return value drives one of three paths:
 
 "Owned" means the provider can prove the resource was created by *this* stack/stage/logical-id — typically by inspecting tags or a naming convention.
 
-The same table drives the provider-side contract: see [Adoption in Resource Lifecycle](/infrastructure-as-code/resource-lifecycle#adoption) for the engine's routing and [the `read` operation](/infrastructure-as-code/provider#read) for how a provider returns `Unowned(attrs)`.
+The same table drives the provider-side contract: see [Adoption in Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md#adoption) for the engine's routing and [the `read` operation](../infrastructure-as-code/provider.md#read) for how a provider returns `Unowned(attrs)`.
 
 ## Recovery is the default
 
@@ -83,11 +83,11 @@ deployEffect.pipe(adopt(decidePolicy));  // Effect<boolean>, resolved at plan ti
 
 Providers with no tag concept (e.g. APIs that always return a singleton by name) always return plain attrs from `read`, so they silently adopt unconditionally — `--adopt` is a no-op for them.
 
-For the full lost-state-store recovery walkthrough (state tree → state clear → deploy), see [Inspecting State](/cli/inspecting-state).
+For the full lost-state-store recovery walkthrough (state tree → state clear → deploy), see [Inspecting State](inspecting-state.md).
 
 ## Where next
 
-- [deploy](/cli/deploy) — the command that carries `--adopt`
-- [Inspecting State](/cli/inspecting-state) — recover a lost or wiped state store
-- [Resource Lifecycle](/infrastructure-as-code/resource-lifecycle) — where adoption sits in the engine
-- [Providers](/infrastructure-as-code/provider) — implementing `read` and `Unowned`
+- [deploy](deploy.md) — the command that carries `--adopt`
+- [Inspecting State](inspecting-state.md) — recover a lost or wiped state store
+- [Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md) — where adoption sits in the engine
+- [Providers](../infrastructure-as-code/provider.md) — implementing `read` and `Unowned`

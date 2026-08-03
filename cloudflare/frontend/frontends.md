@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/frontends
 title: "Frontend frameworks"
 description: "Deploy any pure-Vite app (TanStack Start, React Router, Vue, SolidStart) with Cloudflare.Website.Vite, or any build command's static output (Zola, Astro) with Cloudflare.Website.StaticSite."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Alchemy deploys frontends to Cloudflare with two resources:
@@ -42,7 +42,7 @@ assets. The framework (or lack of one) doesn't matter: if a command
 produces a directory of files, StaticSite deploys it.
 
 Both resources are thin wrappers over a
-[Worker](/providers/cloudflare/workers/worker), so everything a Worker
+[Worker](https://alchemy.run/providers/cloudflare/workers/worker), so everything a Worker
 supports applies to both: `domain`, `env` bindings, `compatibility`
 flags, and a custom `main` entrypoint in front of the assets.
 
@@ -50,15 +50,15 @@ flags, and a custom `main` entrypoint in front of the assets.
 
 | Framework | Resource | Status | Guide |
 | --- | --- | --- | --- |
-| React / Vite SPA | `Vite` | Supported | [Vite SPA](/cloudflare/frontend/vite-spa) |
-| TanStack Start (React & Solid) | `Vite` | Supported | [TanStack Start](/cloudflare/frontend/tanstack-start) |
-| React Router (incl. RSC) | `Vite` | Supported | [React Router](/cloudflare/frontend/react-router) |
-| Vue | `Vite` | Supported | [Vue](/cloudflare/frontend/vue) |
-| Foldkit | `Vite` | Supported | [Foldkit](/cloudflare/frontend/foldkit) |
-| SolidStart / SolidJS SSR | `Vite` | Supported | [SolidStart](/cloudflare/frontend/solidstart) |
-| Astro | `StaticSite` (static output) | Vite support is a TODO | [Astro](/cloudflare/frontend/astro) |
-| Nuxt | — | Not yet supported | [Nuxt](/cloudflare/frontend/nuxt) |
-| Zola, Hugo, or any static generator | `StaticSite` | Supported | [Static sites](/cloudflare/frontend/static-site) |
+| React / Vite SPA | `Vite` | Supported | [Vite SPA](vite-spa.md) |
+| TanStack Start (React & Solid) | `Vite` | Supported | [TanStack Start](tanstack-start.md) |
+| React Router (incl. RSC) | `Vite` | Supported | [React Router](react-router.md) |
+| Vue | `Vite` | Supported | [Vue](vue.md) |
+| Foldkit | `Vite` | Supported | [Foldkit](foldkit.md) |
+| SolidStart / SolidJS SSR | `Vite` | Supported | [SolidStart](solidstart.md) |
+| Astro | `StaticSite` (static output) | Vite support is a TODO | [Astro](astro.md) |
+| Nuxt | — | Not yet supported | [Nuxt](nuxt.md) |
+| Zola, Hugo, or any static generator | `StaticSite` | Supported | [Static sites](static-site.md) |
 
 Every "Supported" row is backed by a checked-in example or a live
 deploy test in the Alchemy repository — plain Vite SPA deploys are
@@ -80,21 +80,21 @@ plugin declared in `vite.config.ts` (`tanstackStart()`, `viteReact()`,
 drives its own CLI build (`astro build`, `nuxi build`) or isn't
 JavaScript at all (Zola, Hugo), that build never enters Vite's
 builder, so use `StaticSite` on the build output instead. See
-[what "pure Vite" means](/cloudflare/frontend/vite#what-pure-vite-means)
+[what "pure Vite" means](vite.md#what-pure-vite-means)
 for the full picture.
 
 ## Where next
 
-- [The Vite resource](/cloudflare/frontend/vite) — build model, env
+- [The Vite resource](vite.md) — build model, env
   inlining, runtime bindings, dev mode.
-- [The StaticSite resource](/cloudflare/frontend/static-site) — build
+- [The StaticSite resource](static-site.md) — build
   commands, custom Workers in front of assets, framework-native dev
   servers.
 - Framework guides:
-  [Vite SPA](/cloudflare/frontend/vite-spa),
-  [TanStack Start](/cloudflare/frontend/tanstack-start),
-  [React Router](/cloudflare/frontend/react-router),
-  [Vue](/cloudflare/frontend/vue),
-  [SolidStart](/cloudflare/frontend/solidstart),
-  [Astro](/cloudflare/frontend/astro),
-  [Nuxt](/cloudflare/frontend/nuxt).
+  [Vite SPA](vite-spa.md),
+  [TanStack Start](tanstack-start.md),
+  [React Router](react-router.md),
+  [Vue](vue.md),
+  [SolidStart](solidstart.md),
+  [Astro](astro.md),
+  [Nuxt](nuxt.md).

@@ -2,8 +2,8 @@
 url: https://alchemy.run/command/memoization
 title: "Memoization: builds & one-off commands"
 description: "Content-hash memoization shared by Command.Build and Command.Exec — what gets hashed, when a command re-runs, and the outdir contract on destroy."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 `Command.Build` and `Command.Exec` content-hash their inputs so a
@@ -11,7 +11,7 @@ deploy skips any build or one-off command whose inputs haven't
 changed — an unchanged frontend isn't rebuilt, unchanged schema
 files don't re-run codegen. Both resources share the same memo
 semantics, covered here. For what the Command provider is and how
-it's registered, start at the [Command hub](/command).
+it's registered, start at the [Command hub](../command.md).
 
 ## A memoized build
 
@@ -121,12 +121,12 @@ full re-run matrix:
 
 ## Where next
 
-- [Static site](/cloudflare/frontend/static-site) — deploy the build
+- [Static site](../cloudflare/frontend/static-site.md) — deploy the build
   output; `StaticSite` is a `Command.Build` resource under the hood.
-- [Dev servers](/command/dev-servers) — long-lived local processes
+- [Dev servers](dev-servers.md) — long-lived local processes
   with `Command.Dev` during `alchemy dev`.
 
 Reference:
 
-- [Build](/providers/command/build) ·
-  [Exec](/providers/command/exec)
+- [Build](https://alchemy.run/providers/command/build) ·
+  [Exec](https://alchemy.run/providers/command/exec)

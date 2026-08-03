@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/dashboards
 title: "Dashboards as code"
 description: "Declare Axiom dashboards — charts, layout, filter bars, saved views, and deploy annotations — as alchemy resources next to the services they observe."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 An Axiom dashboard is a single JSON document: charts, a grid layout,
@@ -13,8 +13,8 @@ diff and every stage gets the same dashboard.
 
 This guide builds an ops dashboard chart by chart, then adds the two
 resources that round it out: saved `View`s and deploy `Annotation`s.
-You'll need the Axiom provider registered ([setup](/axiom/setup)) and
-a dataset to query ([ingest](/axiom/data/ingest)).
+You'll need the Axiom provider registered ([setup](../setup.md)) and
+a dataset to query ([ingest](../data/ingest.md)).
 
 ## Start with an empty dashboard
 
@@ -230,14 +230,14 @@ markers visually. Deploy markers next to your error charts answer
 
 ## Where next
 
-- [Alerting](/axiom/guides/alerting) — turn the same APL queries into
+- [Alerting](alerting.md) — turn the same APL queries into
   monitors and notifiers.
-- [Ingest](/axiom/data/ingest) — datasets, tokens, and wiring OTEL output
+- [Ingest](../data/ingest.md) — datasets, tokens, and wiring OTEL output
   into Axiom.
-- [Axiom overview](/axiom) — all resources at a glance.
+- [Axiom overview](../../axiom.md) — all resources at a glance.
 
 Reference:
 
-- [Dashboard API reference](/providers/axiom/dashboard)
-- [View API reference](/providers/axiom/view)
-- [Annotation API reference](/providers/axiom/annotation)
+- [Dashboard API reference](https://alchemy.run/providers/axiom/dashboard)
+- [View API reference](https://alchemy.run/providers/axiom/view)
+- [Annotation API reference](https://alchemy.run/providers/axiom/annotation)

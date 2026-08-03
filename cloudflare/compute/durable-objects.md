@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/durable-objects
 title: "Durable Objects"
 description: "Durable Objects are globally-unique stateful instances with transactional storage — define one as an Effect, persist state per key, expose typed RPC methods, and stream values back to the caller."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 A Durable Object (DO) is a globally-unique stateful instance
@@ -15,7 +15,7 @@ per-entity state: counters, chat rooms, game sessions, WebSocket
 hubs, rate limiters, collaborative documents.
 
 In alchemy a DO is a class with the same two-phase Effect pattern as
-a [Worker](/cloudflare/compute/workers), and every method you return becomes
+a [Worker](workers.md), and every method you return becomes
 a typed RPC method — no schemas, no serialization boilerplate. This
 page builds one from scratch: a `Counter` that keeps a per-key count
 in transactional storage, exposes RPC methods, and streams a
@@ -78,7 +78,7 @@ and friends. We'll use it more in the next part for WebSockets.
 :::note
 You resolve the *reference* to `state` in the outer (init) Effect,
 but its methods — like `storage.get` — are
-[colored with `RuntimeContext`](/infrastructure-as-effects/layers#runtime-as-a-colored-function),
+[colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#runtime-as-a-colored-function),
 so you can only *use* them in the inner (runtime) Effect. That's why
 `state` is yielded above but `state.storage.get(...)` lives below.
 :::
@@ -376,13 +376,13 @@ const value = yield* counter.increment(); // Effect<number>
 ```
 
 This schemaless, typed-stub pattern — the DO shape of
-[Schemaless RPC](/apis/schemaless) — is the recommended way to talk
+[Schemaless RPC](../../apis/schemaless.md) — is the recommended way to talk
 to a Durable Object. The types flow from the implementation — add a
 method, and every caller sees it immediately; change a return type,
 and every caller that mismatches fails to compile. The same
 mechanism works across Workers: one Worker can host the DO while
 others bind to it by class — see
-[Bind to another Worker's Durable Object](/cloudflare/compute/cross-worker-durable-object).
+[Bind to another Worker's Durable Object](cross-worker-durable-object.md).
 
 Alchemy also ships a schema-based `RpcDurableObject` that serves an
 Effect RPC group on the DO's `fetch`. It is no longer the suggested
@@ -391,10 +391,10 @@ methods and streaming without the ceremony. Its one remaining niche
 is when return values are `Schema.Class` instances whose identity
 must survive the boundary — the schemaless bridge serializes return
 values and strips class identity — see
-[`Cloudflare.RpcDurableObject`](/cloudflare/apis/effect-rpc#sugar-cloudflarerpcdurableobject).
+[`Cloudflare.RpcDurableObject`](../apis/effect-rpc.md#sugar-cloudflarerpcdurableobject).
 If you want schema-*validated* procedures (payload validation,
 tagged error schemas shared with external clients), reach for
-[Effect RPC](/cloudflare/apis/effect-rpc) on a Worker instead.
+[Effect RPC](../apis/effect-rpc.md) on a Worker instead.
 
 ## Place an instance in a region
 
@@ -460,31 +460,31 @@ As everywhere on workerd, there is no isolate-teardown hook: cleanup
 belongs in methods (call scope), not in the constructor or init.
 Per-call resources like `Drizzle.Postgres` pools open lazily inside
 the method and close with its scope (see the
-[SQL connection lifecycle](/sql/effect-sql/lifecycle)). See
-[Instance scope vs request scope](/infrastructure-as-effects/functions-and-servers#instance-scope-vs-request-scope)
+[SQL connection lifecycle](../../sql/effect-sql/lifecycle.md)). See
+[Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
 for the model across all runtimes.
 
 ## Where next
 
 Guides that build on Durable Objects:
 
-- [Accept WebSockets](/cloudflare/compute/hibernatable-websockets) —
+- [Accept WebSockets](hibernatable-websockets.md) —
   WebSocket connections that survive hibernation.
-- [Bind to another Worker's Durable Object](/cloudflare/compute/cross-worker-durable-object)
+- [Bind to another Worker's Durable Object](cross-worker-durable-object.md)
   — one Worker hosts the DO, others get a typed stub; also covers
   moving the host to a different Worker with the data intact.
-- [Run a Container](/cloudflare/compute/run-a-container) — a long-lived
+- [Run a Container](run-a-container.md) — a long-lived
   container managed by a DO.
-- [Workflows](/cloudflare/compute/workflows) — durable multi-step
+- [Workflows](workflows.md) — durable multi-step
   orchestration.
 
 Related:
 
-- [Workers](/cloudflare/compute/workers) — the runtime every DO is reached
+- [Workers](workers.md) — the runtime every DO is reached
   through.
-- [Drizzle migrations](/sql/drizzle/migrations#durable-object-migrations) —
+- [Drizzle migrations](../../sql/drizzle/migrations.md#durable-object-migrations) —
   run drizzle-kit's `durable-sqlite` migrations inside the object at init.
 
 Reference:
 
-- [DurableObject API reference](/providers/cloudflare/workers/durableobject)
+- [DurableObject API reference](https://alchemy.run/providers/cloudflare/workers/durableobject)

@@ -2,13 +2,13 @@
 url: https://alchemy.run/infrastructure-as-effects/functions-and-servers
 title: "Functions & Servers"
 description: "Workers, Lambda Functions, and Containers ship runtime code along with their infrastructure — declared with the Effectful Constructor pattern, bind what you need, return what you expose."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Cloudflare Workers, AWS Lambda Functions, ECS Tasks, EKS
 Deployments, and Containers
-are [Resources](/infrastructure-as-code/resource) that ship **runtime code along
+are [Resources](../infrastructure-as-code/resource.md) that ship **runtime code along
 with their infrastructure**. When you declare one you describe both:
 
 - The cloud configuration (memory, region, compatibility flags…)
@@ -39,9 +39,9 @@ This is the **Effectful Constructor** — one simple, repeatable
 pattern you'll use everywhere across alchemy:
 
 - A **Worker** or **Lambda Function** returns its handlers (`fetch`).
-- A **Durable Object** returns its [RPC methods](/apis/schemaless).
+- A **Durable Object** returns its [RPC methods](../apis/schemaless.md).
 - A **Workflow** returns its run function.
-- A [**Layer**](/infrastructure-as-effects/layers) returns a service
+- A [**Layer**](layers.md) returns a service
   interface.
 
 Bind what you need, return what you expose. Learn it once and every
@@ -70,7 +70,7 @@ Effect.gen(function* () {
 
 Every Worker and Lambda Function serves HTTP through this member —
 it runs per request, inside the deployed Function
-([Phases](/infrastructure-as-effects/phases) covers exactly when).
+([Phases](phases.md) covers exactly when).
 
 ## RPC
 
@@ -95,9 +95,9 @@ export default class Greeter extends Cloudflare.Worker<Greeter>()(
 
 No schema, no runtime validation — serialization is automatic and
 the client type is inferred from the class. This is
-[Schemaless RPC](/apis/schemaless), the default for internal calls;
-the [APIs](/apis) section covers it plus the schema'd surfaces
-([Effect RPC](/apis/effect-rpc), [Effect HTTP](/apis/effect-http))
+[Schemaless RPC](../apis/schemaless.md), the default for internal calls;
+the [APIs](../apis.md) section covers it plus the schema'd surfaces
+([Effect RPC](../apis/effect-rpc.md), [Effect HTTP](../apis/effect-http.md))
 for trust boundaries.
 
 ## A Worker, end to end
@@ -201,7 +201,7 @@ the same runtime (workerd vs node vs bun, serverless vs serverful).
 It also allows multiple implementations of one Tag: ship the Tag,
 and let each consumer provide the Layer that fits. This split is
 what makes
-[Circular Bindings](/infrastructure-as-effects/circular-bindings)
+[Circular Bindings](circular-bindings.md)
 possible.
 
 ## Bindings in action
@@ -222,7 +222,7 @@ Every binding obeys the same shape across providers — a Cloudflare
 R2 binding and an AWS S3 binding are interchangeable from the
 caller's point of view. Every binding is a contract (the `yield*`)
 plus an interchangeable implementation Layer (the `Effect.provide`) —
-[Bindings](/infrastructure-as-effects/binding#a-contract-and-a-layer)
+[Bindings](binding.md#a-contract-and-a-layer)
 covers the deploy-time mechanics.
 
 ## Effect handlers vs async handlers
@@ -277,7 +277,7 @@ export default {
 ```
 
 Pick whichever fits your team. The Effect style unlocks
-[Layers](/infrastructure-as-effects/layers), structured retries, and fine-grained
+[Layers](layers.md), structured retries, and fine-grained
 testing; the async style integrates better with existing handler
 code.
 
@@ -323,7 +323,7 @@ Effect.gen(function* () {
 Resources shared across calls within one event are memoized on the
 request scope: `Drizzle.Postgres` opens its pool on the first query of
 an event, every query in that event reuses it, and the pool closes when
-the event settles — the [SQL connection lifecycle](/sql/effect-sql/lifecycle)
+the event settles — the [SQL connection lifecycle](../sql/effect-sql/lifecycle.md)
 is the canonical statement of this contract for database clients.
 
 ### Request finalizers
@@ -352,11 +352,11 @@ scope, use at request scope.
 
 ## Where next
 
-- [Bindings](/infrastructure-as-effects/binding) — the deploy-time
+- [Bindings](binding.md) — the deploy-time
   mechanics behind `yield* ReadWriteBucket(Bucket)`: IAM, env
   injection, typed SDKs.
-- [RPC](/apis) — how bound resources call the methods you return.
-- [Phases](/infrastructure-as-effects/phases) — when the constructor
+- [RPC](../apis.md) — how bound resources call the methods you return.
+- [Phases](phases.md) — when the constructor
   runs vs the interface it returns, and why.
-- [Custom Runtime](/infrastructure-as-effects/custom-runtime) —
+- [Custom Runtime](custom-runtime.md) —
   bring the Functions & Servers model to a new compute target.

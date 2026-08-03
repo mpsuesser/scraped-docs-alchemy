@@ -2,8 +2,8 @@
 url: https://alchemy.run/command
 title: "Command"
 description: "Alchemy's cloud-agnostic primitives for local processes in the deploy graph — memoized builds, one-off commands, and dev servers."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 The Command provider puts local child processes into the Stack’s dependency graph: `Build` for a command that produces an output asset, `Exec` for a command run purely for its side effects, and `Dev` for a long-lived dev server. There is no setup — no credentials, nothing to configure. `Command.providers()` is already merged into both `AWS.providers()` and `Cloudflare.providers()`, so big-hub users have it for free; a standalone Stack registers it with `{ providers: Command.providers(), state: Alchemy.localState() }`. Import from `alchemy/Command`.
@@ -22,7 +22,7 @@ yield* Console.log(build.outdir); // path to the dist directory, relative to pro
 yield* Console.log(build.hash.output); // hash of the output files (when memo is enabled)
 ```
 
-Inputs are content-hashed by default, so an unchanged project skips the rebuild entirely — see [Memoization](https://alchemy.run/command/memoization) for how the hash is computed and how to scope it.
+Inputs are content-hashed by default, so an unchanged project skips the rebuild entirely — see [Memoization](command/memoization.md) for how the hash is computed and how to scope it.
 
 `Exec` runs a command purely for its side effects:
 
@@ -51,13 +51,13 @@ const dev = yield* Command.Dev("Frontend", {
 yield* Console.log(dev.url); // e.g. "http://localhost:5173"
 ```
 
-`Dev` only runs during `alchemy dev` — during `alchemy deploy` it is a no-op. See [Dev servers](https://alchemy.run/command/dev-servers) for the process lifecycle, restarts, and URL extraction.
+`Dev` only runs during `alchemy dev` — during `alchemy deploy` it is a no-op. See [Dev servers](command/dev-servers.md) for the process lifecycle, restarts, and URL extraction.
 
 Pre-beta.58 `Build.Command` / `Build.DevServer` state converges automatically to `Command.Build` / `Command.Dev` on the next deploy ([beta.58](https://alchemy.run/blog/2026-06-24-beta-58)).
 
 ## Compose with your cloud
 
-The static-site guides for [Cloudflare](https://alchemy.run/cloudflare/frontend/static-site) and [AWS](https://alchemy.run/aws/frontend/static-site) create a `Command.Build` (and, in dev mode, a `Command.Dev`) under the hood, and [`alchemy dev`](https://alchemy.run/cli/dev) is the loop that hosts `Dev` processes.
+The static-site guides for [Cloudflare](cloudflare/frontend/static-site.md) and [AWS](aws/frontend/static-site.md) create a `Command.Build` (and, in dev mode, a `Command.Dev`) under the hood, and [`alchemy dev`](cli/dev.md) is the loop that hosts `Dev` processes.
 
 ## Reference
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/analytics-engine
 title: "Analytics Engine"
 description: "Write time-series data points from a Worker with Workers Analytics Engine — declare a dataset, bind it with WriteDataset, and query it later over Cloudflare's SQL API."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Workers Analytics Engine is Cloudflare's write-heavy time-series
@@ -131,8 +131,8 @@ dashboards, cron jobs, or your backend via plain HTTP.
 
 ## Where next
 
-- [Workers](/cloudflare/compute/workers) — the two-phase Worker model the
+- [Workers](../compute/workers.md) — the two-phase Worker model the
   binding lives inside.
-- [Axiom](/axiom) — full observability (logs, traces, dashboards)
+- [Axiom](../../axiom.md) — full observability (logs, traces, dashboards)
   when you outgrow roll-your-own analytics.
-- [WriteDataset API reference](/providers/cloudflare/analyticsengine/writedataset)
+- [WriteDataset API reference](https://alchemy.run/providers/cloudflare/analyticsengine/writedataset)

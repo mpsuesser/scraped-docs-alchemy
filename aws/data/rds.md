@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/rds
 title: "RDS & Aurora"
 description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with pg, or skip connections entirely with the Data API."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Aurora is AWS's managed Postgres/MySQL. Bringing it up by hand
@@ -23,7 +23,7 @@ endpoint with no database connection at all.
 ## Network prerequisite
 
 Aurora lives inside a VPC. If you don't have one, the
-[`Network` helper](/aws/networking) builds the standard
+[`Network` helper](../networking.md) builds the standard
 public/private layout in one call; two security groups let the
 function reach the database on the Postgres port and nothing
 else:
@@ -61,12 +61,12 @@ const databaseSecurityGroup = yield* AWS.EC2.SecurityGroup(
 );
 ```
 
-See [VPC & networking](/aws/networking) for what `Network`
+See [VPC & networking](../networking.md) for what `Network`
 creates and how to build the same layout by hand.
 
 ## The Aurora helper
 
-[`Aurora`](/providers/aws/rds/aurora) needs only the subnets and
+[`Aurora`](https://alchemy.run/providers/aws/rds/aurora) needs only the subnets and
 security groups the database should live in:
 
 ```typescript
@@ -119,7 +119,7 @@ const db = yield* AWS.RDS.Aurora("Database", {
 
 ## Connect from Lambda with pg
 
-The [`Connect`](/providers/aws/rds/connect) binding resolves
+The [`Connect`](https://alchemy.run/providers/aws/rds/connect) binding resolves
 connection settings — host, port, database, username, password —
 for a cluster, proxy, or proxy endpoint. Credentials are read
 from Secrets Manager **at request time**, so they never land in
@@ -254,7 +254,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 ```
 
 The handler only sees `Database` — swap `DatabaseAurora` for a
-layer backed by [Neon](/neon) or a local Postgres and nothing
+layer backed by [Neon](../../neon.md) or a local Postgres and nothing
 above it changes.
 
 Yield the function in your Stack as usual:
@@ -311,20 +311,20 @@ and `RollbackTransaction`, each with a matching `*Http` layer.
 
 ## Where next
 
-- [VPC & networking](/aws/networking) — the `Network` helper and
+- [VPC & networking](../networking.md) — the `Network` helper and
   the primitives underneath it.
-- [Lambda](/aws/compute/lambda) — the runtime this page binds Aurora
+- [Lambda](../compute/lambda.md) — the runtime this page binds Aurora
   into.
-- [Secrets & env](/aws/security/secrets-env) — how the generated secret
+- [Secrets & env](../security/secrets-env.md) — how the generated secret
   and GetSecretValue binding this page relies on actually work.
-- [Neon](/neon) — serverless Postgres with branching, no VPC
+- [Neon](../../neon.md) — serverless Postgres with branching, no VPC
   required.
-- [PlanetScale](/planetscale) — horizontally sharded MySQL and
+- [PlanetScale](../../planetscale.md) — horizontally sharded MySQL and
   Postgres.
 
 Reference:
 
-- [`Aurora` reference](/providers/aws/rds/aurora) — every prop
+- [`Aurora` reference](https://alchemy.run/providers/aws/rds/aurora) — every prop
   on the helper.
-- [`Connect` reference](/providers/aws/rds/connect)
-- [`ExecuteStatement` reference](/providers/aws/rdsdata/executestatement)
+- [`Connect` reference](https://alchemy.run/providers/aws/rds/connect)
+- [`ExecuteStatement` reference](https://alchemy.run/providers/aws/rdsdata/executestatement)

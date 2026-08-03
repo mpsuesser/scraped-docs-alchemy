@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/events
 title: "Webhooks & events"
 description: "Provision GitHub repository webhooks as resources, or subscribe a Cloudflare Worker to repository events with typed payloads and verified deliveries."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 GitHub tells the world what happened to a repository through
@@ -34,13 +34,13 @@ yield* GitHub.Webhook("ci-webhook", {
 
 `events` defaults to `["push"]`; pass `["*"]` to receive every event
 GitHub emits. The `secret` (a `Redacted` string, e.g. from
-`Config.redacted` — see [Secrets & env](/cloudflare/security/secrets-env))
+`Config.redacted` — see [Secrets & env](../cloudflare/security/secrets-env.md))
 makes GitHub sign each delivery with `HMAC-SHA256` in the
 `X-Hub-Signature-256` header so your receiver can verify the payload
 came from GitHub.
 
 Credentials come from `GitHub.providers()` — env, stored PAT, or the
-`gh` CLI (see [setup](/github/setup)). The token needs `repo` scope
+`gh` CLI (see [setup](setup.md)). The token needs `repo` scope
 (admin access to the repository) to manage webhooks.
 
 ## Point it at another resource
@@ -110,7 +110,7 @@ exhaustively. The stack provides both clouds' providers:
 
 For the full walkthrough — runtime layer, secret verification,
 deploy, and a release-blogging agent built on this event source —
-see [React to GitHub events from a Worker](/cloudflare/messaging/github-events).
+see [React to GitHub events from a Worker](../cloudflare/messaging/github-events.md).
 
 ## Cloudflare-only today
 
@@ -122,12 +122,12 @@ but routing and signature verification are yours to implement.
 
 ## Where next
 
-- [React to GitHub events from a Worker](/cloudflare/messaging/github-events)
+- [React to GitHub events from a Worker](../cloudflare/messaging/github-events.md)
   — the goal-oriented guide.
-- [Repositories](/github/repository) — create and converge the repos
+- [Repositories](repository.md) — create and converge the repos
   these webhooks attach to.
-- [GitHub setup](/github/setup) — credentials and token scopes.
+- [GitHub setup](setup.md) — credentials and token scopes.
 
 Reference:
 
-- [Webhook API reference](/providers/github/webhook)
+- [Webhook API reference](https://alchemy.run/providers/github/webhook)

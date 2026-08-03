@@ -2,12 +2,12 @@
 url: https://alchemy.run/infrastructure-as-effects/sinks
 title: "Sinks"
 description: "A Sink is the write-side dual of an Event Source — a Binding that exposes a resource as an Effect Sink, batching writes into the batch API with least-privilege IAM."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
-A **Sink** is the dual of an [Event Source](/infrastructure-as-effects/event-sources):
-a [Binding](/infrastructure-as-effects/binding) for *writing* that
+A **Sink** is the dual of an [Event Source](event-sources.md):
+a [Binding](binding.md) for *writing* that
 exposes a resource as an Effect
 [`Sink`](https://effect.website/docs/sink/introduction/). Where an
 Event Source hands you records as a `Stream`, a Sink accepts a
@@ -18,7 +18,7 @@ minimal IAM to go with it.
 ## A Sink in a constructor
 
 Like every Binding, a Sink is declared in the
-[Effectful Constructor](/infrastructure-as-effects/functions-and-servers#the-effectful-constructor-pattern)
+[Effectful Constructor](functions-and-servers.md#the-effectful-constructor-pattern)
 and used in the interface it returns:
 
 ```typescript
@@ -70,7 +70,7 @@ to the Function's role; the `yield*` returns a plain Effect `Sink` —
 no `QUEUE_URL` env var to read, no `SendMessageBatchCommand`
 chunking by hand. The contract-and-Layer split is the same rule
 every Binding follows — see
-[Bindings › A contract and a Layer](/infrastructure-as-effects/binding#a-contract-and-a-layer).
+[Bindings › A contract and a Layer](binding.md#a-contract-and-a-layer).
 
 ## Element types
 
@@ -135,7 +135,7 @@ yield* Stream.fromIterable(messages).pipe(
 ## Source → transform → sink
 
 Where the model pays off is when you compose a Sink with an
-[Event Source](/infrastructure-as-effects/event-sources). Because
+[Event Source](event-sources.md). Because
 every step is just `Stream` / `Sink`, the whole
 pipe-and-transform pipeline is one expression inside the
 constructor:
@@ -184,6 +184,6 @@ same `Stream` you'd write in a plain Effect program.
 
 ## Where next
 
-- [Event Sources](/infrastructure-as-effects/event-sources) — the read-side dual: resources as `Stream`s.
-- [Bindings](/infrastructure-as-effects/binding) — the deploy-time mechanics every Sink shares.
-- [Layers](/infrastructure-as-effects/layers) — hide Sinks behind a service interface.
+- [Event Sources](event-sources.md) — the read-side dual: resources as `Stream`s.
+- [Bindings](binding.md) — the deploy-time mechanics every Sink shares.
+- [Layers](layers.md) — hide Sinks behind a service interface.

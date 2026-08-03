@@ -2,14 +2,14 @@
 url: https://alchemy.run/infrastructure-as-effects/custom-runtime
 title: "Custom Runtime"
 description: "Implement your own Function/Server resource on the Platform type — a Provider that provisions the compute and bundles the runtime Effect."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Worker, Lambda, and Container cover the common cases. This guide is
-for bringing the [Functions & Servers](/infrastructure-as-effects/functions-and-servers)
+for bringing the [Functions & Servers](functions-and-servers.md)
 model to a new compute target. A custom runtime is a
-[Provider](/infrastructure-as-code/provider) with two jobs: provision
+[Provider](../infrastructure-as-code/provider.md) with two jobs: provision
 the compute infrastructure, and bundle + upload the runtime Effect.
 
 The running reference is `AWS.ECS.Task`
@@ -36,7 +36,7 @@ export const TaskProvider = () =>
 ```
 
 `Platform` handles the Effect plumbing — running the user's init
-Effect, collecting handlers, wiring [Bindings](/infrastructure-as-effects/binding)
+Effect, collecting handlers, wiring [Bindings](binding.md)
 — so the provider only has to do what every provider does:
 reconcile cloud state.
 
@@ -172,7 +172,7 @@ instance.Props = {
 
 The provider is a standard lifecycle Layer — `reconcile` + `delete`,
 optional `diff`/`read`/`list`. The
-[Custom Provider](/infrastructure-as-code/custom-provider) guide covers the
+[Custom Provider](../infrastructure-as-code/custom-provider.md) guide covers the
 contract in depth; the runtime-specific part is that `reconcile`
 also **bundles and ships the handler**:
 
@@ -201,7 +201,7 @@ reconcile: Effect.fn(function* ({ id, news, bindings, output, session }) {
 Each step is independently idempotent — the same observe → ensure →
 sync flow works for greenfield creates, updates, and adoption. Don't
 branch on `output === undefined`; see
-[Providers › reconcile](/infrastructure-as-code/provider#reconcile).
+[Providers › reconcile](../infrastructure-as-code/provider.md#reconcile).
 
 `delete` tears down everything reconcile created (task definition,
 ECR repository, log group, IAM roles), treating "already gone" as
@@ -262,7 +262,7 @@ loops stay alive; your platform provides whatever its host needs.
 
 The same init Effect runs twice — at plantime to record bindings,
 and at cold start inside the artifact to build live clients. See
-[Phases](/infrastructure-as-effects/phases). Two mechanisms keep the
+[Phases](phases.md). Two mechanisms keep the
 two runs honest, and `Bundle.build` wires the first automatically:
 
 ```typescript
@@ -367,9 +367,9 @@ image and reconciles the task definition around it.
 
 ## Where next
 
-- [Functions & Servers](/infrastructure-as-effects/functions-and-servers) —
+- [Functions & Servers](functions-and-servers.md) —
   the model this guide implements a new target for.
-- [Custom Provider](/infrastructure-as-code/custom-provider) — the
+- [Custom Provider](../infrastructure-as-code/custom-provider.md) — the
   lifecycle contract (`reconcile`, `delete`, `diff`, `read`) in depth.
-- [Phases](/infrastructure-as-effects/phases) — the init/runtime split
+- [Phases](phases.md) — the init/runtime split
   your bundle must honor.

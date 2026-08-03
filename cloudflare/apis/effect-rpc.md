@@ -2,17 +2,17 @@
 url: https://alchemy.run/cloudflare/apis/effect-rpc
 title: "Effect RPC"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as a Cloudflare Worker."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Effect RPC exposes a typed, schema-validated surface across a
 **trust boundary** — a web app or an external service calling into
 your Worker. For internal Worker-to-Worker or Worker-to-DO calls,
-use [Schemaless RPC](/apis/schemaless) instead; for choosing between
-the modalities, see [RPC](/apis).
+use [Schemaless RPC](../../apis/schemaless.md) instead; for choosing between
+the modalities, see [RPC](../../apis.md).
 
-The [HTTP API guide](/cloudflare/apis/effect-http-api) showed how to build
+The [HTTP API guide](effect-http-api.md) showed how to build
 REST-style endpoints with schema validation. Effect RPC takes a
 different angle — you define **procedures** instead of HTTP
 endpoints, and you get a fully typed client for free with no URL
@@ -446,7 +446,7 @@ internet) and the client is typed by `TaskWorker`'s declared schema.
 A `Proxy` defers each call's underlying `RpcClient` construction so
 Cloudflare's "no cross-request I/O" rule is satisfied transparently.
 For internal Worker-to-Worker calls that don't need a schema at all,
-see [Schemaless RPC on Workers](/cloudflare/compute/workers#schemaless-rpc).
+see [Schemaless RPC on Workers](../compute/workers.md#schemaless-rpc).
 
 `RpcWorker` also supports a **modular form** that separates the
 class declaration from its runtime — useful when a consumer Worker
@@ -509,7 +509,7 @@ method return values cross a `Schema.Class` boundary — the built-in bridge
 `JSON.stringify`s each value and loses class identity, while the RPC
 namespace round-trips through the shared `RpcSerialization` codec.
 The concept home for this trade-off is
-[Effect RPC](/apis/effect-rpc).
+[Effect RPC](../../apis/effect-rpc.md).
 
 Like `RpcWorker`, the RPC DO supports a **modular form** that
 separates the class from its runtime so consumer Workers can bind
@@ -546,7 +546,7 @@ yield* stub.setTitle({ title: "hi" });
 ```
 
 For internal DO calls that don't need a schema, see
-[Schemaless RPC on Durable Objects](/cloudflare/compute/durable-objects#schemaless-rpc).
+[Schemaless RPC on Durable Objects](../compute/durable-objects.md#schemaless-rpc).
 
 ## Under the hood: the manual DO bridge
 
@@ -705,11 +705,11 @@ still hit R2. One `TaskRpcs` value, one client, two storage backends.
 ## Choosing a modality
 
 - **Internal calls** (Worker-to-Worker, Worker-to-DO) —
-  [Schemaless RPC](/apis/schemaless): typed clients with no schema
+  [Schemaless RPC](../../apis/schemaless.md): typed clients with no schema
   and no per-request validation cost.
 - **External Effect/TypeScript consumers** — this page.
 - **External plain-HTTP consumers** —
-  [Effect HTTP](/cloudflare/apis/effect-http-api): the same typed
+  [Effect HTTP](effect-http-api.md): the same typed
   interface over real REST endpoints.
 
-The full decision guide lives at [RPC](/apis).
+The full decision guide lives at [RPC](../../apis.md).

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/dev
 title: "dev"
 description: "Run your stack in development mode with hot reloading — resources deploy to the cloud while Workers run in the local dev runtime."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 ```sh
@@ -42,7 +42,7 @@ alchemy dev --stage dev
 
 ## Where next
 
-- [tail](/cli/tail) — stream live logs from deployed resources
-- [logs](/cli/logs) — fetch past log entries
-- [deploy](/cli/deploy) — deploy for real
-- [Local development](/environments/local-development) — how dev mode works under the hood
+- [tail](tail.md) — stream live logs from deployed resources
+- [logs](logs.md) — fetch past log entries
+- [deploy](deploy.md) — deploy for real
+- [Local development](../environments/local-development.md) — how dev mode works under the hood

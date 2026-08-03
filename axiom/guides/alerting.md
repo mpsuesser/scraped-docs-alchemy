@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/alerting
 title: "Alerting: monitors & notifiers"
 description: "Turn APL queries into alerts — Threshold, MatchEvent, and AnomalyDetection monitors wired to Slack, email, PagerDuty, and webhook notifiers, all as resources in your Stack."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 An Axiom `Monitor` is a saved APL query that runs on a fixed cadence
@@ -13,8 +13,8 @@ resources in your Stack, so a threshold change or a new on-call
 channel is a reviewable diff, not a console edit.
 
 Everything below runs inside your Stack's `Effect.gen` — see
-[Setup](/axiom/setup) for credentials and the
-[Axiom overview](/axiom) for datasets like `app-traces` and
+[Setup](../setup.md) for credentials and the
+[Axiom overview](../../axiom.md) for datasets like `app-traces` and
 `app-logs` used in the queries.
 
 ## Create a notifier
@@ -195,14 +195,14 @@ field's `expression` — every monitor and dashboard built on
 
 ## Where next
 
-- [Ingest](/axiom/data/ingest) — datasets, ingest tokens, and wiring OTLP
+- [Ingest](../data/ingest.md) — datasets, ingest tokens, and wiring OTLP
   endpoints into your Workers and Functions.
-- [Dashboards](/axiom/guides/dashboards) — chart the same queries
+- [Dashboards](dashboards.md) — chart the same queries
   your monitors run.
-- [Axiom overview](/axiom) — all Axiom resources at a glance.
+- [Axiom overview](../../axiom.md) — all Axiom resources at a glance.
 
 Reference:
 
-- [Monitor API reference](/providers/axiom/monitor)
-- [Notifier API reference](/providers/axiom/notifier)
-- [VirtualField API reference](/providers/axiom/virtualfield)
+- [Monitor API reference](https://alchemy.run/providers/axiom/monitor)
+- [Notifier API reference](https://alchemy.run/providers/axiom/notifier)
+- [VirtualField API reference](https://alchemy.run/providers/axiom/virtualfield)

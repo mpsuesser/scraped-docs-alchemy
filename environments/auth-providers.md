@@ -2,13 +2,13 @@
 url: https://alchemy.run/environments/auth-providers
 title: "Auth Providers"
 description: "An Auth Provider produces the credentials for a cloud's API calls — resolved lazily as Effects, so tokens and role sessions can refresh instead of pinning one static key."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 Resources never take API keys as props. Each cloud registers an
 **Auth Provider** — the service that produces credentials for that
-cloud's API calls. A [Profile](/environments/profiles) stores which
+cloud's API calls. A [Profile](profiles.md) stores which
 auth method you picked; the Auth Provider turns that choice into
 live credentials whenever lifecycle code actually calls the cloud.
 
@@ -49,7 +49,7 @@ export class AuthProviders extends Context.Service<
 >()("AuthProviders") {}
 ```
 
-That's how [`alchemy login`](/cli/login) works: it imports your
+That's how [`alchemy login`](../cli/login.md) works: it imports your
 stack, reads the registry, and runs each discovered provider's
 `configure`/`login`. The factory also wraps `read`, `login`,
 `logout`, and `configure` in a cross-process file lock (so two
@@ -170,7 +170,7 @@ export const fromProfile = () =>
 or runs the provider's `configure` on first use and persists the
 result — then `read` materializes credentials. Profile selection
 itself (`--profile`, `$ALCHEMY_PROFILE`, `alchemy login`) is covered
-in [Profiles](/environments/profiles).
+in [Profiles](profiles.md).
 
 ### The env fallback
 
@@ -218,6 +218,6 @@ call.
 
 ## Where next
 
-- [Custom Auth Provider](/environments/custom-auth-provider) — build and register your own.
-- [Profiles](/environments/profiles) — pick, switch, and inspect the stored auth config.
-- [Custom Provider](/infrastructure-as-code/custom-provider) — the lifecycle side that consumes these credentials.
+- [Custom Auth Provider](custom-auth-provider.md) — build and register your own.
+- [Profiles](profiles.md) — pick, switch, and inspect the stored auth config.
+- [Custom Provider](../infrastructure-as-code/custom-provider.md) — the lifecycle side that consumes these credentials.

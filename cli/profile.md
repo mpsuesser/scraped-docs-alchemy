@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/profile
 title: "profile"
 description: "Inspect or clear credentials stored in ~/.alchemy/profiles.json."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";
@@ -13,7 +13,7 @@ alchemy profile <subcommand> [options]
 ```
 
 Inspect and manage credentials stored in `~/.alchemy/profiles.json`.
-See [Profiles](/environments/profiles).
+See [Profiles](../environments/profiles.md).
 
 ## profile show
 
@@ -43,7 +43,7 @@ Planetscale) to pretty-print each entry.
   source: oauth`} />
 
 If the profile doesn't exist, the command lists the available profile
-names — or suggests running [`alchemy login`](/cli/login) when none are
+names — or suggests running [`alchemy login`](login.md) when none are
 configured.
 
 | Option              | Description                                                   |
@@ -80,5 +80,5 @@ alchemy profile clear --profile prod
 
 ## Where next
 
-- [login](/cli/login) — configure and log in to each provider in your stack.
-- [Profiles](/environments/profiles) — how profiles isolate credentials across accounts and environments.
+- [login](login.md) — configure and log in to each provider in your stack.
+- [Profiles](../environments/profiles.md) — how profiles isolate credentials across accounts and environments.

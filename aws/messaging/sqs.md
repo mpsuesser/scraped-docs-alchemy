@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sqs
 title: "SQS"
 description: "Add an SQS Queue, publish messages from your Lambda, and consume them from a second consumer Lambda — all wired through Alchemy bindings."
-access_date: 2026-08-03T17:26:38.937Z
-current_date: 2026-08-03T17:26:38.937Z
+access_date: 2026-08-03T18:12:40.803Z
+current_date: 2026-08-03T18:12:40.803Z
 ---
 
 **SQS** is AWS's general-purpose message queue — anything you can
@@ -15,8 +15,8 @@ producer bindings (`SendMessage`, `SendMessageBatch`, and the
 typed `Stream<SQSRecord>`, creating the event source mapping and
 granting the receive/delete permissions for you.
 
-The walkthrough below builds on the [Lambda](/aws/compute/lambda) and
-[DynamoDB](/aws/data/dynamodb) pages: it adds a **Queue**, sends
+The walkthrough below builds on the [Lambda](../compute/lambda.md) and
+[DynamoDB](../data/dynamodb.md) pages: it adds a **Queue**, sends
 messages to it from the existing function, and stands up a
 **second Lambda** that consumes them.
 
@@ -369,10 +369,10 @@ change, batched ten-at-a-time on the producer side.
 
 ## Where next
 
-- [Kinesis](/aws/messaging/kinesis) — stream higher-volume records:
+- [Kinesis](kinesis.md) — stream higher-volume records:
   ordered, sharded, and with the same `Stream` consumer surface.
-- [Process DynamoDB Streams](/aws/messaging/dynamodb-streams) — the
+- [Process DynamoDB Streams](dynamodb-streams.md) — the
   change-data-capture pipeline the `QueueSink` bonus above
   builds on.
-- [`Queue` reference](/providers/aws/sqs/queue) — FIFO queues,
+- [`Queue` reference](https://alchemy.run/providers/aws/sqs/queue) — FIFO queues,
   dead-letter targets, and every other prop.
