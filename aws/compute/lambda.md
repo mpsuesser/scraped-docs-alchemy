@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 **Lambda** is Alchemy's default AWS runtime: a class that bundles

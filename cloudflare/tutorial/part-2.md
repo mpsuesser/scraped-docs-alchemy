@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-2
 title: "Part 2: Add a Worker"
 description: "Create a Cloudflare Worker, bind the R2 Bucket, and implement GET/PUT routes."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 In [Part 1](part-1.md) you deployed an R2 Bucket. Now you’ll create a Cloudflare Worker that reads and writes objects in that bucket over HTTP.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/guides/preview-branches
 title: "Preview branches per PR"
 description: "Give every pull request its own PlanetScale branch — a long-lived database owned by a staging stage, referenced by ephemeral PR stages that fork, migrate, and tear down a branch each."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 PlanetScale's branch model maps directly onto alchemy stages: the

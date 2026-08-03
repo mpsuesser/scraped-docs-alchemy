@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store/custom-state-store
 title: "Custom State Store"
 description: "Build a Postgres-backed Alchemy state store step by step — implement the StateService interface, plug it into a stack, and test it end-to-end."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 A state store is just an Effect `Layer` that provides Alchemy's

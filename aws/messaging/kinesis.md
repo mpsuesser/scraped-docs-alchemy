@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/kinesis
 title: "Kinesis"
 description: "Add a Kinesis Data Stream, publish records from one Lambda, and consume them in order from another — wired through the same Stream-shaped event source."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 **Kinesis Data Streams** are the tool for **ordered**, sharded,

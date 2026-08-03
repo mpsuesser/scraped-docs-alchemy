@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/s3-events
 title: "React to S3 Events"
 description: "Subscribe a Lambda Function to S3 bucket notifications, process them as an Effect Stream, and let Alchemy wire up the IAM and event-source plumbing."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 Reading and writing S3 objects on demand is one half of the story.

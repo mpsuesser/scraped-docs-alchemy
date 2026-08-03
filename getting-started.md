@@ -2,8 +2,8 @@
 url: https://alchemy.run/getting-started
 title: "Getting started"
 description: "Install Alchemy and create your first Stack in under two minutes."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 ## Prerequisites

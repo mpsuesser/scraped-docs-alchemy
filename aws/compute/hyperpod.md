@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/hyperpod
 title: "HyperPod"
 description: "Provision SageMaker HyperPod clusters — Slurm or EKS orchestrated — and run ML workloads on them with sbatch, raw manifests, or effectful Jobs with task governance."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 **SageMaker HyperPod** is AWS's persistent fleet for ML training

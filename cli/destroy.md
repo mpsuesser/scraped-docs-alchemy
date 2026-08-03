@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/destroy
 title: "destroy"
 description: "Delete every resource in a stack — plan all existing resources for deletion, ask for approval, and remove them in dependency order."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

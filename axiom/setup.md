@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/setup
 title: "Setup"
 description: "Connect alchemy to Axiom — account, credentials, and profiles."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 Sign up at [axiom.co](https://axiom.co) and create an API token in

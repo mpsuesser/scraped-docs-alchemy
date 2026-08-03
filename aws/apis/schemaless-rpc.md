@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC from a Lambda Function into a MicroVM with no schema — declare the image's Shape, connect, get the client."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 The pattern — what a Shape member may be, how the typed client arises, what

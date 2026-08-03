@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/aws
 title: "aws"
 description: "AWS provider commands — bootstrap the per-account assets bucket that Lambda deployments rely on."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

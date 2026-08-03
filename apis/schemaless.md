@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/schemaless
 title: "Schemaless RPC"
 description: "The pattern behind typed, schema-free RPC — what an RPC member may be, how the typed client arises, how calls travel over the wire, and where the limits are."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 Schemaless RPC is the default for internal communication between the

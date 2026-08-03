@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for alchemy/Test — every helper, hook, and option exposed by Test.make for Bun and Vitest."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 `alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same

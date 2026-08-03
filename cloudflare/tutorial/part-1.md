@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with a Cloudflare R2 Bucket, and deploy it."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with a Cloudflare R2 Bucket, and deploy it — all in under five minutes.

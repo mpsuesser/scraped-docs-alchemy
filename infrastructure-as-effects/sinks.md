@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/sinks
 title: "Sinks"
 description: "A Sink is the write-side dual of an Event Source — a Binding that exposes a resource as an Effect Sink, batching writes into the batch API with least-privilege IAM."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 A **Sink** is the dual of an [Event Source](event-sources.md):

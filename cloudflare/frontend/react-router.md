@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 React Router v7 builds through Vite, so

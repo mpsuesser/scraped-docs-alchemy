@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli
 title: "CLI"
 description: "Every alchemy command at a glance — the command map, common options, and how the interactive TUI decides when to render."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 ```sh

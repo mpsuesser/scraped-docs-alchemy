@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/event-sources
 title: "Event Sources"
 description: "An event source is a binding that runs your Function when something happens on a resource — one call wires the event-source mapping, the permissions, and a typed handler."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 An **Event Source** is a [Binding](binding.md) that

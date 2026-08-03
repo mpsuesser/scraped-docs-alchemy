@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/stack
 title: "Stacks"
 description: "A Stack is a collection of Resources deployed together as a unit."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 import StackOutputsTerminal from "../../../components/marketing-islands/StackOutputsTerminal.tsx";

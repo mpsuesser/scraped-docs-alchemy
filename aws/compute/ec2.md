@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ec2
 title: "EC2"
 description: "Launch virtual machines with the Instance resource — as a raw compute primitive, or hosting a bundled long-lived Effect program served straight off the box."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 **EC2** is for when you need the machine itself: an OS you

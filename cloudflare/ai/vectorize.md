@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/vectorize
 title: "Vector search with Vectorize"
 description: "Create a Vectorize index, bind it to a Worker with SearchIndex, and run filtered nearest-neighbor queries over vector embeddings."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 Vectorize is Cloudflare's globally distributed vector database.

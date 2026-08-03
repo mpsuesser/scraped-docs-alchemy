@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Nuxt is not yet supported by Cloudflare.Website.Vite. For fully static sites, an untested workaround may deploy the nuxt generate output with StaticSite."
-access_date: 2026-08-03T19:08:21.153Z
-current_date: 2026-08-03T19:08:21.153Z
+access_date: 2026-08-03T19:38:24.228Z
+current_date: 2026-08-03T19:38:24.228Z
 ---
 
 :::caution[Nuxt is not yet supported]
