@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
 description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 **EventBridge** is AWS's event router — producers publish events onto

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute runtime of every alchemy app — define infrastructure and runtime behavior in one Effect program, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 A Cloudflare Worker is serverless JavaScript running in every

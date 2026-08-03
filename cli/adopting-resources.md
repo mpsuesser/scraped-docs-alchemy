@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/adopting-resources
 title: "Adopting Resources"
 description: "How alchemy takes ownership of pre-existing cloud resources — recovery by default, --adopt for foreign resources, and the programmatic AdoptPolicy."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Two situations put alchemy in front of a cloud resource it has no state for: existing infrastructure you want alchemy to start managing, and a fresh (or wiped) state store sitting in front of resources alchemy already created.

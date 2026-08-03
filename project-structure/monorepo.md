@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/monorepo
 title: "Monorepo"
 description: "Two ways to organize an Alchemy monorepo — one Stack at the workspace root, or one Stack per package wired with typed references."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 A monorepo is a workspace with a backend package and a frontend

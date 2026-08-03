@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/circular-bindings
 title: "Circular Bindings"
 description: "How to model two services that reference each other (Worker A ↔ Worker B, Lambda ↔ Lambda) using tagged classes and Layers."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 import DAG from "../../../components/DAG.astro";

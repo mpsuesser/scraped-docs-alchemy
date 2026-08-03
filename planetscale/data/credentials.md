@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/credentials
 title: "Credentials"
 description: "PlanetScale credentials as Stack resources — Postgres roles, the default role and forceReset, MySQL passwords, TTLs, CIDR allowlists, and direct vs pooled connection origins."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 PlanetScale credentials are resources: Postgres branches use **roles**

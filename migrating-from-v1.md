@@ -2,8 +2,8 @@
 url: https://alchemy.run/migrating-from-v1
 title: "Migrating from v1"
 description: "Migrate your Alchemy v1 (async/await) project to Alchemy v2."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Alchemy v1 uses `async/await` with top-level `await` for

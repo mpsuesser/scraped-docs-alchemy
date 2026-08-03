@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/dynamodb-streams
 title: "Process DynamoDB Streams"
 description: "Enable a DynamoDB Stream on your table and consume change records as a typed Effect Stream from the same Lambda."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 The DynamoDB table from the previous part stores records, but

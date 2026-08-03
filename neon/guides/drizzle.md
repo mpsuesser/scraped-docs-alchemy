@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/drizzle
 title: "Drizzle ORM with Neon"
 description: "Manage your Drizzle schema as a resource — alchemy regenerates migration SQL on deploy and Neon applies it transactionally on the project or branch."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Drizzle gives you a typed Postgres schema in plain TypeScript;

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to Cloudflare with the Vite resource — one declaration, no Wrangler config."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Vue is pure Vite — the entire app builds from `@vitejs/plugin-vue`

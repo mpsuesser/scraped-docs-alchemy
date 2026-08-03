@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon
 title: "Neon"
 description: "Serverless Postgres with copy-on-write branching — projects and branches as Stack resources, with built-in SQL migrations."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Neon is serverless Postgres with copy-on-write branching. With alchemy you declare the project and its branches as resources in the same Stack as your Workers — each preview stage forks its own branch in seconds and destroys it just as fast, and SQL migrations run as part of the deploy.

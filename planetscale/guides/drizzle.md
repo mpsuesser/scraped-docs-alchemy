@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/guides/drizzle
 title: "Drizzle ORM with PlanetScale"
 description: "Manage your PlanetScale schema in TypeScript with Drizzle — migrations generated on deploy (Postgres) or checked in (MySQL), applied through the branch's migrationsDir, connected via role and password origins."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Drizzle pairs with PlanetScale in one deploy-driven flow: your schema

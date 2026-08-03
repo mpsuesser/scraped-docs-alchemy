@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/logs
 title: "logs"
 description: "Fetch historical logs from deployed resources — a batch of past entries, merged and sorted by timestamp."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 ```sh

@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale
 title: "PlanetScale"
 description: "Serverless MySQL (Vitess) and Postgres with database branching — databases, branches, and credentials as Stack resources."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 PlanetScale gives you serverless MySQL (Vitess-backed) and managed Postgres with a branch-per-PR workflow. With alchemy you declare the database, its branches, and the credentials as resources in the same Stack as your Workers — branches fork per preview stage and tear down with it.

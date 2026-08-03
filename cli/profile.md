@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/profile
 title: "profile"
 description: "Inspect or clear credentials stored in ~/.alchemy/profiles.json."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

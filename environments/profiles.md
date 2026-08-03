@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/profiles
 title: "Profiles"
 description: "Profiles store cloud credentials per environment in ~/.alchemy/profiles.json — switch between work and personal accounts, or between staging and prod credentials."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 A **profile** is a named bundle of cloud credentials stored locally

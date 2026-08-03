@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/repository
 title: "Repositories"
 description: "Manage GitHub repositories as Stack resources — create or adopt a repo, converge its settings on every deploy, rename in place, and opt into deletion explicitly."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 `GitHub.Repository` manages the lifecycle of a repository owned by a

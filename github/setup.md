@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/setup
 title: "Setup"
 description: "Connect alchemy to GitHub — account, credentials, and profiles."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 Register the provider next to your cloud's:

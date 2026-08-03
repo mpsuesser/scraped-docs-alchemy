@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/phases
 title: "Phases"
 description: "Alchemy programs run in two phases — plantime/init drives the deploy, runtime handles requests. Knowing which is which is the key to writing Workers and Lambda Functions."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 import DAG from "../../../components/DAG.astro";

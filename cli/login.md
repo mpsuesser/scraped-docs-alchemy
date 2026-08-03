@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/login
 title: "login"
 description: "Configure and log in to each cloud provider used by your stack."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 ```sh

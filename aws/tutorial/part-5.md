@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated AWS deployments and PR previews — with OIDC credentials provisioned as code."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 In [Part 4](part-4.md) you deployed isolated stages by

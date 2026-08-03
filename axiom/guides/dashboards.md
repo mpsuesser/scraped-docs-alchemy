@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/dashboards
 title: "Dashboards as code"
 description: "Declare Axiom dashboards — charts, layout, filter bars, saved views, and deploy annotations — as alchemy resources next to the services they observe."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 An Axiom dashboard is a single JSON document: charts, a grid layout,

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/websites
 title: "Websites"
 description: "Deploy static sites and Vite apps to S3 and CloudFront as a single StaticSite resource."
-access_date: 2026-08-03T18:12:40.803Z
-current_date: 2026-08-03T18:12:40.803Z
+access_date: 2026-08-03T18:22:56.523Z
+current_date: 2026-08-03T18:22:56.523Z
 ---
 
 **`AWS.Website.StaticSite`** deploys a static site — plain HTML
