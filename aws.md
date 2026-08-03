@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws
 title: "AWS"
 description: "Build AWS applications with Alchemy — a runtime (usually Lambda) plus typed resources, wired together by bindings that mint least-privilege IAM policies."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 An Alchemy app on AWS is one **runtime** — usually a Lambda Function — plus the **resources** it talks to: tables, buckets, queues, streams. You wire them together with typed **bindings**: call `S3.PutObject(bucket)` in your code and Alchemy attaches the matching least-privilege IAM statement to the function’s role. The code is the policy.

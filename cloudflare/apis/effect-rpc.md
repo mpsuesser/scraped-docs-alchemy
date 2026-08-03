@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-rpc
 title: "Effect RPC"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as a Cloudflare Worker."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Effect RPC exposes a typed, schema-validated surface across a

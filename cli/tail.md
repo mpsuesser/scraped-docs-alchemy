@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/tail
 title: "tail"
 description: "Stream live logs from deployed resources in real time, interleaved and color-coded by resource."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

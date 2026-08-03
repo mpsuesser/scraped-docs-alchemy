@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/mysql
 title: "MySQL"
 description: "PlanetScale MySQL (Vitess) as Stack resources — databases, branches, and passwords, with SQL migrations per branch and a straight line into Cloudflare Hyperdrive."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 PlanetScale MySQL is Vitess-backed serverless MySQL with cheap,

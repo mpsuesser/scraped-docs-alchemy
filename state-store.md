@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store
 title: "State Store"
 description: "How Alchemy persists resource state between deploys to compute diffs and track infrastructure."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Alchemy persists resource state between deploys so it can compute diffs — comparing the desired state in your code against the current state of your infrastructure.

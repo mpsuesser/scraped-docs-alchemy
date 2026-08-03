@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/testing-providers
 title: "Testing Providers"
 description: "Exercise a provider's create, update, replace, and delete paths with test.provider and a scratch in-memory stack."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 You built a provider — now prove its lifecycle. `test.provider` gives each test a private scratch stack, so create / update / replace / delete runs never touch `.alchemy/` or a shared stage.

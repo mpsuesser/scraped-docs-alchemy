@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 **ECS** (Elastic Container Service) is AWS's managed container

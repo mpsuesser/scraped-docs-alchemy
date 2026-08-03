@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare
 title: "Cloudflare"
 description: "Build and deploy full applications on Cloudflare with Alchemy — one Worker runtime plus resources like Durable Objects, D1, R2, Queues, and Hyperdrive, wired together by typed bindings."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 An alchemy app on Cloudflare is one **Worker** runtime plus the resources it talks to — databases, object storage, queues, stateful objects — all declared in the same TypeScript program and wired together by typed bindings. Deploy the whole thing with `bun alchemy deploy`; Alchemy figures out what changed.

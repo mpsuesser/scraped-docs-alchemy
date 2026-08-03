@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-http
 title: "Effect HTTP"
 description: "Schema-validated REST endpoints with an rpc-like typed interface — for trust boundaries where consumers want a plain HTTP client."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Effect HTTP (`effect/unstable/httpapi`) is the same idea as

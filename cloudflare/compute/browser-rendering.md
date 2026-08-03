@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/browser-rendering
 title: "Browser rendering"
 description: "Attach Cloudflare Browser Rendering to a Worker — run quick actions like markdown and scrape, stream screenshots and PDFs, or drive the raw binding with puppeteer."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Browser Rendering gives a Worker a headless browser. In alchemy, the

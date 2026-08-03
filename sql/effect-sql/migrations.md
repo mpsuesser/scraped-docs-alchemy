@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/migrations
 title: "Migrations"
 description: "Commit a directory of ordered .sql files and point a database resource's migrationsDir at it — pending files apply as part of every deploy."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Migrations without an ORM: commit `.sql` files to a directory and

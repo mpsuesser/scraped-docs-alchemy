@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-4
 title: "Part 4: Local Dev"
 description: "Run your stack locally with alchemy dev for hot reloading and instant feedback."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 In [Part 3](part-3.md) you wrote integration tests against

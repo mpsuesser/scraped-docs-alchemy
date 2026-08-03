@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/build-and-push
 title: "Build & push images"
 description: "Build a container image from a Dockerfile, push it to a registry, and hand the resulting image reference to Cloudflare Containers or AWS ECS."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 This page is the canonical home for producing a **registry image

@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing
 title: "Testing"
 description: "How Alchemy tests work — real clouds, one Stack deploy per suite, isolated stages, deploy → assert → destroy."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Alchemy tests run against real clouds — no mocks, no emulators. A suite deploys a real Stack once, runs assertions against live resources, and tears it back down: deploy → assert → destroy.

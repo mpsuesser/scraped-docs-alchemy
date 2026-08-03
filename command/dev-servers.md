@@ -2,8 +2,8 @@
 url: https://alchemy.run/command/dev-servers
 title: "Dev servers"
 description: "Run a framework dev server as a Command.Dev resource — started by alchemy dev, a no-op on alchemy deploy, with the server's URL surfaced back into your stack."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 `Command.Dev` is a long-lived process scoped to the stack instance:

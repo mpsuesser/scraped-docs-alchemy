@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/frontends
 title: "Frontend frameworks"
 description: "Deploy any pure-Vite app (TanStack Start, React Router, Vue, SolidStart) with Cloudflare.Website.Vite, or any build command's static output (Zola, Astro) with Cloudflare.Website.StaticSite."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Alchemy deploys frontends to Cloudflare with two resources:

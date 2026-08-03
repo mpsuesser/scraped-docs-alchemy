@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request,

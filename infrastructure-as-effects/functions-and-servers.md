@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/functions-and-servers
 title: "Functions & Servers"
 description: "Workers, Lambda Functions, and Containers ship runtime code along with their infrastructure — declared with the Effectful Constructor pattern, bind what you need, return what you expose."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Cloudflare Workers, AWS Lambda Functions, ECS Tasks, EKS

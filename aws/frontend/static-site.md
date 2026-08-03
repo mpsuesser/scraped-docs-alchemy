@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/static-site
 title: "Deploy a static site"
 description: "Ship a static site to S3 + CloudFront with AWS.Website.StaticSite — build-step support, Router composition, and cache invalidation on deploy."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 `AWS.Website.StaticSite` deploys a directory of files as a website: it uploads

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sqs
 title: "SQS"
 description: "Add an SQS Queue, publish messages from your Lambda, and consume them from a second consumer Lambda — all wired through Alchemy bindings."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 **SQS** is AWS's general-purpose message queue — anything you can

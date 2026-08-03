@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/artifacts
 title: "Store Git Repos with Artifacts"
 description: "Use Cloudflare Artifacts to create Git repos at runtime and hand out clone tokens, all from a tiny Worker."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 **Cloudflare Artifacts** is a Git server you can drive from a

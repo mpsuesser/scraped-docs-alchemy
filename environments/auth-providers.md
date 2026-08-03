@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/auth-providers
 title: "Auth Providers"
 description: "An Auth Provider produces the credentials for a cloud's API calls — resolved lazily as Effects, so tokens and role sessions can refresh instead of pinning one static key."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Resources never take API keys as props. Each cloud registers an

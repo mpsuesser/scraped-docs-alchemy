@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource
 title: "Resources"
 description: "Resources are named cloud entities with input properties and output attributes."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 import DAG from "../../../components/DAG.astro";

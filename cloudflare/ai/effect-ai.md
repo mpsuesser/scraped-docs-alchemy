@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/effect-ai
 title: "Effect AI"
 description: "Wire Effect's LanguageModel and Chat services into a Cloudflare Worker — read API keys with effect/Config, provide the model layer to your handler, plug in persistence."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Effect's [`@effect/ai`](https://effect.website/docs/ai/introduction)

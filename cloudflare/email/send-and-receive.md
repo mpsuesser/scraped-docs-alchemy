@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:

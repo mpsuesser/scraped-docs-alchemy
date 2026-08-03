@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/setup
 title: "Setup"
 description: "Point alchemy at a Docker daemon — the active CLI context and the DOCKER_BIN override."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 Register the provider in your stack:

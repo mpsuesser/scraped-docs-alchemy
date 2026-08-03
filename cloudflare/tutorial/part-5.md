@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated deployments, PR previews, and remote state — with Cloudflare credentials managed as code."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/inspecting-state
 title: "Inspecting State"
 description: "See what alchemy thinks is deployed, debug a bad diff, and recover from bad state."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 import Terminal from "../../../components/Terminal.astro";

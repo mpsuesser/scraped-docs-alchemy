@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)

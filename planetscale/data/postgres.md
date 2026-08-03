@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/postgres
 title: "Postgres"
 description: "PlanetScale Postgres as Stack resources — databases, branches, roles with least-privilege inherited roles, and direct vs pooled connection origins."
-access_date: 2026-08-03T18:22:56.523Z
-current_date: 2026-08-03T18:22:56.523Z
+access_date: 2026-08-03T18:54:18.847Z
+current_date: 2026-08-03T18:54:18.847Z
 ---
 
 PlanetScale Postgres is managed PostgreSQL with database branching. In
