@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/outputs
 title: "Inputs & Outputs"
 description: "Output<T> is alchemy's lazy reference type — the lazy values that flow between resources, get composed with .pipe, mapped, interpolated, and resolved during deploy."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 A [Resource](resource.md) ’s **inputs** are the props you pass in. Its **outputs** are the attributes the cloud returns after creation. The catch: outputs don’t exist when you write the code. They only exist after the resource is deployed.
@@ -77,7 +77,7 @@ Lifts a plan-time Effect into an `Output`. The effect runs when the stack resolv
 Output.fromEffect(lookupLatestAmi());   // Output<string>
 ```
 
-This is the seam for lookup helpers that read cloud state to produce a prop value. Because constructing the Output is inert, such helpers are safe to call from composition code that is re-executed inside a deployed Function, Worker, or Instance bundle — no `__ALCHEMY_RUNTIME__` guard needed. The AMI finders (`AWS.EC2.amazonLinux2023()`, `AWS.EC2.ubuntu2404()`, …) are built on it:
+This is the low-level seam for lookup helpers that read cloud state to produce a prop value. Because constructing the Output is inert, such helpers are safe to call from composition code that is re-executed inside a deployed Function, Worker, or Instance bundle — no `__ALCHEMY_RUNTIME__` guard needed. The higher-level form is [`Capability.execute`](../infrastructure-as-effects/binding.md#data-sources-execute) — invoking a binding as a plan-time data source — which the AMI finders (`AWS.EC2.getAmi`, `AWS.EC2.amazonLinux2023()`, `AWS.EC2.ubuntu2404()`, …) are built on:
 
 ```typescript
 const instance = yield* AWS.EC2.Instance("web", {

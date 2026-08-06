@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local workerd execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 `alchemy dev` runs your stack on your machine. Workers execute in workerd, KV Namespaces, R2 Buckets, D1 Databases, and Queues are emulated locally, and code changes hot reload in milliseconds. `Alchemy.remote()` runs any resource against the real cloud when you need it.
@@ -58,7 +58,14 @@ The local simulators reach beyond Worker bindings. Node-side capability clients 
 
 Every other resource runs live in dev automatically, and `Alchemy.remote()` (below) runs an emulatable resource against the real cloud when local fidelity isn’t enough.
 
-Bindings whose only job is a side effect stay stubbed: a [`send_email` binding](../cloudflare/email/send-and-receive.md) defaults to a local stub in dev, so `send()` logs the message to the dev console instead of delivering mail. Set `dev: { remote: true }` on the binding to send real mail from the dev loop.
+Worker-only bindings are simulated too: a [`send_email` binding](../cloudflare/email/send-and-receive.md) persists messages as `.eml` files under `.alchemy/local/email` instead of delivering mail, Browser Rendering drives a locally-launched headless Chrome, Images transforms run through Sharp, and Stream uploads land in a local video store. Each of these opts out the same way as a resource — pipe the binding through `Alchemy.remote()` (below) to hit the real service from the dev loop:
+
+```typescript
+env: {
+  EMAIL: email, // Alchemy.remote() on the SendEmail descriptor
+  BROWSER: Cloudflare.Browser("BROWSER").pipe(Alchemy.remote()),
+}
+```
 
 ## Debugging
 

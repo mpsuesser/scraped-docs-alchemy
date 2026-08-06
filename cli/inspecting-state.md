@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/inspecting-state
 title: "Inspecting State"
 description: "See what alchemy thinks is deployed, debug a bad diff, and recover from bad state."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 ## What does alchemy think is deployed?
@@ -43,6 +43,14 @@ bun alchemy state resources --stack myapp --stage dev_sam
 ```
 
 Prints the FQNs tracked under that stack/stage — the addresses `state get` takes.
+
+Or skip the drilling entirely and read the whole estate at once:
+
+```sh
+bun alchemy state export | jq '.resources[] | select(.state.resourceType == "AWS.EC2.Instance")'
+```
+
+One call returns every record across all stacks and stages as a single JSON document to filter locally — see [state export](state.md#state-export).
 
 ## Debugging a bad diff
 

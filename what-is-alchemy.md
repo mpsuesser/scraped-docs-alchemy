@@ -2,8 +2,8 @@
 url: https://alchemy.run/what-is-alchemy
 title: "What is Alchemy?"
 description: "Alchemy is an Infrastructure-as-Effects framework that combines cloud infrastructure and application logic into a single type-safe program powered by Effect."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 Alchemy is an **[Infrastructure-as-Effects](infrastructure-as-effects.md)** framework. It extends
@@ -195,9 +195,19 @@ Alchemy.Stack(
 
 The type system checks the wiring — using a Cloudflare resource
 without `Cloudflare.providers()`, or providing the wrong cloud's
-providers, is a compile-time error. To support a new cloud or
-third-party API, see [Writing a Custom Resource
-Provider](infrastructure-as-code/custom-provider.md).
+providers, is a compile-time error.
+
+A stack can use any number of providers at once — merge their
+layers with `Layer.mergeAll`:
+
+```typescript
+providers: Layer.mergeAll(Cloudflare.providers(), AWS.providers()),
+```
+
+See [Providers › Multiple
+providers](infrastructure-as-code/provider.md#multiple-providers). To
+support a new cloud or third-party API, see [Writing a Custom
+Resource Provider](infrastructure-as-code/custom-provider.md).
 
 ## Two styles: Effect and async
 

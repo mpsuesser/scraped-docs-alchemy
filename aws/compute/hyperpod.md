@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/hyperpod
 title: "HyperPod"
 description: "Provision SageMaker HyperPod clusters — Slurm or EKS orchestrated — and run ML workloads on them with sbatch, raw manifests, or effectful Jobs with task governance."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 **SageMaker HyperPod** is AWS's persistent fleet for ML training
@@ -30,16 +30,18 @@ Alchemy models these with
 [`Cluster`](https://alchemy.run/providers/aws/sagemaker/cluster),
 [`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker/clusterschedulerconfig),
 and [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker/computequota), and
-EKS workloads opt onto HyperPod nodes with the `hyperpod` prop on
-[`Deployment`](https://alchemy.run/providers/aws/eks/deployment) and
-[`Job`](https://alchemy.run/providers/aws/eks/job).
+Kubernetes workloads opt onto HyperPod nodes by referencing their
+attributes (the group's `nodeSelector`, the quota's governed
+`namespace` and `queueName`) from plain
+[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/deployment) and
+[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/job) props.
 
 ## Choose an orchestrator
 
 |                 | Slurm (default)                       | EKS (`orchestrator: { Eks }`)                        |
 | --------------- | ------------------------------------- | ---------------------------------------------------- |
 | Workloads       | `sbatch` on the login node (over SSM) | Kubernetes objects — `Deployment`, `Job`, `Manifest` |
-| High-level DX   | —                                     | `AWS.EKS.Job` / `Deployment` with `hyperpod:` props  |
+| High-level DX   | —                                     | `Kubernetes.Job` / `Deployment` via HyperPod attributes |
 | Governance      | Slurm accounting                      | `ClusterSchedulerConfig` + `ComputeQuota` (Kueue)    |
 | Extra plumbing  | Lifecycle bucket + script             | EKS cluster + the HyperPod dependencies Helm chart   |
 
@@ -135,7 +137,7 @@ enforces a few constraints, all encoded in the example:
   must be installed on the EKS cluster before the HyperPod
   cluster attaches — SageMaker validates it. The example fetches
   the chart with an `Action` and applies it with
-  [`HelmChart`](https://alchemy.run/providers/aws/eks/helmchart).
+  [`Kubernetes.HelmChart`](https://alchemy.run/providers/kubernetes/helmchart).
 
 ```typescript
 const eks = yield* AWS.EKS.Cluster("Orchestrator", {
@@ -175,21 +177,25 @@ HyperPod nodes must live in **private subnets** — the
 ## Run workloads on HyperPod nodes
 
 HyperPod nodes are ordinary EKS nodes carrying well-known labels.
-[`Deployment`](https://alchemy.run/providers/aws/eks/deployment) and
-[`Job`](https://alchemy.run/providers/aws/eks/job) opt onto them with the `hyperpod`
-prop. The instance-group keys carry through to the cluster's
-attributes as types, so the reference is typed per key (a typo'd
-group name is a compile error), the workload is connected to the
-fleet through the resource graph, and the node selector derives
-from it:
+[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/deployment) and
+[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/job) opt onto them with
+each instance group's `nodeSelector` attribute — health-checked
+nodes of that group. The instance-group keys carry through to the
+cluster's attributes as types, so the reference is typed per key
+(a typo'd group name is a compile error) and the workload is
+connected to the fleet through the resource graph:
 
 ```typescript
-const train = yield* AWS.EKS.Job(
+const train = yield* Kubernetes.Job(
   "Train",
   {
     cluster: eks,
     main: import.meta.url,
-    hyperpod: { instanceGroup: hyperpod.instanceGroups.workers },
+    podTemplate: {
+      spec: {
+        nodeSelector: hyperpod.instanceGroups.workers.nodeSelector,
+      },
+    },
   },
   Effect.gen(function* () {
     return {
@@ -203,8 +209,8 @@ const train = yield* AWS.EKS.Job(
 
 For anything the typed surface doesn't cover — a Kubeflow
 `PyTorchJob`, a custom operator — apply a raw
-[`Manifest`](https://alchemy.run/providers/aws/eks/manifest) pinned by the node
-labels directly:
+[`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/manifest) pinned by
+the node labels directly:
 
 ```typescript
 nodeSelector: {
@@ -249,15 +255,15 @@ const quota = yield* AWS.SageMaker.ComputeQuota("ResearchQuota", {
 });
 ```
 
-A workload submits through governance by passing the quota
-resource — the namespace, Kueue queue label, and quota → workload
-ordering all derive from it:
+A workload submits through governance by referencing the quota's
+attributes — the governed namespace and the team's Kueue queue —
+which also orders the workload after the quota:
 
 ```typescript
-hyperpod: {
-  instanceGroup: hyperpod.instanceGroups.workers,
-  quota,                     // → hyperpod-ns-research + queue label
-  priorityClass: "training", // → training-priority
+namespace: quota.namespace, // hyperpod-ns-research
+labels: {
+  [AWS.SageMaker.KUEUE_QUEUE_NAME_LABEL]: quota.queueName,
+  [AWS.SageMaker.KUEUE_PRIORITY_CLASS_LABEL]: "training-priority",
 },
 ```
 

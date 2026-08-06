@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/stack
 title: "Stacks"
 description: "A Stack is a collection of Resources deployed together as a unit."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 A **Stack** is the top-level unit of deployment in Alchemy. It groups resources together, wires up providers, and tracks state across deploys.
@@ -32,6 +32,43 @@ export default Alchemy.Stack(
 1. **Name** — identifies this stack in state storage
 2. **Options** — `providers` and `state`, both required (see [State Store](../state-store.md) for the available state layers)
 3. **Effect** — a generator that declares resources and returns outputs
+
+## Multiple providers
+
+A stack is not limited to one cloud. Providers are Effect Layers, so to deploy resources from several providers in a single stack, merge their layers with `Layer.mergeAll`:
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as AWS from "alchemy/AWS";
+import * as Cloudflare from "alchemy/Cloudflare";
+import * as Neon from "alchemy/Neon";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+
+export default Alchemy.Stack(
+  "MyApp",
+  {
+    providers: Layer.mergeAll(
+      Cloudflare.providers(),
+      AWS.providers(),
+      Neon.providers(),
+    ),
+    state: Cloudflare.state(),
+  },
+  Effect.gen(function* () {
+    const db = yield* Neon.Project("Db");
+    const queue = yield* AWS.SQS.Queue("Jobs");
+    const bucket = yield* Cloudflare.R2.Bucket("Uploads");
+    return { projectId: db.projectId };
+  }),
+);
+```
+
+The type system tracks which providers the stack’s resources need — declaring an AWS resource without `AWS.providers()` in the merged layer is a compile-time error.
+
+`state` is independent of `providers`: pick one state layer no matter how many clouds the stack deploys to.
+
+See [Providers](provider.md#multiple-providers) for more on provider layers.
 
 ## Stack outputs
 

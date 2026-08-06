@@ -2,27 +2,17 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
-React Router v7 builds through Vite, so
-[`Cloudflare.Website.Vite`](vite.md) deploys it — one
-resource, no Wrangler config, no manual entrypoint. In React Server
-Components mode the build emits **multiple server environments** (`rsc`
-and `ssr`) instead of the single `ssr` environment most SSR frameworks
-produce, and `viteEnvironments` is the prop that tells Alchemy how those
-environments assemble into one Worker. The configuration on this page is
-a supported, live-tested shape: Alchemy's test suite deploys it to real
-Cloudflare and asserts that server-rendered HTML and client routes both
-serve.
+[React Router](https://reactrouter.com/) v7 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
 
 ## Project layout
 
-React Router's RSC mode is wired directly on `@vitejs/plugin-rsc`, so
-the per-environment entry modules live in your project:
+React Router’s RSC mode is wired directly on `@vitejs/plugin-rsc`, so the per-environment entry modules live in your project:
 
-```
+```plaintext
 .
 ├── alchemy.run.ts          # the Stack
 ├── vite.config.ts
@@ -31,30 +21,24 @@ the per-environment entry modules live in your project:
                             # entry.worker.tsx, worker-ssr.tsx
 ```
 
-`app/` holds ordinary React Router routes; `react-router-vite/` holds
-one entry module per Vite environment — the browser bundle, the SSR
-renderer, and the Worker handler.
+`app/` holds ordinary React Router routes; `react-router-vite/` holds one entry module per Vite environment — the browser bundle, the SSR renderer, and the Worker handler.
 
 ## Install the dependencies
 
-React Server Components need React Router 7.16+ and the RSC Vite
-plugin:
+React Server Components need React Router 7.16+ and the RSC Vite plugin:
 
 ```sh
 bun add react react-dom react-router
 bun add -d vite @vitejs/plugin-react @vitejs/plugin-rsc
 ```
 
-`@vitejs/plugin-rsc` is what splits the build into `client`, `ssr`, and
-`rsc` environments; `@vitejs/plugin-react` handles the usual JSX/HMR
-transform.
+`@vitejs/plugin-rsc` is what splits the build into `client`, `ssr`, and `rsc` environments; `@vitejs/plugin-react` handles the usual JSX/HMR transform.
 
 ## Configure the RSC plugin
 
 Point `rsc()` at one entry per environment:
 
 ```typescript
-// vite.config.ts
 import react from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
 import { defineConfig } from "vite";
@@ -77,58 +61,66 @@ export default defineConfig({
 });
 ```
 
-`client` is the browser bundle, `ssr` renders HTML, and `rsc` is the
-Worker entry — a module that default-exports the `{ fetch }` handler
-Cloudflare invokes, which is also why `serverHandler` is off: the Worker
-serves requests itself. Alchemy injects its Cloudflare Vite plugin on
-top of this config at build and dev time, so there is nothing
-Cloudflare-specific to add here.
+`client` is the browser bundle, `ssr` renders HTML, and `rsc` is the Worker entry — a module that default-exports the `{ fetch }` handler Cloudflare invokes, which is also why `serverHandler` is off: the Worker serves requests itself. Alchemy injects its Cloudflare Vite plugin on top of this config at build and dev time, so there is nothing Cloudflare-specific to add here.
 
 ## Declare the environment inputs
 
 Give each server environment its own build input:
 
-```diff lang="typescript"
-// vite.config.ts
+```typescript
 export default defineConfig({
   plugins: [react(), rsc({ ... })],
-+  environments: {
-+    // The Worker is the RSC environment.
-+    rsc: {
-+      build: {
-+        rollupOptions: {
-+          input: { "entry.worker": "./react-router-vite/entry.worker.tsx" },
-+        },
-+      },
-+    },
-+    // A second ssr input the Worker loads on demand.
-+    ssr: {
-+      build: {
-+        rollupOptions: {
-+          input: { "worker-ssr": "./react-router-vite/worker-ssr.tsx" },
-+        },
-+      },
-+    },
-+  },
+  environments: {
+    // The Worker is the RSC environment.
+    rsc: {
+      build: {
+        rollupOptions: {
+          input: { "entry.worker": "./react-router-vite/entry.worker.tsx" },
+        },
+      },
+    },
+    // A second ssr input the Worker loads on demand.
+    ssr: {
+      build: {
+        rollupOptions: {
+          input: { "worker-ssr": "./react-router-vite/worker-ssr.tsx" },
+        },
+      },
+    },
+  },
 });
 ```
 
-The `rsc` input is the Worker entry, and the extra `ssr` input
-(`worker-ssr`) is a chunk the Worker loads across environments at
-runtime via `import.meta.viteRsc.loadModule("ssr", "worker-ssr")` — the
-pattern for Worker code that needs a non-`react-server` module such as
-`react-dom/server`, which must not be imported directly from the `rsc`
-entry.
+The `rsc` input is the Worker entry, and the extra `ssr` input (`worker-ssr`) is a chunk the Worker loads across environments at runtime via `import.meta.viteRsc.loadModule("ssr", "worker-ssr")` — the pattern for Worker code that needs a non- `react-server` module such as `react-dom/server`, which must not be imported directly from the `rsc` entry.
 
-## Deploy with Cloudflare.Website.Vite
+## Declare the Website
 
-Yield the Vite resource from your Stack and describe the environment
-topology with `viteEnvironments`:
+Declare the site as a module-level const (rather than inline in the Stack) and describe the environment topology with `viteEnvironments`:
 
 ```typescript
-// alchemy.run.ts
-import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
+
+export const Website = Cloudflare.Website.Vite("Website", {
+  assets: {
+    runWorkerFirst: true,
+  },
+  viteEnvironments: {
+    entry: "rsc",
+    children: ["ssr"],
+  },
+});
+
+export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>;
+```
+
+These props come straight from the live-tested configuration: `assets: { runWorkerFirst: true }` routes requests through the Worker before static-asset serving so the RSC handler sees every request instead of only the ones that miss an asset. The server bundle’s Node APIs are covered by the `nodejs_compat` compatibility flag, which is enabled by default for every Worker.
+
+## Add it to the Stack
+
+Yield the Website from your Stack and return its URL:
+
+```typescript
+import * as Alchemy from "alchemy";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -138,35 +130,54 @@ export default Alchemy.Stack(
     state: Cloudflare.state(),
   },
   Effect.gen(function* () {
-    const website = yield* Cloudflare.Website.Vite("Website", {
-      compatibility: {
-        date: "2026-03-10",
-        flags: ["nodejs_compat"],
-      },
-      assets: {
-        runWorkerFirst: true,
-      },
-      viteEnvironments: {
-        entry: "rsc",
-        children: ["ssr"],
-      },
-    });
-
+    const website = yield* Website;
     return { url: website.url };
   }),
 );
 ```
 
-These props come straight from the live-tested configuration:
-`nodejs_compat` is enabled for the server bundle, and
-`assets: { runWorkerFirst: true }` routes requests through the Worker
-before static-asset serving so the RSC handler sees every request
-instead of only the ones that miss an asset.
+## Add bindings
+
+The resource returns a plain `Worker`, so `env` accepts the full binding vocabulary — KV namespaces, R2 buckets, Durable Objects, secrets:
+
+```typescript
+import * as Config from "effect/Config";
+
+export const Uploads = Cloudflare.R2.Bucket("Uploads");
+
+export const Website = Cloudflare.Website.Vite("Website", {
+  env: {
+    UPLOADS: Uploads,
+    API_KEY: Config.redacted("API_KEY"),
+  },
+  assets: {
+    runWorkerFirst: true,
+  },
+  viteEnvironments: {
+    entry: "rsc",
+    children: ["ssr"],
+  },
+});
+```
+
+`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+
+The Worker entry receives `env` as the standard second argument of the module-worker `fetch` contract — type it with the inferred shape:
+
+```typescript
+import type { WebsiteEnv } from "../alchemy.run.ts";
+
+export default {
+  async fetch(request: Request, env: WebsiteEnv, ctx: ExecutionContext) {
+    // env.UPLOADS and env.API_KEY are fully typed here
+    // ... hand off to the RSC request handler
+  },
+};
+```
 
 ## How viteEnvironments maps to the deploy
 
-`viteEnvironments` selects which of the build's environments make up
-the deployed Worker:
+`viteEnvironments` selects which of the build’s environments make up the deployed Worker:
 
 ```typescript
 viteEnvironments: {
@@ -175,13 +186,7 @@ viteEnvironments: {
 }
 ```
 
-The `entry` environment produces the chunk the Worker boots from, every
-environment listed in `children` has its chunks bundled alongside so
-cross-environment `loadModule` calls resolve inside the deployed Worker,
-and the `client` environment is always deployed as static assets — it is
-never listed. The default is `{ entry: "ssr", children: [] }`, so a
-React Router app that doesn't use Server Components — a
-single-environment SSR build — needs no `viteEnvironments` at all.
+The `entry` environment produces the chunk the Worker boots from, every environment listed in `children` has its chunks bundled alongside so cross-environment `loadModule` calls resolve inside the deployed Worker, and the `client` environment is always deployed as static assets — it is never listed. The default is `{ entry: "ssr", children: [] }`, so a React Router app that doesn’t use Server Components — a single-environment SSR build — needs no `viteEnvironments` at all.
 
 ## Deploy and verify
 
@@ -189,10 +194,4 @@ single-environment SSR build — needs no `viteEnvironments` at all.
 bun alchemy deploy
 ```
 
-This exact shape is exercised by Alchemy's live test suite ("Vite:
-React Router RSC deploys from a distilled manifest"): the test deploys
-the app to real Cloudflare and asserts the home route serves
-server-rendered HTML, the `/about` client route resolves, and a
-`/worker-render` route returns HTML rendered through the `ssr`
-environment's chunk — server rendering and client navigation are both
-verified against the deployed Worker.
+This exact shape is exercised by Alchemy’s live test suite (“Vite: React Router RSC deploys from a distilled manifest”): the test deploys the app to real Cloudflare and asserts the home route serves server-rendered HTML, the `/about` client route resolves, and a `/worker-render` route returns HTML rendered through the `ssr` environment’s chunk — server rendering and client navigation are both verified against the deployed Worker.

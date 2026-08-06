@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite
 title: "Vite"
 description: "Deploy any pure-Vite app to Cloudflare Workers with a single resource."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 `Cloudflare.Website.Vite` deploys any app that is pure Vite — a project whose entire build is `vite build` with plugins from your `vite.config.ts`. That covers a plain `index.html`, a React or Vue SPA, and full-stack SSR frameworks like TanStack Start or React Router. This page explains the resource itself; each supported framework has [its own landing page](#frameworks) that flows from here.
@@ -32,7 +32,7 @@ const builder = await vite.createBuilder({
 await builder.buildApp();
 ```
 
-A framework is supported if — and only if — a `vite build` of your `vite.config.ts` builds the whole app. Frameworks whose build is orchestrated by their own CLI (`astro build`, `nuxi build`) never enter this path, so they are not yet supported by this resource — see [Astro](astro.md) and [Nuxt](nuxt.md) for their current status and workarounds, or [StaticSite](static-site.md) as the general fallback for any build command that produces a directory of files.
+A framework is supported by this resource if — and only if — a `vite build` of your `vite.config.ts` builds the whole app. Frameworks that drive their own build never enter this path; they have dedicated resources instead — see [Astro](astro.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), and [Waku](waku.md). For any other build command that produces a directory of files, use [StaticSite](static-site.md).
 
 ## Remove @cloudflare/vite-plugin
 
@@ -43,7 +43,6 @@ A framework is supported if — and only if — a `vite build` of your `vite.con
 ```typescript
 const site = yield* Cloudflare.Website.Vite("Website", {
   rootDir: "./web",
-  compatibility: { flags: ["nodejs_compat"] },
   assets: { runWorkerFirst: true },
 });
 ```
@@ -54,15 +53,15 @@ const site = yield* Cloudflare.Website.Vite("Website", {
 - **`assets`** — a flat `AssetsConfig` for routing behavior: `runWorkerFirst`, `htmlHandling`, `notFoundHandling`, etc. The built asset directory is supplied by the build, so unlike a plain Worker there is no `directory` to configure.
 - Everything else is inherited from the Worker — `domain`, `env`, `compatibility`, `crons`, and so on. See [Workers](../compute/workers.md).
 
-Like `Worker`, the resource also has a class form — useful when other resources bind to the site, or when you want to derive its `env` types:
+SSR server bundles routinely use Node APIs at runtime — the `nodejs_compat` compatibility flag covers that, and it is enabled by default for every Worker, so there is nothing to pass.
+
+Like `Worker`, the resource also has a class form — only needed when *other* resources bind to the site (the class gives it a named type they can reference):
 
 ```typescript
-export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
-  compatibility: { flags: ["nodejs_compat"] },
-}) {}
+export class Website extends Cloudflare.Website.Vite<Website>()("Website", {}) {}
 ```
 
-See [TanStack Start](tanstack-start.md) for the class form in a real app.
+For everything else — including deriving `env` types — a plain `const` is enough; see [Runtime bindings](#runtime-bindings) below.
 
 ## Environment
 
@@ -101,13 +100,12 @@ The client bundle reads a concrete `import.meta.env.VITE_PUBLIC_URL`, and server
 Non- `VITE_` values become native Worker bindings, available to SSR code and typed via `Cloudflare.InferEnv`:
 
 ```typescript
-export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
-  compatibility: { flags: ["nodejs_compat"] },
+export const Website = Cloudflare.Website.Vite("Website", {
   env: {
     BUCKET: Bucket,
     BACKEND: Backend,
   },
-}) {}
+});
 
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>;
 ```
@@ -120,7 +118,6 @@ See [TanStack Start](tanstack-start.md) for the full pattern of consuming these 
 
 ```typescript
 const app = yield* Cloudflare.Website.Vite("ReactRouterRSC", {
-  compatibility: { flags: ["nodejs_compat"] },
   viteEnvironments: { entry: "rsc", children: ["ssr"] },
 });
 ```
@@ -162,5 +159,6 @@ Each supported framework has its own landing page building on this resource:
 - [React Router](react-router.md) — including React Server Components via `viteEnvironments`.
 - [Vue](vue.md) — Vue 3 SPAs.
 - [SolidStart](solidstart.md) — SolidStart and hand-rolled SolidJS SSR.
+- [Octane](octane.md#octane-spas-use-vite-instead) — client-only OctaneJS SPAs (the `octane()` compiler plugin composes with the injected Cloudflare plugin).
 
-Not yet supported by this resource: [Astro](astro.md) and [Nuxt](nuxt.md) — their builds are driven by their own CLIs, not `vite build`. Their pages document the current workarounds, generally deploying build output with [StaticSite](static-site.md).
+[Astro](astro.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), and fullstack [Octane](octane.md) drive their own builds, so they have dedicated resources (`Website.Astro`, `Website.Nuxt`, `Website.SvelteKit`, `Website.Waku`, `Website.Octane`) instead of this one.

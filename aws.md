@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws
 title: "AWS"
 description: "Build AWS applications with Alchemy — a runtime (usually Lambda) plus typed resources, wired together by bindings that mint least-privilege IAM policies."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 An Alchemy app on AWS is one **runtime** — usually a Lambda Function — plus the **resources** it talks to: tables, buckets, queues, streams. You wire them together with typed **bindings**: call `S3.PutObject(bucket)` in your code and Alchemy attaches the matching least-privilege IAM statement to the function’s role. The code is the policy.
@@ -34,7 +34,8 @@ Not sure which? See [Choosing a runtime](aws/compute/choosing-a-runtime.md).
 
 ## Email
 
-- **[Receiving inbound email](https://alchemy.run/aws/email/receiving)** — SES receipt rule sets and rules that store mail in S3, fan out to SNS, invoke a Lambda, or bounce it. Region-limited to `us-east-1`, `us-west-2`, and `eu-west-1`.
+- **[Sending & managing email](aws/email/sending.md)** — verify an SES identity, send from a Lambda with the `SendEmail` binding, and manage identity policies, contact lists, dedicated IP pools, tenants, account settings, and deliverability insights.
+- **[Receiving inbound email](aws/email/receiving.md)** — SES receipt rule sets and rules that store mail in S3, fan out to SNS, invoke a Lambda, or bounce it. Region-limited to `us-east-1`, `us-west-2`, and `eu-west-1`.
 
 ## Security & secrets
 
@@ -67,7 +68,8 @@ Not sure which? See [Choosing a runtime](aws/compute/choosing-a-runtime.md).
 | A Postgres database | [RDS & Aurora](aws/data/rds.md) |
 | Kubernetes workloads or Helm charts | [EKS](aws/compute/eks.md) |
 | Object processing | [S3 events](aws/messaging/s3-events.md) |
-| Inbound email pipelines | [SES email receiving](https://alchemy.run/aws/email/receiving) → S3 / SNS / Lambda |
+| Sending transactional email | [SES sending](aws/email/sending.md) — identity + `SendEmail` binding |
+| Inbound email pipelines | [SES email receiving](aws/email/receiving.md) → S3 / SNS / Lambda |
 | Change data capture | [DynamoDB Streams](aws/messaging/dynamodb-streams.md) |
 | API keys or credentials for a function | [Secrets & env](aws/security/secrets-env.md) |
 

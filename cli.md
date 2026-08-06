@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli
 title: "CLI"
 description: "Every alchemy command at a glance — the command map, common options, and how the interactive TUI decides when to render."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 ```sh
@@ -28,7 +28,7 @@ alchemy
 ├─ login [file]         # authenticate every provider in your stack
 ├─ profile show|clear   # inspect or wipe stored credentials
 │
-├─ state stacks|stages|resources|get|tree|clear   # inspect and manage the state store
+├─ state stacks|stages|resources|get|export|tree|clear   # inspect and manage the state store
 │
 ├─ aws bootstrap        # set up the per-account AWS assets bucket
 └─ cloudflare bootstrap|create-token|state logs   # state-store worker, API tokens, its logs

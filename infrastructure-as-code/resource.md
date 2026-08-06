@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource
 title: "Resources"
 description: "Resources are named cloud entities with input properties and output attributes."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 A **Resource** represents a cloud entity managed by Alchemy — a bucket, database, queue, function, DNS record, or anything else that has a lifecycle of reconcile and delete.
@@ -119,9 +119,22 @@ The logical ID is how alchemy tracks the resource in state across deploys:
 
 - **Stable across deploys** — keep the same ID and alchemy keeps updating the same underlying cloud resource.
 - **Stable across renames** — change the variable name, change the TypeScript class, move the file; as long as the logical ID stays the same, alchemy still recognizes it.
-- **Rename = replace** — change the logical ID and alchemy treats it as a new resource (and deletes the old one on the next deploy).
+- **Rename = replace** — change the logical ID and alchemy treats it as a new resource (and deletes the old one on the next deploy) — unless you declare the rename with [`renamedFrom`](https://alchemy.run/infrastructure-as-code/renaming).
 
 Logical IDs only need to be unique **within a stack**.
+
+## Renaming a resource
+
+Changing a logical ID normally plans a **replacement**: a new resource is created under the new ID and the old one — including its physical resource, data, and attachments — is deleted. When you actually just renamed the resource, declare the rename with `Alchemy.renamedFrom` and alchemy migrates the state row instead:
+
+```typescript
+const bucket = yield* Cloudflare.R2.Bucket("Bucket");
+const bucket = yield* Cloudflare.R2.Bucket("Assets").pipe(
+  Alchemy.renamedFrom("Bucket"),
+);
+```
+
+The instance ID and physical name are preserved; nothing is created or deleted in the cloud. See [Renaming Resources](https://alchemy.run/infrastructure-as-code/renaming).
 
 ## Physical name
 

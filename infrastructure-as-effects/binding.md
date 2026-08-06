@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)
@@ -134,6 +134,30 @@ const batchGet = yield* DynamoDB.BatchGetItem(JobsTable, AuditTable);
 Bindings serialize the resolved Outputs the client needs — the queue
 URL, the bucket name, the table name — into the Function's environment.
 The typed client resolves them for you.
+
+## Data sources: `execute`
+
+Every binding is also invocable at **plan time** — the shape Terraform
+calls a data source and Pulumi an invoke. `Capability.execute(...)`
+runs the operation during plan/deploy resolution (with the stack's
+services, not a deployed host) and returns an
+[`Output`](../infrastructure-as-code/outputs.md) you can feed straight into
+resource props:
+
+```typescript
+// the raw invoke — Output<ec2.Image | undefined>
+const image = AWS.EC2.getAmi({ owners: ["amazon"], name: ["al2023-ami-2023.*"] });
+
+// helpers built on it — Output<string>, dies when nothing matches
+imageId: AWS.EC2.amazonLinux2023(),
+```
+
+Constructing the Output is inert, so `execute` is safe in composition
+code that re-executes inside a deployed bundle. The same capability
+bound inside a Function (`yield* AWS.EC2.GetAmi(...)`) still grants its
+IAM and runs at runtime — one contract, both phases. The capability's
+implementation layer must be registered on the stack; the cloud
+`providers()` layers include their plan-executable capabilities.
 
 ## Event Sources and Sinks
 

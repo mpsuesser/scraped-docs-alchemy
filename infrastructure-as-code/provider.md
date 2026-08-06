@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/provider
 title: "Providers"
 description: "Providers implement the lifecycle operations for a resource type — reconcile, delete, diff, read, and more."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 A **Provider** implements the lifecycle operations for a resource
@@ -32,7 +32,10 @@ Alchemy.Stack(
 The type system enforces this — using a Cloudflare resource without
 `Cloudflare.providers()` raises a compile-time error.
 
-To mix clouds, merge the layers:
+## Multiple providers
+
+A stack can use any number of providers. Because providers are
+Layers, combining them is just `Layer.mergeAll`:
 
 ```typescript
 import * as Layer from "effect/Layer";
@@ -48,6 +51,25 @@ Alchemy.Stack(
   }),
 );
 ```
+
+This works for as many providers as you need — built-in ones
+(`Cloudflare`, `AWS`, `Neon`, `Planetscale`, `Docker`, …) and
+[custom providers](custom-provider.md) merge
+the same way:
+
+```typescript
+providers: Layer.mergeAll(
+  Cloudflare.providers(),
+  AWS.providers(),
+  Neon.providers(),
+  StripeProviders, // your own custom provider layer
+),
+```
+
+The type system tracks the requirements per resource: each resource
+you `yield*` demands its own provider from the merged layer, so a
+missing provider is a compile-time error, never a deploy-time
+surprise.
 
 ## Lifecycle operations
 

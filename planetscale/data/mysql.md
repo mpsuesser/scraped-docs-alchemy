@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/mysql
 title: "MySQL"
 description: "PlanetScale MySQL (Vitess) as Stack resources — databases, branches, and passwords, with SQL migrations per branch and a straight line into Cloudflare Hyperdrive."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 PlanetScale MySQL is Vitess-backed serverless MySQL with cheap,
@@ -121,7 +121,11 @@ const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
 });
 ```
 
-See the full example —
+At runtime, query through
+[`Drizzle.MySQL`](https://alchemy.run/sql/drizzle/mysql) or the raw
+[`SQL.MySQL`](https://alchemy.run/sql/effect-sql/mysql) client — both take Hyperdrive's
+`connectionString` and default to the text protocol the proxy
+requires. See the full example —
 [cloudflare-planetscale-mysql-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-mysql-drizzle)
 — for a Worker querying the branch through Hyperdrive with Drizzle.
 
@@ -175,6 +179,8 @@ guide walks through the whole pattern.
   files in depth.
 - [Hyperdrive](../../cloudflare/data/hyperdrive.md) — pooled edge connections
   from Workers.
+- [Drizzle: MySQL](https://alchemy.run/sql/drizzle/mysql) /
+  [Effect SQL: MySQL](https://alchemy.run/sql/effect-sql/mysql) — the runtime clients.
 - [Postgres](postgres.md) — the PostgreSQL side of
   PlanetScale.
 

@@ -2,14 +2,11 @@
 url: https://alchemy.run/sql/effect-sql/postgres
 title: "Postgres"
 description: "SQL.Postgres turns a connection string into an @effect/sql-pg client — tagged-template queries with typed errors, one pool per execution."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
-`SQL.Postgres` opens an `@effect/sql-pg` client (a connection pool)
-from a connection URL. Queries are Effects: they carry `SqlError` in
-the error channel, participate in interruption, and trace like
-everything else in your program.
+`SQL.Postgres` opens an `@effect/sql-pg` client (a connection pool) from a connection URL. Queries are Effects: they carry `SqlError` in the error channel, participate in interruption, and trace like everything else in your program.
 
 Install the driver — both are optional peers of alchemy:
 
@@ -19,9 +16,7 @@ bun add @effect/sql-pg pg
 
 ## Connect
 
-The `url` may be a plain `Redacted` string or an Effect of one —
-Hyperdrive's `connectionString` resolves from the Worker environment
-at runtime, so it slots straight in:
+The `url` may be a plain `Redacted` string or an Effect of one — Hyperdrive’s `connectionString` resolves from the Worker environment at runtime, so it slots straight in:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -39,7 +34,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
     return {
       fetch: Effect.gen(function* () {
-        const users = yield* sql`SELECT * FROM users`;
+        const users = yield* sql\`SELECT * FROM users\`;
         return yield* HttpServerResponse.json({ users });
       }),
     };
@@ -47,65 +42,54 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Everything else in `@effect/sql-pg`'s pool config passes through —
-`maxConnections`, `idleTimeout`, `types`, and friends. The pool is
-built lazily on the first query of an execution and closed when the
-event settles — see
-[Connection lifecycle](lifecycle.md).
+Everything else in `@effect/sql-pg` ’s pool config passes through — `maxConnections`, `idleTimeout`, `types`, and friends. The pool is built lazily on the first query of an execution and closed when the event settles — see [Connection lifecycle](lifecycle.md).
 
 ## Queries
 
 Interpolated values are parameters, never string concatenation:
 
 ```typescript
-const user = yield* sql`SELECT * FROM users WHERE id = ${id}`;
+const user = yield* sql\`SELECT * FROM users WHERE id = ${id}\`;
 
-yield* sql`INSERT INTO users ${sql.insert({ name, email })}`;
+yield* sql\`INSERT INTO users ${sql.insert({ name, email })}\`;
 
-const rows = yield* sql`
+const rows = yield* sql\`
   SELECT * FROM users WHERE id IN ${sql.in(ids)}
-`;
+\`;
 ```
 
-Rows come back as plain objects typed by your annotation:
-`sql<{ id: number; name: string }>\`...\``. The full statement API —
-fragments, `sql.csv`, `sql.and`, identifier escaping — is
-[`effect/unstable/sql/Statement`](https://effect.website).
+Rows come back as plain objects typed by your annotation: `sql<{ id: number; name: string }>\` …\``. The full statement API — fragments, `sql.csv`, `sql.and`, identifier escaping — is [`effect/unstable/sql/Statement\`\]([https://effect.website](https://effect.website/)).
 
 ## Errors
 
 Failures surface as `SqlError` in the typed error channel:
 
 ```typescript
-const users = yield* sql`SELECT * FROM users`.pipe(
+const users = yield* sql\`SELECT * FROM users\`.pipe(
   Effect.catchTag("SqlError", (e) =>
     Effect.succeed([]).pipe(Effect.tap(() => Effect.logWarning(e))),
   ),
 );
 ```
 
-Uncaught, the error propagates like any Effect failure — no
-try/catch, no unhandled rejection.
+Uncaught, the error propagates like any Effect failure — no try/catch, no unhandled rejection.
 
 ## Transactions
 
-Wrap a group of queries in `sql.withTransaction` — the whole effect
-commits or rolls back together:
+Wrap a group of queries in `sql.withTransaction` — the whole effect commits or rolls back together:
 
 ```typescript
 yield* sql.withTransaction(
   Effect.gen(function* () {
-    yield* sql`UPDATE accounts SET balance = balance - ${amount} WHERE id = ${from}`;
-    yield* sql`UPDATE accounts SET balance = balance + ${amount} WHERE id = ${to}`;
+    yield* sql\`UPDATE accounts SET balance = balance - ${amount} WHERE id = ${from}\`;
+    yield* sql\`UPDATE accounts SET balance = balance + ${amount} WHERE id = ${to}\`;
   }),
 );
 ```
 
 ## Provide as a service
 
-For services that shouldn't know which database they run on, depend
-on the generic `SqlClient` tag and provide the database with
-`SQL.PostgresLayer`:
+For services that shouldn’t know which database they run on, depend on the generic `SqlClient` tag and provide the database with `SQL.PostgresLayer`:
 
 ```typescript
 import * as SqlClient from "effect/unstable/sql/SqlClient";
@@ -113,7 +97,7 @@ import * as SqlClient from "effect/unstable/sql/SqlClient";
 const makeUsers = Effect.gen(function* () {
   const sql = yield* SqlClient.SqlClient;
   return {
-    find: (id: number) => sql<User>`SELECT * FROM users WHERE id = ${id}`,
+    find: (id: number) => sql<User>\`SELECT * FROM users WHERE id = ${id}\`,
   };
 });
 
@@ -122,20 +106,11 @@ const users = yield* makeUsers.pipe(
 );
 ```
 
-The layer provides two tags from one per-execution pool: the generic
-`SqlClient.SqlClient`, and `@effect/sql-pg`'s `PgClient` for code
-that needs Postgres-specific capabilities — including drizzle's
-`effect-postgres` driver. Swapping `SQL.PostgresLayer` for
-[`SQL.D1Layer`](d1.md#provide-as-a-service) moves the
-same service graph to D1 unchanged.
+The layer provides two tags from one per-execution pool: the generic `SqlClient.SqlClient`, and `@effect/sql-pg` ’s `PgClient` for code that needs Postgres-specific capabilities — including drizzle’s `effect-postgres` driver. Swapping `SQL.PostgresLayer` for [`SQL.D1Layer`](d1.md#provide-as-a-service) moves the same service graph to D1 unchanged.
 
 ## Where next
 
-- [Migrations](migrations.md) — apply `.sql` files as
-  part of deploy.
-- [Connection lifecycle](lifecycle.md) — when the pool
-  is built and torn down.
-- [Drizzle on Postgres](../drizzle/postgres.md) — the same driver
-  behind a typed schema.
-- [Add Drizzle ORM](../../cloudflare/data/drizzle.md) — full Worker wiring
-  with Neon / PlanetScale via Hyperdrive.
+- [Migrations](migrations.md) — apply `.sql` files as part of deploy.
+- [Connection lifecycle](lifecycle.md) — when the pool is built and torn down.
+- [Drizzle on Postgres](../drizzle/postgres.md) — the same driver behind a typed schema.
+- [Add Drizzle ORM](../../cloudflare/data/drizzle.md) — full Worker wiring with Neon / PlanetScale via Hyperdrive.

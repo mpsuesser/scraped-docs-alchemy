@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/migrations
 title: "Migrations"
 description: "Commit a directory of ordered .sql files and point a database resource's migrationsDir at it — pending files apply as part of every deploy."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 Migrations without an ORM: commit `.sql` files to a directory and
@@ -71,7 +71,8 @@ directory already works.
 ## Where next
 
 - [Postgres](postgres.md) /
-  [D1](d1.md) — query the migrated database.
+  [MySQL](https://alchemy.run/sql/effect-sql/mysql) / [D1](d1.md) — query
+  the migrated database.
 - [Drizzle migrations](../drizzle/migrations.md) — generate the
   files from a schema module instead of writing them by hand.
 - [Branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)

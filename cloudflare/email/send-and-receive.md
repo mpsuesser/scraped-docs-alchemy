@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:
@@ -150,24 +150,27 @@ two are mutually exclusive). `allowedSenderAddresses` restricts the
 `from:` side. Omit all three to let the Worker send to any verified
 destination on the account.
 
-Under `alchemy dev`, the binding is a local stub by default: `send()`
-logs the message's `from`, `to`, and `subject` to the dev console and
-resolves without delivering mail. The stub also skips the
-sender/destination restrictions — Cloudflare enforces those only on
-real sends. Opt into the live binding with `dev.remote`:
+Under `alchemy dev`, the binding is lowered onto a local email
+simulator: `send()` validates the message — including the
+sender/destination restrictions — and persists it as a `.eml` file
+under `.alchemy/local/email` instead of delivering mail. Opt into the
+live binding with
+[`Alchemy.remote()`](../../environments/local-development.md#running-a-resource-live-in-dev),
+the same aspect that opts resources out of local emulation:
 
 ```typescript
+import * as Alchemy from "alchemy";
+
 export const Email = Cloudflare.Email.SendEmail("Email", {
   allowedSenderAddresses: ["bot@example.com"],
   destinationAddress: "you@personal.example",
-  dev: { remote: true },
-});
+}).pipe(Alchemy.remote());
 ```
 
 :::caution
-With `dev: { remote: true }`, `send()` from your dev loop sends real
-mail from your domain — a made-up recipient address is still a real
-send attempt.
+With `Alchemy.remote()`, `send()` from your dev loop sends real mail
+from your domain — a made-up recipient address is still a real send
+attempt.
 :::
 
 ## Send from the Worker

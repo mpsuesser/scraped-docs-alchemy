@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Drizzle.Schema runs drizzle-kit generate as part of deploy — unambiguous schema changes regenerate automatically, ambiguous ones stop and ask you."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 `Drizzle.Schema` puts `drizzle-kit generate` inside the deploy
@@ -62,9 +62,6 @@ const db = yield* Cloudflare.D1.Database("app-db", {
   migrationsDir: "./drizzle", // drizzle-kit's default out
 });
 ```
-
-This is also the working path for MySQL today, where schema
-generation is not wired through `Drizzle.Schema`.
 
 ## Durable Object migrations
 
@@ -184,13 +181,15 @@ state to tear down.
 
 `dialect` selects drizzle-kit's target: `"postgres"` (the default)
 for [Neon / PlanetScale / Hyperdrive-fronted
-Postgres](postgres.md), `"sqlite"` for
-[D1](d1.md). `mysql` uses the run-it-yourself flow above.
+Postgres](postgres.md), `"mysql"` for
+[PlanetScale MySQL](https://alchemy.run/sql/drizzle/mysql), `"sqlite"` for
+[D1](d1.md).
 
 ## Where next
 
-- [Postgres](postgres.md) / [D1](d1.md) — the
-  full schema-to-queries flow per database.
+- [Postgres](postgres.md) / [MySQL](https://alchemy.run/sql/drizzle/mysql) /
+  [D1](d1.md) — the full schema-to-queries flow per
+  database.
 - [Effect SQL migrations](../effect-sql/migrations.md) — the same
   `migrationsDir` application without an ORM.
 - [Schema API reference](https://alchemy.run/providers/drizzle/schema)

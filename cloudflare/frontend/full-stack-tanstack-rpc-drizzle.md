@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on Cloudflare — a TanStack Start UI that drives an Effect RPC backend over Drizzle and Neon Postgres, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 This guide ties four pieces into one deployable app:
@@ -289,7 +289,7 @@ import Backend from "./src/backend/api.ts";
 import { Hyperdrive, NeonDatabase } from "./src/backend/database.ts";
 
 export class Website extends Cloudflare.Website.Vite<Website>()("Website", {
-  compatibility: { flags: ["nodejs_compat", "enable_request_signal"] },
+  compatibility: { flags: ["enable_request_signal"] },
   env: { BACKEND: Backend },
   assets: { runWorkerFirst: true },
 }) {}

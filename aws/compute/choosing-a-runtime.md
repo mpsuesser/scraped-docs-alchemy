@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/choosing-a-runtime
 title: "Choosing a runtime"
 description: "Lambda vs ECS vs EKS vs EC2 for Alchemy apps — cold starts, cost shape, packaging, and how much of each Alchemy currently covers."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 Every Alchemy app on AWS needs somewhere for its code to run.
@@ -80,14 +80,14 @@ load-balancer integration. Alchemy models it with:
 
 - [`Cluster`](https://alchemy.run/providers/aws/eks/cluster) — the control plane;
   `compute: "auto"` turns on Auto Mode with sensible defaults.
-- [`Deployment`](https://alchemy.run/providers/aws/eks/deployment) — a replicated
+- [`Deployment`](https://alchemy.run/providers/kubernetes/deployment) — a replicated
   Kubernetes server (the Kubernetes analog of `AWS.ECS.Service`)
   with the same three image sources as ECS: a registry `image`, a
   Dockerfile `context`, or an inline Effect program via `main`.
-- [`Job`](https://alchemy.run/providers/aws/eks/job) — run-to-completion work, or a
+- [`Job`](https://alchemy.run/providers/kubernetes/job) — run-to-completion work, or a
   `CronJob` when you set `schedule`.
-- [`Manifest`](https://alchemy.run/providers/aws/eks/manifest) and
-  [`HelmChart`](https://alchemy.run/providers/aws/eks/helmchart) — any raw Kubernetes
+- [`Manifest`](https://alchemy.run/providers/kubernetes/manifest) and
+  [`HelmChart`](https://alchemy.run/providers/kubernetes/helmchart) — any raw Kubernetes
   object or a rendered Helm chart, applied via server-side apply.
 
 Bindings work the same as on Lambda and ECS — env vars plus IAM

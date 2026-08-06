@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ec2
 title: "EC2"
 description: "Launch virtual machines with the Instance resource — as a raw compute primitive, or hosting a bundled long-lived Effect program served straight off the box."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 **EC2** is for when you need the machine itself: an OS you
@@ -26,8 +26,9 @@ The minimal instance is an AMI plus an instance type. AMI IDs
 are per-region, so resolve one with Alchemy's image helpers
 instead of hard-coding — `amazonLinux()` finds the latest Amazon
 Linux AMI (there are also `amazonLinux2023`, `amazonLinux2`,
-`ubuntu2404`, `ubuntu2204`, and a general `image()` finder).
-Each returns an `Output<string>` resolved at deploy time:
+`ubuntu2404`, `ubuntu2204`, an id-only `image()` finder, and the
+underlying `getAmi()` data source returning the full image
+description). Each returns an `Output` resolved at deploy time:
 
 ```typescript
 const instance = yield* AWS.EC2.Instance("AppInstance", {

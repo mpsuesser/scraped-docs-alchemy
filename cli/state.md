@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/state
 title: "state"
 description: "Inspect and manage the state store — list stacks, stages, and resources, print persisted state, and clear entries."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
 ```sh
@@ -23,7 +23,7 @@ commands address what they inspect explicitly, so `--stack`,
 `--stage`, and `--fqn` are addressing flags that appear only on the
 subcommands that need them.
 
-All six subcommands share these options:
+All seven subcommands share these options:
 
 | Option              | Description                                                                                                                                    |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,6 +71,58 @@ exists, it prints `(not found: <stack>/<stage>/<fqn>)`.
 # get the FQN from `state resources`, then:
 alchemy state get --stack MyApp --stage prod --fqn Bucket
 ```
+
+## `state export`
+
+```sh
+alchemy state export [--stack <stack>] [--stage <stage>] [file] [options]
+```
+
+Bulk state read: print every matching resource record as **one JSON
+document**, so a whole estate is read in a single invocation instead
+of `state resources` + one `state get` per FQN per stack/stage.
+
+- Omit `--stack` to export **all stacks** in the store.
+- Pass `--stack` to export every stage under that stack.
+- Pass `--stack` and `--stage` to export a single stage.
+- `--stage` without `--stack` is an error.
+
+The output is a flat `resources` array; each entry carries its
+`stack`, `stage`, and `fqn` alongside the same encoded record
+`state get` prints (`props` and `attr` intact, secrets as
+`{ __redacted__: ... }`):
+
+```json
+{
+  "resources": [
+    {
+      "stack": "my-app",
+      "stage": "prod",
+      "fqn": "WebServer",
+      "state": {
+        "resourceType": "AWS.EC2.Instance",
+        "props": { "instanceType": "t3.large" },
+        "attr": { "instanceId": "i-0456" }
+      }
+    }
+  ]
+}
+```
+
+The flat shape is made for local filtering — one call, then `jq`:
+
+```sh
+# every EC2 instance across all stacks and stages
+alchemy state export | jq '.resources[] | select(.state.resourceType == "AWS.EC2.Instance")'
+
+# diff two stages
+diff <(alchemy state export --stack my-app --stage dev) \
+     <(alchemy state export --stack my-app --stage prod)
+```
+
+Entries are ordered deterministically (stack, then stage, then FQN),
+so exports are stable across runs and safe to diff or assert on in
+CI.
 
 ## `state tree`
 

@@ -2,29 +2,24 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query from a Worker with Drizzle.Postgres over Hyperdrive."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
-Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema`
-resource that generates migration SQL on deploy, a database branch
-that applies it, and a Worker that queries through
-`Drizzle.Postgres` over Hyperdrive.
+Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema` resource that generates migration SQL on deploy, a database branch that applies it, and a Worker that queries through `Drizzle.Postgres` over Hyperdrive.
 
 Install the toolchain — all optional peers of alchemy:
 
 ```sh
 bun add drizzle-orm @effect/sql-pg pg
-bun add -D drizzle-kit
+bun add -d drizzle-kit
 ```
 
 ## Define the schema
 
-Drizzle schemas are plain TypeScript modules using the `pg-core`
-column builders:
+Drizzle schemas are plain TypeScript modules using the `pg-core` column builders:
 
 ```typescript
-// src/schema.ts
 import { defineRelations } from "drizzle-orm";
 import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
@@ -52,13 +47,9 @@ export const relations = defineRelations({ Users, Posts }, (t) => ({
 
 ## Declare the schema resource and database
 
-`Drizzle.Schema` diffs the schema module on each deploy and writes
-pending migration SQL to `out`. Passing `schema.out` as the
-database's `migrationsDir` creates the dependency edge: generate
-first, apply second, in one `alchemy deploy`. On Neon:
+`Drizzle.Schema` diffs the schema module on each deploy and writes pending migration SQL to `out`. Passing `schema.out` as the database’s `migrationsDir` creates the dependency edge: generate first, apply second, in one `alchemy deploy`. On Neon:
 
 ```typescript
-// src/db.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Drizzle from "alchemy/Drizzle";
 import * as Neon from "alchemy/Neon";
@@ -87,18 +78,13 @@ export const Hyperdrive = Effect.gen(function* () {
 });
 ```
 
-`Planetscale.PostgresBranch` takes the same `migrationsDir` wiring.
-Register `Drizzle.providers()` alongside your cloud providers in the
-Stack. [Migrations](migrations.md) covers what the schema
-resource does — and does not — decide on your behalf.
+`Planetscale.PostgresBranch` takes the same `migrationsDir` wiring. Register `Drizzle.providers()` alongside your cloud providers in the Stack. [Migrations](migrations.md) covers what the schema resource does — and does not — decide on your behalf.
 
 ## Connect in a Worker
 
-Hyperdrive pools connections at the edge; `Drizzle.Postgres` takes
-its connection string:
+Hyperdrive pools connections at the edge; `Drizzle.Postgres` takes its connection string:
 
 ```typescript
-// src/api.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Drizzle from "alchemy/Drizzle";
 import * as Effect from "effect/Effect";
@@ -123,16 +109,11 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Nothing connects at init — the pool opens on the first query of an
-event, is reused for every query in that event, and closes when the
-event settles (see
-[Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy
-never open a connection.
+Nothing connects at init — the pool opens on the first query of an event, is reused for every query in that event, and closes when the event settles (see [Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy never open a connection.
 
 ## Queries are Effects
 
-Every builder yields directly, with `SqlError` in the typed error
-channel:
+Every builder yields directly, with `SqlError` in the typed error channel:
 
 ```typescript
 const [created] = yield* db
@@ -146,8 +127,7 @@ const [removed] = yield* db
   .returning();
 ```
 
-Because `relations` was passed to `Drizzle.Postgres`, the typed
-`db.query.*` API is available:
+Because `relations` was passed to `Drizzle.Postgres`, the typed `db.query.*` API is available:
 
 ```typescript
 const user = yield* db.query.Users.findFirst({
@@ -158,12 +138,7 @@ const user = yield* db.query.Users.findFirst({
 
 ## Where next
 
-- [Migrations](migrations.md) — what deploy-time schema
-  generation actually does, and when it asks for a decision.
-- [Add Drizzle ORM (Cloudflare tutorial)](../../cloudflare/data/drizzle.md)
-  — the same flow in the Cloudflare hub, with Neon / PlanetScale
-  tabs and deploy walkthrough.
-- [Example: cloudflare-neon-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle)
-  — the complete runnable project.
-- [Effect SQL: Postgres](../effect-sql/postgres.md) — tagged-template
-  SQL over the same pool, no ORM.
+- [Migrations](migrations.md) — what deploy-time schema generation actually does, and when it asks for a decision.
+- [Add Drizzle ORM (Cloudflare tutorial)](../../cloudflare/data/drizzle.md) — the same flow in the Cloudflare hub, with Neon / PlanetScale tabs and deploy walkthrough.
+- [Example: cloudflare-neon-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle) — the complete runnable project.
+- [Effect SQL: Postgres](../effect-sql/postgres.md) — tagged-template SQL over the same pool, no ORM.

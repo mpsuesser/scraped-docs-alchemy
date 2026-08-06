@@ -2,16 +2,17 @@
 url: https://alchemy.run/cloudflare/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to Cloudflare with the Vite resource — one declaration, no Wrangler config."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-06T07:23:05.654Z
+current_date: 2026-08-06T07:23:05.654Z
 ---
 
-Vue is pure Vite — the entire app builds from `@vitejs/plugin-vue`
-in your `vite.config.ts`, so [`Cloudflare.Website.Vite`](vite.md)
+[Vue](https://vuejs.org) is pure Vite — the entire app builds from
+`@vitejs/plugin-vue` in your `vite.config.ts`, so
+[`Cloudflare.Website.Vite`](vite.md)
 deploys it with a single declaration: no `main` entrypoint, no
 build command, no output directory, no Wrangler configuration.
 
-## vite.config.ts
+## Configure Vite
 
 Your Vite config stays exactly what Vue's scaffold gives you:
 
@@ -29,16 +30,28 @@ Alchemy runs Vite programmatically on the project root and layers
 its Cloudflare integration on top of this config — your plugins,
 aliases, and the rest of your setup are preserved as-is.
 
-## Deploy it from a Stack
+## Declare the Website
 
-Yield the Vite resource from your Stack — this is
+Declare the site as a module-level const (rather than inline in the
+Stack) — every prop is optional, so the minimal declaration is just
+a name:
+
+```typescript
+// alchemy.run.ts
+import * as Cloudflare from "alchemy/Cloudflare";
+
+export const Website = Cloudflare.Website.Vite("Vue");
+```
+
+## Add it to the Stack
+
+Yield the class from your Stack and return its URL — see
 [examples/cloudflare-vue](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-vue)
-verbatim:
+for the checked-in example:
 
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -48,12 +61,7 @@ export default Alchemy.Stack(
     state: Cloudflare.state(),
   },
   Effect.gen(function* () {
-    const worker = yield* Cloudflare.Website.Vite("Vue", {
-      compatibility: {
-        flags: ["nodejs_compat"],
-      },
-      memo: {},
-    });
+    const worker = yield* Website;
 
     return {
       url: worker.url,
@@ -62,9 +70,8 @@ export default Alchemy.Stack(
 );
 ```
 
-Every prop is optional — a bare `Cloudflare.Website.Vite("Vue")`
-deploys too; Alchemy builds the client assets and serves them from a
-Worker at the returned `url`.
+Alchemy builds the client assets and serves them from a Worker at
+the returned `url`.
 
 ## Deep links with vue-router
 
@@ -75,11 +82,7 @@ asset layer to fall back to `index.html`:
 
 ```diff lang="typescript"
 // alchemy.run.ts
-const worker = yield* Cloudflare.Website.Vite("Vue", {
-  compatibility: {
-    flags: ["nodejs_compat"],
-  },
-  memo: {},
+export const Website = Cloudflare.Website.Vite("Vue", {
 +  assets: {
 +    htmlHandling: "auto-trailing-slash",
 +    notFoundHandling: "single-page-application",
@@ -91,36 +94,39 @@ With `notFoundHandling: "single-page-application"`, unmatched
 paths return `index.html` instead of a 404, and vue-router
 resolves the route on the client.
 
-## Wire in a backend URL
+## Add environment variables
 
 A pure SPA has no server, so anything it needs from the rest of
 your Stack is baked into the bundle at build time — pass a
-`VITE_`-prefixed key in `env` and read it as
-`import.meta.env.VITE_API_URL` in your Vue code:
+`VITE_`-prefixed key in `env`:
 
 ```diff lang="typescript"
 // alchemy.run.ts
-const worker = yield* Cloudflare.Website.Vite("Vue", {
+export const Website = Cloudflare.Website.Vite("Vue", {
 +  env: {
 +    VITE_API_URL: backend.url,
 +  },
 });
 ```
 
-See [Environment](vite.md#environment) for the
-full inlining semantics.
+Type it for your Vue code with Vite's standard `ImportMetaEnv`
+augmentation:
 
-## Deploy
+```typescript
+// src/vite-env.d.ts
+/// <reference types="vite/client" />
 
-```sh
-bun alchemy deploy
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string;
+}
 ```
 
-## Local dev
+Client code reads it as `import.meta.env.VITE_API_URL`. See
+[Environment](vite.md#environment) for the full
+inlining semantics.
 
-```sh
-bun alchemy dev
-```
-
-`alchemy dev` boots Vite's own dev server, so you keep Vue's HMR
-while Alchemy wires in the same env values as a deploy.
+Because a SPA ships no server code, there are no runtime bindings to
+type with `Cloudflare.InferEnv` — when you add server routes (via an
+SSR framework like [TanStack Start](tanstack-start.md)
+or a separate [Worker](../compute/workers.md)), that's where
+`InferEnv` comes in.
