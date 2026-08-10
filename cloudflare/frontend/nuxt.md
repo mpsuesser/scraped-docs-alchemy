@@ -2,18 +2,18 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Cloudflare Workers with Cloudflare.Website.Nuxt — nitro's cloudflare_module preset, native nuxt.config.ts loading, and wrangler-free local dev."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 `Cloudflare.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app as a Cloudflare Worker. It builds the app through your project’s own `@nuxt/kit` with nitro’s `cloudflare_module` preset: the nitro server bundle deploys as the Worker script, and client assets plus prerendered pages deploy as Worker static assets. There is no `nitro.preset` to edit, no Wrangler file, and no build command to run.
 
 ## Install
 
-The build integration is not bundled with alchemy — the resource dynamically imports `@distilled.cloud/nuxt` from your project at deploy time, so it must be installed alongside your framework. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/cloudflare-frameworks`; the resource loads its `/nuxt` export from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @distilled.cloud/nuxt
+bun add -d @alchemy.run/cloudflare-frameworks
 ```
 
 ## Configure Nuxt

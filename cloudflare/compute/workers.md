@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute runtime of every alchemy app — define infrastructure and runtime behavior in one Effect program, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 A Cloudflare Worker is serverless JavaScript running in every
@@ -299,6 +299,37 @@ export default Cloudflare.Worker(
   // ...
 );
 ```
+
+Set `assets.runWorkerFirst` to route requests through the Worker
+*before* asset matching — `true` for every request (the Worker then
+serves static files itself via the `ASSETS` binding), or a glob array
+to intercept only specific paths:
+
+```typescript
+export default Cloudflare.Worker(
+  "Worker",
+  {
+    main: import.meta.url,
+    assets: {
+      directory: "./public",
+      // only these paths reach the Worker ahead of assets
+      runWorkerFirst: ["/api/*", "/admin/*"],
+    },
+  },
+  // ...
+);
+```
+
+You rarely need this for SSR pages or API routes alone — a path that
+matches no asset already falls through to the Worker. Reach for it
+when a path the Worker must own could be answered by the asset layer
+instead: an asset file shadowing a route, a
+`single-page-application` fallback that would serve the app shell to
+navigations, or a handler that intercepts asset requests outright
+(`true`, serving files itself via the `ASSETS` binding).
+
+The same routing applies under `alchemy dev`, so a path that hits
+your handler locally hits it deployed too.
 
 Omit `main` entirely to deploy an **assets-only Worker** — a static
 site with no Worker code of your own:

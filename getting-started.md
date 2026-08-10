@@ -2,8 +2,8 @@
 url: https://alchemy.run/getting-started
 title: "Getting started"
 description: "Install Alchemy and create your first Stack in under two minutes."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 ## Prerequisites
@@ -20,7 +20,7 @@ mkdir my-app && cd my-app && bun init -y
 ## Install
 
 ```sh
-bun add "alchemy@next" "effect@>=4.0.0-beta.102 || >=4.0.0" "@effect/platform-bun@>=4.0.0-beta.102 || >=4.0.0" "@effect/platform-node@>=4.0.0-beta.102 || >=4.0.0"
+bun add "alchemy@next" "effect@>=4.0.0-beta.105 || >=4.0.0" "@effect/platform-bun@>=4.0.0-beta.105 || >=4.0.0" "@effect/platform-node@>=4.0.0-beta.105 || >=4.0.0"
 ```
 
 ## Create your Stack

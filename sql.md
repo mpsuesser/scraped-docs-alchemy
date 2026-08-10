@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql
 title: "SQL"
 description: "One home for SQL in alchemy — low-level effect-sql clients, Drizzle ORM, schema migrations in the deploy graph, and the per-execution connection lifecycle."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 An alchemy app talks SQL at whichever level fits: a raw tagged-template client, an ORM, or both against the same connection. The schema rides the same deploy graph as the infrastructure, so `alchemy deploy` regenerates and applies pending migrations alongside everything else.
@@ -16,7 +16,7 @@ An alchemy app talks SQL at whichever level fits: a raw tagged-template client, 
 
 ## Clients
 
-`alchemy/SQL/*` is the low-level home: tagged-template queries with typed errors, no ORM — one subpath per backend (`alchemy/SQL/D1`, `alchemy/SQL/Postgres`, `alchemy/SQL/MySQL`), so you only load the driver you use. `alchemy/Drizzle` is the ORM sibling: a typed schema and relational queries. Both wrap the same [`@effect/sql`](https://effect.website/) drivers and share one lifecycle.
+`alchemy/SQL/*` is the low-level home: tagged-template queries with typed errors, no ORM — one subpath per backend (`alchemy/SQL/D1`, `alchemy/SQL/Postgres`, `alchemy/SQL/MySQL`), so you only load the driver you use. `alchemy/Drizzle` is the ORM sibling: a typed schema and relational queries. `Drizzle.Schema`, `Drizzle.providers()`, and `Drizzle.D1` come from the `alchemy/Drizzle` entry; the Postgres and MySQL clients live on their own subpaths (`alchemy/Drizzle/Postgres`, `alchemy/Drizzle/MySQL`) so their drivers only load when you use them, and the Durable Object client lives at `alchemy/Drizzle/Cloudflare`. Both wrap the same [`@effect/sql`](https://effect.website/) drivers and share one lifecycle.
 
 ```typescript
 import * as SQL from "alchemy/SQL/D1";

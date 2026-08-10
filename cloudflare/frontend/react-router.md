@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 [React Router](https://reactrouter.com/) v7 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
@@ -101,9 +101,6 @@ Declare the site as a module-level const (rather than inline in the Stack) and d
 import * as Cloudflare from "alchemy/Cloudflare";
 
 export const Website = Cloudflare.Website.Vite("Website", {
-  assets: {
-    runWorkerFirst: true,
-  },
   viteEnvironments: {
     entry: "rsc",
     children: ["ssr"],
@@ -113,7 +110,7 @@ export const Website = Cloudflare.Website.Vite("Website", {
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>;
 ```
 
-These props come straight from the live-tested configuration: `assets: { runWorkerFirst: true }` routes requests through the Worker before static-asset serving so the RSC handler sees every request instead of only the ones that miss an asset. The server bundle’s Node APIs are covered by the `nodejs_compat` compatibility flag, which is enabled by default for every Worker.
+No asset routing config is needed: the RSC build emits no `index.html` (HTML is server-rendered), so page requests match no static asset and fall through to the RSC handler, while the hydration bundles serve directly from the asset layer. The server bundle’s Node APIs are covered by the `nodejs_compat` compatibility flag, which is enabled by default for every Worker.
 
 ## Add it to the Stack
 
@@ -149,9 +146,6 @@ export const Website = Cloudflare.Website.Vite("Website", {
   env: {
     UPLOADS: Uploads,
     API_KEY: Config.redacted("API_KEY"),
-  },
-  assets: {
-    runWorkerFirst: true,
   },
   viteEnvironments: {
     entry: "rsc",

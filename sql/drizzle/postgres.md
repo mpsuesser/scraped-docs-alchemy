@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query from a Worker with Drizzle.Postgres over Hyperdrive."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema` resource that generates migration SQL on deploy, a database branch that applies it, and a Worker that queries through `Drizzle.Postgres` over Hyperdrive.
@@ -86,7 +86,7 @@ Hyperdrive pools connections at the edge; `Drizzle.Postgres` takes its connectio
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
+import * as Drizzle from "alchemy/Drizzle/Postgres";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 import { Hyperdrive } from "./db.ts";

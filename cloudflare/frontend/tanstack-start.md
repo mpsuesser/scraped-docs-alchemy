@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Cloudflare with Cloudflare.Website.Vite — SSR, typed Worker bindings, and HMR dev with real cloud resources."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 [TanStack Start](https://tanstack.com/start) is pure Vite — `tanstackStart()` and `viteReact()` are ordinary plugins in `vite.config.ts`, so [`Cloudflare.Website.Vite`](vite.md) builds the client assets and the SSR server bundle in a single `vite build` pass, no adapter or Wrangler config required. Support is verified: the [examples/cloudflare-tanstack](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-tanstack) example is checked in, and a live test deploys it in dev mode with real Alchemy-managed R2 bindings.
@@ -45,15 +45,12 @@ export const Website = Cloudflare.Website.Vite("Website", {
     BUCKET: Bucket,
     BACKEND: Backend,
   },
-  assets: {
-    runWorkerFirst: true,
-  },
 });
 
 export type WebsiteEnv = Cloudflare.InferEnv<typeof Website>;
 ```
 
-Each `env` entry becomes a native Worker binding (`BUCKET` an R2 bucket, `BACKEND` a service binding to another Worker), and `runWorkerFirst` routes requests to the SSR Worker before static-asset matching, so server routes win over files. `WebsiteEnv` is the typed shape of those bindings, derived from the declaration. The SSR server bundle’s Node APIs are covered by the `nodejs_compat` compatibility flag, which is enabled by default for every Worker.
+Each `env` entry becomes a native Worker binding (`BUCKET` an R2 bucket, `BACKEND` a service binding to another Worker). Requests matching a built client asset are served directly from the asset layer; everything else (SSR routes, server routes) falls through to the TanStack server handler. `WebsiteEnv` is the typed shape of those bindings, derived from the declaration. The SSR server bundle’s Node APIs are covered by the `nodejs_compat` compatibility flag, which is enabled by default for every Worker.
 
 ## Add it to the Stack
 

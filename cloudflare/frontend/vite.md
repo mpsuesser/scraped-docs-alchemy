@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite
 title: "Vite"
 description: "Deploy any pure-Vite app to Cloudflare Workers with a single resource."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 `Cloudflare.Website.Vite` deploys any app that is pure Vite — a project whose entire build is `vite build` with plugins from your `vite.config.ts`. That covers a plain `index.html`, a React or Vue SPA, and full-stack SSR frameworks like TanStack Start or React Router. This page explains the resource itself; each supported framework has [its own landing page](#frameworks) that flows from here.
@@ -41,16 +41,20 @@ A framework is supported by this resource if — and only if — a `vite build` 
 `ViteProps` is `WorkerProps` minus the things the build now owns (`main`, the directory-shaped `assets`), plus Vite-specific options:
 
 ```typescript
+// an SPA whose Worker serves the /api/* routes
 const site = yield* Cloudflare.Website.Vite("Website", {
   rootDir: "./web",
-  assets: { runWorkerFirst: true },
+  assets: {
+    notFoundHandling: "single-page-application",
+    runWorkerFirst: ["/api/*"],
+  },
 });
 ```
 
 - **`rootDir`** — Vite’s project root, default `process.cwd()`.
 - **`memo`** — narrows which files are hashed to decide whether a rebuild is needed (see [Rebuilds and memo](#rebuilds-and-memo)).
 - **`viteEnvironments`** — for frameworks that build more than one server environment (see [Multiple server environments](#multiple-server-environments-rsc)).
-- **`assets`** — a flat `AssetsConfig` for routing behavior: `runWorkerFirst`, `htmlHandling`, `notFoundHandling`, etc. The built asset directory is supplied by the build, so unlike a plain Worker there is no `directory` to configure.
+- **`assets`** — a flat `AssetsConfig` for routing behavior: `runWorkerFirst`, `htmlHandling`, `notFoundHandling`, etc. SSR apps need none of it: server routes and API paths match no built asset, so they already fall through to the Worker. The glob array matters for SPAs — with `notFoundHandling: "single-page-application"`, whether an unmatched path serves the app shell or reaches the Worker depends on the request’s `Sec-Fetch-Mode`, so `runWorkerFirst: ["/api/*"]` pins your API namespace to the Worker deterministically. `true` routes every request through the Worker, for handlers that intercept asset requests. The built asset directory is supplied by the build, so unlike a plain Worker there is no `directory` to configure.
 - Everything else is inherited from the Worker — `domain`, `env`, `compatibility`, `crons`, and so on. See [Workers](../compute/workers.md).
 
 SSR server bundles routinely use Node APIs at runtime — the `nodejs_compat` compatibility flag covers that, and it is enabled by default for every Worker, so there is nothing to pass.

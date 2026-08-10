@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Drizzle.Schema runs drizzle-kit generate as part of deploy — unambiguous schema changes regenerate automatically, ambiguous ones stop and ask you."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 `Drizzle.Schema` puts `drizzle-kit generate` inside the deploy
@@ -118,6 +118,7 @@ Object. Commit it and hand it to `Drizzle.DurableObject`, along with
 the `relations`:
 
 ```typescript
+import * as Drizzle from "alchemy/Drizzle/Cloudflare";
 import migrations from "./drizzle/migrations.js";
 import { posts, relations, users } from "./schema.ts";
 
@@ -138,8 +139,9 @@ export class Users extends Cloudflare.DurableObject<Users>()(
 ) {}
 ```
 
-`Drizzle.DurableObject` opens drizzle over the instance's own SQLite
-storage using the `drizzle-orm/effect-sqlite-do` integration — the
+`Drizzle.DurableObject` (from `alchemy/Drizzle/Cloudflare`) opens
+drizzle over the instance's own SQLite storage using the
+`drizzle-orm/effect-sqlite-do` integration — the
 same effect-native query surface as [`Drizzle.D1`](d1.md)
 and [`Drizzle.Postgres`](postgres.md). It lives in the
 object's inner Effect — the instance init, which runs only in the

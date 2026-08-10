@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/static-site
 title: "Static sites"
 description: "Deploy any build command's output directory as Cloudflare Worker static assets with Cloudflare.Website.StaticSite — custom edge Workers, framework-native local dev, and memoized rebuilds."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 `Cloudflare.Website.StaticSite` runs a build command, content-hashes the
@@ -94,7 +94,9 @@ The build contract is two required props, plus a handful of optional ones:
 - `main` — an optional custom Worker entrypoint served in front of the
   assets, instead of the fallback passthrough.
 - `assets` — asset routing behavior (`notFoundHandling`, `htmlHandling`,
-  `runWorkerFirst`, ...), passed flat.
+  `runWorkerFirst`, ...), passed flat. `runWorkerFirst` accepts `true` to
+  route every request through the Worker ahead of assets, or a glob array
+  like `["/api/*"]` to intercept only matching paths.
 
 Everything else a [Worker](../compute/workers.md) accepts —
 `domain`, `compatibility`, bindings via `env` — applies too, since a

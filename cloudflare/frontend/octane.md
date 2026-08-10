@@ -2,18 +2,18 @@
 url: https://alchemy.run/cloudflare/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS fullstack app to Cloudflare Workers with Cloudflare.Website.Octane — your own vite build, Octane's Cloudflare adapter, wrangler-free."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-10T20:20:42.449Z
+current_date: 2026-08-10T20:20:42.449Z
 ---
 
 `Cloudflare.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app as a Cloudflare Worker. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the SSR server bundle, and your `adapter: cloudflare()` emits the module Worker entry at `dist/server/worker.js`. That entry deploys as the Worker script and `dist/client` deploys as static assets. No Wrangler file, no build command to run.
 
 ## Install
 
-The build integration is not bundled with alchemy — the resource dynamically imports `@distilled.cloud/octane` from your project at deploy time, so it must be installed alongside Octane’s own Cloudflare adapter. Both are only used at build time, so dev dependencies are enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/cloudflare-frameworks` alongside Octane’s Cloudflare adapter; the resource loads the package’s `/octane` export from your project at deploy time. Both are only used at build time, so dev dependencies are enough:
 
 ```sh
-bun add -d @distilled.cloud/octane @octanejs/adapter-cloudflare
+bun add -d @alchemy.run/cloudflare-frameworks @octanejs/adapter-cloudflare
 ```
 
 ## Configure Octane
