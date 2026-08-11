@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Cloudflare Workers with Cloudflare.Website.Waku — RSC server in the Worker, SSG pages as static assets, and a custom-entry seam for Durable Objects."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-11T18:23:27.602Z
+current_date: 2026-08-11T18:23:27.602Z
 ---
 
-`Cloudflare.Website.Waku` deploys a [Waku](https://waku.gg/) app as a Cloudflare Worker. It builds the project programmatically: the React Server Components server bundle deploys as the Worker script, and the client output — including SSG-prerendered pages — deploys as static assets. There is no `waku.config.ts` to edit, no Wrangler file, and no build command to run.
+`Cloudflare.Website.Waku` deploys a [Waku](https://waku.gg/) app as a Cloudflare Worker. It builds the project programmatically: the React Server Components server bundle deploys as the Worker script, and the client output — including SSG-prerendered pages — deploys as static assets. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no Wrangler file and no build command to run.
 
 ## Install
 
@@ -18,7 +18,7 @@ bun add -d @alchemy.run/cloudflare-frameworks
 
 ## Configure Waku
 
-There is no framework config to write: the resource builds the project programmatically, so a fresh Waku project deploys as-is — your `waku.config.ts` stays untouched.
+No framework config is required — a fresh Waku project deploys as-is. If your project has a `waku.config.ts`, Alchemy loads it natively (exactly as Waku’s own CLI does) and uses it as the base config; options set on the resource (`srcDir`, `distDir`, `basePath`) merge over it. The one key Alchemy owns is `unstable_adapter` — setting it fails the build with an actionable error.
 
 ## Declare the Website
 

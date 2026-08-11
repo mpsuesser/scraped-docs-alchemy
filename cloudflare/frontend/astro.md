@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-11T18:23:27.602Z
+current_date: 2026-08-11T18:23:27.602Z
 ---
 
-`Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. There is no `astro.config.*` to write, no adapter to install into your config, and no Wrangler file.
+`Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. Your `astro.config.*` loads natively — there is no adapter to install into it and no Wrangler file to write.
 
 ## Install
 
@@ -18,7 +18,7 @@ bun add -d @alchemy.run/cloudflare-frameworks
 
 ## Configure Astro
 
-There is no framework config to write: the integration is fully programmatic, and your `astro.config.*` file is not read. Common serializable options are passed via the `astro` prop instead — see [Astro configuration](#astro-configuration) below for the details.
+Your `astro.config.*` file loads natively — integrations, Vite plugins, and any other non-serializable options work exactly as they do outside Alchemy. Alchemy merges a programmatic config *over* it: the Cloudflare adapter is injected for you (don’t declare an `adapter` in your config — that fails the build with an actionable error), and options passed via the `astro` prop override the file’s — see [Astro configuration](#astro-configuration) below for the details.
 
 ## Declare the Website
 
@@ -149,7 +149,7 @@ export const Website = Cloudflare.Website.Astro("Website", {
 
 ## Astro configuration
 
-Common serializable options from `astro.config.*` are exposed under the `astro` prop:
+Your `astro.config.*` is the primary place to configure Astro — integrations, Vite plugins, and every other option (serializable or not) work as usual. The `astro` prop exposes common serializable options for deploy-specific overrides; Astro merges them *over* the config file (scalars override, arrays like `integrations` and `vite.plugins` concatenate after the file’s):
 
 ```typescript
 export const Website = Cloudflare.Website.Astro("Website", {
@@ -159,3 +159,8 @@ export const Website = Cloudflare.Website.Astro("Website", {
   },
 });
 ```
+
+Two options are managed for you regardless of the config file:
+
+- `adapter` — Alchemy injects its wrangler-free Cloudflare adapter. Declaring an adapter in `astro.config.*` fails the build with an actionable error.
+- `output` — Alchemy defaults it to `"server"` (superseding a file-level `output`), so pages render on demand in the Worker. Opt into a fully prerendered site with `astro: { output: "static" }` on the resource.

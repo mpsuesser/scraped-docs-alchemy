@@ -2,28 +2,33 @@
 url: https://alchemy.run/cloudflare/frontend/frontends
 title: "Frontend frameworks"
 description: "Deploy Vite, Astro, Next.js, Nuxt, SvelteKit, Waku, or any static build to Cloudflare Workers with first-class Website resources."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-11T18:23:27.602Z
+current_date: 2026-08-11T18:23:27.602Z
 ---
 
 Alchemy deploys frontends to Cloudflare with a family of
 `Cloudflare.Website` resources. Each one builds your project
 programmatically and deploys it as a Worker — server bundle plus
-static assets — with zero configuration files: no `wrangler.json`,
-no adapter setup.
+static assets — with no Cloudflare-specific configuration: no
+`wrangler.json`, no adapter setup. Your framework's own config file
+(`vite.config.ts`, `astro.config.*`, `nuxt.config.ts`, ...) loads
+natively; Alchemy layers its Cloudflare integration on top.
 
 - [`Vite`](vite.md) — any pure-Vite app: SPAs and
   Vite-plugin frameworks like TanStack Start, React Router, Vue, and
-  SolidStart.
+  SolidStart; your `vite.config.ts` loads natively.
 - [`Astro`](astro.md) — Astro sites, server-rendered
-  or fully static, with an auto-provisioned session KV namespace.
+  or fully static, with an auto-provisioned session KV namespace;
+  your `astro.config.*` loads natively.
 - [`Nextjs`](nextjs.md) — Next.js apps built through
-  the OpenNext pipeline, with writable ISR on KV.
+  the OpenNext pipeline, with writable ISR on KV; your `next.config.*`
+  is honored as-is.
 - [`Nuxt`](nuxt.md) — Nuxt apps built through
   nitro's `cloudflare_module` preset; your `nuxt.config.ts` loads
   natively.
 - [`SvelteKit`](sveltekit.md) — SvelteKit apps with
-  a wrangler-free in-memory Cloudflare adapter.
+  a wrangler-free in-memory Cloudflare adapter; your `vite.config.ts`
+  loads natively.
 - [`Waku`](waku.md) — Waku (React Server
   Components) apps.
 - [`Octane`](octane.md) — OctaneJS fullstack apps

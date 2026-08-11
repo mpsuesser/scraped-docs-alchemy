@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Cloudflare Workers with Cloudflare.Website.Nextjs — the OpenNext pipeline, writable ISR, and wrangler-free local dev."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-11T18:23:27.602Z
+current_date: 2026-08-11T18:23:27.602Z
 ---
 
 `Cloudflare.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app as a Cloudflare Worker. It runs `next build` through the OpenNext pipeline (`@opennextjs/cloudflare`), bundles the resulting server into a self-contained Worker, and deploys client assets plus prerendered pages as Worker static assets. There is no adapter to configure and no Wrangler file.
@@ -20,7 +20,7 @@ bun add -d @alchemy.run/cloudflare-frameworks @opennextjs/cloudflare
 
 ## Configure OpenNext
 
-Your `next.config.*` stays untouched. OpenNext needs one config file next to it — the static-assets incremental cache is the zero-infrastructure default, where prerendered ISR pages serve their build-time payloads:
+Your `next.config.*` is loaded and honored as-is — the build runs a real `next build`, and Alchemy never rewrites the file. OpenNext needs one config file next to it — the static-assets incremental cache is the zero-infrastructure default, where prerendered ISR pages serve their build-time payloads:
 
 ```typescript
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
