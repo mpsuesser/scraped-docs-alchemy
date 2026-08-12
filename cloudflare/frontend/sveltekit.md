@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Cloudflare Workers with Cloudflare.Website.SvelteKit — a wrangler-free in-memory adapter, real bindings on platform.env, and full-HMR local dev."
-access_date: 2026-08-11T18:23:27.602Z
-current_date: 2026-08-11T18:23:27.602Z
+access_date: 2026-08-12T08:18:21.533Z
+current_date: 2026-08-12T08:18:21.533Z
 ---
 
 `Cloudflare.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app as a Cloudflare Worker. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Cloudflare adapter, then re-bundles the server output for workerd. Client assets and prerendered pages deploy as Worker static assets; dynamic routes are served by the generated Worker. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it), no `@sveltejs/adapter-cloudflare` to install, and no Wrangler file.
@@ -109,12 +109,29 @@ export const load = async ({ platform }) => {
 
 ## Kit and adapter options
 
-Since kit v3 there is no `svelte.config.js` — kit options live in the `sveltekit(...)` call in your `vite.config.ts`, which loads natively. The `kit` prop is a deploy-time override layer merged over those options (the override wins). The generated Cloudflare adapter is configured via `adapter`:
+Since kit v3 there is no `svelte.config.js` — kit options live in the `sveltekit(...)` call in your `vite.config.ts`, which loads natively:
+
+```typescript
+import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+    sveltekit({
+      alias: { $lib: "src/lib" },
+    }),
+  ],
+});
+```
+
+The `kit` prop on the resource is a deploy-time override layer merged over those options (the override wins). The generated Cloudflare adapter is configured via `adapter`:
 
 ```typescript
 export const Website = Cloudflare.Website.SvelteKit("Website", {
   kit: {
-    alias: { $lib: "src/lib" },
+    paths: { base: "/docs" },
   },
   adapter: {
     notFoundHandling: "404-page",

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Cloudflare Workers with Cloudflare.Website.Nuxt — nitro's cloudflare_module preset, native nuxt.config.ts loading, and wrangler-free local dev."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-12T08:18:21.533Z
+current_date: 2026-08-12T08:18:21.533Z
 ---
 
 `Cloudflare.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app as a Cloudflare Worker. It builds the app through your project’s own `@nuxt/kit` with nitro’s `cloudflare_module` preset: the nitro server bundle deploys as the Worker script, and client assets plus prerendered pages deploy as Worker static assets. There is no `nitro.preset` to edit, no Wrangler file, and no build command to run.
@@ -18,7 +18,18 @@ bun add -d @alchemy.run/cloudflare-frameworks
 
 ## Configure Nuxt
 
-There is no framework config to change: your `nuxt.config.ts` loads natively — modules, layers, and all. Deploy-specific overrides are merged over it via the `nuxt` prop (the override wins) — see [Prerendering](#prerendering) below for an example.
+Your `nuxt.config.ts` loads natively — modules, layers, and all — so configure Nuxt exactly as you would outside Alchemy:
+
+```typescript
+export default defineNuxtConfig({
+  modules: ["@nuxtjs/tailwindcss"],
+  routeRules: {
+    "/about": { prerender: true },
+  },
+});
+```
+
+Deploy-specific overrides are merged over it via the `nuxt` prop (the override wins) — see [Prerendering](#prerendering) below for an example.
 
 Don’t set `nitro.preset` — the Cloudflare deploy target owns the preset, and a foreign preset is a hard error.
 

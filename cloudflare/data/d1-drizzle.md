@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/d1-drizzle
 title: "Drizzle on D1"
 description: "Manage your Drizzle schema as a resource, apply migrations to D1 on every deploy, and query from a Worker with the effect-d1 driver or the raw @effect/sql-d1 client."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-12T08:18:21.533Z
+current_date: 2026-08-12T08:18:21.533Z
 ---
 
 D1 is serverless SQLite, so Drizzle needs no connection string, no Hyperdrive, and no Postgres driver — the Worker’s native D1 binding is the transport. This guide layers **Drizzle ORM** on top of [D1](d1.md): a `Drizzle.Schema` resource that regenerates migration SQL on every deploy, a `migrationsDir` wire that applies it to the database, and the `drizzle-orm/effect-d1` driver (built on `@effect/sql-d1`) for typed queries at runtime.
@@ -15,8 +15,8 @@ The same flow on Postgres (Neon or PlanetScale via Hyperdrive) is covered in [Ad
 `drizzle-orm`, `drizzle-kit`, and `@effect/sql-d1` are optional peer dependencies of `alchemy` — install them in your project:
 
 ```sh
-bun add drizzle-orm@^1.0.0-rc.4 @effect/sql-d1
-bun add -d drizzle-kit@^1.0.0-rc.4
+bun add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-d1
+bun add -d drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
 ## Define the schema

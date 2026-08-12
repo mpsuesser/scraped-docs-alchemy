@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace."
-access_date: 2026-08-11T18:23:27.602Z
-current_date: 2026-08-11T18:23:27.602Z
+access_date: 2026-08-12T08:18:21.533Z
+current_date: 2026-08-12T08:18:21.533Z
 ---
 
 `Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. Your `astro.config.*` loads natively — there is no adapter to install into it and no Wrangler file to write.
@@ -149,13 +149,28 @@ export const Website = Cloudflare.Website.Astro("Website", {
 
 ## Astro configuration
 
-Your `astro.config.*` is the primary place to configure Astro — integrations, Vite plugins, and every other option (serializable or not) work as usual. The `astro` prop exposes common serializable options for deploy-specific overrides; Astro merges them *over* the config file (scalars override, arrays like `integrations` and `vite.plugins` concatenate after the file’s):
+Your `astro.config.*` is the primary place to configure Astro — integrations, Vite plugins, and every other option (serializable or not) work as usual:
+
+```typescript
+import { defineConfig } from "astro/config";
+import react from "@astrojs/react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  site: "https://blog.example.com",
+  integrations: [react()],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+```
+
+The `astro` prop on the resource exposes common serializable options for deploy-specific overrides; Astro merges them *over* the config file (scalars override, arrays like `integrations` and `vite.plugins` concatenate after the file’s):
 
 ```typescript
 export const Website = Cloudflare.Website.Astro("Website", {
   astro: {
-    site: "https://blog.example.com",
-    srcDir: "./app",
+    site: "https://preview.example.com",
   },
 });
 ```
