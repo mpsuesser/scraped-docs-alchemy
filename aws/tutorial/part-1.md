@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with an AWS S3 Bucket, and deploy it."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-21T19:43:23.224Z
+current_date: 2026-08-21T19:43:23.224Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with an AWS S3 Bucket, and deploy it — all in under five minutes.
@@ -23,10 +23,10 @@ mkdir my-app && cd my-app && bun init -y
 
 ## Install dependencies
 
-Install `alchemy@next` and `effect@>=4.0.0-rc.110 || >=4.0.0`:
+Install `alchemy@latest` and `effect@rc`:
 
 ```sh
-bun add "alchemy@next" "effect@>=4.0.0-rc.110 || >=4.0.0" "@effect/platform-bun@>=4.0.0-rc.110 || >=4.0.0" "@effect/platform-node@>=4.0.0-rc.110 || >=4.0.0"
+bun add "alchemy@latest" "effect@rc" "@effect/platform-bun@rc" "@effect/platform-node@rc"
 ```
 
 ## Create the Stack
