@@ -2,13 +2,13 @@
 url: https://alchemy.run/state-store/custom-state-store
 title: "Custom State Store"
 description: "Build a Postgres-backed Alchemy state store step by step — implement the StateService interface, plug it into a stack, and test it end-to-end."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 A state store is just an Effect `Layer` that provides Alchemy’s `State` service. The built-in stores (`localState()` on disk, `Cloudflare.state()` on Cloudflare) cover most cases — but if you already run Postgres, S3, Redis, or DynamoDB, you can back state with that instead.
 
-This guide builds a Postgres-backed state store from scratch. By the end you’ll have a `postgresState()` layer you can drop into any `Alchemy.Stack`, and a test that round-trips a resource through it.
+This guide builds a Postgres-backed state store from scratch. By the end you’ll have a `postgresState()` layer you can drop into any `Alchemy.Stack`, and a test that round-trips a resource through it. (If you just want a Postgres store, use the built-in one from `alchemy/State/PostgresState`, which adds advisory locking — this guide builds a simplified version to teach the interface.)
 
 See [State Store](../state-store.md) for an overview of what state Alchemy persists and why.
 

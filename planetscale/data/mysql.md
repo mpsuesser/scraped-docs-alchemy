@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/mysql
 title: "MySQL"
 description: "PlanetScale MySQL (Vitess) as Stack resources — databases, branches, and passwords, with SQL migrations per branch and a straight line into Cloudflare Hyperdrive."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 PlanetScale MySQL is Vitess-backed serverless MySQL with cheap,
@@ -131,14 +131,14 @@ requires. See the full example —
 
 ## Apply migrations
 
-Point `migrationsDir` at a directory of `.sql` files — on either the
+Point `migrations` at a directory of `.sql` files — on either the
 database (applied to the default branch) or a branch:
 
 ```typescript
 const branch = yield* Planetscale.MySQLBranch("app-branch", {
   database,
   isProduction: false,
-  migrationsDir: "./migrations",
+  migrations: "./migrations",
 });
 ```
 

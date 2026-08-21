@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/nuke
 title: "nuke"
 description: "Enumerate and delete every live resource across the stack's providers."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 ```sh
@@ -30,6 +30,19 @@ The state store is never read or written: enumeration is live cloud state only. 
 - Resources spared by a `--filter` expression.
 - Resources whose `delete` keeps failing — reported at the end of the run.
 - Anything owned by providers not registered in the stack file.
+
+## Local mode
+
+`--local` flips the command over to the **local** implementations of your providers — the floci-emulated AWS account and the Cloudflare local runtime that [`alchemy dev`](dev.md) provisions into — instead of the real cloud.
+
+```sh
+# clear everything floci is holding
+bun alchemy unsafe nuke --local --include 'AWS.*'
+```
+
+Only providers registered with both a live and a local implementation participate; mode-agnostic providers (a single implementation, which always talks to the real cloud) are dropped at discovery. That's what makes `--local` safe: there is no code path by which it reaches live infrastructure, and it needs no cloud credentials.
+
+Each selected provider's local variant is built lazily, as it is scanned, so `--include` also scopes which local runtimes get constructed. A local variant that fails to build is reported as a scan failure and contributes 0 resources, exactly like a failing `list`.
 
 ## Scoping the blast radius
 
@@ -75,6 +88,7 @@ Deletion runs in passes: each pass attempts every remaining resource, failures a
 | `--include <glob>`    | Glob of provider IDs to include (e.g. `'Cloudflare.*'` or `'Cloudflare.Worker'`). Repeatable; when omitted, every provider is included.                                |
 | `--exclude <glob>`    | Glob of provider IDs to exclude (applied after `--include`). Repeatable.                                                                                               |
 | `--filter <expr>`     | JavaScript expression evaluated with `resource` in scope. Any resource for which an expression is truthy is **spared**. Repeatable.                                    |
+| `--local`             | Enumerate and delete LOCAL (emulated) resources instead of real cloud ones. Only providers with a local implementation participate.                                    |
 
 ## Debugging
 
@@ -82,6 +96,7 @@ Deletion runs in passes: each pass attempts every remaining resource, failures a
 
 ## Where next
 
+- [AWS local development](https://alchemy.run/aws/local-development) — the floci emulator `--local` clears
 - [destroy](destroy.md) — the stack-scoped, state-driven teardown you usually want
 - [Inspecting State](inspecting-state.md) — clear the stale state entries nuke leaves behind
 - [State Store](../state-store.md) — why nuke bypasses it entirely

@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/postgres
 title: "Postgres"
 description: "PlanetScale Postgres as Stack resources — databases, branches, roles with least-privilege inherited roles, and direct vs pooled connection origins."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 PlanetScale Postgres is managed PostgreSQL with database branching. In
@@ -53,7 +53,7 @@ const branch = yield* Planetscale.PostgresBranch("app-branch", {
 
 `parentBranch` defaults to `"main"` and also accepts another
 `PostgresBranch`, so branches can chain. Branches take the same
-`migrationsDir` / `importFiles` props as the database — see
+`migrations` / `importFiles` props as the database — see
 [Migrations](migrations.md) for how SQL files are hashed
 and applied, and the
 [branch from a shared database](../../cloudflare/data/branch-from-shared-database.md)
@@ -144,7 +144,7 @@ If you need a URL instead of components, `connectionUrl` and
 
 ## Where next
 
-- [Migrations](migrations.md) — `migrationsDir` and
+- [Migrations](migrations.md) — `migrations` and
   `importFiles` on databases and branches.
 - [Hyperdrive](../../cloudflare/data/hyperdrive.md) — edge-pooled connections from
   Workers to your PlanetScale database.

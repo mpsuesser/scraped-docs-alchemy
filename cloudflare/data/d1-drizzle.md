@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/data/d1-drizzle
 title: "Drizzle on D1"
 description: "Manage your Drizzle schema as a resource, apply migrations to D1 on every deploy, and query from a Worker with the effect-d1 driver or the raw @effect/sql-d1 client."
-access_date: 2026-08-12T08:18:21.533Z
-current_date: 2026-08-12T08:18:21.533Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
-D1 is serverless SQLite, so Drizzle needs no connection string, no Hyperdrive, and no Postgres driver — the Worker’s native D1 binding is the transport. This guide layers **Drizzle ORM** on top of [D1](d1.md): a `Drizzle.Schema` resource that regenerates migration SQL on every deploy, a `migrationsDir` wire that applies it to the database, and the `drizzle-orm/effect-d1` driver (built on `@effect/sql-d1`) for typed queries at runtime.
+D1 is serverless SQLite, so Drizzle needs no connection string, no Hyperdrive, and no Postgres driver — the Worker’s native D1 binding is the transport. This guide layers **Drizzle ORM** on top of [D1](d1.md): a `Drizzle.Schema` resource that regenerates migration SQL on every deploy, a `migrations` wire that applies it to the database, and the `drizzle-orm/effect-d1` driver (built on `@effect/sql-d1`) for typed queries at runtime.
 
 The same flow on Postgres (Neon or PlanetScale via Hyperdrive) is covered in [Add Drizzle ORM](drizzle.md).
 
@@ -80,7 +80,7 @@ export default Alchemy.Stack(
 
 ## Wire the schema into the database
 
-The schema resource’s `out` output feeds the database’s `migrationsDir` input. That dependency edge orders the deploy: `Drizzle.Schema` regenerates pending migration SQL first, `Cloudflare.D1.Database` applies it second — one `alchemy deploy`, no separate `drizzle-kit generate` step in CI:
+The schema resource’s `out` output feeds the database’s `migrations` input. That dependency edge orders the deploy: `Drizzle.Schema` regenerates pending migration SQL first, `Cloudflare.D1.Database` applies it second — one `alchemy deploy`, no separate `drizzle-kit generate` step in CI:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -95,13 +95,12 @@ export const Database = Effect.gen(function* () {
   });
 
   return yield* Cloudflare.D1.Database("app-db", {
-    migrationsDir: schema.out,
-    migrationsTable: "drizzle_migrations",
+    migrations: schema,
   });
 });
 ```
 
-`dialect: "sqlite"` selects drizzle-kit’s SQLite generator. `migrationsTable` names the wrangler-compatible tracking table so already-applied migrations are skipped on subsequent deploys — [D1 migrations](d1.md#migrations) covers the mechanics, and [Drizzle migrations](../../sql/drizzle/migrations.md) the deploy-graph pattern.
+`dialect: "sqlite"` selects drizzle-kit’s SQLite generator. Applied migrations are tracked in Alchemy’s `__alchemy_migrations` table — a database you previously migrated with `drizzle-kit migrate` is adopted automatically, history intact. [D1 migrations](d1.md#migrations) covers the mechanics, and [Drizzle migrations](../../sql/drizzle/migrations.md) the deploy-graph pattern.
 
 ## Query from the Worker with Drizzle.D1
 

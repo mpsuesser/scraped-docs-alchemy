@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql
 title: "SQL"
 description: "One home for SQL in alchemy — low-level effect-sql clients, Drizzle ORM, schema migrations in the deploy graph, and the per-execution connection lifecycle."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 An alchemy app talks SQL at whichever level fits: a raw tagged-template client, an ORM, or both against the same connection. The schema rides the same deploy graph as the infrastructure, so `alchemy deploy` regenerates and applies pending migrations alongside everything else.
@@ -12,6 +12,7 @@ An alchemy app talks SQL at whichever level fits: a raw tagged-template client, 
 
 - [D1](cloudflare/data/d1.md) — Cloudflare’s serverless SQLite, bound natively into a Worker.
 - [Hyperdrive](cloudflare/data/hyperdrive.md) — edge connection pooling for any Postgres or MySQL: [Neon](neon.md), [PlanetScale](planetscale.md), RDS, or a database you already run.
+- [Fly Postgres](https://alchemy.run/fly/data/postgres) — billed Managed Postgres. Bind `ConnectPostgres` on a Service; `migrations` is the same surface as Neon.
 - AWS-side connections — DSQL, RDS, and Redshift bindings in the [API reference](https://alchemy.run/providers).
 
 ## Clients
@@ -52,5 +53,6 @@ Every client builds lazily on the first query of an execution, is reused for eve
 - [Effect SQL: Postgres](sql/effect-sql/postgres.md) / [MySQL](https://alchemy.run/sql/effect-sql/mysql) / [D1](sql/effect-sql/d1.md) — the raw clients.
 - [Drizzle: Postgres](sql/drizzle/postgres.md) / [MySQL](https://alchemy.run/sql/drizzle/mysql) / [D1](sql/drizzle/d1.md) — schema to queries, end to end.
 - [Add Drizzle ORM](cloudflare/data/drizzle.md) — full Worker wiring on Postgres via Hyperdrive.
+- [Fly Postgres](https://alchemy.run/fly/data/postgres) — Managed Postgres on a Fly Service with `ConnectPostgres`.
 - [Drizzle on D1](cloudflare/data/d1-drizzle.md) — full Worker wiring on D1.
 - [API reference](https://alchemy.run/providers) — every SQL and Drizzle export.

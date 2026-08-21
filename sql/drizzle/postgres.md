@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
-description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query from a Worker with Drizzle.Postgres over Hyperdrive."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query with Drizzle.Postgres."
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
-Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema` resource that generates migration SQL on deploy, a database branch that applies it, and a Worker that queries through `Drizzle.Postgres` over Hyperdrive.
+Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema` resource that generates migration SQL on deploy, a database resource that applies it, and a Worker or Fly Service that queries through `Drizzle.Postgres`.
 
 Install the toolchain — all optional peers of alchemy:
 
@@ -47,7 +47,7 @@ export const relations = defineRelations({ Users, Posts }, (t) => ({
 
 ## Declare the schema resource and database
 
-`Drizzle.Schema` diffs the schema module on each deploy and writes pending migration SQL to `out`. Passing `schema.out` as the database’s `migrationsDir` creates the dependency edge: generate first, apply second, in one `alchemy deploy`. On Neon:
+`Drizzle.Schema` diffs the schema module on each deploy and writes pending migration SQL to `out`. Passing `schema.out` as the database’s `migrations` prop creates the dependency edge: generate first, apply second, in one `alchemy deploy`. On Neon:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -64,7 +64,7 @@ export const Db = Effect.gen(function* () {
   const project = yield* Neon.Project("app-db");
   const branch = yield* Neon.Branch("app-branch", {
     project,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   return branch;
@@ -78,7 +78,7 @@ export const Hyperdrive = Effect.gen(function* () {
 });
 ```
 
-`Planetscale.PostgresBranch` takes the same `migrationsDir` wiring. Register `Drizzle.providers()` alongside your cloud providers in the Stack. [Migrations](migrations.md) covers what the schema resource does — and does not — decide on your behalf.
+`Planetscale.PostgresBranch` and `Fly.Postgres` take the same `migrations` wiring. Register `Drizzle.providers()` alongside your cloud providers in the Stack. [Migrations](migrations.md) covers what the schema resource does — and does not — decide on your behalf.
 
 ## Connect in a Worker
 
@@ -111,6 +111,36 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
 Nothing connects at init — the pool opens on the first query of an event, is reused for every query in that event, and closes when the event settles (see [Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy never open a connection.
 
+## Connect in a Fly Service
+
+[Fly Managed Postgres](https://alchemy.run/fly/data/postgres) uses the same `migrations` prop. Bind `ConnectPostgres` instead of Hyperdrive:
+
+```typescript
+import * as Drizzle from "alchemy/Drizzle/Postgres";
+import * as Fly from "alchemy/Fly";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { Db } from "./db.ts";
+import { relations, Users } from "./schema.ts";
+
+export default class Api extends Fly.Service<Api>()(
+  "Api",
+  { app: Site, main: import.meta.url, port: 3000 },
+  Effect.gen(function* () {
+    const conn = yield* Fly.ConnectPostgres(Db);
+    const db = yield* Drizzle.Postgres(conn.connectionString, {
+      relations,
+    });
+    return {
+      fetch: Effect.gen(function* () {
+        const users = yield* db.select().from(Users);
+        return yield* HttpServerResponse.json({ users });
+      }),
+    };
+  }).pipe(Effect.provide(Fly.ConnectPostgresHttp)),
+) {}
+```
+
 ## Queries are Effects
 
 Every builder yields directly, with `SqlError` in the typed error channel:
@@ -140,5 +170,7 @@ const user = yield* db.query.Users.findFirst({
 
 - [Migrations](migrations.md) — what deploy-time schema generation actually does, and when it asks for a decision.
 - [Add Drizzle ORM (Cloudflare tutorial)](../../cloudflare/data/drizzle.md) — the same flow in the Cloudflare hub, with Neon / PlanetScale tabs and deploy walkthrough.
-- [Example: cloudflare-neon-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle) — the complete runnable project.
+- [Example: cloudflare-neon-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle) — Worker + Hyperdrive + Neon.
+- [Example: fly-postgres](https://github.com/alchemy-run/alchemy/tree/main/examples/fly-postgres) — Service + ConnectPostgres + Fly Managed Postgres.
+- [Fly Postgres](https://alchemy.run/fly/data/postgres) — the Fly cluster, `migrations`, and `ConnectPostgres`.
 - [Effect SQL: Postgres](../effect-sql/postgres.md) — tagged-template SQL over the same pool, no ORM.

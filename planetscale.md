@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale
 title: "PlanetScale"
 description: "Serverless MySQL (Vitess) and Postgres with database branching — databases, branches, and credentials as Stack resources."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 PlanetScale gives you serverless MySQL (Vitess-backed) and managed Postgres with a branch-per-PR workflow. With alchemy you declare the database, its branches, and the credentials as resources in the same Stack as your Workers — branches fork per preview stage and tear down with it.
@@ -41,7 +41,7 @@ const role = yield* Planetscale.PostgresRole("app-role", {
 });
 ```
 
-Every database and branch also accepts a `migrationsDir` of `.sql` files applied in order on each deploy — see [Migrations](planetscale/data/migrations.md) for ordering, hashing, and the Drizzle pairing.
+Every database and branch also accepts a `migrations` folder of `.sql` files applied in order on each deploy — see [Migrations](planetscale/data/migrations.md) for ordering, hashing, and the Drizzle pairing.
 
 ## The PlanetScale path
 

@@ -2,14 +2,14 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Drizzle.Schema runs drizzle-kit generate as part of deploy — unambiguous schema changes regenerate automatically, ambiguous ones stop and ask you."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 `Drizzle.Schema` puts `drizzle-kit generate` inside the deploy
 graph: on each deploy it diffs your schema module against the latest
 checked-in snapshot, writes any pending migration SQL to `out`, and
-the database resource downstream applies it via `migrationsDir` — in
+the database resource downstream applies it via `migrations` — in
 that order, because `schema.out` is an `Output` the database depends
 on.
 
@@ -21,8 +21,7 @@ const schema = yield* Drizzle.Schema("app-schema", {
 });
 
 const db = yield* Cloudflare.D1.Database("app-db", {
-  migrationsDir: schema.out,
-  migrationsTable: "drizzle_migrations",
+  migrations: schema,
 });
 ```
 
@@ -54,12 +53,12 @@ the same app.
 
 `Drizzle.Schema` is optional. If you prefer to run
 `drizzle-kit generate` manually and commit the output, point
-`migrationsDir` at the checked-in directory — the database resource
+`migrations` at the checked-in directory — the database resource
 only sees `.sql` files:
 
 ```typescript
 const db = yield* Cloudflare.D1.Database("app-db", {
-  migrationsDir: "./drizzle", // drizzle-kit's default out
+  migrations: "./drizzle", // drizzle-kit's default out
 });
 ```
 
@@ -164,13 +163,21 @@ db.insert(users).values({ name }).pipe(
 underlying cause. Transactions add the effect-sql `SqlError` to the
 union, and the migrator can fail with `MigratorInitError`.
 
-## The migrations table
+## Migrating from drizzle-kit
 
-Drizzle's tooling expects applied migrations tracked in a
-`drizzle_migrations` table. D1's `migrationsTable` prop exists for
-this compatibility; the tracking schema is wrangler-compatible
-(`id, name, applied_at`), so moving between wrangler, drizzle-kit,
-and alchemy does not re-apply history.
+Already ran `drizzle-kit migrate` against the database before
+Alchemy? No baselining needed: on the first deploy Alchemy copies
+the applied history out of `__drizzle_migrations` (the `drizzle`
+schema on Postgres) into its own `__alchemy_migrations` table —
+hashes carry over verbatim, since both record sha256 of
+`migration.sql` — and only genuinely pending migrations run. The
+drizzle table is left frozen, never written or dropped.
+
+It's a one-way move: from then on Alchemy owns the bookkeeping, so
+retire `drizzle-kit migrate` from your workflow (`drizzle-kit
+generate` is subsumed by `Drizzle.Schema`). See
+[adopting an existing database](../effect-sql/migrations.md#adopting-an-existing-database)
+for the shared mechanics and guard rails.
 
 ## Destroy never deletes migrations
 
@@ -182,7 +189,7 @@ state to tear down.
 ## Dialects
 
 `dialect` selects drizzle-kit's target: `"postgres"` (the default)
-for [Neon / PlanetScale / Hyperdrive-fronted
+for [Neon / PlanetScale / Fly / Hyperdrive-fronted
 Postgres](postgres.md), `"mysql"` for
 [PlanetScale MySQL](https://alchemy.run/sql/drizzle/mysql), `"sqlite"` for
 [D1](d1.md).
@@ -193,5 +200,5 @@ Postgres](postgres.md), `"mysql"` for
   [D1](d1.md) — the full schema-to-queries flow per
   database.
 - [Effect SQL migrations](../effect-sql/migrations.md) — the same
-  `migrationsDir` application without an ORM.
+  `migrations` application without an ORM.
 - [Schema API reference](https://alchemy.run/providers/drizzle/schema)

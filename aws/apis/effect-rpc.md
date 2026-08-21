@@ -2,13 +2,13 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request, so reach for it when data needs sanitizing on its way in — a web app or an external service calling your Lambda. Internal calls use [Schemaless RPC](../../apis/schemaless.md) instead (on AWS, a Lambda Function driving a [MicroVM](../compute/microvms.md)); the [RPC overview](../../apis.md) has the full decision.
 
-The [HTTP API guide](effect-http-api.md) showed how to build REST-style endpoints with schema validation. Effect RPC takes a different angle — you define **procedures** instead of HTTP endpoints, and you get a fully typed client for free with no URL construction or manual serialization. [Effect RPC](../../apis/effect-rpc.md) covers the host-agnostic core; this page covers the Lambda side — a public Function URL via `url: true`, and binding implementations provided with `Layer.mergeAll(AWS.DynamoDB.GetItemHttp, AWS.DynamoDB.PutItemHttp)`.
+The [HTTP API guide](effect-http-api.md) showed how to build REST-style endpoints with schema validation. Effect RPC takes a different angle — you define **procedures** instead of HTTP endpoints, and you get a fully typed client for free with no URL construction or manual serialization. [Effect RPC](../../apis/effect-rpc.md) covers the host-agnostic core; this page covers the Lambda side — a public Function URL via `functionUrl: true`, and binding implementations provided with `Layer.mergeAll(AWS.DynamoDB.GetItemHttp, AWS.DynamoDB.PutItemHttp)`.
 
 The transport is still HTTP under the hood — the RPC server compiles down to the same `HttpEffect` a Lambda’s `fetch` expects — so the wiring story is identical to the HTTP API guide:
 
@@ -89,7 +89,7 @@ import * as Effect from "effect/Effect";
 
 export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
   "JobFunction",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     return {};
   }),
@@ -200,7 +200,7 @@ import { JobRpcs } from "./JobRpcs.ts";
 
 export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
   "JobFunction",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const table = yield* AWS.DynamoDB.Table("JobsTable", {
       partitionKey: "id",

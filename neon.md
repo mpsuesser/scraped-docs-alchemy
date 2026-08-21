@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon
 title: "Neon"
 description: "Serverless Postgres with copy-on-write branching — projects and branches as Stack resources, with built-in SQL migrations."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Neon is serverless Postgres with copy-on-write branching. With alchemy you declare the project and its branches as resources in the same Stack as your Workers — each preview stage forks its own branch in seconds and destroys it just as fast, and SQL migrations run as part of the deploy.
@@ -26,16 +26,16 @@ const branch = yield* Neon.Branch("app-branch", {
 
 Branches can fork from any parent, pin to a point in time, copy schema only, and expire on their own — see [Branching](neon/data/branching.md).
 
-Both resources accept a `migrationsDir` of SQL files applied in order on deploy:
+Both resources accept a `migrations` folder of SQL files applied in order on deploy:
 
 ```typescript
 const featureBranch = yield* Neon.Branch("feature", {
   project,
-  migrationsDir: "./migrations",
+  migrations: "./migrations",
 });
 ```
 
-Migrations are ordered, hashed, and tracked in a `neon_migrations` table so each file runs exactly once — see [Migrations](neon/data/migrations.md).
+Migrations are ordered, hashed, and tracked in Alchemy’s `__alchemy_migrations` table so each file runs exactly once — see [Migrations](neon/data/migrations.md).
 
 ## Pooled vs direct
 

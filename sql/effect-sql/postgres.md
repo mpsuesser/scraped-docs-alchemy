@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/postgres
 title: "Postgres"
 description: "SQL.Postgres turns a connection string into an @effect/sql-pg client — tagged-template queries with typed errors, one pool per execution."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 `SQL.Postgres` opens an `@effect/sql-pg` client (a connection pool) from a connection URL. Queries are Effects: they carry `SqlError` in the error channel, participate in interruption, and trace like everything else in your program.
@@ -16,7 +16,7 @@ bun add @effect/sql-pg pg
 
 ## Connect
 
-The `url` may be a plain `Redacted` string or an Effect of one — Hyperdrive’s `connectionString` resolves from the Worker environment at runtime, so it slots straight in:
+The `url` may be a plain `Redacted` string or an Effect of one — Hyperdrive’s `connectionString` and `Fly.ConnectPostgres` ’s `connectionString` both resolve at runtime, so either slots straight in:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -114,3 +114,4 @@ The layer provides two tags from one per-execution pool: the generic `SqlClient.
 - [Connection lifecycle](lifecycle.md) — when the pool is built and torn down.
 - [Drizzle on Postgres](../drizzle/postgres.md) — the same driver behind a typed schema.
 - [Add Drizzle ORM](../../cloudflare/data/drizzle.md) — full Worker wiring with Neon / PlanetScale via Hyperdrive.
+- [Fly Postgres](https://alchemy.run/fly/data/postgres) — the same client on a Fly Service via `ConnectPostgres`.

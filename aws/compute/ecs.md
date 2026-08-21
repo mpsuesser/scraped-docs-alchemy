@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 **ECS** (Elastic Container Service) is AWS’s managed container orchestrator: you describe a container — image, CPU, memory — and ECS runs it. With **Fargate**, AWS also provides the machines, so there are no servers to manage.
@@ -81,7 +81,7 @@ A `Task` is the target of the ECS control-plane bindings. From a Lambda function
 ```typescript
 const api = yield* AWS.Lambda.Function(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     // init: bind the launch (IAM grants happen here)
     const runTask = yield* AWS.ECS.RunTask(cluster, task);

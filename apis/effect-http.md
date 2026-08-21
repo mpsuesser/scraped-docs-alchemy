@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-http
 title: "Effect HTTP"
 description: "Schema-validated REST endpoints with an rpc-like typed interface — for trust boundaries where consumers want a plain HTTP client."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Effect HTTP (`effect/unstable/httpapi`) is the same idea as [Effect RPC](effect-rpc.md): define a Schema, construct handler Layers, return an `HttpEffect` from `fetch`, call it through an rpc-like typed interface. The difference is what goes on the wire — real HTTP endpoints, with URLs, path params, query strings, headers, bodies, and content types.
@@ -128,7 +128,7 @@ return {
 };
 ```
 
-`HttpRouter.toHttpEffect` builds the Layer once at boot and yields the request handler — the same `{ fetch }` shape a Worker or a Lambda Function with `url: true` serves. The `platform` Layers are the host-specific part of the wiring — see [Workers](../cloudflare/apis/effect-http-api.md) and [Lambda](../aws/apis/effect-http-api.md) for the exact set, plus storage bindings and deploy (and CORS, on Workers).
+`HttpRouter.toHttpEffect` builds the Layer once at boot and yields the request handler — the same `{ fetch }` shape a Worker or a Lambda Function with `functionUrl: true` serves. The `platform` Layers are the host-specific part of the wiring — see [Workers](../cloudflare/apis/effect-http-api.md) and [Lambda](../aws/apis/effect-http-api.md) for the exact set, plus storage bindings and deploy (and CORS, on Workers).
 
 ## Plain HTTP for everyone else
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
 description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 **EventBridge** is AWS’s event router — producers publish events onto a bus, rules match them by pattern, and targets receive them. **EventBridge Scheduler** is its time-based sibling: fire an invocation on a `rate(...)`, `cron(...)`, or one-time `at(...)` expression. In Alchemy the surface is:
@@ -39,7 +39,7 @@ import { Events } from "./bus.ts";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const bus = yield* Events;
     const putEvents = yield* AWS.EventBridge.PutEvents(bus);

@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
 title: "Resource lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Every [Resource](resource.md) goes through the same lifecycle: **plan → reconcile → (replace) → delete**. The plan classifies each resource as create, update, replace, delete, or no-op, but the provider implements a single `reconcile` function that converges the cloud’s actual state to what’s declared — whether that’s the first provisioning, a routine update, or an adoption takeover. For the CLI flags that drive these operations, see the [CLI reference](../cli.md).
@@ -80,6 +80,37 @@ Proceed?
 ✗ Worker (Cloudflare.Worker) deleted
 ✗ Bucket (Cloudflare.R2.Bucket) deleted
 ```
+
+## Removal policy
+
+Each resource carries a **removal policy** that decides what happens to the physical cloud object when the resource is deleted — orphaned, destroyed, or superseded as a replacement’s old generation:
+
+| Policy | What the engine does |
+| --- | --- |
+| `destroy` | Calls `provider.delete`, then drops the state row |
+| `retain` | Skips `provider.delete`, then drops the state row |
+
+Under `retain`, alchemy forgets the resource either way — only the cloud object survives. Most resource types default to `destroy`; a few whose contents are irreplaceable default to `retain` (e.g. [`GitHub.Repository`](../github/repository.md), `Cloudflare.Zone`).
+
+Set the policy by piping a declaration through `retain()` or `destroy()`. It applies to every resource declared inside the piped effect, so it can decorate one resource or a whole scope:
+
+```typescript
+import * as RemovalPolicy from "alchemy/RemovalPolicy";
+
+Effect.gen(function* () {
+  const stack = yield* Stack;
+
+  // never deleted by alchemy
+  const uploads = yield* R2.Bucket("Uploads").pipe(RemovalPolicy.retain());
+
+  // retained in prod, torn down in every other stage
+  const cache = yield* R2.Bucket("Cache").pipe(
+    RemovalPolicy.retain(stack.stage === "prod"),
+  );
+});
+```
+
+The policy is a decoration, not a prop, so changing it produces no diff — the resource plans as a **no-op** and the plan reports no changes. The deploy still persists the new policy onto the state row (the orphan delete reads it from there, long after the declaration is gone), so a policy change takes effect from the very next deploy.
 
 ## Idempotency and recovery
 

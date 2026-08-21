@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Cloudflare Workers with Cloudflare.Website.Nextjs — the OpenNext pipeline, writable ISR, and wrangler-free local dev."
-access_date: 2026-08-11T18:23:27.602Z
-current_date: 2026-08-11T18:23:27.602Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 `Cloudflare.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app as a Cloudflare Worker. It runs `next build` through the OpenNext pipeline (`@opennextjs/cloudflare`), bundles the resulting server into a self-contained Worker, and deploys client assets plus prerendered pages as Worker static assets. There is no adapter to configure and no Wrangler file.
@@ -12,10 +12,10 @@ App Router and Pages Router both work — server components, API routes, middlew
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/cloudflare-frameworks` and its OpenNext peer; the resource loads the package’s `/nextjs` export from your project at deploy time. They are only used at build time, so dev dependencies are enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks` and its OpenNext peer; the resource loads the package’s `/nextjs` export from your project at deploy time. They are only used at build time, so dev dependencies are enough:
 
 ```sh
-bun add -d @alchemy.run/cloudflare-frameworks @opennextjs/cloudflare
+bun add -d @alchemy.run/frontend-frameworks @opennextjs/cloudflare
 ```
 
 ## Configure OpenNext

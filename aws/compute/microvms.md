@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/microvms
 title: "Lambda MicroVMs"
 description: "Build a Firecracker MicroVM image from TypeScript or a Dockerfile, then launch and drive isolated stateful instances from a Lambda Function with typed lifecycle bindings and RPC."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 A Lambda **MicroVM image** is a Firecracker snapshot that boots a fully
@@ -101,7 +101,7 @@ import { Sandbox } from "./sandbox.ts";
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
   // generous timeout: the handler waits for the MicroVM to reach RUNNING
-  { main: import.meta.filename, url: true, timeout: Duration.seconds(120) },
+  { main: import.meta.filename, functionUrl: true, timeout: Duration.seconds(120) },
   Effect.gen(function* () {
     const runMicrovm = yield* AWS.Lambda.RunMicrovm(Sandbox);
     const getMicrovm = yield* AWS.Lambda.GetMicrovm(Sandbox);

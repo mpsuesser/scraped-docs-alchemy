@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store
 title: "State Store"
 description: "How Alchemy persists resource state between deploys to compute diffs and track infrastructure."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Alchemy persists resource state between deploys so it can compute diffs — comparing the desired state in your code against the current state of your infrastructure.
@@ -90,6 +90,28 @@ By default the state-store Worker is named `alchemy-state-store`. Pass `workerNa
 ```typescript
 state: Cloudflare.state({ workerName: "alchemy-state-store-team-a" }),
 ```
+
+## Postgres state store
+
+`postgresState()` persists state in a Postgres database you already run, and it locks: each `(stack, stage)` holds a session advisory lock for the duration of a run, so two concurrent deploys of the same stage cannot interleave.
+
+```typescript
+import { postgresState } from "alchemy/State/PostgresState";
+import * as Config from "effect/Config";
+
+Alchemy.Stack(
+  "MyApp",
+  {
+    providers: Prisma.providers(),
+    state: postgresState({ url: Config.redacted("STATE_DATABASE_URL") }),
+  },
+  Effect.gen(function* () {
+    // ...
+  }),
+);
+```
+
+It is imported from `alchemy/State/PostgresState` rather than the `State` barrel because it depends on the optional `pg` driver, which must stay out of bundled worker code. Install `pg` and `@effect/sql-pg` to use it.
 
 ## State and lifecycle
 

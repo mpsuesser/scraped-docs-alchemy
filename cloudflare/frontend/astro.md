@@ -2,18 +2,18 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace."
-access_date: 2026-08-12T08:18:21.533Z
-current_date: 2026-08-12T08:18:21.533Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 `Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. Your `astro.config.*` loads natively — there is no adapter to install into it and no Wrangler file to write.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/cloudflare-frameworks`; the resource loads its `/astro` export from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/astro` export from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/cloudflare-frameworks
+bun add -d @alchemy.run/frontend-frameworks
 ```
 
 ## Configure Astro

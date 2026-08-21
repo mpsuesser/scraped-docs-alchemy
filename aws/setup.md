@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/setup
 title: "Setup"
 description: "Install Alchemy and connect it to your AWS account — SSO, environment variables, or stored access keys."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 ## Prerequisites
@@ -20,7 +20,7 @@ mkdir my-app && cd my-app && bun init -y
 ## Install
 
 ```sh
-bun add "alchemy@next" "effect@>=4.0.0-beta.105 || >=4.0.0" "@effect/platform-bun@>=4.0.0-beta.105 || >=4.0.0" "@effect/platform-node@>=4.0.0-beta.105 || >=4.0.0"
+bun add "alchemy@next" "effect@>=4.0.0-rc.110 || >=4.0.0" "@effect/platform-bun@>=4.0.0-rc.110 || >=4.0.0" "@effect/platform-node@>=4.0.0-rc.110 || >=4.0.0"
 ```
 
 ## How Alchemy gets AWS credentials

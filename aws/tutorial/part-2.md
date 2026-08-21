@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -52,13 +52,13 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 
 ## Expose a public URL
 
-`fetch` exists, but no one can call it yet. Set `url: true` on the props to ask AWS for a public **Function URL** — no API Gateway, no auth, just a public HTTPS endpoint:
+`fetch` exists, but no one can call it yet. Set `functionUrl: true` on the props to ask AWS for a public **Function URL** — no API Gateway, no auth, just a public HTTPS endpoint:
 
 ```typescript
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
   { main: import.meta.url },
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     return {
       fetch: Effect.succeed(HttpServerResponse.text("Hello from Lambda!")),
@@ -81,7 +81,7 @@ import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const bucket = yield* S3.Bucket("Bucket");
 
@@ -206,7 +206,7 @@ import * as Layer from "effect/Layer";
 // ...
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     /* ... bucket + bindings + fetch ... */
   }),
@@ -246,7 +246,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Yielding `Api` returns the resolved Lambda outputs — the function ARN, role ARN, and the public Function URL we asked for with `url: true`. We surface `functionUrl` as the Stack’s `url` output.
+Yielding `Api` returns the resolved Lambda outputs — the function ARN, role ARN, and the public Function URL we asked for with `functionUrl: true`. We surface `functionUrl` as the Stack’s `url` output.
 
 ## Retire the inline Bucket
 

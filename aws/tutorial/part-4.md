@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod instances of your stack with --stage, and tune resources per stage."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 In [Part 3](part-3.md) you wrote integration tests against a deployed stack. But so far everything has landed in a single environment. In this part you’ll use **stages** — isolated instances of the same Stack — to give every developer, environment, and (in [Part 5](part-5.md)) every pull request its own copy of the infrastructure.
@@ -82,10 +82,10 @@ import * as Effect from "effect/Effect";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Stack.useSync((stack) => ({
     main: import.meta.url,
-    url: true,
+    functionUrl: true,
     memory: stack.stage === "prod" ? 1024 : 512,
   })),
   Effect.gen(function* () {

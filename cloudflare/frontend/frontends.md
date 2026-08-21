@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/frontends
 title: "Frontend frameworks"
 description: "Deploy Vite, Astro, Next.js, Nuxt, SvelteKit, Waku, or any static build to Cloudflare Workers with first-class Website resources."
-access_date: 2026-08-11T18:23:27.602Z
-current_date: 2026-08-11T18:23:27.602Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Alchemy deploys frontends to Cloudflare with a family of
@@ -51,7 +51,7 @@ project skips the build and deploy entirely.
 | TanStack Start (React & Solid) | `Vite` | [TanStack Start](tanstack-start.md) |
 | React Router (incl. RSC) | `Vite` | [React Router](react-router.md) |
 | Vue | `Vite` | [Vue](vue.md) |
-| Foldkit | `Vite` | [Foldkit](foldkit.md) |
+| Foldkit | `Foldkit` | [Foldkit](foldkit.md) |
 | SolidStart / SolidJS SSR | `Vite` | [SolidStart](solidstart.md) |
 | Astro | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |

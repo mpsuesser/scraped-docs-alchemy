@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare
 title: "Cloudflare"
 description: "Build and deploy full applications on Cloudflare with Alchemy — one Worker runtime plus resources like Durable Objects, D1, R2, Queues, and Hyperdrive, wired together by typed bindings."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 An alchemy app on Cloudflare is one **Worker** runtime plus the resources it talks to — databases, object storage, queues, stateful objects — all declared in the same TypeScript program and wired together by typed bindings. Deploy the whole thing with `bun alchemy deploy`; Alchemy figures out what changed.
@@ -44,6 +44,7 @@ New here? [Set up your account](cloudflare/setup.md), then start the [tutorial](
 ## Security & secrets
 
 - [Secrets & env](cloudflare/security/secrets-env.md) — bind `.env` values and secrets into your Workers.
+- [Protect a Worker with Access](cloudflare/security/access.md) — put a login wall in front of a Worker and read the authenticated identity from `ctx.access`.
 
 ## What are you building?
 

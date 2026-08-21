@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/drizzle
 title: "Drizzle ORM with Neon"
 description: "Manage your Drizzle schema as a resource — alchemy regenerates migration SQL on deploy and Neon applies it transactionally on the project or branch."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Drizzle gives you a typed Postgres schema in plain TypeScript;
@@ -53,10 +53,10 @@ writes a new `{timestamp}_migration/` directory containing
 be checked in, and removing the resource from the stack never
 deletes them.
 
-## Feed `migrationsDir` from the schema
+## Feed `migrations` from the schema
 
 Wire the schema's `out` output into the Neon resource's
-`migrationsDir`:
+`migrations`:
 
 ```typescript
 import * as Neon from "alchemy/Neon";
@@ -67,14 +67,14 @@ const project = yield* Neon.Project("app-db", {
 
 const branch = yield* Neon.Branch("app-branch", {
   project,
-  migrationsDir: schema.out,
+  migrations: schema,
 });
 ```
 
 Because `Neon.Branch` depends on `schema.out`, the engine orders
 them for you: `Drizzle.Schema` regenerates pending migration SQL
 first, then `Neon.Branch` scans the directory and applies any new
-files transactionally, recording each in the `neon_migrations`
+files transactionally, recording each in the `__alchemy_migrations`
 tracking table so it runs exactly once. The same prop works on
 `Neon.Project` if you migrate the default branch directly — see
 [Migrations](../data/migrations.md) for the tracking and hashing

@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-rpc
 title: "Effect RPC"
 description: "Schema-first RPC for trust boundaries — declare procedures, construct handler Layers, derive typed clients from the same schema."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Effect RPC is schema-first: every procedure declares `payload`, `success`, and `error` Schemas, and every request and response is validated against them. Use it when data crosses a **trust boundary** — a web app or an external service calling into your stack. That validation has a per-request price (a frame parse, a Schema decode of the payload, a Schema encode of the result — mirrored on the client), so for internal service-to-service calls it is **discouraged**: [Schemaless RPC](schemaless.md) gives you the same typed client with no schema, no runtime checking, and no per-request validation cost.
@@ -110,7 +110,7 @@ export const ApiHttpEffect = RpcServer.toHttpEffect(TaskRpcs).pipe(
 );
 ```
 
-`toHttpEffect` compiles the group into the `{ fetch }` value every host serves — it imports nothing cloud-specific. `layerJson` buffers one body per request and suits plain request/response; streaming rpcs require `RpcSerialization.layerNdjson` — whichever you pick, the client’s serialization layer must match the server’s. A Lambda Function with `url: true` or a Cloudflare Worker returns it as `{ fetch }` — host wiring, storage binding Layers, and deploy live on [Workers](../cloudflare/apis/effect-rpc.md) and [Lambda](../aws/apis/effect-rpc.md).
+`toHttpEffect` compiles the group into the `{ fetch }` value every host serves — it imports nothing cloud-specific. `layerJson` buffers one body per request and suits plain request/response; streaming rpcs require `RpcSerialization.layerNdjson` — whichever you pick, the client’s serialization layer must match the server’s. A Lambda Function with `functionUrl: true` or a Cloudflare Worker returns it as `{ fetch }` — host wiring, storage binding Layers, and deploy live on [Workers](../cloudflare/apis/effect-rpc.md) and [Lambda](../aws/apis/effect-rpc.md).
 
 ## A typed client
 

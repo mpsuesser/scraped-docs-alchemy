@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-http-api
 title: "Effect HTTP API on Lambda"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Effect HTTP defines real REST endpoints — URLs, path params, query strings, typed bodies — behind an RPC-like typed interface, which makes it the natural fit when your consumers aren’t Effect (or aren’t TypeScript at all) and want a plain HTTP client. This page is the Lambda wiring; the concept lives at [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the RPC styles.
@@ -90,7 +90,7 @@ import * as Effect from "effect/Effect";
 
 export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
   "JobFunction",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     return {};
   }),
@@ -225,7 +225,7 @@ import { JobApi } from "./JobApi.ts";
 
 export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
   "JobFunction",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const table = yield* AWS.DynamoDB.Table("JobsTable", {
       partitionKey: "id",

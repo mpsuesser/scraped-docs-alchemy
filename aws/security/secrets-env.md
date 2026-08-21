@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only
@@ -29,7 +29,7 @@ import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const apiKey = yield* Config.redacted("OPENAI_API_KEY");
 
@@ -82,7 +82,7 @@ deploy time, so the env var won't exist at runtime:
 ```typescript
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     return {
       fetch: Effect.gen(function* () {
@@ -166,7 +166,7 @@ import * as Redacted from "effect/Redacted";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const dbSecret = yield* AWS.SecretsManager.Secret("DbSecret", {
       generateSecretString: {

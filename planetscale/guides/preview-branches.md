@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/guides/preview-branches
 title: "Preview branches per PR"
 description: "Give every pull request its own PlanetScale branch — a long-lived database owned by a staging stage, referenced by ephemeral PR stages that fork, migrate, and tear down a branch each."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 PlanetScale's branch model maps directly onto alchemy stages: the
@@ -70,12 +70,12 @@ including each PR stage — forks its own branch:
 ```typescript
 const branch = yield* Planetscale.PostgresBranch("app-branch", {
   database,
-  migrationsDir: "./migrations",
+  migrations: "./migrations",
 });
 ```
 
 Branches fork from `main` by default and carry their own
-`migrationsDir`: pending `.sql` files are applied to the branch on
+`migrations`: pending `.sql` files are applied to the branch on
 every deploy, so each preview migrates itself independently — see
 [Migrations](../data/migrations.md) for ordering, hashing, and the
 tracking table. To fork data as well as schema, `seedData:
@@ -118,7 +118,7 @@ const database = stage.startsWith("pr-")
 const branch = yield* Planetscale.MySQLBranch("app-branch", {
   database,
   isProduction: false,
-  migrationsDir: "./migrations",
+  migrations: "./migrations",
 });
 
 const password = yield* Planetscale.MySQLPassword("app-password", {
@@ -182,7 +182,7 @@ and
 
 - [Drizzle ORM with PlanetScale](drizzle.md) —
   generate the migrations each preview branch applies.
-- [Migrations](../data/migrations.md) — how `migrationsDir` files
+- [Migrations](../data/migrations.md) — how migration files
   are ordered, hashed, and tracked.
 - [Postgres](../data/postgres.md) and [MySQL](../data/mysql.md)
   — the two resource families used above.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -142,6 +142,140 @@ export class Echo extends Cloudflare.Container<Echo>()("Echo", {
 Arbitrary images expose no RPC methods — the DO talks to them purely over their TCP port via `getTcpPort`. To build, tag, and push that image as part of the same Stack, see [Build & push images](../../docker/build-and-push.md) in the Docker hub.
 
 When `image` already references Cloudflare’s managed registry — for example a digest reference pushed by CI, like `registry.cloudflare.com/<accountId>/app@sha256:...` — alchemy deploys the reference as-is and skips the docker pull and push entirely.
+
+## Configure the container with env
+
+A container is a process, not a Worker: it has no bindings, so every piece of configuration reaches it as an environment variable. `env` takes a plain map and lands each entry on the deployment, where the program reads it from `process.env` — the same for a generated (`main`) image, a `context` build, and a pre-built `image`:
+
+```typescript
+export class Api extends Cloudflare.Container<Api>()("Api", {
+  context: \`${import.meta.dirname}/api\`,
+  ports: [{ name: "http", port: 8080 }],
+  env: {
+    PORT: "8080",
+    LOG_LEVEL: "info",
+  },
+}) {}
+```
+
+Values are strings. Wrap a secret in `Redacted` and it stays encrypted in alchemy’s state and out of plan output, while the container still reads a plain string:
+
+```typescript
+env: {
+  SESSION_KEY: Redacted.make(process.env.SESSION_KEY!),
+}
+```
+
+## Read another resource’s outputs
+
+A class body is module scope, so there is nowhere to `yield*` the bucket, queue, or database whose output you need — and a bare declaration is an Effect, not a resolved handle, so `Uploads.bucketName` is `undefined` until something yields it. Pass the props as an `Effect.gen` instead; inside it, sibling resources resolve like anywhere else:
+
+```typescript
+import * as Effect from "effect/Effect";
+
+export const Uploads = Cloudflare.R2.Bucket("Uploads");
+
+export class Api extends Cloudflare.Container<Api>()(
+  "Api",
+  Effect.gen(function* () {
+    const uploads = yield* Uploads;
+    return {
+      context: \`${import.meta.dirname}/api\`,
+      env: { BUCKET_NAME: uploads.bucketName },
+    };
+  }),
+) {}
+```
+
+The reference is what orders the deploy: the bucket is created before the container application that reads its name.
+
+## Connect to a SQL database
+
+An **effectful** (`main`) container runs your Effect program, so it resolves a database capability the same way a Worker does — declare the connection once, then bind it:
+
+```typescript
+import * as Prisma from "alchemy/Prisma";
+import * as Effect from "effect/Effect";
+
+export const Connection = Effect.gen(function* () {
+  const project = yield* Prisma.Project("app", {
+    createDatabase: false,
+    region: "us-east-1",
+  });
+  const postgres = yield* Prisma.Postgres("db", {
+    project,
+    region: "us-east-1",
+  });
+  return yield* Prisma.Connection("api", { database: postgres });
+});
+```
+
+```typescript
+import * as Prisma from "alchemy/Prisma";
+import * as SQL from "alchemy/SQL/Postgres";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { Api } from "./Api.ts";
+import { Connection } from "./Db.ts";
+
+export default Api.make(
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const db = yield* Prisma.Connect(Connection);
+    const sql = yield* SQL.Postgres({ url: db.databaseUrl });
+
+    return Api.of({
+      fetch: Effect.gen(function* () {
+        const users = yield* sql\`SELECT * FROM users\`;
+        return yield* HttpServerResponse.json(users);
+      }),
+    });
+  }).pipe(Effect.provide(Prisma.ConnectBinding)),
+);
+```
+
+You never name `DATABASE_URL`. The container has no bindings — it is a process, not a Worker — so `Prisma.Connect` writes the connection’s outputs onto the deployment as environment variables and reads them back at runtime. The capability owns both ends.
+
+Start it with outbound networking, or the container never reaches the database at all:
+
+```typescript
+Effect.provide(Cloudflare.Containers.layer(Api, { enableInternet: true }))
+```
+
+## Connect an arbitrary image to a database
+
+An image you brought yourself knows nothing about alchemy, so there is no capability to bind — you name the variable and hand it the connection string. Give it the provider’s **pooled** endpoint (Prisma’s `databaseUrl` already prefers it; on Neon it is `branch.pooledConnectionUri`, on PlanetScale `role.connectionUrlPooled`), since nothing else is pooling those connections on the container’s behalf:
+
+```typescript
+import * as Cloudflare from "alchemy/Cloudflare";
+import * as Effect from "effect/Effect";
+import { Connection } from "./Db.ts";
+
+export class Web extends Cloudflare.Container<Web>()(
+  "Web",
+  Effect.gen(function* () {
+    const connection = yield* Connection;
+    return {
+      context: \`${import.meta.dirname}/web\`,
+      ports: [{ name: "http", port: 8080 }],
+      env: {
+        DATABASE_URL: connection.databaseUrl,
+        PORT: "8080",
+      },
+    };
+  }),
+) {}
+```
+
+Your image reads `DATABASE_URL` with whatever client it already uses — `pg`, Prisma, Rails, Django. Nothing about the container is alchemy-specific; only the value’s provenance is.
+
+A Worker fronting the same database still binds Hyperdrive — see [Hyperdrive](../data/hyperdrive.md). The two coexist: point Hyperdrive at the *direct* origin (it pools for the Worker) and the container at the pooled one.
+
+## Which capabilities reach a container
+
+The split follows the transport. A capability whose config travels as environment variables works in a container: `Prisma.Connect`, and the token-scoped HTTP clients for [R2](../data/r2.md), [KV](../data/kv.md), and [Queues](../messaging/queues.md) — `Cloudflare.R2.ReadWriteBucketHttp` and friends, which mint a scoped API token instead of using a native binding.
+
+A capability that *is* a workerd binding cannot: `Cloudflare.Hyperdrive.Connect`, `Cloudflare.D1.QueryDatabase`, and every `*Binding` layer resolve against the Workers runtime, which no container process has. Use the `*Http` layer where one exists, and environment variables otherwise.
 
 ## Bind on an async Worker
 

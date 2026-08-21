@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/planetscale/guides/drizzle
 title: "Drizzle ORM with PlanetScale"
-description: "Manage your PlanetScale schema in TypeScript with Drizzle — migrations generated on deploy (Postgres) or checked in (MySQL), applied through the branch's migrationsDir, connected via role and password origins."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+description: "Manage your PlanetScale schema in TypeScript with Drizzle — migrations generated on deploy (Postgres) or checked in (MySQL), applied through the branch's migrations prop, connected via role and password origins."
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 Drizzle pairs with PlanetScale in one deploy-driven flow: your schema
@@ -11,7 +11,7 @@ lives in TypeScript, migration SQL lands in a directory, and the
 database branch applies whatever is pending as part of `alchemy
 deploy`. On Postgres the `Drizzle.Schema` resource regenerates that
 SQL automatically; on MySQL you generate it with `drizzle-kit` and
-check it in. Both engines converge on the same `migrationsDir`
+check it in. Both engines converge on the same `migrations`
 contract.
 
 ## Define the schema
@@ -76,13 +76,13 @@ meant to be checked in.
 
 ## Apply them on the branch
 
-Wire the branch's `migrationsDir` to the schema resource's `out`
+Wire the branch's `migrations` to the schema resource's `out`
 output:
 
 ```typescript
 const branch = yield* Planetscale.PostgresBranch("app-branch", {
   database,
-  migrationsDir: schema.out,
+  migrations: schema,
 });
 ```
 
@@ -148,7 +148,7 @@ The branch takes the checked-in directory directly, and a
 const branch = yield* Planetscale.MySQLBranch("app-branch", {
   database,
   isProduction: false,
-  migrationsDir: "./migrations",
+  migrations: "./migrations",
 });
 
 const password = yield* Planetscale.MySQLPassword("app-password", {

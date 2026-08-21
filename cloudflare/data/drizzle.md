@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Replace raw pg with Drizzle's effect-postgres integration, manage your schema as a resource, and have alchemy generate and apply migrations on every deploy — on Neon or PlanetScale."
-access_date: 2026-08-12T08:18:21.533Z
-current_date: 2026-08-12T08:18:21.533Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 The previous tutorial wired your Worker to Neon Postgres through Hyperdrive. Now we’ll layer **Drizzle ORM** on top: typed schemas, typed queries, and — most usefully — a `Drizzle.Schema` resource that regenerates migration SQL programmatically on every deploy and lets `Neon.Branch` apply them transactionally.
@@ -79,7 +79,7 @@ bun add -d drizzle-kit@1.0.0-rc.5-ab785fc @types/pg
 
 ## Add Drizzle.Schema to your Db effect
 
-Inline the schema resource directly into `NeonDb` — its `out` output becomes the input to `Neon.Branch` ’s `migrationsDir`, so alchemy automatically schedules `Drizzle.Schema` *before* the branch resource each deploy:
+Inline the schema resource directly into `NeonDb` — its `out` output becomes the input to `Neon.Branch` ’s `migrations`, so alchemy automatically schedules `Drizzle.Schema` *before* the branch resource each deploy:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -97,7 +97,7 @@ export const NeonDb = Effect.gen(function* () {
   const branch = yield* Neon.Branch("app-branch", { project });
   const branch = yield* Neon.Branch("app-branch", {
     project,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
   return { project, branch };
   return { project, branch, schema };
@@ -236,7 +236,7 @@ Add a column or a table to `src/schema.ts` and run `bun alchemy deploy` again. T
 
 1. Diffs the new schema against the latest snapshot.
 2. Writes a *new* migration directory with just the delta SQL.
-3. `Neon.Branch` notices the new file, runs it inside a transaction, and records it in the `neon_migrations` tracking table so it’s not re-applied.
+3. `Neon.Branch` notices the new file, runs it inside a transaction, and records it in the `__alchemy_migrations` tracking table so it’s not re-applied.
 
 Roll back simply by reverting your schema change and redeploying — or by spinning up a `Neon.Branch` that forks from a point-in-time LSN before the migration.
 
@@ -261,7 +261,7 @@ import * as Layer from "effect/Layer";
     ),
 ```
 
-Then rebuild `src/Db.ts` around a PlanetScale Postgres database, branch, and role. `Drizzle.Schema` is unchanged, and `Planetscale.PostgresBranch` accepts the same `migrationsDir` contract `Neon.Branch` did — it scans the directory and applies pending migrations transactionally on every deploy:
+Then rebuild `src/Db.ts` around a PlanetScale Postgres database, branch, and role. `Drizzle.Schema` is unchanged, and `Planetscale.PostgresBranch` accepts the same `migrations` contract `Neon.Branch` did — it scans the directory and applies pending migrations transactionally on every deploy:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -282,7 +282,7 @@ export const PlanetscaleDb = Effect.gen(function* () {
 
   const branch = yield* Planetscale.PostgresBranch("app-branch", {
     database,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   const role = yield* Planetscale.PostgresRole("app-role", {

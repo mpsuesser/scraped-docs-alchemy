@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sns
 title: "SNS"
 description: "Create an SNS Topic, publish to it from a Lambda with the Publish binding, fan messages out to SQS queues, and consume notifications as a typed Stream."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 **SNS** is AWS's pub/sub layer: publishers send a message to a
@@ -68,7 +68,7 @@ import { Orders } from "./topic.ts";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const topic = yield* Orders;
     const publish = yield* SNS.Publish(topic);

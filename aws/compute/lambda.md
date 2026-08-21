@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 **Lambda** is Alchemy’s default AWS runtime: a class that bundles an Effect program into a zip, deploys it as a Lambda Function, and generates its IAM execution role from the bindings you actually use. Serve HTTP over a public **Function URL**, or consume events — every building block in this section plugs in through the same pattern: S3 notifications (`Lambda.BucketEventSource`), SQS queues (`Lambda.QueueEventSource`), Kinesis streams (`Lambda.StreamEventSource`), and DynamoDB Streams (`Lambda.TableEventSource`).
@@ -89,13 +89,13 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 
 ## Expose a public URL
 
-`fetch` exists, but no one can call it yet. Set `url: true` on the props to ask AWS for a public **Function URL** — no API Gateway, no auth, just a public HTTPS endpoint:
+`fetch` exists, but no one can call it yet. Set `functionUrl: true` on the props to ask AWS for a public **Function URL** — no API Gateway, no auth, just a public HTTPS endpoint:
 
 ```typescript
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
   { main: import.meta.url },
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     return {
       fetch: Effect.succeed(HttpServerResponse.text("Hello from Lambda!")),
@@ -118,10 +118,10 @@ import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
-  { main: import.meta.url, url: true },
+  { main: import.meta.url, functionUrl: true },
   Stack.useSync((stack) => ({
     main: import.meta.url,
-    url: true,
+    functionUrl: true,
     memory: stack.stage === "prod" ? 1024 : 512,
   })),
   Effect.gen(function* () {
@@ -158,7 +158,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Yielding `Api` returns the resolved Lambda outputs — the function ARN, role ARN, log group, and the public Function URL we asked for with `url: true`. We surface `functionUrl` as the Stack’s `url` so the test harness can find it.
+Yielding `Api` returns the resolved Lambda outputs — the function ARN, role ARN, log group, and the public Function URL we asked for with `functionUrl: true`. We surface `functionUrl` as the Stack’s `url` so the test harness can find it.
 
 ## Deploy
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/shared-database
 title: "Shared database across stages"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, copy-on-write branches, no extra clusters."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 [Stages](../../environments/stages.md) make it cheap to spin up isolated copies
@@ -48,7 +48,7 @@ export const NeonDb = Effect.gen(function* () {
 
   const branch = yield* Neon.Branch("app-branch", {
     project,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   return { project, branch, schema };
@@ -127,7 +127,7 @@ is identical. The branch creates per-stage:
 ```typescript
 const branch = yield* Neon.Branch("app-branch", {
   project,
-  migrationsDir: schema.out,
+  migrations: schema,
 });
 ```
 
@@ -160,7 +160,7 @@ export const NeonDb = Effect.gen(function* () {
 
   const branch = yield* Neon.Branch("app-branch", {
     project,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   return { project, branch, schema };
@@ -207,7 +207,7 @@ const database = stage.startsWith("pr-")
 
 const branch = yield* Planetscale.PostgresBranch("app-branch", {
   database,
-  migrationsDir: schema.out,
+  migrations: schema,
 });
 ```
 

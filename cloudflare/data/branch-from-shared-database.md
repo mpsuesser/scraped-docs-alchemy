@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/branch-from-shared-database
 title: "Branch from a shared database"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, cheap branches, no extra clusters."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-21T19:05:43.655Z
+current_date: 2026-08-21T19:05:43.655Z
 ---
 
 In the [Hyperdrive](hyperdrive.md) tutorial you provisioned a `Neon.Project` and a `Neon.Branch`, then [Drizzle](drizzle.md) layered automatic migrations on top. Both work fine with a single stage — but the moment you start deploying PR previews (`pr-147`, `pr-148`, …) the default flow becomes painful:
@@ -35,7 +35,7 @@ export const NeonDb = Effect.gen(function* () {
 
   const branch = yield* Neon.Branch("app-branch", {
     project,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   return { project, branch, schema };
@@ -105,7 +105,7 @@ Nothing changes below the project line. `Neon.Branch` still creates a fresh bran
 ```typescript
 const branch = yield* Neon.Branch("app-branch", {
   project,
-  migrationsDir: schema.out,
+  migrations: schema,
 });
 ```
 
@@ -136,7 +136,7 @@ export const NeonDb = Effect.gen(function* () {
 
   const branch = yield* Neon.Branch("app-branch", {
     project,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   return { project, branch, schema };
@@ -209,7 +209,7 @@ export const PlanetscaleDb = Effect.gen(function* () {
 
   const branch = yield* Planetscale.PostgresBranch("app-branch", {
     database,
-    migrationsDir: schema.out,
+    migrations: schema,
   });
 
   const role = yield* Planetscale.PostgresRole("app-role", {
