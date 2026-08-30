@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Cloudflare Workers with Cloudflare.Website.Nuxt — nitro's cloudflare_module preset, native nuxt.config.ts loading, and wrangler-free local dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `Cloudflare.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app as a Cloudflare Worker. It builds the app through your project’s own `@nuxt/kit` with nitro’s `cloudflare_module` preset: the nitro server bundle deploys as the Worker script, and client assets plus prerendered pages deploy as Worker static assets. There is no `nitro.preset` to edit, no Wrangler file, and no build command to run.
@@ -29,9 +29,24 @@ export default defineNuxtConfig({
 });
 ```
 
-Deploy-specific overrides are merged over it via the `nuxt` prop (the override wins) — see [Prerendering](#prerendering) below for an example.
-
 Don’t set `nitro.preset` — the Cloudflare deploy target owns the preset, and a foreign preset is a hard error.
+
+## Deploy-time overrides
+
+Config that only exists at deploy time — a stage-dependent base URL, a per-environment `runtimeConfig` — goes in the `nuxt` prop. It merges over `nuxt.config.ts` as the highest-priority layer, so a value here wins:
+
+```typescript
+export const Website = Cloudflare.Website.Nuxt("Website", {
+  nuxt: {
+    app: { baseURL: "/docs/" },
+    runtimeConfig: {
+      public: { apiBase: "https://api.example.com" },
+    },
+  },
+});
+```
+
+The bag must be JSON-serializable — no functions, plugins, or modules; those belong in `nuxt.config.ts`. `nitro.preset` stays owned by the deploy target.
 
 ## Declare the Website
 
@@ -121,14 +136,12 @@ export default defineEventHandler(async (event) => {
 
 ## Prerendering
 
-Routes marked for prerendering in `routeRules` (or via `nitro.prerender`) render at build time into `.output/public` and are served as static assets, with no Worker invocation:
+Routes marked for prerendering in `routeRules` (or via `nitro.prerender`) render at build time into `.output/public` and are served as static assets, with no Worker invocation. Configure them in your `nuxt.config.ts`, which loads natively:
 
 ```typescript
-export const Website = Cloudflare.Website.Nuxt("Website", {
-  nuxt: {
-    routeRules: {
-      "/about": { prerender: true },
-    },
+export default defineNuxtConfig({
+  routeRules: {
+    "/about": { prerender: true },
   },
 });
 ```

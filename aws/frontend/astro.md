@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to AWS with AWS.Website.Astro — SSR on a streaming Lambda Function URL, static output on S3 + CloudFront, and Astro's own dev server under alchemy dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.Astro` deploys an [Astro](https://astro.build/) project to AWS. It runs Astro’s programmatic build with a wrangler-free AWS Lambda adapter: server-rendered pages stream from a Lambda Function URL, prerendered pages and client assets are served from a private S3 bucket through CloudFront, routed at the edge. Your `astro.config.*` loads natively — there is no adapter to install into it and no CloudFormation to write.
@@ -57,15 +57,13 @@ See [examples/aws-website-astro](https://github.com/alchemy-run/alchemy/tree/mai
 
 ## Add environment variables
 
-The server function’s environment is configured under `server.environment` — plain values, or outputs from other resources in the Stack:
+The server function’s environment is configured under `env` — plain values, or outputs from other resources in the Stack:
 
 ```typescript
 export const Website = AWS.Website.Astro("Website", {
-  server: {
-    environment: {
-      GREETING: "Hello from Alchemy!",
-      API_BASE: api.url,
-    },
+  env: {
+    GREETING: "Hello from Alchemy!",
+    API_BASE: api.url,
   },
 });
 ```
@@ -115,13 +113,30 @@ export default defineConfig({
 });
 ```
 
-The `astro` prop on the resource exposes common serializable options for deploy-specific overrides; Astro merges them *over* the config file (scalars override, arrays like `integrations` and `vite.plugins` concatenate after the file’s):
+A config file can’t consume Alchemy `Output` s or vary by stage. For those values the `astro` prop is a deploy-time override bag — a serializable subset (`site`, `base`, `output`, `srcDir`, `publicDir`, `outDir`, `trailingSlash`) merged *over* the config file, so a value set here wins:
+
+```typescript
+import { Stack } from "alchemy/Stack";
+
+Effect.gen(function* () {
+  const { stage } = yield* Stack;
+
+  const site = yield* AWS.Website.Astro("Website", {
+    astro: {
+      site:
+        stage === "prod"
+          ? "https://blog.example.com"
+          : \`https://${stage}.example.com\`,
+    },
+  });
+});
+```
+
+Use `config` to load an alternate config file (relative to `rootDir`) instead of astro’s own `astro.config.*` discovery:
 
 ```typescript
 export const Website = AWS.Website.Astro("Website", {
-  astro: {
-    site: "https://preview.example.com",
-  },
+  config: "astro.deploy.config.ts",
 });
 ```
 
@@ -138,9 +153,8 @@ Two options are managed for you regardless of the config file:
 
 ```typescript
 const site = yield* AWS.Website.Astro("Web", {
-  domain: {
-    name: "app.example.com",
-    hostedZoneId: zone.hostedZoneId,
-  },
+  domain: { name: "app.example.com" },
 });
 ```
+
+The hosted zone is inferred from the hostname. Pass `hostedZoneId` to pin it when several zones could match.

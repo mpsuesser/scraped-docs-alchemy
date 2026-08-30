@@ -1,0 +1,196 @@
+---
+url: https://alchemy.run/fly/frontend/static-site
+title: "Static sites"
+description: "Deploy a static site to Fly with Fly.Website.StaticSite — a build command, a Node static-file server on a Machine, and https://{app}.fly.dev (or your hostname) on deploy."
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
+---
+
+`Fly.Website.StaticSite` runs a build command, content-hashes the
+output directory, and deploys a [Service](https://alchemy.run/fly/compute/services)
+that serves those files (plus `GET /health`) from a tiny Node
+static-file server. Use it when the site has its own build step —
+Hugo, Zola, Eleventy, or any custom pipeline.
+
+For Vite-based projects, prefer [`Fly.Website.Vite`](vite.md).
+
+## Declare the Website
+
+`build.command` and `build.output` are required. Declare the site
+as a module-level const:
+
+```typescript
+// alchemy.run.ts
+import * as Fly from "alchemy/Fly";
+
+export const Website = Fly.Website.StaticSite("Website", {
+  build: { command: "hugo --minify", output: "public" },
+});
+```
+
+The build is a [`Command.Build`](https://alchemy.run/providers/command/build) —
+memoized, so unchanged inputs skip the rebuild
+([details](../../command/memoization.md)). By default every non-gitignored
+file in `path` (plus the nearest lockfile) is hashed. Narrow it with
+`memo: { include: [...] }`, or set `memo: false` to rebuild on every
+deploy.
+
+## Add it to the Stack
+
+Yield the site from your Stack and return its URL:
+
+```typescript
+// alchemy.run.ts
+import * as Alchemy from "alchemy";
+import * as Effect from "effect/Effect";
+
+export default Alchemy.Stack(
+  "MyStaticSite",
+  {
+    providers: Fly.providers(),
+    state: Alchemy.localState(),
+  },
+  Effect.gen(function* () {
+    const site = yield* Website;
+    return { url: site.url };
+  }),
+);
+```
+
+One `StaticSite` expands into a [Fly App](https://alchemy.run/fly/compute/apps)
+(created if you omit `app`), a Service running Node on a Machine
+(port 3000), and a shared IPv4 so `https://{app}.fly.dev` answers.
+Built files are packed at `/app/dist`. `site.url` is that fly.dev
+URL (or `https://{domain}` when you pass `domain`). `app`,
+`service`, `ip`, and `certificate` are undefined during
+`alchemy dev`.
+
+Pass `app` to put the site on an App you already declared:
+
+```typescript
+export const Site = Fly.App("Site");
+
+export const Website = Fly.Website.StaticSite("Website", {
+  build: { command: "hugo --minify", output: "public" },
+  app: Site,
+});
+```
+
+## Building from a subdirectory
+
+`path` is the working directory for `build.command`. `build.output`
+is relative to `path` (default: process cwd):
+
+```typescript
+export const Website = Fly.Website.StaticSite("Web", {
+  path: "apps/web",
+  build: { command: "npm run build", output: "dist" },
+});
+```
+
+## SPAs and 404 pages
+
+A miss — a request that matches no output file — can be answered two
+ways, and they are mutually exclusive:
+
+```typescript
+// Single-page app: misses serve index.html with a 200 so the
+// client-side router takes over.
+export const App = Fly.Website.StaticSite("App", {
+  build: { command: "npm run build", output: "dist" },
+  assets: { notFoundHandling: "single-page-application" },
+});
+
+// Static site: misses return a real 404 status with your error page.
+export const Docs = Fly.Website.StaticSite("Docs", {
+  build: { command: "hugo --minify", output: "public" },
+  assets: { notFoundHandling: "404-page" },
+});
+```
+
+## Add environment variables
+
+Top-level `env` is copied onto `process.env` for the build and onto
+the Machine at deploy. Wrap secrets with `Redacted`. It is not
+Worker bindings and not AWS `server.environment`:
+
+```diff lang="typescript"
+export const Website = Fly.Website.StaticSite("Website", {
+  build: { command: "hugo --minify", output: "public" },
++  env: {
++    HUGO_ENV: "production",
++  },
+});
+```
+
+Generators that inline at build time pick these up. The hosted
+process is the generated static-file server — there is no framework
+SSR runtime.
+
+## Local development
+
+During `alchemy dev`, `dev.command` replaces the build with that
+process as a long-lived child. No Fly App, Service, IP, or
+certificate is created, and `site.url` is the local address
+detected from stdout (`dev.url` pins it when detection fails).
+`dev` also accepts `cwd` and `env` overrides:
+
+```typescript
+export const Website = Fly.Website.StaticSite("Website", {
+  build: { command: "hugo --minify", output: "public" },
+  dev: { command: "hugo server" },
+});
+```
+
+Without `dev.command`, the site still builds and a local static
+server serves `outdir` — still no cloud resources. Wrap the site in
+`Alchemy.remote()` to deploy the live path even during dev:
+
+```typescript
+export const Website = Fly.Website.StaticSite("Website", {
+  build: { command: "hugo --minify", output: "public" },
+}).pipe(Alchemy.remote());
+```
+
+## Custom domain
+
+`domain` is a hostname string. Alchemy requests ACME
+([`Fly.Certificate`](https://alchemy.run/providers/fly/certificate)) on the App and
+`url` becomes `https://{domain}`. Point DNS at the App yourself —
+v1 does not create records:
+
+```typescript
+export const Website = Fly.Website.StaticSite("Website", {
+  build: { command: "hugo --minify", output: "public" },
+  domain: "blog.example.com",
+});
+```
+
+See [IPs & certificates](https://alchemy.run/fly/networking) for A/AAAA records and
+the ACME challenge.
+
+## When to use a framework resource instead
+
+`StaticSite` is the general fallback for any shell command that
+produces a directory of files. Frameworks with dedicated resources
+have a better path: [Astro](astro.md),
+[Foldkit](foldkit.md), [Next.js](nextjs.md),
+[Nuxt](nuxt.md), [Octane](octane.md),
+[React Router](react-router.md),
+[SolidStart](solidstart.md),
+[SvelteKit](sveltekit.md),
+[TanStack Start](tanstack-start.md),
+[Vite](vite.md),
+[Vocs](vocs.md), and [Waku](waku.md). Those
+resources run the framework's own programmatic build and skip the
+`build.command` / `build.output` contract. Reach for `StaticSite`
+when there is no dedicated resource — Zola, Hugo, or any other
+generator.
+
+## Where next
+
+- [Websites on Fly](websites.md) — the full websites
+  surface, including Node SSR frameworks
+- [StaticSite reference](https://alchemy.run/providers/fly/website/staticsite) — every
+  prop and attribute
+- [Fly on Alchemy](../../fly.md) — the Fly provider hub

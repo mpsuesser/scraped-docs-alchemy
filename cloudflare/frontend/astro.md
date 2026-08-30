@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. Your `astro.config.*` loads natively — there is no adapter to install into it and no Wrangler file to write.
@@ -165,13 +165,29 @@ export default defineConfig({
 });
 ```
 
-The `astro` prop on the resource exposes common serializable options for deploy-specific overrides; Astro merges them *over* the config file (scalars override, arrays like `integrations` and `vite.plugins` concatenate after the file’s):
+A config file can’t consume Alchemy `Output` s or vary by stage. For those values the `astro` prop is a deploy-time override bag — a serializable subset (`site`, `base`, `output`, `srcDir`, `publicDir`, `outDir`, `trailingSlash`) merged *over* the config file, so a value set here wins:
+
+```typescript
+import { Stack } from "alchemy/Stack";
+
+export const Website = Cloudflare.Website.Astro(
+  "Website",
+  Stack.useSync(({ stage }) => ({
+    astro: {
+      site:
+        stage === "prod"
+          ? "https://blog.example.com"
+          : \`https://${stage}.example.com\`,
+    },
+  })),
+);
+```
+
+Use `config` to load an alternate config file (relative to `rootDir`) instead of astro’s own `astro.config.*` discovery:
 
 ```typescript
 export const Website = Cloudflare.Website.Astro("Website", {
-  astro: {
-    site: "https://preview.example.com",
-  },
+  config: "astro.deploy.config.ts",
 });
 ```
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/foldkit
 title: "Foldkit"
 description: "Deploy a Foldkit app to Cloudflare with the Foldkit resource — one declaration, no Wrangler config."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 [Foldkit](https://foldkit.dev) is an Elm-architecture frontend
@@ -103,12 +103,13 @@ A Foldkit app that uses URL routing (`Runtime.makeApplication` with
 client, so a deep link like `/counter/42` arrives at the server as a
 request for a file that doesn't exist.
 
-`Foldkit` sets `notFoundHandling: "single-page-application"` by
-default, which returns `index.html` for unmatched paths instead of a
-404 — the Foldkit runtime resolves the route once the app boots.
+`Foldkit` defaults `assets.notFoundHandling` to
+`"single-page-application"`, which returns `index.html` for unmatched
+paths instead of a 404 — the Foldkit runtime resolves the route once
+the app boots.
 
-Pass `assets` to override it. Anything you pass merges over the
-default, so a Foldkit app that ships a real 404 page can opt out:
+A Foldkit app that ships a real 404 page overrides the default with
+`"404-page"` — Workers Assets serves the nearest `404.html`:
 
 ```typescript
 export const Website = Cloudflare.Website.Foldkit("Foldkit", {

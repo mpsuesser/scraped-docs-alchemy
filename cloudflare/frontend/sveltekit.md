@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Cloudflare Workers with Cloudflare.Website.SvelteKit — a wrangler-free in-memory adapter, real bindings on platform.env, and full-HMR local dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `Cloudflare.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app as a Cloudflare Worker. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Cloudflare adapter, then re-bundles the server output for workerd. Client assets and prerendered pages deploy as Worker static assets; dynamic routes are served by the generated Worker. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it), no `@sveltejs/adapter-cloudflare` to install, and no Wrangler file.
@@ -18,7 +18,7 @@ bun add -d @alchemy.run/frontend-frameworks
 
 ## Configure SvelteKit
 
-Your project’s `vite.config.ts` loads natively — your Vite plugins and the kit options in your `sveltekit(...)` call all apply as usual. Alchemy injects its own wrangler-free Cloudflare adapter (replacing any adapter you declare, with a warning), so a fresh SvelteKit project deploys as-is. Deploy-specific kit overrides can also be passed via the `kit` prop, which merges over your `sveltekit(...)` options — see [Kit and adapter options](#kit-and-adapter-options) below. A project without a `vite.config.*` works too: the resource falls back to a fully programmatic build.
+Your project’s `vite.config.ts` loads natively — your Vite plugins and the kit options in your `sveltekit(...)` call all apply as usual. Alchemy injects its own wrangler-free Cloudflare adapter (replacing any adapter you declare, with a warning), so a fresh SvelteKit project deploys as-is. Deploy-specific kit overrides can also be passed via the `kit` prop, which merges over your `sveltekit(...)` options — see [Kit options and 404 handling](#kit-options-and-404-handling) below. A project without a `vite.config.*` works too: the resource falls back to a fully programmatic build.
 
 ## Declare the Website
 
@@ -107,7 +107,7 @@ export const load = async ({ platform }) => {
 
 `platform.env.CACHE` is typed as a KV namespace and `platform.env.API_KEY` as a string — renaming a binding in `alchemy.run.ts` is a type error in your routes.
 
-## Kit and adapter options
+## Kit options and 404 handling
 
 Since kit v3 there is no `svelte.config.js` — kit options live in the `sveltekit(...)` call in your `vite.config.ts`, which loads natively:
 
@@ -126,23 +126,27 @@ export default defineConfig({
 });
 ```
 
-The `kit` prop on the resource is a deploy-time override layer merged over those options (the override wins). The generated Cloudflare adapter is configured via `adapter`:
+The `kit` prop is the deploy-time override bag: JSON-serializable kit config merged over your own `sveltekit(...)` options (the prop wins). Use it for per-stage values or alchemy `Output` s your config file can’t compute:
 
 ```typescript
 export const Website = Cloudflare.Website.SvelteKit("Website", {
   kit: {
     paths: { base: "/docs" },
   },
-  adapter: {
-    notFoundHandling: "404-page",
-    fallback: "spa",
-  },
 });
 ```
 
-Don’t set `kit.adapter` — Alchemy injects its own wrangler-free Cloudflare adapter (an adapter declared in your `sveltekit(...)` call is replaced with a warning).
+No functions or plugins in the bag — `preprocess`, `vitePlugin`, and the other construction-time options belong in your `sveltekit(...)` call. Don’t set an `adapter` in either place: Alchemy always injects its own wrangler-free Cloudflare adapter (a declared adapter is replaced with a warning).
 
-A few construction-time options (`preprocess`, `extensions`, `compilerOptions`, `vitePlugin`) can’t be injected through the `kit` prop when your project has a `vite.config.*` — put those in your own `sveltekit(...)` call.
+404 behavior is driven by `assets.notFoundHandling` — the one knob configures both the build-time fallback-page generation and the assets layer that serves it. The generated 404 page renders the app shell, so kit’s own error page shows:
+
+```typescript
+export const Website = Cloudflare.Website.SvelteKit("Website", {
+  assets: {
+    notFoundHandling: "404-page",
+  },
+});
+```
 
 ## Local dev
 

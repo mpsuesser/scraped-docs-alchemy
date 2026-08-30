@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to AWS with AWS.Website.Waku — RSC server on a streaming Lambda Function URL, SSG pages and assets on S3 + CloudFront, and Waku's own dev server under alchemy dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to AWS. It builds the project programmatically: the RSC server runs on a Lambda Function URL with response streaming, and the client output — including SSG-prerendered pages — is served from a private S3 bucket through CloudFront. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -32,7 +32,17 @@ export default defineConfig({
 });
 ```
 
-Options set on the resource’s `waku` prop (`srcDir`, `distDir`, `basePath`, …) merge over the file, per key. The one key Alchemy owns is `unstable_adapter` — setting it fails the build with an actionable error.
+`waku.config.*` is the home for static configuration. For deploy-time values — anything that varies by stage — the `waku` prop merges overrides over the file, per key:
+
+```typescript
+export const Website = AWS.Website.Waku("Website", {
+  waku: {
+    basePath: "/docs/",
+  },
+});
+```
+
+The one key Alchemy owns is `unstable_adapter` — setting it fails the build with an actionable error.
 
 ## Declare the Website
 
@@ -71,15 +81,13 @@ See [examples/aws-website-waku](https://github.com/alchemy-run/alchemy/tree/main
 
 ## Add environment variables
 
-The server function’s environment is configured under `server.environment` — plain values, or outputs from other resources in the Stack:
+The server function’s environment is configured under `env` — plain values, or outputs from other resources in the Stack:
 
 ```typescript
 export const Website = AWS.Website.Waku("Website", {
-  server: {
-    environment: {
-      GREETING: "Hello from alchemy",
-      API_BASE: api.url,
-    },
+  env: {
+    GREETING: "Hello from alchemy",
+    API_BASE: api.url,
   },
 });
 ```
@@ -113,9 +121,8 @@ bun alchemy dev
 
 ```typescript
 const site = yield* AWS.Website.Waku("Web", {
-  domain: {
-    name: "app.example.com",
-    hostedZoneId: zone.hostedZoneId,
-  },
+  domain: { name: "app.example.com" },
 });
 ```
+
+The hosted zone is inferred from the hostname. Pass `hostedZoneId` to pin it when several zones could match.

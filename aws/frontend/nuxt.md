@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to AWS with AWS.Website.Nuxt — nitro's aws-lambda preset on a streaming Lambda Function URL, S3 assets behind CloudFront, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to AWS. It builds the app through your project’s own `@nuxt/kit` with nitro’s `aws-lambda` preset: the nitro server runs on a Lambda Function URL with response streaming, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the Lambda. There is no `nitro.preset` to edit and no build command to run.
@@ -29,9 +29,24 @@ export default defineNuxtConfig({
 });
 ```
 
-Deploy-specific overrides are merged over it via the `nuxt` prop (the override wins) — see [Prerendering](#prerendering) below for an example.
-
 Don’t set `nitro.preset` — the AWS deploy target owns the preset (`aws-lambda` with streaming enabled), and a foreign preset is a hard error.
+
+## Deploy-time overrides
+
+Config that only exists at deploy time — a stage-dependent base URL, a per-environment `runtimeConfig` — goes in the `nuxt` prop. It merges over `nuxt.config.ts` as the highest-priority layer, so a value here wins:
+
+```typescript
+export const Website = AWS.Website.Nuxt("Website", {
+  nuxt: {
+    app: { baseURL: "/docs/" },
+    runtimeConfig: {
+      public: { apiBase: "https://api.example.com" },
+    },
+  },
+});
+```
+
+The bag must be JSON-serializable — no functions, plugins, or modules; those belong in `nuxt.config.ts`. `nitro.preset` stays owned by the deploy target.
 
 ## Declare the Website
 
@@ -68,20 +83,18 @@ See [examples/aws-website-nuxt](https://github.com/alchemy-run/alchemy/tree/main
 
 ## Add environment variables
 
-The server function’s environment is configured under `server.environment` — plain values, or outputs from other resources in the Stack:
+The server function’s environment is configured under `env` — plain values, or outputs from other resources in the Stack:
 
 ```typescript
 export const Website = AWS.Website.Nuxt("Website", {
-  server: {
-    memorySize: 2048,
-    environment: {
-      NUXT_PUBLIC_API_BASE: api.url,
-    },
+  memorySize: 2048,
+  env: {
+    NUXT_PUBLIC_API_BASE: api.url,
   },
 });
 ```
 
-`environment` values are set on the Lambda on deploy and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes. The other `server` fields tune the Lambda itself (`memorySize`, `timeout`, `architecture`, `runtime`).
+`env` values are set on the Lambda on deploy and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes. Sibling props tune the Lambda itself (`memorySize`, `timeout`, `architecture`, `runtime`).
 
 ## Read the environment in server code
 
@@ -95,14 +108,12 @@ export default defineEventHandler(() => {
 
 ## Prerendering
 
-Routes marked for prerendering in `routeRules` (or via `nitro.prerender`) render at build time into `.output/public` and are uploaded to S3, served from the edge with no Lambda invocation:
+Routes marked for prerendering in `routeRules` (or via `nitro.prerender`) render at build time into `.output/public` and are uploaded to S3, served from the edge with no Lambda invocation. Configure them in your project’s `nuxt.config.ts`:
 
 ```typescript
-export const Website = AWS.Website.Nuxt("Website", {
-  nuxt: {
-    routeRules: {
-      "/about": { prerender: true },
-    },
+export default defineNuxtConfig({
+  routeRules: {
+    "/about": { prerender: true },
   },
 });
 ```
@@ -121,20 +132,17 @@ bun alchemy dev
 
 ```typescript
 const site = yield* AWS.Website.Nuxt("Web", {
-  domain: {
-    name: "app.example.com",
-    hostedZoneId: zone.hostedZoneId,
-  },
+  domain: { name: "app.example.com" },
 });
 ```
 
-The certificate is created in `us-east-1` (required by CloudFront), DNS validation records and the alias record are managed through Route 53.
+The certificate is created in `us-east-1` (required by CloudFront), DNS validation records and the alias record are managed through Route 53. The hosted zone is inferred from the hostname — pass `hostedZoneId` to pin it when several zones could match.
 
 CloudFront distributions take minutes to create. To serve several sites (or a site plus an API) from one distribution, attach the site to an [`AWS.Website.Router`](static-site.md#compose-sites-with-a-router):
 
 ```typescript
 const router = yield* AWS.Website.Router("FrontDoor", {
-  domain: { name: "example.com", hostedZoneId: zone.hostedZoneId },
+  domain: { name: "example.com" },
 });
 
 const site = yield* AWS.Website.Nuxt("Web", {

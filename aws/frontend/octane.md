@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to AWS with AWS.Website.Octane — SSR on a streaming Lambda Function URL, assets on S3 + CloudFront, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to AWS. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the AWS deploy target’s finishing pass wraps its fetch handler as a streaming Lambda handler. The server deploys on a Lambda Function URL; `dist/client` is served from a private S3 bucket through CloudFront. No CloudFormation, no build command to run.
@@ -67,15 +67,13 @@ export default Alchemy.Stack(
 
 ## Add environment variables
 
-The server function’s environment is configured under `server.environment` — plain values, or outputs from other resources in the Stack:
+The server function’s environment is configured under `env` — plain values, or outputs from other resources in the Stack:
 
 ```typescript
 export const Website = AWS.Website.Octane("Website", {
-  server: {
-    environment: {
-      GREETING: "Hello from alchemy",
-      API_BASE: api.url,
-    },
+  env: {
+    GREETING: "Hello from alchemy",
+    API_BASE: api.url,
   },
 });
 ```
@@ -112,9 +110,8 @@ bun alchemy dev
 
 ```typescript
 const site = yield* AWS.Website.Octane("Web", {
-  domain: {
-    name: "app.example.com",
-    hostedZoneId: zone.hostedZoneId,
-  },
+  domain: { name: "app.example.com" },
 });
 ```
+
+The hosted zone is inferred from the hostname. Pass `hostedZoneId` to pin it when several zones could match.

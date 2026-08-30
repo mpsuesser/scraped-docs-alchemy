@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to AWS with AWS.Website.Nextjs — the OpenNext serverless topology with streaming SSR, image optimization, and ISR wiring, plus next dev under alchemy dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to AWS using the [OpenNext](https://opennext.js.org/aws) serverless topology:
@@ -74,15 +74,13 @@ See [examples/aws-website-nextjs](https://github.com/alchemy-run/alchemy/tree/ma
 
 ## Add environment variables
 
-The server function’s environment is configured under `server.environment` — plain values, or outputs from other resources in the Stack:
+The server function’s environment is configured under `env` — plain values, or outputs from other resources in the Stack:
 
 ```typescript
 export const Website = AWS.Website.Nextjs("Website", {
-  server: {
-    environment: {
-      GREETING: "Hello from Alchemy!",
-      API_BASE: api.url,
-    },
+  env: {
+    GREETING: "Hello from Alchemy!",
+    API_BASE: api.url,
   },
 });
 ```
@@ -121,9 +119,8 @@ bun alchemy dev
 
 ```typescript
 const site = yield* AWS.Website.Nextjs("Web", {
-  domain: {
-    name: "app.example.com",
-    hostedZoneId: zone.hostedZoneId,
-  },
+  domain: { name: "app.example.com" },
 });
 ```
+
+The hosted zone is inferred from the hostname. Pass `hostedZoneId` to pin it when several zones could match.

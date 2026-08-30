@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`Cloudflare.Website.Vite`](vite.md): build the client assets, ship them to Cloudflare, and serve them through a Worker so your frontend and backend share one URL surface and one deploy. For the resource itself — what it does, its props, `memo` semantics, and dev mode — see the [Vite resource page](vite.md).
@@ -124,11 +124,13 @@ If your SPA uses client-side routing (React Router, TanStack Router), configure 
 ```typescript
 const web = yield* Cloudflare.Website.Vite("Website");
 const web = yield* Cloudflare.Website.Vite("Website", {
-  assets: { notFoundHandling: "single-page-application" },
+  assets: {
+    notFoundHandling: "single-page-application",
+  },
 });
 ```
 
-`assets` accepts the standard Cloudflare Worker static-assets config — the same options you’d set on a plain Worker’s `assets` block.
+`assets` accepts the standard Cloudflare Worker static-assets config; `single-page-application` not-found handling serves `index.html` for unmatched paths so the client router takes over. A site that ships a real error page uses `notFoundHandling: "404-page"` instead (Cloudflare serves the built `404.html`).
 
 ### Inject the Worker URL at build time
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to Cloudflare with the Vite resource — one declaration, no Wrangler config."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 [Vue](https://vuejs.org) is pure Vite — the entire app builds from
@@ -84,15 +84,14 @@ asset layer to fall back to `index.html`:
 // alchemy.run.ts
 export const Website = Cloudflare.Website.Vite("Vue", {
 +  assets: {
-+    htmlHandling: "auto-trailing-slash",
 +    notFoundHandling: "single-page-application",
 +  },
 });
 ```
 
-With `notFoundHandling: "single-page-application"`, unmatched
-paths return `index.html` instead of a 404, and vue-router
-resolves the route on the client.
+With `single-page-application` not-found handling, unmatched paths
+return `index.html` instead of a 404, and vue-router resolves the
+route on the client.
 
 ## Add environment variables
 

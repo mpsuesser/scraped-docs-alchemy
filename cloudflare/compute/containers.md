@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -270,6 +270,27 @@ export class Web extends Cloudflare.Container<Web>()(
 Your image reads `DATABASE_URL` with whatever client it already uses — `pg`, Prisma, Rails, Django. Nothing about the container is alchemy-specific; only the value’s provenance is.
 
 A Worker fronting the same database still binds Hyperdrive — see [Hyperdrive](../data/hyperdrive.md). The two coexist: point Hyperdrive at the *direct* origin (it pools for the Worker) and the container at the pooled one.
+
+Under `alchemy dev` the same wiring targets your local emulators. A local dev database hands out `localhost` URLs, but inside the Docker container `localhost` is the container itself — so the dev runtime rewrites loopback hosts in the container’s env to `host.docker.localhost`. The alias deliberately keeps `localhost` in the hostname so clients that gate plain-HTTP on a local-looking host (Prisma’s `prisma+postgres://` protocol, for one) keep working against the local dev server.
+
+On Docker Desktop that alias is Docker’s `host-gateway`, which forwards to processes bound to `127.0.0.1` on your machine.
+
+On native Linux, `host-gateway` is the docker bridge IP (`172.17.0.1`). A TCP SYN to that address is host INPUT — UFW, firewalld, and nftables on CachyOS/Arch will drop it. Binding the same port on the bridge or on your LAN NIC does not skip INPUT. Alchemy does not go that way:
+
+1. `@prisma/dev` (and any host server you start) stay on `127.0.0.1`.
+2. A unix socket on the host forwards to that port.
+3. The workerd `<name>-proxy` sidecar bind-mounts the socket and maps `host.docker.localhost` to `127.0.0.1` in the shared netns.
+4. A listener in that netns accepts `127.0.0.1:<port>` and forwards through the socket.
+
+The container talks to itself. The socket crosses the boundary. UFW never sees a SYN to `172.17.0.1`.
+
+If the unix-socket path cannot attach (missing `nsenter`, EPERM), Alchemy logs this UFW hole — do not set `DEFAULT_INPUT_POLICY=ACCEPT`:
+
+```plaintext
+sudo ufw allow from 172.16.0.0/12 to any port <prisma-or-dev-ports> proto tcp
+```
+
+Neon and PlanetScale have no local emulator: even under `alchemy dev` the URL is a cloud host (`*.neon.tech`, `*.psdb.cloud`) and the rewrite is a no-op. The container still needs `enableInternet: true` to reach them.
 
 ## Which capabilities reach a container
 

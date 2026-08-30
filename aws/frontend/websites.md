@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/aws/frontend/websites
 title: "Websites"
-description: "Deploy Astro, Next.js, Nuxt, SvelteKit, Waku, Octane, or any static build to AWS with first-class Website resources."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SvelteKit, TanStack Start, Waku, Octane, or any static build to AWS with first-class Website resources."
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 Alchemy deploys frontends to AWS with a family of `AWS.Website`
@@ -17,6 +17,11 @@ framework's own config file (`astro.config.*`, `nuxt.config.ts`,
 `vite.config.ts`, ...) loads natively; Alchemy layers its AWS
 integration on top.
 
+- [`Vite`](vite.md) — any client-only Vite project (React,
+  Vue, Solid, or a plain SPA): assets-only, no Lambda; your
+  `vite.config.*` loads natively.
+- [`Foldkit`](foldkit.md) — Foldkit apps; `Vite` with SPA
+  deep links on by default.
 - [`Astro`](astro.md) — Astro sites, server-rendered or
   fully static; your `astro.config.*` loads natively.
 - [`Nextjs`](nextjs.md) — Next.js apps built through the
@@ -25,9 +30,13 @@ integration on top.
   as-is.
 - [`Nuxt`](nuxt.md) — Nuxt apps built through nitro's
   `aws-lambda` preset; your `nuxt.config.ts` loads natively.
+- [`ReactRouter`](react-router.md) — React Router v7 in
+  framework mode, built through your own `vite build`.
 - [`SvelteKit`](sveltekit.md) — SvelteKit apps with a
   wrangler-free in-memory AWS adapter; your `vite.config.ts` loads
   natively.
+- [`TanStackStart`](tanstack-start.md) — TanStack Start
+  (React or Solid), built through your own `vite build`.
 - [`Waku`](waku.md) — Waku (React Server Components)
   apps.
 - [`Octane`](octane.md) — OctaneJS fullstack apps built
@@ -40,8 +49,8 @@ integration on top.
   sites (or a site plus an API), routed at the edge.
 
 Every resource shares the same surface: `domain` (ACM certificate +
-Route 53 records), `server` configuration (memory, timeout,
-environment), `assets`, `edge` customizations, and `invalidation`.
+Route 53 records), server configuration (`memorySize`, `timeout`,
+`env`), `assets`, `edge` customizations, and `invalidation`.
 All builds are memoized by content-hashing the input files — an
 unchanged project skips the build and deploy entirely. Under
 `alchemy dev`, every resource runs the framework's own dev server
@@ -52,17 +61,21 @@ the full live deployment.
 
 | Framework | Resource | Guide |
 | --- | --- | --- |
+| React / Vite SPA | `Vite` | [React SPA](vite-spa.md) |
+| Vue | `Vite` | [Vue](vue.md) |
+| Foldkit | `Foldkit` | [Foldkit](foldkit.md) |
+| TanStack Start (React & Solid) | `TanStackStart` | [TanStack Start](tanstack-start.md) |
+| React Router | `ReactRouter` | [React Router](react-router.md) |
 | Astro | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |
 | Nuxt | `Nuxt` | [Nuxt](nuxt.md) |
 | SvelteKit | `SvelteKit` | [SvelteKit](sveltekit.md) |
 | Waku | `Waku` | [Waku](waku.md) |
 | OctaneJS (fullstack) | `Octane` | [Octane](octane.md) |
-| Vite SPA (any build) | `StaticSite` | [Static sites](static-site.md) |
 | Zola, Hugo, or any static generator | `StaticSite` | [Static sites](static-site.md) |
 
 Every row is backed by a checked-in example or a live deploy test in
-the Alchemy repository. The last rows are deliberately open-ended:
+the Alchemy repository. The last row is deliberately open-ended:
 `StaticSite` deploys any directory of files (running your build
 command first if you give it one), so any generator works the same
 way.
@@ -70,13 +83,17 @@ way.
 ## How to choose
 
 Use the resource named after your framework. `Astro`, `Nextjs`,
-`Nuxt`, `SvelteKit`, `Waku`, and `Octane` each drive their
-framework's own programmatic build and know its output layout, config
-surface, and dev server.
+`Nuxt`, `ReactRouter`, `SvelteKit`, `TanStackStart`,
+`Waku`, and `Octane` each drive their framework's own build and know
+its output layout, config surface, and dev server.
 
-Use `StaticSite` when the output is plain files — a pre-built SPA, or
-an arbitrary build command that emits a directory (Zola, Hugo, or any
-other generator without a dedicated resource).
+Use `Vite` when the app is client-only and a single `vite build`
+produces the whole thing — a React or Vue SPA, or any Vite project
+with no server. It creates no Lambda.
+
+Use `StaticSite` when the output is plain files from an arbitrary
+build command that emits a directory (Zola, Hugo, or any other
+generator without a dedicated resource).
 
 Use `Router` when several sites (or a site plus an API) should share
 one CloudFront distribution and one domain — distributions take
@@ -84,15 +101,24 @@ minutes to create, and each custom domain can only attach to one.
 
 ## Where next
 
+- [The Vite resource](vite.md) — build model, env
+  inlining, SPA fallback, dev mode.
 - [The StaticSite resource](static-site.md) — build
   commands, SPA/404 handling, Router composition, invalidation.
 - Framework guides:
+  [React SPA](vite-spa.md),
+  [Vue](vue.md),
+  [Foldkit](foldkit.md),
+  [TanStack Start](tanstack-start.md),
+  [React Router](react-router.md),
   [Astro](astro.md),
   [Next.js](nextjs.md),
   [Nuxt](nuxt.md),
   [SvelteKit](sveltekit.md),
   [Waku](waku.md),
   [Octane](octane.md).
+- [Full-stack RPC + Drizzle](full-stack-tanstack-rpc-drizzle.md) —
+  a TanStack Start UI driving an Effect RPC Lambda over Aurora DSQL.
 - [`StaticSite` reference](https://alchemy.run/providers/aws/website/staticsite) and
   [`Router` reference](https://alchemy.run/providers/aws/website/router) — every prop
   and attribute.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/static-site
 title: "Static sites"
 description: "Ship a static site to S3 + CloudFront with AWS.Website.StaticSite — build-step support, Router composition, and cache invalidation on deploy."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.StaticSite` deploys a directory of files as a website: it uploads
@@ -67,9 +67,9 @@ const site = yield* AWS.Website.StaticSite("Web", {
   build: {
     command: "bun run build",
     output: "dist",
-  },
-  environment: {
-    VITE_API_URL: api.url,
+    env: {
+      VITE_API_URL: api.url,
+    },
   },
 });
 ```
@@ -80,7 +80,7 @@ memoized, so unchanged inputs skip the build
 files under `path` (filtered by your gitignore rules) plus the nearest
 package-manager lockfile. Tune the hash with `build.include`, `build.exclude`, and
 `build.lockfile` — e.g. `include: ["src/**", "package.json"]` to re-run only
-when source files change. `environment` variables are passed to the build
+when source files change. `build.env` variables are passed to the build
 command, so outputs from other resources (like an API URL) flow straight into
 the frontend bundle.
 
@@ -118,7 +118,8 @@ distribution:
 
 ```typescript
 const router = yield* AWS.Website.Router("WebsiteRouter", {
-  domain: { name: "example.com", hostedZoneId },
+  // hosted zone inferred from the hostname; pass hostedZoneId to pin it
+  domain: { name: "example.com" },
 });
 
 const site = yield* AWS.Website.StaticSite("Docs", {

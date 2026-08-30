@@ -1,0 +1,147 @@
+---
+url: https://alchemy.run/hetzner/frontend/foldkit
+title: "Foldkit"
+description: "Deploy a Foldkit app to Hetzner with Hetzner.Website.Foldkit — a client-only Vite SPA as a systemd unit on a Cloud Server, and Vite's own dev server under alchemy dev."
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
+---
+
+[Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects — the Foldkit Vite plugin only adds HMR and devtools wiring — so `Hetzner.Website.Foldkit` is [`Hetzner.Website.Vite`](vite.md) with SPA fallback to `index.html`. Deep links boot the app and the Foldkit router takes over.
+
+Deploy creates a [`Hetzner.Server`](https://alchemy.run/hetzner/compute/servers) (`cpx12` / `ubuntu-24.04` in `fsn1`, unless you pass `server`) and a [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) systemd unit on port 3000. The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Pass `server` to share the VM with other sites and APIs.
+
+## Install
+
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+
+```sh
+bun add -d @alchemy.run/frontend-frameworks
+```
+
+## Configure Vite
+
+Your Vite config stays what Foldkit’s setup gives you. Vite plugins like Tailwind go in `plugins` as usual:
+
+```typescript
+import { foldkit } from "@foldkit/vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [foldkit(), tailwindcss()],
+  optimizeDeps: {
+    entries: ["src/entry.ts"],
+  },
+});
+```
+
+Alchemy runs Vite programmatically on the project root. The Foldkit plugin and the rest of your setup are preserved as-is.
+
+## Declare the Website
+
+Declare the site as a module-level const (rather than inline in the Stack):
+
+```typescript
+import * as Hetzner from "alchemy/Hetzner";
+
+export const Website = Hetzner.Website.Foldkit("Website");
+```
+
+For an app in a subdirectory of a monorepo, point `rootDir` at it:
+
+```typescript
+export const Website = Hetzner.Website.Foldkit("Website", {
+  rootDir: "applications/web",
+});
+```
+
+## Add it to the Stack
+
+Yield the site from your Stack and return its URL:
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as Effect from "effect/Effect";
+
+export default Alchemy.Stack(
+  "MyFoldkitSite",
+  {
+    providers: Hetzner.providers(),
+    state: Alchemy.localState(),
+  },
+  Effect.gen(function* () {
+    const site = yield* Website;
+    return { url: site.url };
+  }),
+);
+```
+
+`site.url` is `http://{ipv4}:3000`. The site also exposes `server` and `service` — they are `undefined` under `alchemy dev`.
+
+## Add environment variables
+
+A Foldkit SPA has no server of its own, so anything it needs from the rest of your Stack is baked into the bundle at build time — pass a `VITE_` -prefixed key in top-level `env`. Values must be strings (or `Redacted`); resolve other resources’ URLs before passing them.
+
+```typescript
+export const Website = Hetzner.Website.Foldkit("Website", {
+  env: {
+    VITE_API_URL: "https://api.example.com",
+  },
+});
+```
+
+The values are copied onto `process.env` before the Vite build and onto the systemd unit. Client code reads the inlined value:
+
+```typescript
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string;
+}
+```
+
+```typescript
+const apiUrl = import.meta.env.VITE_API_URL;
+```
+
+## Deep links
+
+A Foldkit app that uses URL routing (`Runtime.makeApplication` with `route`, `onUrlRequest`, and `onUrlChange`) resolves routes on the client, so a deep link like `/counter/42` arrives as a request for a file that doesn’t exist.
+
+`Foldkit` defaults `assets.notFoundHandling` to `"single-page-application"`, which returns `index.html` (200) for unmatched paths so the Foldkit runtime can resolve the route. Use `"404-page"` to serve a real 404 instead:
+
+```typescript
+export const Website = Hetzner.Website.Foldkit("Website", {
+  assets: { notFoundHandling: "404-page" },
+});
+```
+
+## Local dev
+
+`alchemy dev` runs Vite’s own dev server (native HMR, Foldkit devtools) instead of deploying; `site.url` is the local address and no Server or Service is created. Wrap the site in `Alchemy.remote()` to deploy the live unit even during dev.
+
+Pin the dev server’s address when several apps run in one Stack:
+
+```typescript
+export const Website = Hetzner.Website.Foldkit("Website", {
+  dev: { host: "127.0.0.1", port: 5180, strictPort: true },
+});
+```
+
+## Custom domain
+
+`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — v1 does not create one. Alchemy adds an A record pointing at the Server’s public IPv4. `url` becomes `http://{domain}:3000`. There is no TLS on the Service.
+
+```typescript
+const site = yield* Hetzner.Website.Foldkit("Web", {
+  domain: "app.example.com",
+  zone,
+});
+```
+
+## Where next
+
+- [`Foldkit` reference](https://alchemy.run/providers/hetzner/website/foldkit) — every prop and attribute
+- [Vite](vite.md) — the same static-file unit, with `assets.notFoundHandling`
+- [Websites](websites.md) — the rest of the Hetzner frontend family
+- [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to AWS with AWS.Website.SvelteKit — SSR on a streaming Lambda Function URL, assets and prerendered pages on S3 + CloudFront, and Kit's own dev server under alchemy dev."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 `AWS.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to AWS. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory AWS adapter emitting a streaming Lambda handler. Client assets and prerendered pages are served from a private S3 bucket through CloudFront; dynamic routes stream from the Lambda Function URL. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -57,15 +57,13 @@ See [examples/aws-website-sveltekit](https://github.com/alchemy-run/alchemy/tree
 
 ## Add environment variables
 
-The server function’s environment is configured under `server.environment` — plain values, or outputs from other resources in the Stack:
+The server function’s environment is configured under `env` — plain values, or outputs from other resources in the Stack:
 
 ```typescript
 export const Website = AWS.Website.SvelteKit("Website", {
-  server: {
-    environment: {
-      GREETING: "Hello from alchemy",
-      API_BASE: api.url,
-    },
+  env: {
+    GREETING: "Hello from alchemy",
+    API_BASE: api.url,
   },
 });
 ```
@@ -101,7 +99,7 @@ export default defineConfig({
 });
 ```
 
-The `kit` prop on the resource is a deploy-time override layer merged over those options (the override wins):
+The `kit` prop on the resource is the deploy-time override bag: JSON-serializable kit config merged over those options (the prop wins). Use it for per-stage values or alchemy `Output` s your config file can’t compute:
 
 ```typescript
 export const Website = AWS.Website.SvelteKit("Website", {
@@ -111,7 +109,7 @@ export const Website = AWS.Website.SvelteKit("Website", {
 });
 ```
 
-Don’t set `kit.adapter` — Alchemy injects its own wrangler-free AWS adapter (an adapter declared in your `sveltekit(...)` call is replaced with a warning).
+No functions or plugins in the bag — `preprocess`, `vitePlugin`, and the other construction-time options belong in your `sveltekit(...)` call. Don’t set `kit.adapter` — Alchemy injects its own wrangler-free AWS adapter (an adapter declared in your `sveltekit(...)` call is replaced with a warning).
 
 ## Local dev
 
@@ -125,9 +123,8 @@ bun alchemy dev
 
 ```typescript
 const site = yield* AWS.Website.SvelteKit("Web", {
-  domain: {
-    name: "app.example.com",
-    hostedZoneId: zone.hostedZoneId,
-  },
+  domain: { name: "app.example.com" },
 });
 ```
+
+The hosted zone is inferred from the hostname. Pass `hostedZoneId` to pin it when several zones could match.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/postgres
 title: "Postgres"
 description: "PlanetScale Postgres as Stack resources — databases, branches, roles with least-privilege inherited roles, and direct vs pooled connection origins."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-30T18:54:07.274Z
+current_date: 2026-08-30T18:54:07.274Z
 ---
 
 PlanetScale Postgres is managed PostgreSQL with database branching. In
@@ -19,8 +19,10 @@ MySQL (Vitess) family, see [MySQL](mysql.md).
 ## Create a database
 
 `PostgresDatabase` owns the long-lived cluster. `clusterSize` is
-required; short sizes like `"PS_10"` are expanded to the full SKU
-using the target region and architecture:
+required.
+
+Network-attached (NAS) sizes like `"PS_10"` are expanded to the full
+SKU using the target region and architecture:
 
 ```typescript
 import * as Planetscale from "alchemy/Planetscale";
@@ -28,6 +30,22 @@ import * as Planetscale from "alchemy/Planetscale";
 const database = yield* Planetscale.PostgresDatabase("app-db", {
   region: { slug: "us-east" },
   clusterSize: "PS_10",
+});
+```
+
+[PlanetScale Metal](https://planetscale.com/docs/metal) is supported
+too. Metal uses locally-attached NVMe, so the API needs the **full
+SKU** — CPU series, compute size, provider, architecture, and drive
+size — not a short `"M-10"` name. Copy a SKU from
+[Postgres pricing](https://planetscale.com/docs/postgres/pricing) or
+your org's `list_cluster_size_skus` response; hyphens from the docs
+are normalized to underscores:
+
+```typescript
+const metal = yield* Planetscale.PostgresDatabase("app-db-metal", {
+  region: { slug: "us-east" },
+  clusterSize: "M1_10_AWS_ARM_D_METAL_10",
+  arch: "arm",
 });
 ```
 
