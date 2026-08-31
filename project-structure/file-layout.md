@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/file-layout
 title: "File layout"
 description: "How to organize an Alchemy project — one file per Resource or Layer, group Resources that travel together by concern, and keep alchemy.run.ts as the composition root."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 A typical alchemy app ([`examples/cloudflare-neon-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle)):
@@ -215,7 +215,7 @@ export default Alchemy.Stack(
 It has four jobs: name the Stack, merge Providers, pick a State
 Store, wire units into outputs. The CLI discovers
 `alchemy.run.ts` at the project root automatically; pass a path
-to override (`alchemy deploy ./infra/app.ts`).
+to override (`alchemy deploy --config ./infra/app.ts`).
 
 If `alchemy.run.ts` is growing, something is missing a home in
 `src/`.

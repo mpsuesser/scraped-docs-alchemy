@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/provider
 title: "Providers"
 description: "Providers implement the lifecycle operations for a resource type — reconcile, delete, diff, read, and more."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 A **Provider** implements the lifecycle operations for a resource
@@ -274,7 +274,7 @@ or `nuke.skip` (the resource can never actually be deleted).
 
 ### `tail` / `logs`
 
-Optional. Power `alchemy tail` (live log streaming) and
+Optional. Powers `alchemy logs --tail` (live log streaming) and
 `alchemy logs` (historical fetch). Each returns a `Stream` or
 `Effect` of `LogLine` values respectively.
 

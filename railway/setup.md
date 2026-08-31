@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/setup
 title: "Setup"
 description: "Create a Railway workspace, generate an account API token, and store it in a profile."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 Everything you need before deploying to Railway: the alchemy package, a Railway workspace, and an account API token stored in a profile.
@@ -56,8 +56,12 @@ Either choice is saved to your **`default`** [profile](../environments/profiles.
 To re-run the setup later (e.g. to rotate the token, or configure a separate `prod` profile):
 
 ```sh
-alchemy login --configure
-alchemy login --profile prod --configure
+# Re-run the interactive setup (e.g. to rotate the token)
+alchemy profile edit --reconfigure Railway
+
+# Or connect Railway in a separate \`prod\` profile
+alchemy profile create prod
+alchemy profile edit prod --add Railway
 ```
 
 Inspect what’s stored (secrets are redacted):

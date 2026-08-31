@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/custom-provider
 title: "Custom Provider"
 description: "Add support for a new cloud or third-party API by declaring a Resource type and implementing its lifecycle as an Effect Layer."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 Providers are Effect `Layer` s — adding support for a new cloud or third-party API is “declare a type, implement a Layer”. See [Providers](provider.md) for the operation contract.
@@ -396,7 +396,7 @@ export const providers = () =>
 
 `Layer.provide` wires each resource provider to the collection privately. A provider with no credentials service is done here.
 
-Ours isn’t — the handlers’ `StripeCredentials` requirement is still unmet. The [Custom Auth Provider](../environments/custom-auth-provider.md) guide finishes this bundle by `Layer.provideMerge` -ing in the credential bridge and the `alchemy login` registration.
+Ours isn’t — the handlers’ `StripeCredentials` requirement is still unmet. The [Custom Auth Provider](../environments/custom-auth-provider.md) guide finishes this bundle by `Layer.provideMerge` -ing in the credential bridge and the auth-provider registration.
 
 Re-export the public surface, dropping the redundant service prefix (the namespaced-export convention: callers write `Stripe.Product`):
 
@@ -425,7 +425,7 @@ export default Alchemy.Stack(
 );
 ```
 
-On first deploy, Alchemy walks them through `alchemy login` (or reads env vars on CI) — see [Auth Providers](../environments/auth-providers.md).
+Users connect the provider with `alchemy profile edit --add Stripe` (CI reads env vars instead); an unconfigured deploy fails with that exact command to run. See [Auth Providers](../environments/auth-providers.md).
 
 To mix with another cloud, merge the layers:
 
@@ -509,7 +509,7 @@ If you’d rather start from a real provider:
 ## Where next
 
 - [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — give your resource a second, dev-mode implementation that emulates it locally (`ProviderLayer.dual`, `LocalProvider.make`).
-- [Custom Auth Provider](../environments/custom-auth-provider.md) — build the `StripeCredentials` service and `alchemy login` flow this guide consumes.
+- [Custom Auth Provider](../environments/custom-auth-provider.md) — build the `StripeCredentials` service and login flow this guide consumes.
 - [Auth Providers](../environments/auth-providers.md) — how credentials resolve: lazy Effects, Profiles, auto-refresh.
 - [Actions](action.md) — deploy-time work that isn’t a resource.
 - [Testing Providers](../testing/testing-providers.md) — the harness patterns behind `test.provider`.

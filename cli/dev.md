@@ -2,12 +2,12 @@
 url: https://alchemy.run/cli/dev
 title: "dev"
 description: "Run your stack in development mode with hot reloading — resources deploy to the cloud while Workers run in the local dev runtime."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 ```sh
-alchemy dev [file] [options]
+alchemy dev [options]
 ```
 
 Run your stack in development mode with hot reloading. Resources are deployed to the cloud while Workers run in the local dev runtime; file changes trigger automatic rebuilds and hot reloads.
@@ -26,9 +26,9 @@ A failed apply keeps dev alive so healthy resources keep serving — fix the err
 | ------------------- | ------------------------------------------------------------------ |
 | `--stage <name>`    | Stage to use for dev (defaults to `dev_$USER`)                     |
 | `--force`           | Force updates for resources that would otherwise no-op             |
-| `--profile <name>`  | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`)  |
+| `--profile <name>`  | Auth profile to use (defaults to `$ALCHEMY_PROFILE` or `default`) |
 | `--env-file <path>` | Load environment variables from a file                             |
-| `[file]`            | Stack file to run (defaults to `alchemy.run.ts`)                   |
+| `--config, -c <file>`            | Stack file to run (defaults to `alchemy.run.ts`)                   |
 
 ## Examples
 
@@ -42,7 +42,6 @@ alchemy dev --stage dev
 
 ## Where next
 
-- [tail](tail.md) — stream live logs from deployed resources
-- [logs](logs.md) — fetch past log entries
+- [logs](logs.md) fetches past logs or tails them with `--tail`
 - [deploy](deploy.md) — deploy for real
 - [Local development](../environments/local-development.md) — how dev mode works under the hood

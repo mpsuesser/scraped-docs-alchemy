@@ -2,12 +2,12 @@
 url: https://alchemy.run/cli/nuke
 title: "nuke"
 description: "Enumerate and delete every live resource across the stack's providers."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 ```sh
-bun alchemy unsafe nuke [file] [options]
+bun alchemy unsafe nuke [options]
 ```
 
 `nuke` enumerates and deletes every live resource across the stack's providers. The command nests under `unsafe` and is deliberately hidden from `--help` — it's dangerous and we don't want agents to discover and use it. This page is its only discovery surface.
@@ -20,7 +20,9 @@ bun alchemy unsafe nuke [file] [options]
 
 `nuke` walks the built provider context and collects every provider that exposes both `list` and `delete` — everything those providers can enumerate is a deletion candidate.
 
-The state store is never read or written: enumeration is live cloud state only. State entries are left stale, so follow up with `alchemy state clear` — see [Inspecting State](inspecting-state.md).
+The command does not read or write the state store. It lists live cloud state.
+State entries remain stale, so follow up with `alchemy state delete`. See
+[Inspecting State](inspecting-state.md).
 
 ## What survives
 
@@ -77,18 +79,20 @@ Deletion runs in passes: each pass attempts every remaining resource, failures a
 
 | Option                | Description                                                                                                                                                            |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `[file]`              | Stack file to import (defaults to `alchemy.run.ts`); used only to discover which providers are registered                                                              |
-| `--profile <name>`    | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`)                                                                                                      |
+| `--config, -c <file>`              | Stack file to import (defaults to `alchemy.run.ts`); used only to discover which providers are registered                                                              |
+| `--profile <name>`    | Auth profile to use (defaults to `$ALCHEMY_PROFILE` or `default`)                                                                                               |
 | `--env-file <path>`   | Load environment variables from a file                                                                                                                                 |
 | `--yes`               | Skip the confirmation prompt                                                                                                                                           |
 | `--dry-run`           | Report what would be deleted, then exit without deleting                                                                                                               |
-| `--verbose`, `-v`     | List every individual resource that will be deleted, not just per-provider counts                                                                                     |
+| `--verbose`           | List each resource instead of showing provider totals                                                                                                                  |
 | `--concurrency <n>`   | Max number of providers scanned/deleted in parallel (resources within a provider are always deleted concurrently). Use 0 for unbounded. Default: 16 — unbounded tends to be slower because it triggers provider-side rate limiting and retry backoff. |
 | `--timeout <s>`       | Per-provider timeout (seconds) for each list/delete call, so one slow or hanging provider can't stall the whole run. Default: 120.                                     |
 | `--include <glob>`    | Glob of provider IDs to include (e.g. `'Cloudflare.*'` or `'Cloudflare.Worker'`). Repeatable; when omitted, every provider is included.                                |
 | `--exclude <glob>`    | Glob of provider IDs to exclude (applied after `--include`). Repeatable.                                                                                               |
 | `--filter <expr>`     | JavaScript expression evaluated with `resource` in scope. Any resource for which an expression is truthy is **spared**. Repeatable.                                    |
 | `--local`             | Enumerate and delete LOCAL (emulated) resources instead of real cloud ones. Only providers with a local implementation participate.                                    |
+| `--independent`       | Delete each resource independently with per-resource retries and backoff instead of coordinated passes, where one slow delete delays the next pass for everything.     |
+| `--retries <n>`       | With `--independent`: retries per resource after the initial delete attempt (each attempt still bounded by `--timeout`). Default: 10.                                  |
 
 ## Debugging
 

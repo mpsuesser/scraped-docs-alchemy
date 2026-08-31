@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on Cloudflare — a TanStack Start UI that drives an Effect RPC backend over Drizzle and Neon Postgres, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 This guide ties four pieces into one deployable app:
@@ -514,9 +514,10 @@ hand-written DTOs, no `fetch` URLs, no response parsing.
 ## 9. Deploy
 
 Deploying provisions the Neon branch, runs the generated migrations, creates the
-Hyperdrive pool, and uploads both Workers. If you haven't configured [Cloudflare](../setup.md)
-and [Neon](../../neon/setup.md) credentials already (e.g. using `alchemy login` or an `.env` file),
-Alchemy will guide you through this process during your first deploy.
+Hyperdrive pool, and uploads both Workers. Configure [Cloudflare](../setup.md)
+and [Neon](../../neon/setup.md) credentials first with `alchemy profile edit` (or an
+`.env` file in CI). A deploy with no credentials fails and prints the command
+to run.
 
 ```sh
 bun install

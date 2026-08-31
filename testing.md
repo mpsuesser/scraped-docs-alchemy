@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/testing
 title: "Testing"
-description: "How Alchemy tests work — real clouds, one Stack deploy per suite, isolated stages, deploy → assert → destroy."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+description: "How Alchemy tests work — real clouds by default, local emulators on demand, one Stack deploy per suite, isolated stages, deploy → assert → destroy."
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
-Alchemy tests run against real clouds — no mocks, no emulators. A suite deploys a real Stack once, runs assertions against live resources, and tears it back down: deploy → assert → destroy.
+Alchemy tests run against real clouds by default — no mocks. A suite deploys a real Stack once, runs assertions against live resources, and tears it back down: deploy → assert → destroy. The same suite can also run entirely on your machine — see [Local mode](#local-mode-dev-true) below.
 
 ## One deploy per suite
 
@@ -45,6 +45,21 @@ Test.make({ providers, stage: "ci-pr-42" });
 
 The per-call form is covered in [Test harness → stage](testing/test-harness.md#stage).
 
+## Local mode (dev: true)
+
+The harness has the same local-dev mode as [`alchemy dev`](environments/local-development.md). It’s off by default; flip it on and the whole suite runs against local emulators — Cloudflare Workers, Durable Objects, KV, R2, D1, Queues, and Workflows in workerd, AWS Lambda/ECS and the emulated AWS surface in a local Docker emulator — with no cloud calls:
+
+```typescript
+Test.make({
+  providers: Cloudflare.providers(),
+  dev: true,
+});
+```
+
+Nothing else changes: `deploy(Stack)` boots the stack locally and the tests drive `http://localhost:<port>` instead of the cloud. There’s no need for a separate testing setup (e.g. workerd + a vitest plugin) — the harness runs your real Stack in the same local runtimes `alchemy dev` uses. Omit the flag and set `ALCHEMY_DEV=1` in your shell to keep one test file that runs locally on your laptop and live in CI.
+
+Full option semantics: [Test harness → dev](testing/test-harness.md#dev).
+
 ## Where next
 
 - [Testing a Stack](testing/testing-a-stack.md) — deploy a Stack and drive it over HTTP, end to end.
@@ -52,3 +67,4 @@ The per-call form is covered in [Test harness → stage](testing/test-harness.md
 - [Test harness](testing/test-harness.md) — every `Test.make` option, hook, and variant.
 - [Observability](testing/observability.md) — wire exporters, monitors, and alarms into the same Stack.
 - [Tutorial Part 3](cloudflare/tutorial/part-3.md) — your first integration test, walked through step by step.
+- [Tutorial Part 4](cloudflare/tutorial/part-4.md) — running the same tests against local emulators with `dev: true`.

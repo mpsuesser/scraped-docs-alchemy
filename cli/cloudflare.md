@@ -2,20 +2,20 @@
 url: https://alchemy.run/cli/cloudflare
 title: "cloudflare"
 description: "Cloudflare provider commands — bootstrap the state-store worker, mint API tokens, and inspect state-store logs."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 ```sh
-alchemy cloudflare <subcommand> [options]
+alchemy provider cloudflare <subcommand> [options]
 ```
 
 Cloud-provider commands for Cloudflare — managing the state-store worker that backs `Cloudflare.state(...)`, and inspecting its logs.
 
-## cloudflare bootstrap
+## provider cloudflare bootstrap
 
 ```sh
-alchemy cloudflare bootstrap [options]
+alchemy provider cloudflare bootstrap [options]
 ```
 
 Manually deploy (or repair) the Cloudflare-hosted HTTP State Store — the worker + Secrets Store + auth-token secret that back the remote-state layer used by `Cloudflare.state(...)`.
@@ -24,7 +24,7 @@ You normally don’t need to run this: the very first stack deploy that uses `Cl
 
 | Option | Description |
 | --- | --- |
-| `--profile <name>` | Alchemy auth profile (defaults to `default` or `$ALCHEMY_PROFILE`). Determines which `~/.alchemy/profiles.json` entry is used. |
+| `--profile <name>` | Alchemy auth profile (defaults to `$ALCHEMY_PROFILE` or `default`). Determines which `~/.alchemy/profiles.json` entry is used. |
 | `--force` | Force a full redeploy even if the worker already exists. Without this flag, an existing worker is **adopted** and only its credentials are refreshed. |
 | `--worker-name <name>` | Override the default state-store worker name. Advanced; only needed if you run multiple state stores per Cloudflare account. |
 | `--env-file <path>` | Load environment variables from a file |
@@ -37,19 +37,27 @@ The bootstrap is idempotent and self-healing:
 
 ```sh
 # First-time bootstrap (or repair after a failed deploy)
-alchemy cloudflare bootstrap
+alchemy provider cloudflare bootstrap
 
 # Bootstrap a separate profile
-alchemy cloudflare bootstrap --profile staging
+alchemy provider cloudflare bootstrap --profile staging
 
 # Force a full redeploy (e.g. to roll out an updated state-store worker)
-alchemy cloudflare bootstrap --force
+alchemy provider cloudflare bootstrap --force
 ```
 
-## cloudflare create-token
+## provider cloudflare teardown
 
 ```sh
-alchemy cloudflare create-token [options]
+alchemy provider cloudflare teardown [options]
+```
+
+Tear down the state-store Worker and its backing resources. It accepts `--profile`, `--worker-name`, and `--env-file`, plus `--yes` to skip the destructive confirmation.
+
+## provider cloudflare token
+
+```sh
+alchemy provider cloudflare token [options]
 ```
 
 Mint a Cloudflare API token (`POST /user/tokens`) from the CLI. Useful for creating the `CLOUDFLARE_API_TOKEN` you hand to CI, or a broad local token for `alchemy deploy`. You’ll be pointed to [your Cloudflare profile](https://dash.cloudflare.com/profile/api-tokens) once to grab your Global API Key (unless it’s already in the environment); everything else happens in the terminal.
@@ -89,44 +97,44 @@ If the result reports `Granted 0 permission group(s)`, the token is useless: a t
 
 ```sh
 # Pick permission groups interactively for a typical Alchemy deploy token
-alchemy cloudflare create-token --name ci-token
+alchemy provider cloudflare token --name ci-token
 
 # Full-access "superuser" token
-alchemy cloudflare create-token --all-permissions --name admin
+alchemy provider cloudflare token --all-permissions --name admin
 
 # Non-interactive: key/email from the environment, explicit account
 CLOUDFLARE_API_KEY=... CLOUDFLARE_EMAIL=you@example.com \
-  alchemy cloudflare create-token --name ci --account-id <account-id>
+  alchemy provider cloudflare token --name ci --account-id <account-id>
 ```
 
-## cloudflare state logs
+## provider cloudflare state logs
 
 ```sh
-alchemy cloudflare state logs [options]
+alchemy provider cloudflare state logs [options]
 ```
 
 Get or tail logs from the `alchemy-state-store` Worker on your Cloudflare account. Talks directly to the Workers Observability Telemetry API — no stack file required — so you can debug the state-store itself.
 
-Requires `workers_observability:read` and `workers_observability_telemetry:write` OAuth scopes (included in the default scope set; existing profiles need to re-run `alchemy login` to pick them up).
+Requires `workers_observability:read` and `workers_observability_telemetry:write` OAuth scopes (included in the default scope set; existing profiles need to re-run `alchemy profile edit --reconfigure Cloudflare` to pick them up).
 
 | Option | Description |
 | --- | --- |
-| `--tail` | Stream logs in real time via the Cloudflare tail websocket instead of fetching past entries |
+| `--tail`, `-t` | Stream logs in real time via the Cloudflare tail websocket instead of fetching past entries |
 | `--limit <n>` | Number of log entries to fetch (default: 100). Ignored with `--tail`. |
 | `--since <time>` | Fetch logs since this time — a duration (`1h`, `30m`, `2d`) or ISO date |
 | `--worker-name <name>` | Override the default state-store worker name. Only needed if you run multiple state stores per account. |
-| `--profile <name>` | Alchemy auth profile (defaults to `default` or `$ALCHEMY_PROFILE`) |
+| `--profile <name>` | Alchemy auth profile (defaults to `$ALCHEMY_PROFILE` or `default`) |
 | `--env-file <path>` | Load environment variables from a file |
 
 ```sh
 # Last hour of state-store logs
-alchemy cloudflare state logs
+alchemy provider cloudflare state logs
 
 # Stream live in a separate terminal while you reproduce a bug
-alchemy cloudflare state logs --tail
+alchemy provider cloudflare state logs --tail
 
 # Just the last 30 minutes
-alchemy cloudflare state logs --since 30m --limit 200
+alchemy provider cloudflare state logs --since 30m --limit 200
 ```
 
 ## Where next

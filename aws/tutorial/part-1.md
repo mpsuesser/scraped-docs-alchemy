@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with an AWS S3 Bucket, and deploy it."
-access_date: 2026-08-21T19:43:23.224Z
-current_date: 2026-08-21T19:43:23.224Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with an AWS S3 Bucket, and deploy it — all in under five minutes.
@@ -56,7 +56,7 @@ export default Alchemy.Stack(
 
 ## How credentials resolve
 
-`providers: AWS.providers()` registers every AWS resource and IAM policy binding that ships with Alchemy, and resolves credentials from your Alchemy [profile](../../environments/profiles.md) — SSO, environment variables, or stored access keys. You’ll pick one interactively the first time you deploy; see [Setup](../setup.md) for the details of each method.
+`providers: AWS.providers()` registers every AWS resource and IAM policy binding that ships with Alchemy, and resolves credentials from your Alchemy [profile](../../environments/profiles.md). Connect SSO or stored access keys with `alchemy profile edit --add AWS`. See [Setup](../setup.md) for the details of each method.
 
 ## Where state lives
 
@@ -111,7 +111,7 @@ Run `alchemy deploy` to create the Bucket on AWS:
 bun alchemy deploy
 ```
 
-The first time you deploy, Alchemy prompts you to pick an AWS authentication method — **SSO** (recommended), **environment variables**, or **stored access keys** — and saves the choice to your **`default`** [profile](../../environments/profiles.md). The region and account come from whichever method you pick. See [Setup](../setup.md) for a walkthrough of all three.
+Connect AWS first with `alchemy profile edit --add AWS` and pick a local authentication method: **SSO** (recommended) or **stored access keys**. The choice is saved to your **`default`** [profile](../../environments/profiles.md); the region and account come from whichever method you pick, and a deploy with nothing configured fails with that exact command to run. CI instead reads AWS environment credentials directly. See [Setup](../setup.md) for the full walkthrough.
 
 ```
 Plan: 1 to create

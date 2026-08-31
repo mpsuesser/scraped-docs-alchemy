@@ -2,12 +2,12 @@
 url: https://alchemy.run/cli/destroy
 title: "destroy"
 description: "Delete every resource in a stack — plan all existing resources for deletion, ask for approval, and remove them in dependency order."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 ```sh
-alchemy destroy [file] [options]
+alchemy destroy [options]
 ```
 
 `destroy` deletes every resource in a stack. It computes a plan where all existing resources are marked for deletion, asks for approval, and removes them in dependency order.
@@ -30,11 +30,11 @@ Proceed?
 
 | Option | Description |
 | --- | --- |
-| `[file]` | Stack file to destroy (defaults to `alchemy.run.ts`) |
+| `--config, -c <file>` | Stack file to destroy (defaults to `alchemy.run.ts`) |
 | `--stage <name>` | Stage to destroy (defaults to `dev_$USER`) |
 | `--yes` | Skip the approval prompt |
 | `--dry-run` | Show what would be deleted without actually deleting |
-| `--profile <name>` | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`) |
+| `--profile <name>` | Auth profile to use (defaults to `$ALCHEMY_PROFILE` or `default`) |
 | `--env-file <path>` | Load environment variables from a file |
 
 ## Examples

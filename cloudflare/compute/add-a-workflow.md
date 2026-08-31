@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 This guide builds a Workflow end to end: a durable multi-step job
@@ -452,6 +452,28 @@ bun test test/integ.test.ts
 The polling loop should see the workflow transition through
 `running` and finish in `complete` within ~5 seconds (most of which
 is the `sleep("cooldown", "2 seconds")` cooldown).
+
+## Test it locally
+
+The same test runs entirely on your machine — no separate
+workerd/vitest setup needed. Add `dev: true` to `Test.make` and the
+whole stack (Worker, Workflow, KV, Durable Objects) boots in a
+local workerd with real step semantics — tasks checkpoint, sleeps
+park, replays skip completed steps:
+
+```diff lang="typescript"
+const { test, beforeAll, deploy } = Test.make({
+  providers: Cloudflare.providers(),
+  state: Cloudflare.state(),
++  dev: true,
+});
+```
+
+`stack.url` now points at `http://localhost:<port>`, and the
+start/poll assertions run unchanged against the local workflow. See
+[Test harness → dev](../../testing/test-harness.md#dev) for the option's
+full semantics, and [Local development](https://alchemy.run/cloudflare/local-development)
+for what else runs locally.
 
 Your app now spans a Worker, a Vite frontend, Durable Objects,
 hibernatable WebSockets, a Container, and a Workflow — all

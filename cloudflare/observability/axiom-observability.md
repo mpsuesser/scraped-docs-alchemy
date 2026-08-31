@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/axiom-observability
 title: "Ship Worker telemetry to Axiom"
 description: "Declare Axiom datasets, a least-privilege ingest token, and monitors in the same Stack as the Worker that emits the telemetry — or let Cloudflare push Workers Logs to Axiom natively."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 Effect already emits OpenTelemetry — every span, `Metric`, and
@@ -37,7 +37,7 @@ providers: Layer.mergeAll(Cloudflare.providers(), Axiom.providers()),
 ```
 
 If you haven't connected an Axiom account yet, run through
-[Axiom setup](../../axiom/setup.md) first — `alchemy login` picks up
+[Axiom setup](../../axiom/setup.md) first. The Axiom provider reads
 `AXIOM_TOKEN` or a stored credential.
 
 ## Create a dataset per signal

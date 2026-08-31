@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/testing-a-stack
 title: "Testing a Stack"
 description: "Deploy your real Stack once per suite, drive it over HTTP, tear it down."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
@@ -71,6 +71,19 @@ bun test test/integ.test.ts
 ```
 
 The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test` [stage](../environments/stages.md) so they never clobber your dev deployment.
+
+## Run it locally with dev mode
+
+The same suite can run entirely on your machine. `dev: true` gives the file [`alchemy dev`](../environments/local-development.md) semantics — Workers, Durable Objects, KV, R2, D1, Queues, and Workflows run in workerd, AWS Lambda and its emulated services run in Docker — so `deploy(Stack)` boots local simulators and the `url` output points at `http://localhost:<port>`:
+
+```typescript
+const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
+  providers: Cloudflare.providers(),
+  dev: true,
+});
+```
+
+Every assertion below works unchanged against the local stack. To keep one file that runs locally on your laptop and live in CI, omit the flag and set `ALCHEMY_DEV=1` in your shell instead — see [Test harness → dev](test-harness.md#dev) for the full semantics and [Tutorial Part 4](../cloudflare/tutorial/part-4.md) for the walkthrough.
 
 ## Drive the live URL
 

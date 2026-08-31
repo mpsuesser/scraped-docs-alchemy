@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/auth-providers
 title: "Auth Providers"
 description: "An Auth Provider produces the credentials for a cloud's API calls — resolved lazily as Effects, so tokens and role sessions can refresh instead of pinning one static key."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 Resources never take API keys as props. Each cloud registers an
@@ -14,7 +14,8 @@ live credentials whenever lifecycle code actually calls the cloud.
 
 ## The contract
 
-An Auth Provider is a named record of five Effect-returning methods:
+An Auth Provider is a named record of five profile methods plus an optional
+CI environment resolver and its declared environment contract:
 
 ```typescript
 // alchemy/Auth/AuthProvider
@@ -22,19 +23,53 @@ export interface AuthProviderImpl<
   Config extends { method: string },
   Credentials,
 > {
-  configure(profileName: string, ctx: ConfigureContext): Effect.Effect<Config, AuthError>;
+  readonly configSchema: Schema.Codec<Config>;
+  configure(profileName: string): Effect.Effect<Config, AuthError>;
+  configureWith?(
+    profileName: string,
+    input: { method: string; values: Record<string, string> },
+  ): Effect.Effect<Config, AuthError>;
+  readonly configureMethods?: ReadonlyArray<ConfigureMethod>;
   login(profileName: string, config: Config): Effect.Effect<void, AuthError>;
   logout(profileName: string, config: Config): Effect.Effect<void, AuthError>;
-  prettyPrint(profileName: string, config: Config): Effect.Effect<void, AuthError>;
-  read(profileName: string, config: Config): Effect.Effect<Credentials, AuthError>;
+  details(
+    profileName: string,
+    config: Config,
+  ): Effect.Effect<ProviderDetails, AuthError | NeedsReauth>;
+  read(
+    profileName: string,
+    config: Config,
+  ): Effect.Effect<Credentials, AuthError | NeedsReauth>;
+  readonly readEnvironment?: Effect.Effect<Credentials, AuthError>;
+  readonly environment?: ReadonlyArray<EnvironmentVariable>;
 }
 ```
 
-`configure` picks a method interactively (or non-interactively in
-CI), `login`/`logout` manage stored secrets, `prettyPrint` backs
-`alchemy profile show`, and `read` is the credential resolver —
-given a profile name and its stored `{ method }` config, it returns
-an Effect that yields resolved credentials.
+`configure` handles interactive setup. `configureWith` handles `--method`
+and `--set`; its inputs are declared by `configureMethods`. `login` and
+`logout` manage stored secrets, `details` supplies redacted profile status,
+and `read` resolves credentials.
+
+`configSchema` describes the provider's manifest entry. Stored entries are
+user-editable JSON that may come from another alchemy version. Alchemy decodes
+every load against this schema. An invalid entry fails with a reconfigure hint
+instead of reaching provider code that matches
+exhaustively on `method`. The `makeStoredAuthProvider` factory supplies it
+automatically.
+
+`details` and `read` use the tagged `NeedsReauth` error for missing, expired,
+or rotated credentials. The profile UI renders it as "needs re-login."
+
+`readEnvironment` never receives or creates a profile. It is used when
+`CI=true`, and outside CI when every required variable in the provider's
+contract is explicitly exported in the process environment and no profile
+was explicitly selected. See
+[environment variables outside CI](profiles.md#environment-variables-outside-ci).
+`environment` declares every variable `readEnvironment` consumes
+(`name`, `required`, `secret`, `description`, `alternatives`). Alchemy validates
+this declaration during registration. Registration fails when a provider has
+`readEnvironment` but no declaration. `alchemy provider check-env` uses the
+declaration as a CI preflight.
 
 Providers register by name into a single `AuthProviders` registry
 via `AuthProviderLayer`, inside each cloud's `providers()` Layer:
@@ -49,13 +84,16 @@ export class AuthProviders extends Context.Service<
 >()("AuthProviders") {}
 ```
 
-That's how [`alchemy login`](../cli/login.md) works: it imports your
-stack, reads the registry, and runs each discovered provider's
-`configure`/`login`. The factory also wraps `read`, `login`,
-`logout`, and `configure` in a cross-process file lock (so two
-processes never refresh credentials simultaneously) and serializes
-interactive flows so prompts from different providers don't
-interleave.
+That's how [`alchemy profile edit`](../cli/profile.md#profile-edit) works: it
+imports your stack, reads the registry, and runs the selected providers'
+`configure`/`login`. The factory also wraps `read` and `logout` in a
+cross-process file lock (so two processes never refresh credentials
+simultaneously) and serializes interactive flows so prompts from
+different providers don't interleave. The file lock does not cover `configure`
+or `login`, because a browser grant may take minutes and block every concurrent
+`read`. A provider whose login path
+silently refreshes a rotate-on-use token takes the lock around just that
+read-refresh-persist section itself.
 
 ## Credentials are lazy Effects
 
@@ -148,17 +186,11 @@ export const fromProfile = () =>
   Layer.effect(
     CloudflareEnvironment,
     Effect.gen(function* () {
-      const profile = yield* AlchemyProfile;
-      const auth = yield* getAuthProvider<
+      const { resolve } = yield* resolveProviderConfig<
         CloudflareAuthConfig,
         CloudflareResolvedCredentials
       >(CLOUDFLARE_AUTH_PROVIDER_NAME);
-      const profileName = yield* ALCHEMY_PROFILE;
-      const ci = yield* Config.boolean("CI").pipe(Config.withDefault(false));
-      return yield* profile.loadOrConfigure(auth, profileName, { ci }).pipe(
-        Effect.flatMap((config) =>
-          auth.read(profileName, config as CloudflareAuthConfig),
-        ),
+      return yield* resolve.pipe(
         Effect.orDie,
         Effect.cached,
       );
@@ -166,22 +198,26 @@ export const fromProfile = () =>
   );
 ```
 
-`loadOrConfigure` reads the stored config for the current profile —
-or runs the provider's `configure` on first use and persists the
-result — then `read` materializes credentials. Profile selection
-itself (`--profile`, `$ALCHEMY_PROFILE`, `alchemy login`) is covered
-in [Profiles](profiles.md).
+Outside CI, `resolveProviderConfig` selects the current profile and loads its
+stored config. An unconfigured provider fails with the exact
+`alchemy profile edit` command to run. Resolution never starts a login flow.
+The provider's `read` method then materializes credentials. Profile selection
+(`--profile`, `$ALCHEMY_PROFILE`, `alchemy profile`) is covered in
+[Profiles](profiles.md).
 
-### The env fallback
+### Environment credentials
 
-`{ method: "env" }` is a first-class auth method, not a bypass. Its
-`read` pulls from environment variables at resolution time —
-`CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` (or
-`CLOUDFLARE_API_KEY` + `CLOUDFLARE_EMAIL`) for Cloudflare,
-`NEON_API_KEY` for Neon, `PLANETSCALE_API_TOKEN_ID` +
-`PLANETSCALE_API_TOKEN` + `PLANETSCALE_ORGANIZATION` for
-Planetscale. When `CI` is set, `configure` auto-selects the env
-method without prompting, so unattended runs need only the env vars.
+When `CI=true`, `resolveProviderConfig` bypasses profile selection and calls
+the provider's `readEnvironment` capability. It does not manufacture an
+`{ method: "env" }` profile entry or touch the local profile files. See the
+[provider environment-variable table](profiles.md#ci-environment-variables-by-provider)
+for the exact inputs.
+
+Outside CI, the same capability runs when the provider's required variables
+are all explicitly exported in `process.env` **and** no profile was selected
+explicitly. Alchemy prints a warning that names the variables it used. Passing
+`--profile` (or setting `ALCHEMY_PROFILE`) restores the profile's authority
+and the variables are ignored.
 
 ## Refresh in practice
 
@@ -195,12 +231,17 @@ const fresh =
     ? creds
     : yield* OAuthClient.refresh(creds).pipe(
         Effect.tap((refreshed) =>
-          store.write(profileName, "cf-oauth", refreshed),
+          store.write(
+            profileName,
+            "cloudflare-oauth",
+            OAuthClient.OAuthCredentials,
+            refreshed,
+          ),
         ),
         Effect.mapError(
           (e) =>
             new AuthError({
-              message: "Cloudflare OAuth refresh failed. Run: alchemy login",
+              message: "Cloudflare OAuth refresh failed. Run: alchemy profile refresh default --provider Cloudflare",
               cause: e,
             }),
         ),
@@ -209,6 +250,11 @@ const fresh =
 
 Because `read` runs under the cross-process file lock, two
 concurrent deploys can't double-spend the single-use refresh token.
+Users can force the same provider-specific login/refresh operation without
+changing configuration by running `alchemy profile refresh`, optionally with a
+named profile and repeatable `--provider` filters. `profile edit
+--reconfigure` is reserved for changing the method, account, scopes, or other
+provider configuration.
 One caveat for precision: the `fromProfile` Layers above pipe
 resolution through `Effect.cached`, so the Profile-level `read` runs
 once per process — ongoing refresh happens inside the credential

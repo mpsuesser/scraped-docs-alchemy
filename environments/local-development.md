@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 `alchemy dev` runs your stack on your machine. Your compute runs locally (Workers in workerd, Lambda and ECS in Docker containers), the services around it are emulated, and code changes hot reload in milliseconds. `Alchemy.remote()` runs any resource against the real cloud when you need it.
@@ -113,6 +113,10 @@ When a resource moves between local and live — you deploy after a dev session,
 
 To automate the deploy side, see the [CI guide](ci.md).
 
+## Testing in dev mode
+
+The [test harness](../testing/test-harness.md) has the same switch: `Test.make({ dev: true })` (off by default, on both the Bun and Vitest adapters) runs a suite’s `deploy(Stack)` against the local emulators — Cloudflare in workerd, AWS in Docker — instead of the real cloud, so integration tests run on your machine with no cloud calls and no separate `alchemy dev` terminal. See [Test harness → dev](../testing/test-harness.md#dev).
+
 ## Where next
 
 - [Cloudflare local development](https://alchemy.run/cloudflare/local-development) — what runs in workerd and which bindings are simulated.
@@ -120,4 +124,5 @@ To automate the deploy side, see the [CI guide](ci.md).
 - [CI](ci.md) — deploy the same stack from GitHub Actions with PR previews.
 - [Stages](stages.md) — how `dev_$USER`, `pr-42`, and `prod` stay isolated.
 - [Dev servers](../command/dev-servers.md) — run any framework dev server as a `Command.Dev` resource in the dev loop.
+- [Testing](../testing.md) — run the same test suite against the local emulators with `Test.make({ dev: true })`.
 - [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — build the local implementation of a resource.

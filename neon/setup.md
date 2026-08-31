@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/setup
 title: "Setup"
 description: "Connect alchemy to Neon — account, credentials, and profiles."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 Sign up at [neon.tech](https://neon.tech) and create an API key in
@@ -17,14 +17,11 @@ import * as Neon from "alchemy/Neon";
 providers: Layer.mergeAll(Cloudflare.providers(), Neon.providers()),
 ```
 
-The next `alchemy login` adds a `Neon` step with two options:
+Run `alchemy profile edit --add Neon`. The API key is entered interactively
+and saved under `~/.alchemy/credentials/<profile>/neon-stored.json`.
 
-- **Environment variable** — reads `NEON_API_KEY` (good for CI).
-- **Stored API key** — entered interactively, saved under
-  `~/.alchemy/credentials/<profile>/neon-stored.json`.
-
-In CI (`CI=true`), the environment-variable method is selected
-automatically — no prompt, just set `NEON_API_KEY`.
+In CI (`CI=true`), Alchemy skips profiles. Set `NEON_API_KEY` and Alchemy
+reads it directly without persisting anything.
 
 See [Profiles](../environments/profiles.md) for how credentials are stored
 and switched.

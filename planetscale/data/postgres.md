@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/postgres
 title: "Postgres"
 description: "PlanetScale Postgres as Stack resources — databases, branches, roles with least-privilege inherited roles, and direct vs pooled connection origins."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 PlanetScale Postgres is managed PostgreSQL with database branching. In
@@ -159,6 +159,31 @@ const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
 If you need a URL instead of components, `connectionUrl` and
 `connectionUrlPooled` carry the same direct/pooled endpoints as
 `Redacted` connection strings (`sslmode=verify-full`).
+
+## Connect privately with AWS PrivateLink
+
+Postgres roles expose the branch's provider-neutral private connection
+details. For AWS PrivateLink, pass `privateConnectionServiceName` to
+an Interface VPC endpoint. With private DNS enabled, use
+`privateHost` for workloads in that VPC:
+
+```typescript
+import * as AWS from "alchemy/AWS";
+
+const endpoint = yield* AWS.EC2.VpcEndpoint("postgres-private-link", {
+  vpcId: vpc.vpcId,
+  serviceName: role.privateConnectionServiceName,
+  vpcEndpointType: "Interface",
+  subnetIds: [privateSubnet.subnetId],
+  securityGroupIds: [databaseSecurityGroup.groupId],
+  privateDnsEnabled: true,
+});
+```
+
+For GCP Private Service Connect, `privateHost` is the private DNS zone;
+prepend the endpoint name configured in GCP before connecting.
+`PostgresDefaultRole` exposes the same details, though `PostgresRole`
+remains the safer choice for applications.
 
 ## Where next
 

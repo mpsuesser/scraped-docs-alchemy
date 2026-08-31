@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/actions-config
 title: "Actions secrets & variables"
 description: "Manage GitHub Actions secrets and variables as Stack resources — encrypted secrets, plain-text variables, bulk helpers, and CI credentials provisioned as code."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 GitHub Actions workflows read configuration from two places:
@@ -223,7 +223,7 @@ export default Alchemy.Stack(
 Deploy it once from your laptop under an elevated profile:
 
 ```sh
-alchemy deploy stacks/github.ts --profile admin
+alchemy deploy --config stacks/github.ts --profile admin
 ```
 
 Re-run it only when you want to rotate the credential or change its

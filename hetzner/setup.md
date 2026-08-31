@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/setup
 title: "Setup"
 description: "Install Alchemy and connect it to Hetzner Cloud — create a project, generate an API token, and store it in a profile."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-08-31T21:01:48.980Z
+current_date: 2026-08-31T21:01:48.980Z
 ---
 
 Everything you need before deploying to Hetzner Cloud: the alchemy package, a Hetzner project, and an API token stored in a profile.
@@ -50,13 +50,14 @@ There is no separate credentials step. The first time you run `alchemy deploy` (
 - **API Token** — paste the token you generated above. It’s verified against the Hetzner API and saved under `~/.alchemy/credentials/<profile>/`.
 - **Environment Variables** — reads `HCLOUD_TOKEN` from the environment on every run (plus an optional `HCLOUD_ENDPOINT` to override the API base URL). This is the method for CI — when alchemy detects `CI=true` it skips the prompt and uses the environment automatically.
 
-Either choice is saved to your **`default`** [profile](../environments/profiles.md) and reused on every subsequent command.
+Either choice is saved to the selected [profile](../environments/profiles.md) and reused on subsequent commands.
 
 To re-run the setup later (e.g. to rotate the token, or configure a separate `prod` profile):
 
 ```sh
-alchemy login --configure
-alchemy login --profile prod --configure
+alchemy profile
+alchemy profile create prod
+alchemy profile edit prod
 ```
 
 Inspect what’s stored (secrets are redacted):
