@@ -2,14 +2,14 @@
 url: https://alchemy.run/cli/inspecting-state
 title: "Inspecting State"
 description: "See what alchemy thinks is deployed, debug a bad diff, and recover from bad state."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 ## What does alchemy think is deployed?
 
 ```sh
-bun alchemy state
+bun alchemy state tree
 ```
 
 ```
@@ -22,60 +22,60 @@ AlchemyEffectWebsite
  └─ Worker
 ```
 
-In an interactive terminal, bare `alchemy state` opens the state explorer. It is a browsable tree of stacks, stages, and resources with a YAML preview of the selected state. This is the record used by the next plan, not the live cloud. See [State Store](../state-store.md). Full flag reference: [state](state.md).
+This is the record the next plan diffs against — not the live cloud (see [State Store](../state-store.md)). Full flag reference: [state](state.md).
 
-For scripts, drill down one level at a time with `state list`:
+Drill down one level at a time:
 
 ```sh
-bun alchemy state list
+bun alchemy state stacks
 ```
 
 Lists every stack in the store.
 
 ```sh
-bun alchemy state list myapp
+bun alchemy state stages --stack myapp
 ```
 
 Lists every stage recorded under `myapp`.
 
 ```sh
-bun alchemy state list myapp/dev_sam
+bun alchemy state resources --stack myapp --stage dev_sam
 ```
 
-Prints the state entries tracked under that stack and stage. Pass these paths to `state read`.
+Prints the FQNs tracked under that stack/stage — the addresses `state get` takes.
 
 Or skip the drilling entirely and read the whole estate at once:
 
 ```sh
-bun alchemy state read -r | jq 'to_entries[] | select(.value.resourceType == "AWS.EC2.Instance")'
+bun alchemy state export | jq '.resources[] | select(.state.resourceType == "AWS.EC2.Instance")'
 ```
 
-One call returns every record across all stacks and stages as a single JSON document to filter locally — see [state read](state.md#state-read).
+One call returns every record across all stacks and stages as a single JSON document to filter locally — see [state export](state.md#state-export).
 
 ## Debugging a bad diff
 
 ```sh
-bun alchemy state read myapp/dev_sam/Bucket
+bun alchemy state get --stack myapp --stage dev_sam --fqn Bucket
 ```
 
 This is the persisted props/attrs the planner diffs against — see [state](state.md) for the output encoding. Compare it with what `alchemy plan` says it wants to change. Three usual causes:
 
-**Wrong stage.** `--stage` defaults to `dev_$USER` (e.g. `dev_sam`), so a plan that “wants to create everything” often just means you’re looking at a stage you never deployed. Run `state list myapp` and confirm which stage actually has state.
+**Wrong stage.** `--stage` defaults to `dev_$USER` (e.g. `dev_sam`), so a plan that “wants to create everything” often just means you’re looking at a stage you never deployed. Run `state stages --stack myapp` and confirm which stage actually has state.
 
-**Drift.** The cloud changed out-of-band — someone edited the resource in a console or another tool. `state read` shows what alchemy last persisted; the reconciler converges observed cloud state to the desired state on the next deploy (see [Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md)).
+**Drift.** The cloud changed out-of-band — someone edited the resource in a console or another tool. `state get` shows what alchemy last persisted; the reconciler converges observed cloud state to the desired state on the next deploy (see [Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md)).
 
-**Stale state from a partially-failed deploy.** If a deploy crashed after mutating the cloud but before persisting, the record lags reality. Check the persisted attributes against what actually exists before reaching for `state delete`.
+**Stale state from a partially-failed deploy.** If a deploy crashed after mutating the cloud but before persisting, the record lags reality. Check the persisted attributes against what actually exists before reaching for `clear`.
 
 ## Recover from bad state
 
-When the record is beyond repair, delete it and redeploy. `state delete` only deletes Alchemy’s local record. It does not delete cloud resources:
+When the record is beyond repair, clear it and redeploy. `clear` is destructive but **local-only** — it deletes alchemy’s record, never the cloud resources themselves:
 
 ```sh
 # one stage
-bun alchemy state delete myapp/pr-42
+bun alchemy state clear --stack myapp --stage pr-42 --yes
 
 # a whole stack
-bun alchemy state delete myapp
+bun alchemy state clear --stack myapp --yes
 ```
 
 Then deploy — resources alchemy owns are re-imported automatically:
@@ -94,11 +94,11 @@ See [Adopting Resources](adopting-resources.md) for why the flag is usually unne
 
 ## Orphaned local state
 
-Pass `--backend local` to any `state` subcommand to read the on-disk `.alchemy/state` directory instead of the stack’s configured store. The canonical use: a Cloudflare state-store bootstrap was interrupted and left resources recorded only locally.
+Pass `--local` to any `state` subcommand to read the on-disk `.alchemy/state` directory instead of the stack’s configured store. The canonical use: a Cloudflare state-store bootstrap was interrupted and left resources recorded only locally.
 
 ```sh
 # wipe local state after a botched bootstrap
-bun alchemy state delete myapp --backend local
+bun alchemy state clear --local
 ```
 
 See [cloudflare](cloudflare.md) for bootstrap repair.

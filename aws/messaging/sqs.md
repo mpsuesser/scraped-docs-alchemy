@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sqs
 title: "SQS"
 description: "Add an SQS Queue, publish messages from your Lambda, and consume them from a second consumer Lambda — all wired through Alchemy bindings."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 **SQS** is AWS’s general-purpose message queue — anything you can serialize, dropped into a mailbox and processed asynchronously somewhere else. In Alchemy it’s the `Queue` resource plus producer bindings (`SendMessage`, `SendMessageBatch`, and the `Stream` -sink-shaped `QueueSink`) and a consumer side: `SQS.consumeQueueMessages` subscribes a Lambda to the queue as a typed `Stream<SQSRecord>`, creating the event source mapping and granting the receive/delete permissions for you.
@@ -210,7 +210,7 @@ Trigger a write, then watch the consumer’s logs:
 
 ```sh
 curl -X PUT --data 'hello queue' "$URL/items/q1"
-bun alchemy logs JobsWorker --tail
+bun alchemy logs JobsWorker --follow
 ```
 
 Within a couple of seconds you’ll see:

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/hyperdrive
 title: "Hyperdrive"
 description: "Cloudflare Hyperdrive pools connections to your external Postgres or MySQL database at the edge — provision a database (Neon or PlanetScale), front it with Hyperdrive, and bind the connection into your Worker."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 Hyperdrive is a Cloudflare-managed connection pooler that sits between Workers and an external Postgres or MySQL database. The Worker sees a familiar connection string, but the connection itself is already pooled at the edge — no per-request TCP handshakes, no cold-start connection storms.
@@ -37,7 +37,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Neon’s auth is API-key-based. After this change, `bun alchemy profile edit --add Neon` either reads `NEON_API_KEY` from the environment (good for CI) or stores a key under `~/.alchemy/credentials/<profile>/neon-stored.json`.
+Neon’s auth is API-key-based. The first `bun alchemy login` after this change adds a `Neon` step that either reads `NEON_API_KEY` from the environment (good for CI) or stores a key under `~/.alchemy/credentials/<profile>/neon-stored.json`.
 
 ## Provision the database
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/adopting-resources
 title: "Adopting Resources"
 description: "How alchemy takes ownership of pre-existing cloud resources — recovery by default, --adopt for foreign resources, and the programmatic AdoptPolicy."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 Two situations put alchemy in front of a cloud resource it has no state for: existing infrastructure you want alchemy to start managing, and a fresh (or wiped) state store sitting in front of resources alchemy already created.
@@ -83,7 +83,7 @@ deployEffect.pipe(adopt(decidePolicy));  // Effect<boolean>, resolved at plan ti
 
 Providers with no tag concept (e.g. APIs that always return a singleton by name) always return plain attrs from `read`, so they silently adopt unconditionally — `--adopt` is a no-op for them.
 
-For the full lost-state-store recovery walkthrough (state explorer → state delete → deploy), see [Inspecting State](inspecting-state.md).
+For the full lost-state-store recovery walkthrough (state tree → state clear → deploy), see [Inspecting State](inspecting-state.md).
 
 ## Where next
 

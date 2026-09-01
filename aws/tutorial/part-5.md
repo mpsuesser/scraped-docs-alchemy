@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated AWS deployments and PR previews — with OIDC credentials provisioned as code."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 In [Part 4](part-4.md) you deployed isolated stages by
@@ -56,13 +56,7 @@ Rather than hand those elevated rights to your day-to-day profile,
 create a dedicated `admin` profile:
 
 ```sh
-alchemy profile create admin
-```
-
-Connect AWS to the new profile:
-
-```sh
-alchemy profile edit admin --add AWS
+alchemy login --profile admin
 ```
 
 Choose an AWS credential (SSO, access keys, etc.) that's authorized
@@ -223,7 +217,7 @@ round-trip through your shell.
 Run it once from your laptop, under the `admin` profile:
 
 ```sh
-alchemy deploy --config stacks/github.ts --profile admin
+alchemy deploy stacks/github.ts --profile admin
 ```
 
 You'll see Alchemy plan the OIDC provider, the role, and the two repo

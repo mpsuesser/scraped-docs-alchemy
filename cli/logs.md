@@ -1,22 +1,20 @@
 ---
 url: https://alchemy.run/cli/logs
 title: "logs"
-description: "Fetch or tail logs from deployed resources, merged and color-coded by resource."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+description: "Fetch historical logs from deployed resources — a batch of past entries, merged and sorted by timestamp."
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 ```sh
-alchemy logs [options]
+alchemy logs [file] [options]
 ```
 
-Fetch historical logs from deployed resources, or pass `--tail` to stream
-new entries until interrupted.
+Fetch historical logs from deployed resources. Unlike [tail](tail.md), `logs` fetches a batch of past log entries and exits.
 
 Entries from all resources are merged and sorted by timestamp, color-coded by resource.
 
-`--resource` accepts comma-separated logical IDs. Values are validated against
-the stack. An unknown ID fails the command and lists the available IDs.
+`--filter` values are validated against the stack's logical IDs — an unknown ID fails the command and lists the available IDs.
 
 Resources must be deployed and their provider must implement log fetching; if none qualify, the command prints `No resources with logs found. Deploy first, then run logs.` and exits.
 
@@ -25,13 +23,12 @@ Resources must be deployed and their provider must implement log fetching; if no
 | Option              | Description                                                                                    |
 | ------------------- | ---------------------------------------------------------------------------------------------- |
 | `--stage <name>`    | Stage to fetch logs from (defaults to `dev_$USER`)                                             |
-| `--resource, -r <ids>`  | Comma-separated logical resource IDs to include, such as `Worker,Api`                          |
+| `--filter <ids>`    | Comma-separated logical resource IDs to include                                                |
 | `--limit <n>`       | Number of log entries to fetch (default: 100)                                                  |
 | `--since <time>`    | Fetch logs since this time — a duration (`30m`, `1h`, `2d`; units `s`/`m`/`h`/`d`) or ISO date |
-| `--tail`, `-t`    | Continue streaming new log entries                                                             |
-| `--profile <name>`  | Auth profile to use (defaults to `$ALCHEMY_PROFILE` or `default`)                        |
+| `--profile <name>`  | Auth profile to use (defaults to `default` or `$ALCHEMY_PROFILE`)                              |
 | `--env-file <path>` | Load environment variables from a file                                                         |
-| `--config <path>`   | Stack file to read logs for (defaults to `alchemy.run.ts`)                                     |
+| `[file]`            | Stack file to read logs for (defaults to `alchemy.run.ts`)                                     |
 
 ## Examples
 
@@ -39,11 +36,8 @@ Resources must be deployed and their provider must implement log fetching; if no
 # Last 50 log entries from all resources
 alchemy logs --limit 50
 
-# Logs from the last hour for Worker and Api
-alchemy logs --resource Worker,Api --since 1h
-
-# Tail Worker and Api in real time
-alchemy logs --tail --resource Worker,Api
+# Logs from the last hour, Worker only
+alchemy logs --filter Worker --since 1h
 
 # Logs from a specific stage since a date
 alchemy logs --stage prod --since 2026-04-01T00:00:00Z
@@ -51,5 +45,6 @@ alchemy logs --stage prod --since 2026-04-01T00:00:00Z
 
 ## Where next
 
+- [tail](tail.md) — stream live logs instead of fetching a batch
 - [dev](dev.md) — run your stack with hot reloading
 - [cloudflare](cloudflare.md) — inspect the state-store worker's own logs

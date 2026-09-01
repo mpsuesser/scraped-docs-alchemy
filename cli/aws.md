@@ -2,20 +2,20 @@
 url: https://alchemy.run/cli/aws
 title: "aws"
 description: "AWS provider commands — bootstrap the per-account assets bucket that Lambda deployments rely on."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 ```sh
-alchemy provider aws <subcommand> [options]
+alchemy aws <subcommand> [options]
 ```
 
 Cloud-provider commands for AWS — managing the per-account infrastructure that Alchemy itself relies on.
 
-## provider aws bootstrap
+## aws bootstrap
 
 ```sh
-alchemy provider aws bootstrap [options]
+alchemy aws bootstrap [options]
 ```
 
 Set up the AWS assets bucket required for deploying Lambda functions and other AWS resources that need artifact storage.
@@ -32,21 +32,18 @@ Re-running is a no-op:
 
 | Option | Description |
 | --- | --- |
-| `--aws-profile <name>` | AWS CLI/SSO profile to use for credentials (default: `default`) |
+| `--profile <name>` | AWS profile to use for credentials (default: `default`) |
 | `--region <region>` | AWS region to bootstrap. Defaults to the SSO profile’s region, then `us-east-1`. |
+| `--destroy` | Destroy all bootstrap buckets in the selected region |
 | `--env-file <path>` | Load environment variables from a file |
 
 Bootstrap requires an AWS **SSO profile** with `sso_account_id` set — it fails with a clear error if the profile is missing one.
 
 Logs are written to `.alchemy/log/bootstrap.txt`.
 
-## provider aws teardown
+### \--destroy
 
-```sh
-alchemy provider aws teardown [options]
-```
-
-Removes every bootstrap bucket in the selected region and reports the count. It accepts the same profile, region, and environment-file options as `bootstrap`, plus `--yes` to skip confirmation.
+Removes every bootstrap bucket in the selected region and reports the count:
 
 ```
 ✓ Destroyed 1 bootstrap bucket(s): alchemy-assets-123456789012-us-west-2-an
@@ -60,13 +57,13 @@ If there’s nothing to remove:
 
 ```sh
 # Bootstrap with the default profile
-alchemy provider aws bootstrap
+alchemy aws bootstrap
 
 # Bootstrap a specific region and profile
-alchemy provider aws bootstrap --aws-profile prod --region us-west-2
+alchemy aws bootstrap --profile prod --region us-west-2
 
 # Remove bootstrap resources
-alchemy provider aws teardown
+alchemy aws bootstrap --destroy
 ```
 
 ## Where next

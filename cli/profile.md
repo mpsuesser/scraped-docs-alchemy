@@ -1,270 +1,75 @@
 ---
 url: https://alchemy.run/cli/profile
 title: "profile"
-description: "Create, refresh, rename, edit, inspect, or delete Alchemy authentication profiles."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+description: "Inspect or clear credentials stored in ~/.alchemy/profiles.json."
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 ```sh
-alchemy profile [subcommand] [options]
+alchemy profile <subcommand> [options]
 ```
 
-Inspect and manage authentication settings in `~/.alchemy/profiles.json` and credentials under `~/.alchemy/credentials/<profile>/`. See [Profiles](../environments/profiles.md).
-
-The built-in `default` profile always exists — like the AWS CLI’s — so first-time flows never need a create step. It cannot be renamed or deleted, and every command uses it unless another profile is named with `--profile` or `$ALCHEMY_PROFILE`. Profiles are not consulted in CI; there, credentials come from [environment variables](../environments/ci.md) only.
-
-## Interactive terminal dashboard
-
-```sh
-alchemy profile
-```
-
-On a terminal, running `alchemy profile` with no subcommand opens the profile dashboard. It shows profiles as tabs, connected providers, credential status, and keyboard shortcuts for each action.
-
-```
-● default   production
-
-default · active
-
-│ Cloudflare  oauth   ✓ ready
-│   accessToken: Xl06****
-│   accountId: 123456789
-│
-│ GitHub      gh-cli  ✓ ready
-│   token: gho_3S****
-
-←/→ switch  e edit  r refresh  n new  q quit
-```
-
-Dashboard actions call the same code as the subcommands below. Use the subcommands in scripts. Esc or Ctrl+C leaves a nested prompt; at the top level, either key exits the dashboard.
-
-In a non-interactive session (no terminal, CI, coding agents) the dashboard can’t open and `alchemy profile` prints the subcommand help instead.
-
-| Option | Description |
-| --- | --- |
-| `--env-file <path>` | Load environment variables from a file |
-| `--config, -c <file>` | Stack entrypoint used to discover custom auth providers |
-
-## profile create
-
-```sh
-alchemy profile create <name>
-```
-
-Explicitly create an empty profile. Profile names are unique; the command fails if the name already exists. You do not need to create `default`.
-
-```sh
-alchemy profile create production
-alchemy profile edit production
-```
-
-## profile rename
-
-```sh
-alchemy profile rename <name> [new-name]
-```
-
-Rename a profile and move its stored credentials to the new name. Profiles carry a stable internal id, so renames do not orphan credentials. The command refuses to rename the built-in `default` profile and to overwrite either an existing profile or an existing credential directory. Omit the new name to enter it interactively.
-
-```sh
-# Prompt for the new name
-alchemy profile rename production
-
-# Rename directly
-alchemy profile rename production prod
-```
-
-An `ALCHEMY_PROFILE` environment variable is external configuration and is not rewritten; update it separately if it names the old profile.
-
-## profile edit
-
-```sh
-alchemy profile edit [profile] [flags]
-```
-
-Without action flags, the command shows connected accounts and opens a menu of available auth providers. Space cycles the highlighted row through its states:
-
-- **Unconnected** providers toggle between untouched and **add**.
-- **Connected** providers cycle keep → **re-configure** → **remove**.
-
-```
-◆  Manage accounts in profile 'default'
-│  ○ AWS
-│  ✚ Axiom add
-│  ✎ Cloudflare re-configure (oauth)
-│  ● GitHub (gh-cli)
-│  ↑/↓ to navigate • Space: change action • Enter: confirm
-└
-```
-
-Enter applies the queued changes in order: each add/re-configure runs the provider’s configuration flow (the same flow that connects a provider on first deploy), and each removal asks for confirmation before running the provider’s logout.
-
-The `--add`, `--reconfigure`, and `--remove` flags perform changes directly with no prompts (removals are not re-confirmed). Each flag takes a provider, is repeatable, and you can combine them in one invocation. List each provider only once. Provider matching is case-insensitive. Custom auth providers are discovered from the stack entrypoint just as they are for `show`.
-
-Adding or reconfiguring a provider normally opens its prompts (or a browser, for OAuth). For scripts and agents, token-shaped methods can be configured entirely from flags: `--method` picks the provider’s configure method and repeatable `--set` supplies its fields. Values come in three forms so secrets stay out of shell history: a literal (`name=value`), an environment variable (`name=env:VAR`, resolved from the environment and `--env-file`), or stdin (`name=-`, one field at most). Each provider documents its methods and fields in `alchemy profile edit --help`; when a provider has exactly one method, `--method` can be omitted. Browser-OAuth methods stay interactive-only.
-
-In a non-interactive session (no terminal, CI, coding agents), the menu can’t open. The command prints its usage and exits non-zero. Use the action flags.
-
-| Argument / option | Description |
-| --- | --- |
-| `[profile]` | Profile to manage; defaults to the effective current one |
-| `--add <provider>` | Connect a provider (repeatable) |
-| `--reconfigure <provider>` | Re-run a connected provider’s configuration (repeatable) |
-| `--remove <provider>` | Log out a provider and disconnect it (repeatable) |
-| `--method <name>` | Configure without prompts using this method (requires exactly one `--add` / `--reconfigure`) |
-| `--set <name>=<value>` | Field for `--method`: literal, `env:VAR`, or `-` for stdin (repeatable) |
-| `--env-file <path>` | Load environment variables and current-profile selection |
-| `--config, -c <file>` | Stack entrypoint used to discover custom auth providers |
-
-```sh
-# Manage the current profile interactively
-alchemy profile edit
-
-# Manage a named profile interactively
-alchemy profile edit work
-
-# Direct, non-interactive-friendly forms
-alchemy profile edit --add cloudflare
-alchemy profile edit work --reconfigure cloudflare
-alchemy profile edit --remove cloudflare
-
-# Several changes at once
-alchemy profile edit --remove cloudflare --add github
-
-# Fully non-interactive: an agent connects Cloudflare with an API token
-alchemy profile edit --add cloudflare --method api-token \
-  --set apiToken=env:CLOUDFLARE_API_TOKEN --set accountId=0123456789abcdef0123456789abcdef
-
-# Single-method providers don't need --method; secret via stdin
-op read op://vault/neon/key | alchemy profile edit --add neon --set apiKey=-
-```
-
-## profile refresh
-
-```sh
-alchemy profile refresh [profile] [options]
-```
-
-Refresh authentication for every connected provider without changing its configured method, account, or scopes. This runs the provider’s login flow: for example, AWS SSO invokes `aws sso login`, while Cloudflare OAuth refreshes its token and falls back to browser authorization when necessary. If the stored scopes no longer match the current OAuth client, unknown scopes are dropped with a warning. The command refreshes the remaining scopes. If no valid scopes remain, it fails with a `--reconfigure` hint.
-
-Use `--provider` one or more times to refresh only selected providers. Provider names are matched case-insensitively.
-
-| Option | Description |
-| --- | --- |
-| `[profile]` | Profile to refresh; defaults to the effective current one |
-| `--provider <name>` | Refresh only this connected provider; may be repeated |
-| `--env-file <path>` | Load environment variables and current-profile selection |
-| `--config, -c <file>` | Stack entrypoint used to discover custom auth providers |
-
-```sh
-# Refresh every connected provider in the current profile
-alchemy profile refresh
-
-# Refresh AWS in a named profile
-alchemy profile refresh production --provider AWS
-```
-
-## profile current
-
-```sh
-alchemy profile current [options]
-```
-
-Show the effective profile and why it was selected. The source is either `ALCHEMY_PROFILE` or `built-in default`. In a non-interactive session it prints a single `name (source)` line.
-
-| Option | Description |
-| --- | --- |
-| `--env-file <path>` | Load environment variables from a file |
-
-## profile list
-
-```sh
-alchemy profile list [options]
-```
-
-Render configured profiles — `default` first, the rest alphabetical — including the active profile, configured providers, and each provider’s authentication method.
-
-```
-╭──────────────────────────────────────────────────────╮
-│ Profiles (2)                                         │
-├──────────────────────────────────────────────────────┤
-│ Profile       Providers        Authentication        │
-│ ──────────────────────────────────────────────────── │
-│ ● default     AWS, Cloudflare  AWS: sso, CF: oauth   │
-│   production  Cloudflare       CF: api-token         │
-╰──────────────────────────────────────────────────────╯
-```
-
-The active profile is resolved from `ALCHEMY_PROFILE` in the environment or `--env-file`, falling back to the built-in `default`. In a non-interactive session each profile prints as one `* name: Provider (method)` line.
-
-| Option | Description |
-| --- | --- |
-| `--env-file <path>` | Load environment variables from a file |
+Inspect and manage credentials stored in `~/.alchemy/profiles.json`. See [Profiles](../environments/profiles.md).
 
 ## profile show
 
 ```sh
-alchemy profile show [profile] [options]
+alchemy profile show [options]
 ```
 
-Show a profile’s providers as a table with authentication method, credential status, and resolved details. Sensitive credentials remain redacted. Built-in auth providers are always available. Alchemy also attempts to load the stack’s auth providers so custom integrations can render their entries.
+Print every auth method configured under a profile, along with its resolved credentials (redacted). Unlike `login`, this does **not** import your stack file — it reads the profile store directly and uses the bundled providers (AWS, Axiom, Cloudflare, GitHub, Neon, Planetscale) to pretty-print each entry.
 
 ```
-╭────────────────────────────────────────────────────────────╮
-│ Profile: default (active)                                  │
-├────────────────────────────────────────────────────────────┤
-│ Provider    Method  Status  Details                        │
-│ ────────────────────────────────────────────────────────── │
-│ AWS         sso     ready   accessKeyId: ASIA****          │
-│                            region: us-west-2               │
-│                            source: sso - default           │
-│ ────────────────────────────────────────────────────────── │
-│ Cloudflare  oauth   ready   accessToken: Xl06****          │
-│                            accountId: 123456789...         │
-╰────────────────────────────────────────────────────────────╯
+Profile: default
+
+── AWS ──
+accessKeyId:     ASIA****
+secretAccessKey: Pj5T****
+sessionToken:    IQoJ****
+region:          us-west-2
+source: sso - default
+
+── Cloudflare ──
+accessToken: Xl06****
+expires: in 59m 58s 999ms (2026-04-27T20:45:47.937Z)
+accountId: 123456789...
+source: oauth
 ```
 
-If the profile doesn’t exist, the command fails (non-zero exit) and lists the available profile names. If none exist, it suggests `alchemy profile create <name>`.
+If the profile doesn’t exist, the command lists the available profile names — or suggests running [`alchemy login`](login.md) when none are configured.
 
-| Argument / option | Description |
+| Option | Description |
 | --- | --- |
-| `[profile]` | Profile to inspect; defaults to the effective current one |
+| `--profile <name>` | Profile to show (defaults to `default` or `$ALCHEMY_PROFILE`) |
 | `--env-file <path>` | Load environment variables from a file |
-| `--config, -c <file>` | Stack entrypoint used to discover custom auth providers |
 
 ```sh
-# Show the current profile
+# Show the default profile
 alchemy profile show
 
 # Show a named profile
-alchemy profile show prod
+alchemy profile show --profile prod
 ```
 
-## profile delete
+## profile clear
 
 ```sh
-alchemy profile delete <name> [options]
+alchemy profile clear [options]
 ```
 
-Render the profile’s redacted credentials, ask for confirmation, then delete the profile from `~/.alchemy/profiles.json` **and** remove its credential directory. The built-in `default` profile cannot be deleted.
+Delete a profile from `~/.alchemy/profiles.json` **and** remove its credentials directory. If the profile isn’t in `profiles.json`, the command still removes any stray credentials directory.
 
-| Argument / option | Description |
+| Option | Description |
 | --- | --- |
-| `<name>` | Profile to delete |
-| `--yes`, `-y` | Skip the confirmation prompt |
-| `--env-file <path>` | Load environment variables from a file |
-| `--config, -c <file>` | Stack entrypoint used to discover custom auth providers |
+| `--profile <name>` | Profile to clear (defaults to `default` or `$ALCHEMY_PROFILE`) |
 
 ```sh
 # Remove the prod profile and its credentials
-alchemy profile delete prod
-
-# Delete without prompting
-alchemy profile delete prod --yes
+alchemy profile clear --profile prod
 ```
 
 ## Where next
 
+- [login](login.md) — configure and log in to each provider in your stack.
 - [Profiles](../environments/profiles.md) — how profiles isolate credentials across accounts and environments.
-- [CI](../environments/ci.md) explains how to use environment credentials without a profile.

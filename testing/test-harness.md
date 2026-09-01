@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for alchemy/Test — every helper, hook, and option exposed by Test.make for Bun and Vitest."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 `alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same Effect-aware harness. For the end-to-end walkthrough, see [Testing a Stack](testing-a-stack.md); for provider-lifecycle testing, see [Testing Providers](testing-providers.md).
@@ -60,7 +60,7 @@ providers: Cloudflare.providers(),
 providers: Layer.mergeAll(Cloudflare.providers(), Stripe.providers()),
 ```
 
-Credentials resolve through the same `AuthProviders` registry as `alchemy deploy`, so tests pick up stored profiles or the env-var auth methods registered by each provider.
+Credentials resolve through the same `AuthProviders` registry as `alchemy deploy`, so tests pick up `alchemy login` profiles or the env-var auth methods registered by each provider.
 
 ### state
 

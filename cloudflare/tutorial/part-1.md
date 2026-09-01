@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with a Cloudflare R2 Bucket, and deploy it."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with a Cloudflare R2 Bucket, and deploy it — all in under five minutes.
@@ -166,7 +166,7 @@ Run `alchemy deploy` to create the Bucket on Cloudflare:
 bun alchemy deploy
 ```
 
-If you haven’t connected Cloudflare yet, the deploy fails with the exact `alchemy profile edit` command to run. Use the `profile` command to sign in and save credentials to your **`default`** [profile](../../environments/profiles.md) at `~/.alchemy/profiles.json`. For Cloudflare you can sign in with OAuth in the browser or paste an API token — no environment variables or `wrangler login` required.
+The first time you deploy, Alchemy walks each provider in your stack through an interactive login and saves the credentials to your **`default`** [profile](../../environments/profiles.md) at `~/.alchemy/profiles.json`. For Cloudflare you can sign in with OAuth in the browser or paste an API token — no environment variables or `wrangler login` required.
 
 ```
 Plan: 1 to create

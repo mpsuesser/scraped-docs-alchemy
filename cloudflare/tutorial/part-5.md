@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated deployments, PR previews, and remote state — with Cloudflare credentials managed as code."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -58,8 +58,7 @@ Rather than hand those elevated rights to your day-to-day profile,
 create a dedicated `admin` profile:
 
 ```sh
-alchemy profile create admin
-alchemy profile edit admin --add Cloudflare
+alchemy login --profile admin
 ```
 
 When prompted for a Cloudflare credential, pick one of:
@@ -217,7 +216,7 @@ treatment as the API token.
 Run it once from your laptop, under the `admin` profile:
 
 ```sh
-alchemy deploy --config stacks/github.ts --profile admin
+alchemy deploy stacks/github.ts --profile admin
 ```
 
 You'll see Alchemy plan three creates — the Cloudflare token and the

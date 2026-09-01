@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/setup
 title: "Setup"
 description: "Install Alchemy, create a Cloudflare account, and connect the two — OAuth or API token, saved to a local profile. No environment variables required."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 Everything you need before deploying to Cloudflare: the alchemy package, a Cloudflare account, and stored credentials.
@@ -22,13 +22,7 @@ If you don’t have one yet, [sign up for Cloudflare](https://dash.cloudflare.co
 
 ## Connect alchemy to Cloudflare
 
-Connect Cloudflare (the `default` profile is created automatically on first use):
-
-```sh
-alchemy profile edit --add Cloudflare
-```
-
-For Cloudflare you can:
+There is no separate credentials step. The first time you run `alchemy deploy` (or `plan`, `dev`, `destroy`), alchemy walks each provider registered in your stack through an interactive login. For Cloudflare you can:
 
 - **Sign in with OAuth** — opens the browser, no tokens to manage.
 - **Paste an API token** — if you prefer explicit, scoped tokens.
@@ -37,26 +31,25 @@ The OAuth flow asks whether you want to customize scopes — answer yes to pick 
 
 Either way the result is saved to your **`default`** [profile](../environments/profiles.md) at `~/.alchemy/profiles.json` — no environment variables and no `wrangler login` required.
 
-To re-run the flow later:
+To run the flow explicitly, or re-run it later:
 
 ```sh
-# Re-run the interactive setup (e.g. switch from OAuth → API token)
-alchemy profile edit --reconfigure Cloudflare
+# Refresh credentials for the current profile
+alchemy login
 
-# Or manage every account in the profile from one menu
-alchemy profile edit
+# Re-run the interactive setup (e.g. switch from OAuth → API token)
+alchemy login --configure
 ```
 
-`profile edit` imports your stack file to discover which providers are available, so the menu matches the providers you actually use.
+`login` imports your stack file to discover which providers are needed, so the prompts match the providers you actually use.
 
 ## Profiles
 
-A profile is a named bundle of credentials. Commands use the built-in `default` profile unless you name another one explicitly. Pass `--profile <name>` or set `$ALCHEMY_PROFILE` to select one — handy for separating work and personal accounts, or staging and prod credentials:
+A profile is a named bundle of credentials. Every command uses the profile named `default` unless you pass `--profile <name>` or set `$ALCHEMY_PROFILE` — handy for separating work and personal accounts, or staging and prod credentials:
 
 ```sh
 # Log into a separate profile
-alchemy profile create prod
-alchemy profile edit prod
+alchemy login --profile prod --configure
 
 # Deploy with it
 alchemy deploy --stage prod --profile prod

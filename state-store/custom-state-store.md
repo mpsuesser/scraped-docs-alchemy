@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store/custom-state-store
 title: "Custom State Store"
 description: "Build a Postgres-backed Alchemy state store step by step — implement the StateService interface, plug it into a stack, and test it end-to-end."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 A state store is just an Effect `Layer` that provides Alchemy’s `State` service. The built-in stores (`localState()` on disk, `Cloudflare.state()` on Cloudflare) cover most cases — but if you already run Postgres, S3, Redis, or DynamoDB, you can back state with that instead.
@@ -22,7 +22,7 @@ class State extends Context.Service<State, Effect.Effect<StateService>>()(
 ) {}
 ```
 
-This indirection matters. Commands like `alchemy profile show` provide the state layer but never touch state, so a store must not connect to its backend (open a DB connection, deploy a worker, prompt for credentials) just because the layer was built. Wrapping the builder in [`Effect.cached`](https://effect.website/docs/getting-started/control-flow/#caching) **defers** initialization until the first `yield* State` and **caches** it so subsequent accesses reuse the same `StateService`.
+This indirection matters. Commands like `alchemy login` provide the state layer but never touch state, so a store must not connect to its backend (open a DB connection, deploy a worker, prompt for credentials) just because the layer was built. Wrapping the builder in [`Effect.cached`](https://effect.website/docs/getting-started/control-flow/#caching) **defers** initialization until the first `yield* State` and **caches** it so subsequent accesses reuse the same `StateService`.
 
 Start with an empty `StateService` so the types compile, then fill it in one method at a time.
 

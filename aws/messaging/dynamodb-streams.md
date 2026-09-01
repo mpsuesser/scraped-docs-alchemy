@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/dynamodb-streams
 title: "Process DynamoDB Streams"
 description: "Enable a DynamoDB Stream on your table and consume change records as a typed Effect Stream from the same Lambda."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 The DynamoDB table from the previous part stores records, but writes happen in the dark — there’s no way for downstream systems to react. **DynamoDB Streams** fix that: every change to the table emits a change record (insert / modify / remove) you can stream into a Lambda. In Alchemy this is one helper call.
@@ -122,7 +122,7 @@ Alchemy enables the stream on the table (takes a few seconds for the table to se
 Reuse the `PUT /items/:id` route to publish changes, then tail the function logs to confirm they arrive:
 
 ```sh
-bun alchemy logs Api --tail
+bun alchemy logs Api --follow
 ```
 
 In another terminal:

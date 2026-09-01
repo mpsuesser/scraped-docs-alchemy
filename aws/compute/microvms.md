@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/microvms
 title: "Lambda MicroVMs"
 description: "Build a Firecracker MicroVM image from TypeScript or a Dockerfile, then launch and drive isolated stateful instances from a Lambda Function with typed lifecycle bindings and RPC."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 A Lambda **MicroVM image** is a Firecracker snapshot that boots a fully
@@ -25,7 +25,7 @@ code artifact in one of three modes, selected by which prop you set:
 :::caution
 Lambda MicroVMs are a **preview feature**: your account must be onboarded to
 the preview, and effectful/external builds need a bootstrapped Assets bucket
-(`alchemy provider aws bootstrap`). Builds are asynchronous and can take several
+(`alchemy aws bootstrap`). Builds are asynchronous and can take several
 minutes — the provider polls until the image reaches `CREATED` and streams
 build logs to CloudWatch.
 :::

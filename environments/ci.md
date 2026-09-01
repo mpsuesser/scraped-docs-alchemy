@@ -2,23 +2,11 @@
 url: https://alchemy.run/environments/ci
 title: "CI"
 description: "Set up CI/CD pipelines for alchemy projects with GitHub Actions, automated deployments, and PR previews — with provider credentials managed as code."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 The core idea is **credentials as code**. Rather than copy-paste API keys into the GitHub UI, you let Alchemy provision exactly the credentials your CI needs — a scoped Cloudflare API token, an AWS IAM role for OIDC, etc. — and write them straight into the repo as encrypted secrets.
-
-## Preflight: verify the environment
-
-Every auth provider declares the environment variables its CI resolution consumes, and `alchemy provider check-env` validates them against that contract. It prints one line per registered provider and exits with code 1 when a required variable is missing:
-
-```sh
-$ bun alchemy provider check-env
-ok Cloudflare
-MISSING AWS: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION | AWS_DEFAULT_REGION
-```
-
-Run it as the first step of a deploy job to fail fast with a list of missing secrets instead of failing minutes later inside a provider API call. `--provider <name>` (repeatable) checks a subset; `--env-file` includes a dotenv file in resolution.
 
 ## How PR previews work
 
@@ -151,14 +139,13 @@ The `stacks/github.ts` you’re about to write needs more privilege than your da
 Rather than hand those rights to your default [profile](profiles.md), create a separate `admin` profile:
 
 ```sh
-alchemy profile create admin
-alchemy profile edit admin
+alchemy login --profile admin
 ```
 
 After creating the file, deploy it once locally under the admin profile:
 
 ```sh
-alchemy deploy --config stacks/github.ts --profile admin
+alchemy deploy stacks/github.ts --profile admin
 ```
 
 You only need to re-run this stack when you want to rotate credentials or change permissions.
@@ -350,7 +337,7 @@ In your workflow, switch on `STAGE` to choose the right credential pair:
 
 GitHub OIDC lets your workflow assume an IAM role without storing long-lived access keys. The GitHub stack creates the OIDC provider and an IAM role scoped to your repo, then writes the role ARN and region to the repo as Actions **variables** (not secrets — they’re not sensitive).
 
-Your `--profile admin` AWS credentials need IAM admin rights for this stack: it creates an `OpenIDConnectProvider` and an IAM `Role`. Run `alchemy profile edit admin --add AWS` and choose a credential (SSO/OIDC, access keys, etc.) that’s authorized for IAM administration.
+Your `--profile admin` AWS credentials need IAM admin rights for this stack: it creates an `OpenIDConnectProvider` and an IAM `Role`. Run `alchemy login --profile admin` and choose a credential (SSO/OIDC, access keys, etc.) that’s authorized for IAM administration.
 
 ```typescript
 import * as Alchemy from "alchemy";
@@ -535,6 +522,6 @@ Then add the secrets to your workflow’s deploy and cleanup steps:
 ## Where next
 
 - [Stages](stages.md) — how `pr-42` and `prod` stay isolated.
-- [Profiles](profiles.md) documents local credentials and the CI environment-variable matrix.
+- [Profiles](profiles.md) — one credential bundle per environment.
 - [Secrets & env on Cloudflare](../cloudflare/security/secrets-env.md) — wire app secrets into a Worker.
 - [Secrets & env on AWS](../aws/security/secrets-env.md) — the same walk for Lambda.

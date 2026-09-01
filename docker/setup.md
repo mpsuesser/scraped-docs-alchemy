@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/setup
 title: "Setup"
 description: "Point alchemy at a Docker daemon — the active CLI context and the DOCKER_BIN override."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-01T03:40:51.295Z
+current_date: 2026-09-01T03:40:51.295Z
 ---
 
 Register the provider in your stack:
@@ -26,7 +26,7 @@ A Docker daemon reachable from the `docker` CLI is the only
 requirement. The provider shells out through the **active Docker CLI
 context**, so whatever `docker ps` talks to — Docker Desktop, a
 remote Docker host, an SSH context, a CI runner's daemon — is what
-alchemy provisions against. There is no login step and no
+alchemy provisions against. There is no `alchemy login` step and no
 stored token: this provider has no credentials of its own.
 
 ## Binary override
