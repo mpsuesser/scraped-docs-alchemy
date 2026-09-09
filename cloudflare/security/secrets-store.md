@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Cloudflare’s Secrets Store is an account-level container for secrets. Unlike a plain env var, a stored secret is shared across Workers, redacted in the dashboard, and read live at runtime — bound Workers see the current value without a redeploy.
@@ -49,7 +49,7 @@ export const AuthToken = Effect.gen(function* () {
 
 ## Read it in a Worker
 
-Bind the secret in the Worker’s init phase with `ReadSecret`, then check the `Authorization` header in `fetch`:
+Bind the secret in the Worker’s Construction phase with `ReadSecret`, then check the `Authorization` header in `fetch`:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -148,7 +148,7 @@ curl -H "Authorization: Bearer <authToken from the deploy output>" \
 
 ## Async Workers: bind via env
 
-Async (non-Effect) Workers don’t have an init phase to `yield*` a binding into. Declare the Secret on the Worker’s `env` instead — the provider maps it to a native `secrets_store_secret` binding, so the runtime sees a real `SecretsStoreSecret` with a `.get()` method:
+Async (non-Effect) Workers don’t have a Construction phase to `yield*` a binding into. Declare the Secret on the Worker’s `env` instead — the provider maps it to a native `secrets_store_secret` binding, so the runtime sees a real `SecretsStoreSecret` with a `.get()` method:
 
 ```typescript
 import type { SecretsStoreSecret } from "@cloudflare/workers-types";

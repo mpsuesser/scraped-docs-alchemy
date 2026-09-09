@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -52,7 +52,7 @@ export default Sandbox.make(
 
 ## Run it from a Durable Object
 
-Yield the class inside a DO’s init phase and provide `Cloudflare.Containers.layer` — that layer binds, starts, and monitors the container, then hands you a running instance:
+Yield the class inside a DO’s Construction phase and provide `Cloudflare.Containers.layer` — that layer binds, starts, and monitors the container, then hands you a running instance:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -121,9 +121,9 @@ The returned `fetch` retries with backoff while the container is still booting, 
 
 ## Process scope vs request scope
 
-Unlike Workers, a Container is a **real process** — and that changes what the instance scope means. The bundled program runs under a root scope that closes when the process shuts down gracefully, so resources acquired at init (a connection kept warm across requests, a background consumer) are genuinely released on exit. Serverless runtimes only approximate this: workerd never closes its instance scope at all, and Lambda gets a best-effort 500 ms SIGTERM window at sandbox shutdown. A hard kill still skips finalizers, as in any process, so treat instance-level cleanup as best-effort.
+Unlike Workers, a Container is a **real process** — and that changes what the instance scope means. The bundled program runs under a root scope that closes when the process shuts down gracefully, so resources acquired in the constructor (a connection kept warm across requests, a background consumer) are genuinely released on exit. Serverless runtimes only approximate this: workerd never closes its instance scope at all, and Lambda gets a best-effort 500 ms SIGTERM window at sandbox shutdown. A hard kill still skips finalizers, as in any process, so treat instance-level cleanup as best-effort.
 
-Each incoming request to the container’s HTTP server still gets its own request `Scope`, released when the response settles — the same per-event contract as every other runtime. See [Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope) for the model across all runtimes.
+Each incoming request to the container’s HTTP server still gets its own request `Scope`, released when the response settles — the same per-event contract as every other runtime. See [Instance scope vs request scope](../../infrastructure-as-effects/runtime.md#instance-scope-vs-request-scope) for the model across all runtimes.
 
 ## Bring your own image
 
@@ -327,7 +327,7 @@ export const Worker = Cloudflare.Worker("Worker", {
 });
 ```
 
-The Durable Object class name defaults to the binding name (the `env` key). Set `className` when the exported class is named differently. The type parameter (`Container<Sandbox>`) is the class from `worker.ts` above — it types `env.Sandbox` as `DurableObjectNamespace<Sandbox>` through [`InferEnv`](workers.md#typed-env-for-async-workers), so the handler reaches the container with full types:
+The Durable Object class name defaults to the binding name (the `env` key). Set `className` when the exported class is named differently. The type parameter (`Container<Sandbox>`) is the class from `worker.ts` above — it types `env.Sandbox` as `DurableObjectNamespace<Sandbox>` through [`InferEnv`](workers.md#async-workers), so the handler reaches the container with full types:
 
 ```typescript
 import { getContainer } from "@cloudflare/containers";

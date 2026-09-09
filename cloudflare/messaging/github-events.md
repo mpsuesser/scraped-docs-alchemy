@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/github-events
 title: "React to GitHub events from a Worker"
 description: "Subscribe a Cloudflare Worker to GitHub repository webhooks with typed payloads — alchemy provisions the webhook and verifies delivery signatures."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 A push lands on `main`, a pull request opens, a release tag appears —
@@ -17,7 +17,7 @@ This event source is **Cloudflare-only today** — see
 
 ## 1. Subscribe to push events
 
-Call `consumeRepositoryEvents` in the Worker's init phase with the
+Call `consumeRepositoryEvents` in the Worker's Construction phase with the
 repository and the events you want, plus a handler that runs once per
 delivery:
 

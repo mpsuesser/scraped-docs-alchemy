@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **ECS** (Elastic Container Service) is AWS’s managed container orchestrator: you describe a container — image, CPU, memory — and ECS runs it. With **Fargate**, AWS also provides the machines, so there are no servers to manage.
@@ -52,7 +52,7 @@ The image comes from exactly one of three sources, flat on the props:
 
 ## Run an Effect program in a Task
 
-Pass `main: import.meta.url` and an init Effect whose impl returns `{ run }` — the program runs to completion when the container starts, then the container exits. Bindings work exactly as on Lambda, attaching environment variables and IAM policy statements to the task:
+Pass `main: import.meta.url` and a constructor Effect whose impl returns `{ run }` — the program runs to completion when the container starts, then the container exits. Bindings work exactly as on Lambda, attaching environment variables and IAM policy statements to the task:
 
 ```typescript
 const drainer = yield* AWS.ECS.Task(
@@ -76,14 +76,14 @@ The tagged form (`class Reindexer extends AWS.ECS.Task<Reindexer, Shape>()("Rein
 
 ## Invoke and schedule Tasks
 
-A `Task` is the target of the ECS control-plane bindings. From a Lambda function, a Service, or any other host, bind [`RunTask`](https://alchemy.run/providers/aws/ecs/runtask) in the **init phase** — this grants the host `ecs:RunTask` plus `iam:PassRole` on the task’s roles — then call it from a handler at **runtime**, where the cluster and task definition ARNs are injected automatically:
+A `Task` is the target of the ECS control-plane bindings. From a Lambda function, a Service, or any other host, bind [`RunTask`](https://alchemy.run/providers/aws/ecs/runtask) in the **Construction phase** — this grants the host `ecs:RunTask` plus `iam:PassRole` on the task’s roles — then call it from a handler at **runtime**, where the cluster and task definition ARNs are injected automatically:
 
 ```typescript
 const api = yield* AWS.Lambda.Function(
   "Api",
   { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
-    // init: bind the launch (IAM grants happen here)
+    // Construction: bind the launch (IAM grants happen here)
     const runTask = yield* AWS.ECS.RunTask(cluster, task);
 
     return {
@@ -199,9 +199,9 @@ Use this for polling loops, queue drainers, or connections that stay open across
 
 ## Process scope vs request scope
 
-An ECS container is a **real process**, and its instance scope reflects that: the bundled program runs under a root scope that closes when the process shuts down gracefully, so resources acquired at init — the connection a `host.run` loop holds open, a warm pool shared across requests — are genuinely released on exit. Serverless runtimes only approximate this: workerd never closes its instance scope at all, and Lambda gets a best-effort 500 ms SIGTERM window; a server gets a real graceful shutdown (a hard kill still skips finalizers, as in any process).
+An ECS container is a **real process**, and its instance scope reflects that: the bundled program runs under a root scope that closes when the process shuts down gracefully, so resources acquired in the constructor — the connection a `host.run` loop holds open, a warm pool shared across requests — are genuinely released on exit. Serverless runtimes only approximate this: workerd never closes its instance scope at all, and Lambda gets a best-effort 500 ms SIGTERM window; a server gets a real graceful shutdown (a hard kill still skips finalizers, as in any process).
 
-Each HTTP request still gets its own request `Scope`, released when the response settles — the same per-event contract as every other runtime. See [Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope) for the model across all runtimes.
+Each HTTP request still gets its own request `Scope`, released when the response settles — the same per-event contract as every other runtime. See [Instance scope vs request scope](../../infrastructure-as-effects/runtime.md#instance-scope-vs-request-scope) for the model across all runtimes.
 
 ## Bindings
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 A Durable Object is *hosted* by exactly one Worker, but any number of **other** Workers can bind to the same DO. This is how you share state across Workers: one Worker hosts the DO, every other Worker addresses it by `scriptName` and gets a typed RPC stub.
@@ -114,7 +114,7 @@ export default WorkerA.make(
 );
 ```
 
-`yield* Counter` inside WorkerA’s init binds the DO *locally* — WorkerA’s `env.Counter` is wired up at deploy time and the class ships in the bundle.
+`yield* Counter` inside WorkerA’s constructor binds the DO *locally* — WorkerA’s `env.Counter` is wired up at deploy time and the class ships in the bundle.
 
 ## Bind WorkerA’s Counter from WorkerB
 

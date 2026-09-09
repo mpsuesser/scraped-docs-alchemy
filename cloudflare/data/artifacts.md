@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/artifacts
 title: "Store Git Repos with Artifacts"
 description: "Use Cloudflare Artifacts to create Git repos at runtime and hand out clone tokens, all from a tiny Worker."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **Cloudflare Artifacts** is a Git server you can drive from a
@@ -26,7 +26,7 @@ export const Repos = Cloudflare.Artifacts.Namespace("Repos");
 
 ## Create a repo from the Worker
 
-Bind the namespace in the Worker's init phase, then call
+Bind the namespace in the Worker's Construction phase, then call
 `artifacts.create(name)` inside `fetch`. It returns the repo's
 `remote` URL and a clone `token`:
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/browser-rendering
 title: "Browser rendering"
 description: "Attach Cloudflare Browser Rendering to a Worker — run quick actions like markdown and scrape, stream screenshots and PDFs, or drive the raw binding with puppeteer."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Browser Rendering gives a Worker a headless browser. In alchemy, the
@@ -16,7 +16,7 @@ streams, and the raw binding is one accessor away for
 
 ## Bind the browser to a Worker
 
-`yield*` the binding in the Worker's init phase and provide
+`yield*` the binding in the Worker's Construction phase and provide
 `BrowserBinding` as a layer:
 
 ```typescript
@@ -52,8 +52,8 @@ converted Markdown; failures surface as a typed `BrowserError`.
 
 ## Scrape elements by selector
 
-The other JSON quick actions follow the same shape — pass a URL plus
-action-specific options, get the parsed result back:
+The other JSON quick actions follow the same shape. Pass a URL plus
+action-specific options and get the parsed result back:
 
 ```typescript
 const scrape = yield* browser.scrape({
@@ -102,7 +102,7 @@ export type WorkerEnv = Cloudflare.InferEnv<typeof Worker>;
 //   { BROWSER: BrowserRun }
 ```
 
-`InferEnv` types the `env` your handler receives — `BROWSER` flows
+`InferEnv` types the `env` your handler receives. `BROWSER` flows
 through as Cloudflare's native `BrowserRun` binding. The
 `nodejs_compat` flag is required for `@cloudflare/puppeteer`.
 

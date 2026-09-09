@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/analytics-engine
 title: "Analytics Engine"
 description: "Write time-series data points from a Worker with Workers Analytics Engine — declare a dataset, bind it with WriteDataset, and query it later over Cloudflare's SQL API."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Workers Analytics Engine is Cloudflare's write-heavy time-series
@@ -31,7 +31,7 @@ name you'll reference in SQL queries; omit it and the logical ID
 
 ## Write data points from a Worker
 
-Bind the dataset with `WriteDataset` in the Worker's init phase and
+Bind the dataset with `WriteDataset` in the Worker's Construction phase and
 provide `WriteDatasetBinding` as a layer:
 
 ```typescript

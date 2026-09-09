@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 This guide builds a Workflow end to end: a durable multi-step job
@@ -13,7 +13,7 @@ that writes to KV and broadcasts each task's progress back to a chat
 
 ## How a Workflow looks
 
-The two-phase shape — an init `Effect.gen` that returns an
+The two-phase shape — a constructor `Effect.gen` that returns an
 `Effect.fn` body — plus `task`, `sleep`, and the replay caution are
 covered on [Workflows](workflows.md).
 
@@ -43,7 +43,7 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
 ) {}
 ```
 
-The outer init resolves shared dependencies — here, the `Room` DO
+The constructor resolves shared dependencies — here, the `Room` DO
 namespace from the previous tutorial so we can broadcast back to
 it. The inner `Effect.fn` is the workflow body that the Cloudflare
 runtime executes task by task.
@@ -67,7 +67,7 @@ something binds to it.
 ## Bind KV to the workflow
 
 `Cloudflare.KV.ReadWriteNamespace(KV)` belongs in the workflow's outer
-init phase. It registers the binding on the workflow's worker and
+Construction phase. It registers the binding on the workflow's worker and
 returns a typed Effect-native client whose methods (`get`, `put`,
 `list`, `delete`) are Effects you can `yield*` directly:
 
@@ -92,7 +92,7 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
 ) {}
 ```
 
-Yielding the binding in the outer init is a one-time setup — the
+Yielding the binding in the constructor is a one-time setup — the
 inner workflow body closes over `kv` and uses it on every run.
 
 ## Add a task
@@ -279,7 +279,7 @@ input shapes (literals, `Effect`, `Config`, …).
 
 ## Use the secret in a task
 
-The `Redacted<string>` resolved in init is captured by the Runtime
+The `Redacted<string>` resolved in the constructor is captured by the Runtime
 body. Unwrap with `Redacted.value` only at the call
 site that needs it (here, an `Authorization` header):
 
@@ -334,7 +334,7 @@ elsewhere the value stays redacted.
 ## Trigger from the Worker
 
 A Workflow becomes a typed handle when you `yield*` it in the
-Worker's init phase. Use `create()` to start an instance and
+Worker's Construction phase. Use `create()` to start an instance and
 `get(id).status()` to poll it:
 
 ```diff lang="typescript"

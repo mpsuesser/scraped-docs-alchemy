@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource
 title: "Resources"
 description: "Resources are named cloud entities with input properties and output attributes."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 A **Resource** represents a cloud entity managed by Alchemy — a bucket, database, queue, function, DNS record, or anything else that has a lifecycle of reconcile and delete.
@@ -254,7 +254,7 @@ Outputs draw the edges. [Bindings](../infrastructure-as-effects/binding.md) atta
 
 ## Circular references
 
-Real systems have cycles — two Workers that call each other, a Lambda that invokes another Lambda. Alchemy resolves them by splitting each Function resource ([Functions & Servers](../infrastructure-as-effects/functions-and-servers.md)) into a **class** that acts as the Tag (the identity) and a **`.make(...)`** Layer that supplies the runtime implementation — so the class can be referenced before its implementation exists:
+Real systems have cycles — two Workers that call each other, a Lambda that invokes another Lambda. Alchemy resolves them by splitting each Function resource ([Runtime](../infrastructure-as-effects/runtime.md)) into a **class** that acts as the Tag (the identity) and a **`.make(...)`** Layer that supplies the runtime implementation — so the class can be referenced before its implementation exists:
 
 <svg viewBox="0 0 464 168" role="img" aria-label="Dependency graph"><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 314 88 C 314 130, 94 130, 94 94" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="204" y="124" text-anchor="middle">binds</text></g> <g><path d="M 164 56 C 201 56, 201 56, 238 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="201" y="50" text-anchor="middle">binds</text></g> <g transform="translate(244, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">Worker A</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">Cloudflare.Worker</text></g> <g transform="translate(24, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">Worker B</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">Cloudflare.Worker</text></g></svg>
 

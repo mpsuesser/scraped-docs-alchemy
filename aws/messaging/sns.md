@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sns
 title: "SNS"
 description: "Create an SNS Topic, publish to it from a Lambda with the Publish binding, fan messages out to SQS queues, and consume notifications as a typed Stream."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **SNS** is AWS's pub/sub layer: publishers send a message to a
@@ -53,7 +53,7 @@ everything else updates in place.
 
 ## Publish from a Lambda
 
-Bind `SNS.Publish(topic)` in the function's init phase and call
+Bind `SNS.Publish(topic)` in the function's Construction phase and call
 it from runtime handlers. The binding quietly attaches
 `sns:Publish` scoped to the topic ARN to the function's
 execution role:

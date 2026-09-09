@@ -2,30 +2,30 @@
 url: https://alchemy.run/aws/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod instances of your stack with --stage, and tune resources per stage."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 In [Part 3](part-3.md) you wrote integration tests against a deployed stack. But so far everything has landed in a single environment. In this part you’ll use **stages** — isolated instances of the same Stack — to give every developer, environment, and (in [Part 5](part-5.md)) every pull request its own copy of the infrastructure.
 
 ## The default stage
 
-You’ve been using stages all along. If you don’t pass `--stage`, Alchemy deploys to **`dev_$USER`** (e.g. `dev_sam`):
+You’ve been using stages all along. If you don’t pass `--stage`, Alchemy deploys to **`live_$USER`** (e.g. `live_sam`):
 
 ```sh
 $ whoami
 sam
 
 $ bun alchemy deploy
-# deploys to stage \`dev_sam\`
+# deploys to stage \`live_sam\`
 ```
 
 Each developer on your team automatically gets a personal sandbox without any config. The resolution order is:
 
 1. `--stage <name>` flag
-2. `$STAGE` environment variable
-3. `dev_${USER}` (or `dev_${USERNAME}` on Windows)
-4. `dev_unknown` if no user is set
+2. `$ALCHEMY_STAGE` environment variable
+3. `live_${USER}` (or `live_${USERNAME}` on Windows)
+4. `live_unknown` if no user is set
 
 ## Deploy a second stage
 

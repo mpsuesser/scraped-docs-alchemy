@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-http-api
 title: "Effect HTTP API"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as a Cloudflare Worker."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Effect HTTP is the trust-boundary modality: schema-validated REST endpoints — real URLs, path params, query strings, payloads — that any HTTP client can call, no Effect or TypeScript required on the consumer’s side. This page deploys one to a Cloudflare Worker; the concept home is [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the modalities.
@@ -15,7 +15,7 @@ Effect’s `HttpApi` module solves this. You declare endpoints with schemas for 
 The mental model we’ll follow is:
 
 1. **Define the schema and API outside the Worker.** Both are pure descriptions and can be imported by clients.
-2. **Construct the service inside the Worker’s Init phase.** The Init phase runs at plan time *and* runtime, so we only do pure construction here — we never `yield*` something that needs a request to exist.
+2. **Construct the service inside the Worker’s Construction phase.** The Construction phase runs at plan time *and* runtime, so we only do pure construction here — we never `yield*` something that needs a request to exist.
 3. **Return `{ fetch }`** where `fetch` is an `HttpEffect` produced by `HttpRouter.toHttpEffect`. That’s the value Workers invoke on every request.
 4. **Bonus:** deploy, grab the URL, and call the API from a fully typed client.
 
@@ -83,7 +83,7 @@ Nothing executes yet — `TaskApi` is purely a value-level description. The same
 
 ## 3\. Build the Worker
 
-Now we wire it up. Create `src/worker.ts` with an empty Init phase:
+Now we wire it up. Create `src/worker.ts` with an empty Construction phase:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -98,11 +98,11 @@ export default Cloudflare.Worker(
 );
 ```
 
-The generator inside `Cloudflare.Worker` is the **Init phase**. It runs both at *plan time* (when Alchemy builds the deployment graph) and at *runtime* (when the Worker boots a fresh isolate). Anything you `yield*` here must be safe in both contexts — typically resource binding factories like `R2.ReadWriteBucket(...)`, never per-request work.
+The generator inside `Cloudflare.Worker` is the **Construction phase**. It runs both at *plan time* (when Alchemy builds the deployment graph) and at *runtime* (when the Worker boots a fresh isolate). Anything you `yield*` here must be safe in both contexts — typically resource binding factories like `R2.ReadWriteBucket(...)`, never per-request work.
 
 ### 3a. Bind an R2 bucket for storage
 
-Tasks need to live somewhere durable. Declare an `Bucket` resource and bind it inside Init — `bind()` returns a typed handle whose `get` / `put` / `delete` / `list` methods we’ll call from the handlers below.
+Tasks need to live somewhere durable. Declare an `Bucket` resource and bind it inside the constructor — `bind()` returns a typed handle whose `get` / `put` / `delete` / `list` methods we’ll call from the handlers below.
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -126,11 +126,11 @@ export default Cloudflare.Worker(
 
 We’ll provide the runtime side of this binding (`Cloudflare.R2.ReadWriteBucketBinding`) in step 3c when we wire up the `fetch` handler.
 
-### 3b. Construct the handler group inside Init
+### 3b. Construct the handler group inside the constructor
 
-`HttpApiBuilder.group` *constructs* a `Layer` that wires handlers into the API spec. It’s pure — it doesn’t run them. That makes it safe to call inside Init.
+`HttpApiBuilder.group` *constructs* a `Layer` that wires handlers into the API spec. It’s pure — it doesn’t run them. That makes it safe to call inside the constructor.
 
-> Don’t `yield*` `HttpApiBuilder.layer(TaskApi)` here — building the layer is fine, but actually executing the server requires an incoming request. Init only does construction; the work happens later, on each `fetch` call.
+> Don’t `yield*` `HttpApiBuilder.layer(TaskApi)` here — building the layer is fine, but actually executing the server requires an incoming request. The constructor only does construction; the work happens later, on each `fetch` call.
 
 ```typescript
 Effect.gen(function* () {
@@ -170,7 +170,7 @@ Each handler receives a typed request. `params.id` is a `string` because that’
 
 ### 3c. Return { fetch }
 
-The return value of Init is the *Worker’s surface* — for a fetch-style Worker that means an object with a `fetch` field. The value of `fetch` must be an `HttpEffect`: an `Effect` that, given an `HttpServerRequest`, produces an `HttpServerResponse`.
+The return value of the constructor is the *Worker’s surface* — for a fetch-style Worker that means an object with a `fetch` field. The value of `fetch` must be an `HttpEffect`: an `Effect` that, given an `HttpServerRequest`, produces an `HttpServerResponse`.
 
 We assemble it in three layers, then convert:
 
@@ -200,7 +200,7 @@ return {
 };
 ```
 
-`HttpRouter.toHttpEffect` returns an `Effect` that builds the Layer and hands back the request handler — yielding it once in Init means route construction happens at boot, not per request.
+`HttpRouter.toHttpEffect` returns an `Effect` that builds the Layer and hands back the request handler — yielding it once in the constructor means route construction happens at boot, not per request.
 
 ### 3d. Enable CORS
 
@@ -408,7 +408,7 @@ export class TaskDOApi extends HttpApi.make("TaskDOApi").add(TasksDOGroup) {}
 
 ### Implement the DO
 
-The DO’s Init returns `{ fetch }` — an `HttpEffect` produced exactly the same way the Worker produces one, just scoped to its own `TaskDOApi`. Storage is the DO’s transactional `state.storage` instead of R2.
+The DO’s constructor returns `{ fetch }` — an `HttpEffect` produced exactly the same way the Worker produces one, just scoped to its own `TaskDOApi`. Storage is the DO’s transactional `state.storage` instead of R2.
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -466,7 +466,7 @@ export default class TasksObject extends Cloudflare.DurableObject<TasksObject>()
 
 ### Bridge the DO into a typed client
 
-Inside the Worker’s Init, `Cloudflare.toHttpClient(stub)` wraps a DO stub as an `HttpClient`. Hand that client to `HttpApiClient.makeWith` and you get a fully typed client whose every call is a DO `fetch` under the hood:
+Inside the Worker’s constructor, `Cloudflare.toHttpClient(stub)` wraps a DO stub as an `HttpClient`. Hand that client to `HttpApiClient.makeWith` and you get a fully typed client whose every call is a DO `fetch` under the hood:
 
 ```typescript
 import * as HttpApiClient from "effect/unstable/httpapi/HttpApiClient";
@@ -512,7 +512,7 @@ const tasksGroup = HttpApiBuilder.group(TaskApi, "Tasks", (handlers) =>
 ## Recap
 
 - The **schema** (`Task`, `TaskNotFound`) and the **API spec** (`TaskApi`) live outside the Worker — they’re pure descriptions.
-- The **handlers** are constructed inside the Worker’s Init phase closure. We build a `Layer` with `HttpApiBuilder.group` but never `yield*` the running server — that only makes sense per-request.
+- The **handlers** are constructed inside the Worker’s Construction phase closure. We build a `Layer` with `HttpApiBuilder.group` but never `yield*` the running server — that only makes sense per-request.
 - The Worker’s surface is `{ fetch }`, where `fetch` is an `HttpEffect` yielded once from `HttpRouter.toHttpEffect`.
 - The same `TaskApi` value drives a fully typed client via `HttpApiClient.make` — no codegen, no string URLs.
 
@@ -521,4 +521,4 @@ const tasksGroup = HttpApiBuilder.group(TaskApi, "Tasks", (handlers) =>
 - [Effect HTTP](../../apis/effect-http.md) — the concept home for this modality.
 - [RPC](../../apis.md) — how to choose between Schemaless RPC, Effect RPC, and Effect HTTP.
 - [Effect RPC on Workers](effect-rpc.md) — the schema-first RPC shape for Effect/TypeScript consumers.
-- [Schemaless RPC](../compute/workers.md#schemaless-rpc) — the default for internal Worker-to-Worker calls.
+- [Schemaless RPC](../compute/workers.md#call-another-worker) — the default for internal Worker-to-Worker calls.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-env
 title: "Secrets & env"
 description: "Bind env vars and secrets to Workers with effect/Config, generate stable tokens with Alchemy.Random, and graduate to Secrets Store when secrets are shared across Workers."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Three ways to get a secret into a Worker, by where the value lives.
@@ -14,7 +14,7 @@ without a redeploy — [Secrets Store](#graduate-to-secrets-store).
 
 ## Bind a secret from .env
 
-Any `Config` yielded in the Worker's init phase is read from your
+Any `Config` yielded in the Worker's Construction phase is read from your
 environment at deploy time, bound to the Worker, and resolved from
 that binding at runtime:
 
@@ -76,7 +76,7 @@ The raw source value is bound; combinators re-run at runtime against
 it, and a default is never bound. See
 [Secrets and Config](../../environments/secrets.md) for the full semantics.
 
-## Resolve Config in init, not in fetch
+## Resolve Config in the constructor, not in fetch
 
 `fetch` never runs at deploy time, so a `Config` yielded only there
 is never discovered or bound:
@@ -97,7 +97,7 @@ Resolve it in the outer `Effect.gen` and reference the `const` from
 the handler:
 
 ```typescript
-// ✅ bound in init, used in runtime
+// ✅ bound in Construction, used in Runtime
 Effect.gen(function* () {
   const apiKey = yield* Config.redacted("API_KEY");
   return {
@@ -110,7 +110,7 @@ Effect.gen(function* () {
 
 ## Async Workers: the env prop
 
-Async (non-Effect) Workers have no init phase — declare bindings on
+Async (non-Effect) Workers have no Construction phase — declare bindings on
 the `env` prop and type the handler with `InferEnv`:
 
 ```typescript

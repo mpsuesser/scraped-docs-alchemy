@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Drizzle.Schema runs drizzle-kit generate as part of deploy — unambiguous schema changes regenerate automatically, ambiguous ones stop and ask you."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 `Drizzle.Schema` puts `drizzle-kit generate` inside the deploy
@@ -143,7 +143,7 @@ drizzle over the instance's own SQLite storage using the
 `drizzle-orm/effect-sqlite-do` integration — the
 same effect-native query surface as [`Drizzle.D1`](d1.md)
 and [`Drizzle.Postgres`](postgres.md). It lives in the
-object's inner Effect — the instance init, which runs only in the
+object's inner Effect — the instance constructor, which runs only in the
 deployed object, before any request reaches its methods. The config
 passes the driver's options through — the `relations` make
 `db.query.users.findMany({ with: { posts: true } })` fully typed.

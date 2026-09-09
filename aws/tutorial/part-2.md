@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -71,7 +71,7 @@ The resolved `Api` resource will now expose a `functionUrl` field carrying that 
 
 ## Move the Bucket into the function
 
-In Part 1 the Bucket lived in `alchemy.run.ts`, but resources can be declared inside any Effect the Stack runs — including a function’s Init phase. Declaring the bucket next to the code that uses it keeps everything about the function in one file. Add it to the outer init:
+In Part 1 the Bucket lived in `alchemy.run.ts`, but resources can be declared inside any Effect the Stack runs — including a function’s Construction phase. Declaring the bucket next to the code that uses it keeps everything about the function in one file. Add it to the constructor:
 
 ```typescript
 import * as AWS from "alchemy/AWS";
@@ -96,7 +96,7 @@ The logical id is still `Bucket`, so Alchemy recognizes it as the same resource 
 
 ## Bind PutObject and GetObject
 
-S3 operations like `s3:PutObject` and `s3:GetObject` are exposed as **bindings** — a typed runtime function you call from your handler, plus an IAM policy statement that gets attached to the function role automatically, scoped to the exact bucket ARN. Bind them in the outer init, alongside the bucket:
+S3 operations like `s3:PutObject` and `s3:GetObject` are exposed as **bindings** — a typed runtime function you call from your handler, plus an IAM policy statement that gets attached to the function role automatically, scoped to the exact bucket ARN. Bind them in the outer constructor, alongside the bucket:
 
 ```typescript
 Effect.gen(function* () {
@@ -250,7 +250,7 @@ Yielding `Api` returns the resolved Lambda outputs — the function ARN, role AR
 
 ## Retire the inline Bucket
 
-The Bucket is now declared inside `Api` ’s init, so the copy in `alchemy.run.ts` is redundant — remove it:
+The Bucket is now declared inside `Api` ’s constructor, so the copy in `alchemy.run.ts` is redundant — remove it:
 
 ```typescript
 Effect.gen(function* () {
@@ -264,7 +264,7 @@ Effect.gen(function* () {
 }),
 ```
 
-The bucket is still part of the Stack — it’s registered when `Api` ’s Init phase runs — it just isn’t surfaced as a stack output anymore.
+The bucket is still part of the Stack — it’s registered when `Api` ’s Construction phase runs — it just isn’t surfaced as a stack output anymore.
 
 ## Deploy
 

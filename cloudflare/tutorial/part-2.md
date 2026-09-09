@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-2
 title: "Part 2: Add a Worker"
 description: "Create a Cloudflare Worker, bind the R2 Bucket, and implement GET/PUT routes."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 In [Part 1](part-1.md) you deployed an R2 Bucket. Now you’ll create a Cloudflare Worker that reads and writes objects in that bucket over HTTP.
@@ -69,7 +69,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Now the Worker can import `Bucket` and bind it in the Init phase:
+Now the Worker can import `Bucket` and bind it in the Construction phase:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";

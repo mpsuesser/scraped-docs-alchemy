@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Replace raw pg with Drizzle's effect-postgres integration, manage your schema as a resource, and have alchemy generate and apply migrations on every deploy — on Neon or PlanetScale."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 The previous tutorial wired your Worker to Neon Postgres through Hyperdrive. Now we’ll layer **Drizzle ORM** on top: typed schemas, typed queries, and — most usefully — a `Drizzle.Schema` resource that regenerates migration SQL programmatically on every deploy and lets `Neon.Branch` apply them transactionally.
@@ -115,7 +115,7 @@ No `drizzle-kit generate` step in your CI — the deploy owns it.
 
 ## Open the connection with Drizzle.Postgres
 
-`Drizzle.Postgres` takes Hyperdrive’s connection string and returns a typed `EffectPgDatabase`. Bind it once at init and use it directly inside `fetch` — no manual `Client` setup, no `Effect.promise(...)` wrappers around queries:
+`Drizzle.Postgres` takes Hyperdrive’s connection string and returns a typed `EffectPgDatabase`. Bind it once in the constructor and use it directly inside `fetch` — no manual `Client` setup, no `Effect.promise(...)` wrappers around queries:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";

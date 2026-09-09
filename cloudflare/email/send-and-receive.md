@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:
@@ -175,7 +175,7 @@ attempt.
 
 ## Send from the Worker
 
-Bind the descriptor with `Email.Send` in the Worker's init phase and
+Bind the descriptor with `Email.Send` in the Worker's Construction phase and
 provide `Email.SendBinding` as the implementation layer. The client's
 `send` method takes the familiar `{ from, to, subject, text }` shape
 (plus `html`, `cc`, `bcc`, `replyTo`, `headers`, and `attachments`):

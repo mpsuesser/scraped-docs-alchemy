@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/vectorize
 title: "Vector search with Vectorize"
 description: "Create a Vectorize index, bind it to a Worker with SearchIndex, and run filtered nearest-neighbor queries over vector embeddings."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Vectorize is Cloudflare's globally distributed vector database.
@@ -62,7 +62,7 @@ immutable, and replacing the parent index replaces it too.
 
 ## Bind the index to a Worker
 
-`Cloudflare.Vectorize.SearchIndex(index)` in the Worker's init phase
+`Cloudflare.Vectorize.SearchIndex(index)` in the Worker's Construction phase
 attaches the native `vectorize` binding at deploy time and resolves
 to an Effect-native client at runtime:
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/lifecycle
 title: "Connection lifecycle"
 description: "SQL clients build lazily on first query, memoize per execution, and tear down when the event settles — why, and what that means on workerd and Lambda."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Every alchemy SQL client — `SQL.Postgres`, `SQL.MySQL`, `SQL.D1`,
@@ -12,18 +12,18 @@ lifecycle contract.
 This page is the canonical statement of that contract; the runtime
 pages link here.
 
-## Init runs once, events run many times
+## Construction runs once, events run many times
 
-A Worker's init closure runs once per isolate, then serves many
+A Worker's constructor runs once per isolate, then serves many
 events. A Lambda instance initializes once, then handles many
-invocations. Resolving a client at init is therefore an
+invocations. Resolving a client in the constructor is therefore an
 isolate-lifetime decision — and disposable resources must not live
 that long, because the instance scope may never close:
 
 ```typescript
 Effect.gen(function* () {
   const sql = yield* SQL.Postgres({ url });
-  // ✓ resolves a *recipe* at init — no connection yet
+  // ✓ resolves a *recipe* in the constructor — no connection yet
 
   return {
     fetch: Effect.gen(function* () {
@@ -34,7 +34,7 @@ Effect.gen(function* () {
 });
 ```
 
-`yield* SQL.Postgres(...)` at init does not connect. It returns a
+`yield* SQL.Postgres(...)` in the constructor does not connect. It returns a
 chainable proxy over a memoized build — a recipe for a client, not a
 client.
 
@@ -47,7 +47,7 @@ Every later query in the same execution reuses it. When the event
 settles, the scope closes and the client's finalizer runs: the pool
 ends, the statement cache drops.
 
-Deploy and plan evaluate the same init code, and because nothing
+Deploy and plan evaluate the same constructor code, and because nothing
 connects until a query runs inside an event, they never open a
 connection.
 
@@ -91,8 +91,8 @@ they cannot disagree.
 The contract is identical off Cloudflare: each Lambda invocation and
 each server request gets a fresh execution scope, clients build on
 first query and release on settle.
-[Functions & Servers](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope)
-covers the instance-scope rules — what init may do, when instance
+[Runtime](../../infrastructure-as-effects/runtime.md#instance-scope-vs-request-scope)
+covers the instance-scope rules — what the constructor may do, when instance
 finalizers run, and the Lambda SIGTERM window.
 
 ## Where next
@@ -100,7 +100,7 @@ finalizers run, and the Lambda SIGTERM window.
 - [Postgres](postgres.md) /
   [MySQL](https://alchemy.run/sql/effect-sql/mysql) / [D1](d1.md) — the
   clients this contract governs.
-- [Workers: isolate scope vs request scope](../../cloudflare/compute/workers.md#isolate-scope-vs-request-scope)
+- [Workers: isolate scope vs request scope](../../cloudflare/compute/workers.md#background-work-and-scopes)
   — the same rules from the Worker's point of view.
-- [Functions & Servers](../../infrastructure-as-effects/functions-and-servers.md)
+- [Runtime](../../infrastructure-as-effects/runtime.md)
   — the cross-cloud runtime model.

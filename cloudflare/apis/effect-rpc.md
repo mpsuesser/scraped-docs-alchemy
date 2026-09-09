@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-rpc
 title: "Effect RPC"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as a Cloudflare Worker."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Effect RPC exposes a typed, schema-validated surface across a **trust boundary** — a web app or an external service calling into your Worker. For internal Worker-to-Worker or Worker-to-DO calls, use [Schemaless RPC](../../apis/schemaless.md) instead; for choosing between the modalities, see [RPC](../../apis.md).
@@ -13,7 +13,7 @@ The [HTTP API guide](effect-http-api.md) showed how to build REST-style endpoint
 The transport is still HTTP under the hood, and both patterns produce the same `HttpEffect` type, so the wiring story is identical to the HTTP API guide:
 
 1. **Define schemas outside.** Domain types and tagged errors, importable by both server and client.
-2. **Construct the service inside the Worker’s Init phase.** `RpcGroup.toLayer` is pure construction — safe to call at plan time. Don’t `yield*` the running server; it can’t run without a request.
+2. **Construct the service inside the Worker’s Construction phase.** `RpcGroup.toLayer` is pure construction — safe to call at plan time. Don’t `yield*` the running server; it can’t run without a request.
 3. **Return `{ fetch }`** where `fetch` is the `HttpEffect` produced by `RpcServer.toHttpEffect`.
 4. **Bonus:** deploy and call the procedures from a typed client that shares the exact same `RpcGroup` value.
 
@@ -71,7 +71,7 @@ export class TaskRpcs extends RpcGroup.make(getTask, createTask) {}
 
 ## 3\. Build the Worker
 
-Create `src/worker.ts` with an empty Init phase:
+Create `src/worker.ts` with an empty Construction phase:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -86,11 +86,11 @@ export default Cloudflare.Worker(
 );
 ```
 
-The generator inside `Cloudflare.Worker` is the **Init phase** — it runs both at *plan time* and at *runtime*. Only do pure construction or resource-binding factories here; never `yield*` work that needs an incoming request.
+The generator inside `Cloudflare.Worker` is the **Construction phase** — it runs both at *plan time* and at *runtime*. Only do pure construction or resource-binding factories here; never `yield*` work that needs an incoming request.
 
 ### 3a. Bind an R2 bucket for storage
 
-Tasks need durable storage. Declare an `Bucket` resource and bind it inside Init — `bind()` returns a typed handle whose `get` / `put` / `delete` / `list` methods we’ll call from the handlers below.
+Tasks need durable storage. Declare an `Bucket` resource and bind it inside the constructor — `bind()` returns a typed handle whose `get` / `put` / `delete` / `list` methods we’ll call from the handlers below.
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -114,11 +114,11 @@ export default Cloudflare.Worker(
 
 We’ll provide the runtime side of this binding (`Cloudflare.R2.ReadWriteBucketBinding`) in step 3c when we wire up the `fetch` handler.
 
-### 3b. Construct the handlers inside Init
+### 3b. Construct the handlers inside the constructor
 
 `TaskRpcs.toLayer` takes an `Effect` that returns one handler per procedure and produces a `Layer`. Like `HttpApiBuilder.group`, this is pure construction — it builds a value, it doesn’t run the server.
 
-> Don’t `yield* TaskRpcs.toLayer(...)` here. Building a layer is fine, but actually executing the procedures requires an incoming request. Init only constructs; the work happens later, on each `fetch` call.
+> Don’t `yield* TaskRpcs.toLayer(...)` here. Building a layer is fine, but actually executing the procedures requires an incoming request. The constructor only constructs; the work happens later, on each `fetch` call.
 
 ```typescript
 Effect.gen(function* () {
@@ -327,7 +327,7 @@ On the client, `client.countTasks({ upto: 5 })` is a `Stream<number>` you consum
 ## Recap
 
 - **Schemas** (`Task`, `TaskNotFound`, `CreateTaskFailed`) and the **RPC group** (`TaskRpcs`) live outside the Worker — pure descriptions, importable by clients.
-- The **handlers** are constructed inside the Worker’s Init phase closure via `TaskRpcs.toLayer`. We build a `Layer` but never `yield*` the running server.
+- The **handlers** are constructed inside the Worker’s Construction phase closure via `TaskRpcs.toLayer`. We build a `Layer` but never `yield*` the running server.
 - The Worker’s surface is `{ fetch }`, where `fetch` is the `HttpEffect` produced by `RpcServer.toHttpEffect`.
 - The same `TaskRpcs` value drives a fully typed client via `RpcClient.make`, with errors as typed values rather than HTTP status codes.
 
@@ -364,7 +364,7 @@ const tasks = yield* Cloudflare.RpcWorker.bind(TaskWorker);
 proxyGetTask: ({ id }) => tasks.getTask({ id }),
 ```
 
-The bind goes over the in-account service binding (not the public internet) and the client is typed by `TaskWorker` ’s declared schema. A `Proxy` defers each call’s underlying `RpcClient` construction so Cloudflare’s “no cross-request I/O” rule is satisfied transparently. For internal Worker-to-Worker calls that don’t need a schema at all, see [Schemaless RPC on Workers](../compute/workers.md#schemaless-rpc).
+The bind goes over the in-account service binding (not the public internet) and the client is typed by `TaskWorker` ’s declared schema. A `Proxy` defers each call’s underlying `RpcClient` construction so Cloudflare’s “no cross-request I/O” rule is satisfied transparently. For internal Worker-to-Worker calls that don’t need a schema at all, see [Schemaless RPC on Workers](../compute/workers.md#call-another-worker).
 
 `RpcWorker` also supports a **modular form** that separates the class declaration from its runtime — useful when a consumer Worker should be able to import the class for binding without pulling in the host’s runtime:
 
@@ -474,7 +474,7 @@ export class TaskRpcs extends InnerRpcs.merge(DoRpcs) {}
 
 ### Implement the DO
 
-The DO’s Init returns `{ fetch }` produced by `RpcServer.toHttpEffect(InnerRpcs)`. State lives in `state.storage` instead of R2:
+The DO’s constructor returns `{ fetch }` produced by `RpcServer.toHttpEffect(InnerRpcs)`. State lives in `state.storage` instead of R2:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";

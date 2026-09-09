@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/durable-objects
 title: "Durable Objects"
 description: "Durable Objects are globally-unique stateful instances with transactional storage — define one as an Effect, persist state per key, expose typed RPC methods, and stream values back to the caller."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 A Durable Object (DO) is a globally-unique stateful instance addressed by name: every request for `"user-123"` — from any Worker, anywhere in the world — lands on the *same* instance, with its own transactional SQLite-backed storage. That combination of identity + storage + single-threaded execution makes DOs the right tool for per-entity state: counters, chat rooms, game sessions, WebSocket hubs, rate limiters, collaborative documents.
@@ -23,7 +23,7 @@ import * as Effect from "effect/Effect";
 export default class Counter extends Cloudflare.DurableObject<Counter>()(
   "Counter",
   Effect.gen(function* () {
-    // Outer (init): resolve the instance state and shared
+    // Outer (Construction): resolve the instance state and shared
     // dependencies here.
     return Effect.gen(function* () {
       // Inner: return the public API for this instance.
@@ -35,7 +35,7 @@ export default class Counter extends Cloudflare.DurableObject<Counter>()(
 
 ## Persist the count
 
-Each DO instance has its own key/value storage, backed by SQLite. Resolve `Cloudflare.DurableObjectState` in the **outer** Effect, then pull the current count out of storage in the inner init so it survives restarts and hibernation:
+Each DO instance has its own key/value storage, backed by SQLite. Resolve `Cloudflare.DurableObjectState` in the **outer** Effect, then pull the current count out of storage in the inner constructor so it survives restarts and hibernation:
 
 ```typescript
 Effect.gen(function* () {
@@ -76,7 +76,7 @@ Workers will see `counter.increment()` returning `Effect<number>` and `counter.g
 
 ## Bind the DO to the Worker
 
-Yield the `Counter` class in your Worker’s init phase to get a namespace handle:
+Yield the `Counter` class in your Worker’s Construction phase to get a namespace handle:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -99,7 +99,7 @@ export default Cloudflare.Worker(
 );
 ```
 
-`yield* Counter` in init registers the DO with the Worker (binding + class-migration metadata) and hands you the namespace.
+`yield* Counter` in the constructor registers the DO with the Worker (binding + class-migration metadata) and hands you the namespace.
 
 ## Call the DO from fetch
 
@@ -344,9 +344,9 @@ Available hints are `wnam`, `enam`, `sam`, `weur`, `eeur`, `apac`, `oc`, `afr`, 
 
 ## Call scope vs isolate scope
 
-A Durable Object shares its isolate’s layer build with the Worker that hosts it — the entrypoint’s init runs **once per isolate**, and every DO activation (including hibernatable-WebSocket wakes, which re-run the constructor) reuses it. Each method call, `fetch`, `alarm`, or WebSocket event then runs with a **fresh `Scope`**, closed via `state.waitUntil` after the call settles — so `Effect.addFinalizer` inside a method runs after the RPC response is returned, and a returned `Stream` keeps the scope alive until it finishes draining.
+A Durable Object shares its isolate’s layer build with the Worker that hosts it — the entrypoint’s constructor runs **once per isolate**, and every DO activation (including hibernatable-WebSocket wakes, which re-run the constructor) reuses it. Each method call, `fetch`, `alarm`, or WebSocket event then runs with a **fresh `Scope`**, closed via `state.waitUntil` after the call settles — so `Effect.addFinalizer` inside a method runs after the RPC response is returned, and a returned `Stream` keeps the scope alive until it finishes draining.
 
-As everywhere on workerd, there is no isolate-teardown hook: cleanup belongs in methods (call scope), not in the constructor or init. Per-call resources like `Drizzle.Postgres` pools open lazily inside the method and close with its scope (see the [SQL connection lifecycle](../../sql/effect-sql/lifecycle.md)). See [Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope) for the model across all runtimes.
+As everywhere on workerd, there is no isolate-teardown hook: cleanup belongs in methods (call scope), not in the class constructor or the Construction phase. Per-call resources like `Drizzle.Postgres` pools open lazily inside the method and close with its scope (see the [SQL connection lifecycle](../../sql/effect-sql/lifecycle.md)). See [Instance scope vs request scope](../../infrastructure-as-effects/runtime.md#instance-scope-vs-request-scope) for the model across all runtimes.
 
 ## Where next
 
@@ -360,7 +360,7 @@ Guides that build on Durable Objects:
 Related:
 
 - [Workers](workers.md) — the runtime every DO is reached through.
-- [Drizzle migrations](../../sql/drizzle/migrations.md#durable-object-migrations) — run drizzle-kit’s `durable-sqlite` migrations inside the object at init.
+- [Drizzle migrations](../../sql/drizzle/migrations.md#durable-object-migrations) — run drizzle-kit’s `durable-sqlite` migrations inside the object in the constructor.
 
 Reference:
 

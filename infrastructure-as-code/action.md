@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/action
 title: "Actions"
 description: "A node in the dependency graph that runs an Effect during apply when its inputs change."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 An **Action** is a node in the stack’s dependency graph that runs an arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has no provider lifecycle — no replace, no read, no delete. The engine just diffs the resolved input against the last persisted hash and either runs the body or skips it.
@@ -28,9 +28,9 @@ rows.rows // Output<number>
 
 The body Effect receives the **resolved** input — any [Output](outputs.md) references in the input are evaluated against the current tracker before the body runs.
 
-### Init constructor (pulling in dependencies)
+### Constructor (pulling in dependencies)
 
-Pass an Effect that yields the runner instead of the runner itself. The init Effect can `yield*` services, and those dependencies surface as `Req` on the call site:
+Pass an Effect that yields the runner instead of the runner itself. The constructor Effect can `yield*` services, and those dependencies surface as `Req` on the call site:
 
 ```typescript
 const Sync = Action("Sync", Effect.gen(function* () {
@@ -45,7 +45,7 @@ const Sync = Action("Sync", Effect.gen(function* () {
 // \`yield* Sync({...})\` now requires \`Database | Logger | Stack\`.
 ```
 
-The init runs at most once per process and the resolved runner is reused across every instance and re-run.
+The constructor runs at most once per process and the resolved runner is reused across every instance and re-run.
 
 ### Multiple instances
 
@@ -79,7 +79,7 @@ const rows = yield* Sync({ table: bucket.name });
 //            or provide it locally with \`Effect.provide(SyncLive)\`.
 ```
 
-`.make(...)` accepts either a direct runner or an init Effect, and the init runs under the same context as the inline form — so the resource bindings and Output accessors below work here too.
+`.make(...)` accepts either a direct runner or a constructor Effect, and the constructor runs under the same context as the inline form — so the resource bindings and Output accessors below work here too.
 
 ## Binding resources
 
@@ -153,7 +153,7 @@ alchemy deploy --force
 Actions live in the same FQN namespace as Resources. They can:
 
 - Take Resource outputs as input (`{ table: bucket.name }`)
-- Capture a Resource Output in the init (`yield* bucket.name`) — see [Reading a resource’s Outputs](#reading-a-resources-outputs)
+- Capture a Resource Output in the constructor (`yield* bucket.name`) — see [Reading a resource’s Outputs](#reading-a-resources-outputs)
 - Be referenced by Resources via `action.output` (downstream resource waits for the action before reconciling)
 - Reference other Actions
 
@@ -162,5 +162,5 @@ Cycles are rejected at plan time just like resource cycles.
 ## What Actions are not
 
 - **Not a Resource.** No `diff` / `read` / `reconcile` / `delete`. If you need lifecycle management of a cloud entity, model it as a Resource.
-- **Not a runtime function.** An Action runs at deploy time. To call code from a deployed Worker or Lambda, see [Functions & Servers](../infrastructure-as-effects/functions-and-servers.md).
+- **Not a runtime function.** An Action runs at deploy time. To call code from a deployed Worker or Lambda, see [Runtime](../infrastructure-as-effects/runtime.md).
 - **Not idempotent for free.** The engine guarantees the body runs only when inputs change, but the body itself must tolerate retries on apply restart (its `running` state is persisted but not its side effects).

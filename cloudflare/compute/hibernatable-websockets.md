@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 The `Counter` Durable Object you added in the previous part holds
@@ -13,7 +13,7 @@ messages between peers, and **survives hibernation**.
 
 Cloudflare can evict an idle Durable Object from memory while
 keeping its WebSocket connections open. When a message arrives the
-DO is reconstructed from scratch, your init Effect runs again, and
+DO is reconstructed from scratch, your constructor Effect runs again, and
 your `webSocketMessage` handler is invoked. Any per-instance state
 you held in JavaScript variables is gone — you have to put it back.
 
@@ -145,8 +145,21 @@ return {
 +    if (attachment) sessions.delete(attachment.id);
 +    yield* ws.close(code, reason);
 +  }),
++  webSocketError: Effect.fn(function* (
++    ws: Cloudflare.WebSocket,
++    error: unknown,
++  ) {
++    // Cloudflare closes an errored socket after this handler runs; only
++    // the session bookkeeping is ours to clean up.
++    const attachment = ws.deserializeAttachment<{ id: string }>();
++    if (attachment) sessions.delete(attachment.id);
++  }),
 };
 ```
+
+`webSocketError` fires when the connection fails instead of closing
+cleanly (a network reset, a protocol error). The runtime closes the
+socket afterwards, so the handler only has to drop the peer's state.
 
 ## Restore sessions after hibernation
 
@@ -157,7 +170,7 @@ your `sessions` map starts empty — but the open sockets are still
 there.
 
 Resolve `Cloudflare.DurableObjectState` in the **outer** Effect,
-then rehydrate the map at the top of the inner init by reading
+then rehydrate the map at the top of the inner constructor by reading
 every attached socket back from the runtime:
 
 ```diff lang="typescript"
@@ -186,7 +199,7 @@ current instance, and `deserializeAttachment` recovers the
 first message after hibernation would broadcast to nobody.
 
 :::note
-The `state` *reference* is resolved in the outer (init) Effect, but
+The `state` *reference* is resolved in the outer (Construction) Effect, but
 `state.getWebSockets()` is
 [colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#runtime-as-a-colored-function),
 so it can only run in the inner (runtime) Effect — which is exactly

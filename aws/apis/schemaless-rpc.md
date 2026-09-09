@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC from a Lambda Function into a MicroVM with no schema — declare the image's Shape, connect, get the client."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 The pattern — what a Shape member may be, how the typed client arises, what
@@ -42,7 +42,7 @@ export default Sandbox.make(
 
 Like Containers on Cloudflare, the MicroVM image declares its Shape as an
 explicit type parameter — the caller reaches it over the network, so nothing
-can be inferred from a binding. The init Effect returns `{ fetch, ...rpcs }`;
+can be inferred from a binding. The constructor Effect returns `{ fetch, ...rpcs }`;
 the in-VM runtime serves the RPC methods over `/__rpc__/*` and falls through
 to `fetch` for everything else, so the same image answers both call surfaces.
 

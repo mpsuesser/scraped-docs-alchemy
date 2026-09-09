@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare
 title: "Cloudflare"
 description: "Build and deploy full applications on Cloudflare with Alchemy — one Worker runtime plus resources like Durable Objects, D1, R2, Queues, and Hyperdrive, wired together by typed bindings."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 An alchemy app on Cloudflare is one **Worker** runtime plus the resources it talks to — databases, object storage, queues, stateful objects — all declared in the same TypeScript program and wired together by typed bindings. Deploy the whole thing with `bun alchemy deploy`; Alchemy figures out what changed.
@@ -51,7 +51,7 @@ New here? [Set up your account](cloudflare/setup.md), then start the [tutorial](
 | App shape | Stack |
 | --- | --- |
 | HTTP API | [Worker](cloudflare/compute/workers.md) + [D1](cloudflare/data/d1.md) — see [Effect HTTP API](cloudflare/apis/effect-http-api.md) |
-| Call one Worker from another (internal RPC) | [Worker](cloudflare/compute/workers.md) — see [Schemaless RPC](cloudflare/compute/workers.md#schemaless-rpc) and the [concept](apis/schemaless.md) |
+| Call one Worker from another (internal RPC) | [Worker](cloudflare/compute/workers.md) — see [Schemaless RPC](cloudflare/compute/workers.md#call-another-worker) and the [concept](apis/schemaless.md) |
 | Typed API for external clients | [Effect RPC](cloudflare/apis/effect-rpc.md) for Effect clients, [Effect HTTP API](cloudflare/apis/effect-http-api.md) for plain HTTP |
 | Real-time / WebSockets | [Durable Objects](cloudflare/compute/durable-objects.md) — see [Accept WebSockets](cloudflare/compute/hibernatable-websockets.md) |
 | Full-stack app | [Worker](cloudflare/compute/workers.md) + a React SPA — see [Add a React SPA](cloudflare/frontend/vite-spa.md) or [Frontend frameworks](cloudflare/frontend/frontends.md) |

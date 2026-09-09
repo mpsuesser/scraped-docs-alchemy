@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/sending
 title: "Sending & managing email"
 description: "Send email with SES — verify identities, send from a Lambda with the SendEmail binding, manage contact lists, tenants, dedicated IP pools, account settings, and deliverability insights."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **SES sending** starts with a verified **identity** — a domain or
@@ -232,7 +232,7 @@ account-level binding (the template has no ARN to scope to) whose
 implementation is `SES.SendCustomVerificationEmailHttp`:
 
 ```typescript
-// init — inside the Lambda's Effect.gen body
+// Construction — inside the Lambda's Effect.gen body
 const sendVerification = yield* SES.SendCustomVerificationEmail();
 
 // runtime
@@ -348,7 +348,7 @@ bindings you can call from a Lambda. Look up a single message's
 per-recipient event timeline with `GetMessageInsights`:
 
 ```typescript
-// init — account-level binding, no resource argument
+// Construction — account-level binding, no resource argument
 const getInsights = yield* SES.GetMessageInsights();
 
 // runtime — MessageId returned by a prior SendEmail

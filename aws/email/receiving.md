@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/receiving
 title: "Email receiving"
 description: "Receive inbound email with SES — rule sets and rules that store mail in S3, fan out to SNS, invoke a Lambda, or bounce it, plus IP filters and the active rule set pointer."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **SES email receiving** turns a domain you've verified into an
@@ -229,7 +229,7 @@ scope to, so it's bound with no argument and its implementation is
 provided as `SES.SendBounceHttp`:
 
 ```typescript
-// init — inside the Lambda's Effect.gen body
+// Construction — inside the Lambda's Effect.gen body
 const sendBounce = yield* SES.SendBounce();
 ```
 

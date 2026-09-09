@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/observability
 title: "Observability"
 description: "Effect emits OpenTelemetry natively and the exporter is a Layer. Provision the receiving end — datasets, monitors, notifiers, alarms — as resources in the same Stack as the code that emits the signals."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Effect already emits traces, metrics, and logs, and every alchemy
@@ -84,7 +84,7 @@ export const Ingest = Axiom.ApiToken("Ingest", {
   },
 });
 
-// src/worker.ts — in the Worker's init Effect:
+// src/worker.ts — in the Worker's constructor Effect:
 import { Ingest, Logs, Traces } from "./observability.ts";
 
 Effect.provide(

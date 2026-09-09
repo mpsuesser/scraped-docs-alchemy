@@ -1,19 +1,19 @@
 ---
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
-description: "Use effect/Config to read env vars at init time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+description: "Use effect/Config to read env vars at Construction time and have Alchemy automatically bind them onto the deploy target."
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)
-to automatically bind env vars to your Worker or Lambda environment ([Functions & Servers](../infrastructure-as-effects/functions-and-servers.md)).
+to automatically bind env vars to your Worker or Lambda environment ([Runtime](../infrastructure-as-effects/runtime.md)).
 Bound values come from the env of whoever runs the deploy, so they naturally
 vary per [stage](stages.md) and [profile](profiles.md).
 
 ## Bind a secret to your Worker
 
-Any `Config` value that is evaluated with `yield*` in the [Init phase](../infrastructure-as-effects/phases.md)
+Any `Config` value that is evaluated with `yield*` in the [Construction phase](../infrastructure-as-effects/phases.md)
 of (for example) a Worker, is automatically bound to its environment
 at deploy time. It is always bound as a secret (`secret_text` on
 Cloudflare) regardless of which `Config` constructor you use.
@@ -29,7 +29,7 @@ export default Cloudflare.Worker(
   { main: import.meta.url },
   Effect.gen(function* () {
     const apiKey = yield* Config.redacted("API_KEY"); 
-    // apiKey is Redacted<string> — usable here in Init AND captured as a binding
+    // apiKey is Redacted<string> — usable here in Construction AND captured as a binding
 
     return {
       fetch: Effect.gen(function* () {
@@ -41,13 +41,13 @@ export default Cloudflare.Worker(
 ```
 
 :::tip
-See [Phases](../infrastructure-as-effects/phases.md) for why Init and Runtime run separately.
+See [Phases](../infrastructure-as-effects/phases.md) for why Construction and Runtime run separately.
 :::
 
-## Use the value during Init
+## Use the value during Construction
 
 Unlike an [Output](../infrastructure-as-code/outputs.md), the value can be used immediately
-within the Init phase. For example, to initialize a client:
+within the Construction phase. For example, to initialize a client:
 
 ```typescript
 export default Cloudflare.Worker(
@@ -110,12 +110,12 @@ export default Cloudflare.Worker(
 );
 ```
 
-Always resolve the `Config` in the outer `Effect.gen` (Init) — even
+Always resolve the `Config` in the outer `Effect.gen` (Construction) — even
 if you only need the value inside `fetch`. Capture it in a `const`,
 and reference that `const` from the runtime body:
 
 ```typescript
-// ✅ bound in Init, used in Runtime
+// ✅ bound in Construction, used in Runtime
 Effect.gen(function* () {
   const apiKey = yield* Config.redacted("API_KEY");
   return {
@@ -126,14 +126,14 @@ Effect.gen(function* () {
 });
 ```
 
-Once a `Config` has been resolved during Init, re-yielding the same
+Once a `Config` has been resolved during Construction, re-yielding the same
 `Config` anywhere at runtime — inside `fetch`, deep in a nested
 effect, or in a service layer — resolves it from the binding and
 produces the same value.
 
 ## Async Workers — bind via `env`
 
-Async (non-Effect) Workers don't have an Init `Effect.gen` to
+Async (non-Effect) Workers don't have a constructor `Effect.gen` to
 `yield*` into, so you put the `Config` on the resource's `env`
 prop instead. Alchemy resolves each `Config` at deploy time and
 records the appropriate binding — same end result as the `yield*`

@@ -1,21 +1,21 @@
 ---
 url: https://alchemy.run/infrastructure-as-effects/phases
 title: "Phases"
-description: "Alchemy programs run in two phases — plantime/init drives the deploy, runtime handles requests. Knowing which is which is the key to writing Workers and Lambda Functions."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+description: "Alchemy programs run in two phases — Construction drives the deploy, Runtime handles requests. Knowing which is which is the key to writing Workers and Lambda Functions."
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Every alchemy program runs in two phases — plantime builds the plan, runtime serves requests. Function resources — Workers, Lambdas, Containers — express both in a single program by **returning an Effect from inside an Effect**.
 
-## Init vs runtime
+## Construction vs Runtime
 
 ```typescript
 Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-    // ─── Init phase ───
+    // ─── Construction phase ───
     const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
 
     return {
@@ -31,21 +31,21 @@ Cloudflare.Worker(
 
 | Phase | Code | When it runs |
 | --- | --- | --- |
-| Init | outer | At plantime **and** at cold start |
+| Construction | outer | At plantime **and** at cold start |
 | Runtime | inner | Only inside a deployed handler |
 
-The `bucket` value is established once during init and captured by the runtime closure. Init runs at most once per cold start; the runtime body runs per request with everything already wired up. Each phase has its own `Scope` with very different lifetimes — [Instance scope vs request scope](functions-and-servers.md#instance-scope-vs-request-scope) covers where cleanup can (and cannot) happen.
+The `bucket` value is established once during Construction and captured by the runtime closure. The constructor runs at most once per cold start; the runtime body runs per request with everything already wired up. Each phase has its own `Scope` with very different lifetimes — [Instance scope vs request scope](runtime.md#instance-scope-vs-request-scope) covers where cleanup can (and cannot) happen.
 
-The runtime phase is the *only* place where `Alchemy.RuntimeContext` is available. Any Effect whose requirements include `RuntimeContext` can only execute inside the runtime closure — the type system rejects it everywhere else. The next page builds the [colored-function model](layers.md#runtime-as-a-colored-function) on top of this split.
+The Runtime phase is the *only* place where `Alchemy.RuntimeContext` is available. Any Effect whose requirements include `RuntimeContext` can only execute inside the runtime closure — the type system rejects it everywhere else. The next page builds the [colored-function model](layers.md#runtime-as-a-colored-function) on top of this split.
 
 ## What runs when
 
-<svg viewBox="0 0 848 204" role="img" aria-label="Plantime (top) records bindings and builds the plan. Runtime (bottom) starts on cold start and runs the handler per request."><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 164 56 C 201 56, 201 56, 238 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 384 56 C 421 56, 421 56, 458 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 604 56 C 641 56, 641 102, 678 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 164 148 C 201 148, 201 148, 238 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 384 148 C 421 148, 421 148, 458 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g transform="translate(24, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">alchemy deploy</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">plantime</text></g> <g transform="translate(244, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">init()</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">records bindings</text></g> <g transform="translate(464, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">apply</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">create / update</text></g> <g transform="translate(684, 70)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">deployed</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">Worker / Lambda</text></g> <g transform="translate(24, 116)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">cold start</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">runtime</text></g> <g transform="translate(244, 116)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">init()</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">builds SDK clients</text></g> <g transform="translate(464, 116)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">fetch()</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">per request</text></g></svg>
+<svg viewBox="0 0 848 204" role="img" aria-label="Plantime (top) records bindings and builds the plan. Runtime (bottom) starts on cold start and runs the handler per request."><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 164 56 C 201 56, 201 56, 238 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 384 56 C 421 56, 421 56, 458 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 604 56 C 641 56, 641 102, 678 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 164 148 C 201 148, 201 148, 238 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 384 148 C 421 148, 421 148, 458 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g transform="translate(24, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">alchemy deploy</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">plantime</text></g> <g transform="translate(244, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">construct()</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">records bindings</text></g> <g transform="translate(464, 24)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">apply</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">create / update</text></g> <g transform="translate(684, 70)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">deployed</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">Worker / Lambda</text></g> <g transform="translate(24, 116)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">cold start</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">runtime</text></g> <g transform="translate(244, 116)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">construct()</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">builds SDK clients</text></g> <g transform="translate(464, 116)"><rect stroke="currentColor" fill="none" width="140" height="64" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="28" text-anchor="middle" dominant-baseline="middle">fetch()</text> <text fill="currentColor" x="70" y="46" text-anchor="middle" dominant-baseline="middle">per request</text></g></svg>
 
 Plantime (top) records bindings and builds the plan. Runtime (bottom) starts on cold start and runs the handler per request.
 
-- At **plantime**, init runs to discover bindings — alchemy needs to know which resources the handler will use so it can wire permissions, env vars, and references.
-- At **runtime cold start**, init runs again — this time inside the deployed Worker, where the same `bind()` calls return live SDK clients backed by the deployed resource.
+- At **plantime**, the constructor runs to discover bindings — alchemy needs to know which resources the handler will use so it can wire permissions, env vars, and references.
+- At **runtime cold start**, the constructor runs again — this time inside the deployed Worker, where the same `bind()` calls return live SDK clients backed by the deployed resource.
 - The **runtime body** only runs in the deployed handler. It never executes at plantime, so you can put real per-request work there without affecting deploy speed.
 
 ## ALCHEMY\_PHASE
@@ -90,7 +90,7 @@ This is also how alchemy can let you write `bucket.get(...)` inside a Worker wit
 
 ## Why this matters
 
-The init/runtime split lets you write code that:
+The Construction/Runtime split lets you write code that:
 
 1. **Resolves infrastructure references at deploy time** — bindings know which bucket ARN, queue URL, etc. to inject.
 2. **Initializes SDK clients once at cold start** — not on every request.

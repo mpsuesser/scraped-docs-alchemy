@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/infrastructure-as-effects/custom-runtime
 title: "Custom Runtime"
-description: "Implement your own Function/Server resource on the Platform type — a Provider that provisions the compute and bundles the runtime Effect."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+description: "Implement your own Runtime resource on the Platform type — a Provider that provisions the compute and bundles the runtime Effect."
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
-Worker, Lambda, and Container cover the common cases. This guide is for bringing the [Functions & Servers](functions-and-servers.md) model to a new compute target. A custom runtime is a [Provider](../infrastructure-as-code/provider.md) with two jobs: provision the compute infrastructure, and bundle + upload the runtime Effect.
+Worker, Lambda, and Container cover the common cases. This guide is for bringing the [Runtime](runtime.md) model to a new compute target. A custom runtime is a [Provider](../infrastructure-as-code/provider.md) with two jobs: provision the compute infrastructure, and bundle + upload the runtime Effect.
 
 The running reference is `AWS.ECS.Task` ([`AWS/ECS/Task.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/AWS/ECS/Task.ts)) — it bundles an inline Effect program, builds a Docker image, and registers a Fargate task definition. Every built-in runtime — `Cloudflare.Worker`, `AWS.Lambda.Function`, `AWS.EC2.Instance` — follows the same two-part shape.
 
@@ -26,7 +26,7 @@ export const TaskProvider = () =>
   Provider.effect(Task, Effect.gen(function* () { /* ... */ }));
 ```
 
-`Platform` handles the Effect plumbing — running the user’s init Effect, collecting handlers, wiring [Bindings](binding.md) — so the provider only has to do what every provider does: reconcile cloud state.
+`Platform` handles the Effect plumbing — running the user’s constructor Effect, collecting handlers, wiring [Bindings](binding.md) — so the provider only has to do what every provider does: reconcile cloud state.
 
 ## Declare the Resource
 
@@ -68,8 +68,8 @@ export interface Platform<
 | Parameter | ECS Task instantiation | Meaning |
 | --- | --- | --- |
 | `Resource` | `Task` | The Resource contract above |
-| `Services` | `Credentials \| Region \| ServerHost \| AWSEnvironment` | Services the runtime provides to the user’s init Effect |
-| `MainShape` | `Main<TaskServices>` | What the init Effect may return — `{ fetch?: HttpEffect }` |
+| `Services` | `Credentials \| Region \| ServerHost \| AWSEnvironment` | Services the runtime provides to the user’s constructor Effect |
+| `MainShape` | `Main<TaskServices>` | What the constructor Effect may return — `{ fetch?: HttpEffect }` |
 | `RuntimeContext` | `TaskRuntimeContext extends HostRuntimeContext` | The mutable context that collects handlers, env, and exports |
 
 The value-level factory takes the type string and a `createRuntimeContext` hook (plus an optional `onCreate` hook — `Cloudflare.Worker` uses it to register child resources for async bindings):
@@ -89,7 +89,7 @@ export const Task: Platform<Task, TaskServices, TaskShape, TaskRuntimeContext> =
 
 ## The RuntimeContext
 
-`createRuntimeContext(id)` returns the object that accumulates everything the init Effect registers. Its contract is `BaseRuntimeContext` from `alchemy/RuntimeContext`:
+`createRuntimeContext(id)` returns the object that accumulates everything the constructor Effect registers. Its contract is `BaseRuntimeContext` from `alchemy/RuntimeContext`:
 
 ```typescript
 export interface BaseRuntimeContext {
@@ -125,7 +125,7 @@ exports: Effect.sync(() => ({
 })),
 ```
 
-After running the init Effect, `Platform` hands any returned `fetch` handler to `serve`, then folds the context back onto the resource’s Props — so everything init recorded reaches your provider:
+After running the constructor Effect, `Platform` hands any returned `fetch` handler to `serve`, then folds the context back onto the resource’s Props — so everything the constructor recorded reaches your provider:
 
 ```typescript
 // inside Platform (Platform.ts) — what your provider receives as \`news\`
@@ -208,7 +208,7 @@ The bootstrap is the one place the Effect world meets the process entrypoint. Fo
 
 ## Honor the phase split
 
-The same init Effect runs twice — at plantime to record bindings, and at cold start inside the artifact to build live clients. See [Phases](phases.md). Two mechanisms keep the two runs honest, and `Bundle.build` wires the first automatically:
+The same constructor Effect runs twice — at plantime to record bindings, and at cold start inside the artifact to build live clients. See [Phases](phases.md). Two mechanisms keep the two runs honest, and `Bundle.build` wires the first automatically:
 
 ```typescript
 // Bundle.ts — folded into every bundle via rolldown transform.define
@@ -233,7 +233,7 @@ const alchemyEnv = {
 
 ## Bindings flow through the host
 
-When the user writes `yield* AWS.S3.GetObject(bucket)` in the init Effect, the capability calls ``host.bind`${bucket}`(data)`` with data matching your Binding Contract. The engine collects those and hands them to `reconcile` as the `bindings` argument:
+When the user writes `yield* AWS.S3.GetObject(bucket)` in the constructor Effect, the capability calls ``host.bind`${bucket}`(data)`` with data matching your Binding Contract. The engine collects those and hands them to `reconcile` as the `bindings` argument:
 
 ```typescript
 const attachBindings = Effect.fn(function* ({ roleName, policyName, bindings }) {
@@ -266,7 +266,7 @@ Your provider decides what the contract data *means* — here IAM policies attac
 
 ## What users get
 
-The finished runtime reads like any other Function — infrastructure props, an init Effect, a `{ fetch }` handler:
+The finished runtime reads like any other Function — infrastructure props, a constructor Effect, a `{ fetch }` handler:
 
 ```typescript
 import * as AWS from "alchemy/AWS";
@@ -289,10 +289,10 @@ export default class ApiTask extends AWS.ECS.Task<ApiTask>()(
 ) {}
 ```
 
-Everything on this page sits behind that surface: `Platform` runs the init Effect and collects `host.run` + `fetch` into `exports.program`, and the provider bundles that program into an image and reconciles the task definition around it.
+Everything on this page sits behind that surface: `Platform` runs the constructor Effect and collects `host.run` + `fetch` into `exports.program`, and the provider bundles that program into an image and reconciles the task definition around it.
 
 ## Where next
 
-- [Functions & Servers](functions-and-servers.md) — the model this guide implements a new target for.
+- [Runtime](runtime.md) — the model this guide implements a new target for.
 - [Custom Provider](../infrastructure-as-code/custom-provider.md) — the lifecycle contract (`reconcile`, `delete`, `diff`, `read`) in depth.
-- [Phases](phases.md) — the init/runtime split your bundle must honor.
+- [Phases](phases.md) — the Construction/Runtime split your bundle must honor.

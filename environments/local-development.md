@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 `alchemy dev` runs your stack on your machine. Your compute runs locally (Workers in workerd, Lambda and ECS in Docker containers), the services around it are emulated, and code changes hot reload in milliseconds. `Alchemy.remote()` runs any resource against the real cloud when you need it.
@@ -34,7 +34,7 @@ Three things happen:
 2. **Your code runs locally** — Workers execute in workerd, Lambda functions and ECS tasks in Docker containers, websites on their framework’s own dev server — with bindings wired to the local simulators.
 3. **File changes hot reload** — edit your code and the running compute swaps in the new code without a redeploy.
 
-Resources whose provider has no local implementation deploy to the real cloud, into your personal [stage](stages.md) (`dev_$USER` by default), so your loop never collides with teammates or prod. A stack that mixes emulated and live-only resources just works.
+Resources whose provider has no local implementation deploy to the real cloud, into the [`dev_$USER` stage](stages.md) by default — separate from `alchemy deploy` ’s `live_$USER` stage, so a bare `alchemy dev` cannot replace a stage you deployed. A stack that mixes emulated and live-only resources just works. Tear the local-dev stage down with `alchemy destroy --stage dev_$USER`.
 
 ## Hot module reloading
 
@@ -122,7 +122,7 @@ The [test harness](../testing/test-harness.md) has the same switch: `Test.make({
 - [Cloudflare local development](https://alchemy.run/cloudflare/local-development) — what runs in workerd and which bindings are simulated.
 - [AWS local development](https://alchemy.run/aws/local-development) — the emulated AWS surface, Lambda/ECS containers, and zero-credential dev.
 - [CI](ci.md) — deploy the same stack from GitHub Actions with PR previews.
-- [Stages](stages.md) — how `dev_$USER`, `pr-42`, and `prod` stay isolated.
+- [Stages](stages.md) — how `live_$USER`, `dev_$USER`, `pr-42`, and `prod` stay isolated.
 - [Dev servers](../command/dev-servers.md) — run any framework dev server as a `Command.Dev` resource in the dev loop.
 - [Testing](../testing.md) — run the same test suite against the local emulators with `Test.make({ dev: true })`.
 - [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — build the local implementation of a resource.

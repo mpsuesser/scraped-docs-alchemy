@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request, so reach for it when data needs sanitizing on its way in — a web app or an external service calling your Lambda. Internal calls use [Schemaless RPC](../../apis/schemaless.md) instead (on AWS, a Lambda Function driving a [MicroVM](../compute/microvms.md)); the [RPC overview](../../apis.md) has the full decision.
@@ -13,7 +13,7 @@ The [HTTP API guide](effect-http-api.md) showed how to build REST-style endpoint
 The transport is still HTTP under the hood — the RPC server compiles down to the same `HttpEffect` a Lambda’s `fetch` expects — so the wiring story is identical to the HTTP API guide:
 
 1. **Define schemas outside the Function.** Domain types and tagged errors, importable by both server and client.
-2. **Bind resources and construct handlers inside the Function’s Init phase.** `RpcGroup.toLayer` is pure construction — safe at deploy time and at cold start.
+2. **Bind resources and construct handlers inside the Function’s Construction phase.** `RpcGroup.toLayer` is pure construction — safe at deploy time and at cold start.
 3. **Return `{ fetch }`** where `fetch` is the `HttpEffect` produced by `RpcServer.toHttpEffect`.
 4. **Deploy** and call the procedures from a typed client that shares the exact same `RpcGroup` value.
 
@@ -81,7 +81,7 @@ export class JobRpcs extends RpcGroup.make(getJob, createJob) {}
 
 ## 3\. Build the Function
 
-Create `src/JobFunction.ts` with an empty Init phase and a public Function URL:
+Create `src/JobFunction.ts` with an empty Construction phase and a public Function URL:
 
 ```typescript
 import * as AWS from "alchemy/AWS";
@@ -96,11 +96,11 @@ export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
 ) {}
 ```
 
-The generator is the **Init phase**. It runs at *deploy time* (when Alchemy plans the stack and collects bindings into IAM policies and environment variables) and again *inside the deployed Lambda* at cold start. Only do pure construction here — bindings, layers, never per-request work.
+The generator is the **Construction phase**. It runs at *deploy time* (when Alchemy plans the stack and collects bindings into IAM policies and environment variables) and again *inside the deployed Lambda* at cold start. Only do pure construction here — bindings, layers, never per-request work.
 
 ### 3a. Declare the table and bind operations
 
-Jobs need somewhere durable to live. Yield a DynamoDB `Table` inside Init to declare the resource, then bind the two operations the handlers will need:
+Jobs need somewhere durable to live. Yield a DynamoDB `Table` inside the constructor to declare the resource, then bind the two operations the handlers will need:
 
 ```typescript
 Effect.gen(function* () {
@@ -118,7 +118,7 @@ Effect.gen(function* () {
 
 Each binding does double duty: at deploy time it attaches a least-privilege IAM statement to the function’s execution role; at runtime it returns a typed callable that injects the table name automatically.
 
-### 3b. Construct the handlers inside Init
+### 3b. Construct the handlers inside the constructor
 
 `JobRpcs.toLayer` takes one handler per procedure and produces a `Layer`. Like `HttpApiBuilder.group`, this is pure construction — it builds a value, it doesn’t run the server. The handlers close over the `getItem` / `putItem` bindings from step 3a:
 
@@ -278,7 +278,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Yielding `JobFunction` deploys the function *and* everything it declared inside Init — the DynamoDB table, the generated IAM role with the two table-scoped statements, and the Function URL.
+Yielding `JobFunction` deploys the function *and* everything it declared inside the constructor — the DynamoDB table, the generated IAM role with the two table-scoped statements, and the Function URL.
 
 ## 5\. Deploy
 

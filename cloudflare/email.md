@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email
 title: "Email"
 description: "Cloudflare Email Routing turns a zone into a mail endpoint — enable routing, verify destinations, forward with rules and a catch-all, hand mail to a Worker, and send from Workers with the send_email binding."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Email Routing turns a zone you own into a mail endpoint: rules match inbound mail and forward it, drop it, or hand it to a Worker — and once routing is enabled, Workers can also *send* mail from the domain through a `send_email` binding.
@@ -101,7 +101,7 @@ export const Email = Cloudflare.Email.SendEmail("Email", {
 
 ## Send from a Worker
 
-Bind the descriptor with `Email.Send` in the Worker’s init phase and provide `Email.SendBinding` as the implementation layer:
+Bind the descriptor with `Email.Send` in the Worker’s Construction phase and provide `Email.SendBinding` as the implementation layer:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";

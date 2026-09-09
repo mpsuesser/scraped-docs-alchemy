@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/rds
 title: "RDS & Aurora"
 description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with pg, or skip connections entirely with the Data API."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Aurora is AWS's managed Postgres/MySQL. Bringing it up by hand
@@ -208,7 +208,7 @@ export const DatabaseAurora = Layer.effect(
 ```
 
 `yield* AWS.RDS.Connect(db.cluster, ...)` runs in the function's
-init phase and returns an inner Effect; each `yield*` of that
+Construction phase and returns an inner Effect; each `yield*` of that
 inner Effect at runtime resolves fresh `ConnectionInfo` from the
 secret. `Network` here is the same network from the prerequisite
 section, wrapped in its own layer (see the
@@ -290,7 +290,7 @@ default, and the `AWS.RDSData` bindings expose it the same way
 as any other capability:
 
 ```typescript
-// init
+// Construction
 const execute = yield* AWS.RDSData.ExecuteStatement(db.cluster, {
   secret: db.secret,
   database: "app",

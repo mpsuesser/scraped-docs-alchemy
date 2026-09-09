@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/workers-ai
 title: "Run Workers AI models"
 description: "Bind Workers AI into your Worker with Cloudflare.Workers.AI — run inference and list models directly, or turn the binding into a typed Effect LanguageModel, no gateway required."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **Workers AI** runs open-weight models (Llama, Mistral, Whisper,
@@ -20,12 +20,12 @@ binding here talks to Workers AI directly.
 
 ## Effect-style Worker
 
-`yield* Cloudflare.Workers.AI()` inside a Worker's Init phase does two
+`yield* Cloudflare.Workers.AI()` inside a Worker's Construction phase does two
 things: it attaches the `ai` binding to the Worker at deploy time, and
 at runtime it resolves to an Effect-native client whose `run` and
 `models` operations return Effects with a typed `WorkersAIError`
 channel. Provide `Cloudflare.Workers.AIBinding` once at the bottom of
-the Init layer chain, the same way every other Worker binding works:
+the constructor's layer chain, the same way every other Worker binding works:
 
 ```typescript
 // src/AiWorker.ts
@@ -199,7 +199,7 @@ request goes straight to Workers AI. Put an
 
 `aiGateway.model({...})` and `ai.model({...})` produce the same
 `LanguageModel` Layer shape, so moving between them is a one-line
-change in the Init phase.
+change in the Construction phase.
 
 ## Where to go next
 

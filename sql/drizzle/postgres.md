@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query with Drizzle.Postgres."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema` resource that generates migration SQL on deploy, a database resource that applies it, and a Worker or Fly Service that queries through `Drizzle.Postgres`.
@@ -109,7 +109,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Nothing connects at init — the pool opens on the first query of an event, is reused for every query in that event, and closes when the event settles (see [Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy never open a connection.
+Nothing connects in the constructor — the pool opens on the first query of an event, is reused for every query in that event, and closes when the event settles (see [Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy never open a connection.
 
 ## Connect in a Fly Service
 

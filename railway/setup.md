@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/setup
 title: "Setup"
 description: "Create a Railway workspace, generate an account API token, and store it in a profile."
-access_date: 2026-09-01T03:40:51.295Z
-current_date: 2026-09-01T03:40:51.295Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Everything you need before deploying to Railway: the alchemy package, a Railway workspace, and an account API token stored in a profile.
@@ -46,18 +46,26 @@ bun add "alchemy@next" "effect@rc" "@effect/platform-bun@rc" "@effect/platform-n
 
 ## Connect alchemy to Railway
 
-There is no separate credentials step. The first time you run `alchemy deploy` (or `plan`, `dev`, `destroy`) on a stack that uses `Railway.providers()`, alchemy walks you through an interactive login with two options:
+There is no separate credentials step. The first time you run `alchemy deploy` (or `plan`, `dev`, `destroy`) on a stack that uses `Railway.providers()`, alchemy walks you through an interactive login with three options:
 
+- **OAuth** — opens `railway.com/cli-login` and pairs the CLI with your account. No pre-existing token needed.
 - **API Token** — paste the token you generated above. It’s saved under `~/.alchemy/credentials/<profile>/`.
-- **Environment Variables** — reads `RAILWAY_API_TOKEN` from the environment on every run (plus an optional `RAILWAY_API_URL`). This is the method for CI — when alchemy detects `CI=true` it skips the prompt and uses the environment automatically.
+- **Environment Variables** — reads `RAILWAY_API_TOKEN` from the environment on every run (plus an optional `RAILWAY_API_URL`). In CI (`CI=true`) alchemy skips the prompt and uses the environment automatically.
 
 Either choice is saved to your **`default`** [profile](../environments/profiles.md) and reused on every subsequent command.
 
 To re-run the setup later (e.g. to rotate the token, or configure a separate `prod` profile):
 
 ```sh
-alchemy login --configure
-alchemy login --profile prod --configure
+# Re-run the interactive setup (e.g. to rotate the token)
+alchemy profile edit --reconfigure Railway
+
+# Or connect Railway in a separate \`prod\` profile
+alchemy profile create prod
+alchemy profile edit --profile prod --add Railway
+
+# Non-interactive (scripts, agents)
+alchemy profile edit --add Railway --method stored --set token=env:RAILWAY_API_TOKEN
 ```
 
 Inspect what’s stored (secrets are redacted):

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
@@ -181,7 +181,7 @@ Importing `Sandbox` (the class) does **not** pull in the runtime — that lives 
 
 ## Get the running container in the outer phase
 
-`yield* Sandbox` hands you a **running** container instance — the same typed shape you declared on the class, plus a `getTcpPort` helper. Resolve it in the **outer** init phase and expose `exec` from the inner phase as an RPC method:
+`yield* Sandbox` hands you a **running** container instance — the same typed shape you declared on the class, plus a `getTcpPort` helper. Resolve it in the **outer** Construction phase and expose `exec` from the inner phase as an RPC method:
 
 ```typescript
 export default class Agent extends Cloudflare.DurableObject<Agent>()(
@@ -203,7 +203,7 @@ The DO instance is now a thin RPC bridge: callers invoke `agent.exec(cmd)`, the 
 
 ## Configure the container with a Layer
 
-`yield* Sandbox` only resolves once you tell the DO **how** to run the container. Provide `Cloudflare.Containers.layer(Sandbox, …)` on the DO’s init — that layer binds, starts, and monitors the container, then satisfies the `Sandbox` tag with the running instance:
+`yield* Sandbox` only resolves once you tell the DO **how** to run the container. Provide `Cloudflare.Containers.layer(Sandbox, …)` on the DO’s constructor — that layer binds, starts, and monitors the container, then satisfies the `Sandbox` tag with the running instance:
 
 ```typescript
 export default class Agent extends Cloudflare.DurableObject<Agent>()(

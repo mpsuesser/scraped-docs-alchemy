@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **Lambda** is Alchemy’s default AWS runtime: a class that bundles an Effect program into a zip, deploys it as a Lambda Function, and generates its IAM execution role from the bindings you actually use. Serve HTTP over a public **Function URL**, or consume events — every building block in this section plugs in through the same pattern: S3 notifications (`Lambda.BucketEventSource`), SQS queues (`Lambda.QueueEventSource`), Kinesis streams (`Lambda.StreamEventSource`), and DynamoDB Streams (`Lambda.TableEventSource`).
@@ -205,13 +205,13 @@ You now have a deployable Lambda with a public URL.
 
 ## Sandbox scope vs invocation scope
 
-The init closure runs **once per sandbox**, at cold start — everything it builds (bindings, SDK clients) is reused by every invocation. Each invocation then runs with a **fresh `Scope`** that is settled *inline* before the handler returns — so `Effect.addFinalizer` in a handler runs before the response leaves, and request finalizers should be fast (closing a pool is milliseconds).
+The constructor runs **once per sandbox**, at cold start — everything it builds (bindings, SDK clients) is reused by every invocation. Each invocation then runs with a **fresh `Scope`** that is settled *inline* before the handler returns — so `Effect.addFinalizer` in a handler runs before the response leaves, and request finalizers should be fast (closing a pool is milliseconds).
 
-Init-level finalizers run at **sandbox shutdown**. A Lambda sandbox with no registered extensions is killed with no signal at all, so the generated entry registers an internal extension with the Extensions API — that makes Lambda send `SIGTERM` and allow 500 ms before `SIGKILL`, and the entry uses the window to close the instance scope:
+Construction-level finalizers run at **sandbox shutdown**. A Lambda sandbox with no registered extensions is killed with no signal at all, so the generated entry registers an internal extension with the Extensions API — that makes Lambda send `SIGTERM` and allow 500 ms before `SIGKILL`, and the entry uses the window to close the instance scope:
 
 ```typescript
 Effect.gen(function* () {
-  // init: runs once per sandbox
+  // Construction: runs once per sandbox
   yield* Effect.addFinalizer(() =>
     // runs in the 500 ms SIGTERM window at sandbox spin-down
     flushTelemetry().pipe(Effect.ignore),
@@ -220,7 +220,7 @@ Effect.gen(function* () {
 });
 ```
 
-Treat instance-level cleanup as best-effort: half a second, and not delivered on hard failures (a timeout reset kills the runtime without the signal). Flush caches and close connections there; anything that *must* happen belongs in the handler, scoped to the invocation. See [Instance scope vs request scope](../../infrastructure-as-effects/functions-and-servers.md#instance-scope-vs-request-scope) for the model across all runtimes.
+Treat instance-level cleanup as best-effort: half a second, and not delivered on hard failures (a timeout reset kills the runtime without the signal). Flush caches and close connections there; anything that *must* happen belongs in the handler, scoped to the invocation. See [Instance scope vs request scope](../../infrastructure-as-effects/runtime.md#instance-scope-vs-request-scope) for the model across all runtimes.
 
 ## Where next
 

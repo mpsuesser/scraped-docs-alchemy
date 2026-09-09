@@ -2,8 +2,8 @@
 url: https://alchemy.run/getting-started
 title: "Getting started"
 description: "Install Alchemy and create your first Stack in under two minutes."
-access_date: 2026-09-01T03:40:51.295Z
-current_date: 2026-09-01T03:40:51.295Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 ## Prerequisites
@@ -56,7 +56,7 @@ Run `alchemy deploy` to create the Bucket on Cloudflare:
 bun alchemy deploy
 ```
 
-The first time you deploy, Alchemy walks each provider in your stack (here, Cloudflare) through an interactive login and saves the credentials to your **`default`** [profile](environments/profiles.md) at `~/.alchemy/profiles.json`. For Cloudflare you can sign in with OAuth in the browser or paste an API token — no environment variables required.
+Connect Cloudflare first with `alchemy profile edit --add Cloudflare`. Sign in with OAuth in the browser or paste an API token. The credentials are saved to your **`default`** [profile](environments/profiles.md) at `~/.alchemy/profiles.json`. No environment variables required. Logging in only ever happens through the `profile` command; a deploy with nothing configured fails with the exact command to run.
 
 Once you’re authenticated, Alchemy shows a plan, asks for confirmation, and provisions the resource:
 
@@ -75,3 +75,7 @@ Proceed?
 That’s it — you have a live R2 Bucket on Cloudflare.
 
 Full command reference: [CLI](cli.md).
+
+## Where next
+
+You have a live Stack. [What is Alchemy?](what-is-alchemy.md) explains what just happened and the model the rest of the docs build on. The [tutorial](cloudflare/tutorial/part-1.md) then builds a full app on Cloudflare, starting from this exact Stack.

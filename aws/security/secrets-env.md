@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only
@@ -16,7 +16,7 @@ shared, generated, or rotated → Secrets Manager.
 
 ## Bind a secret from .env
 
-`yield* Config.redacted(...)` in the function's init phase reads
+`yield* Config.redacted(...)` in the function's Construction phase reads
 your `.env` at deploy time and binds the value as a Lambda
 environment variable:
 
@@ -74,7 +74,7 @@ back as a number. Combinators re-run at runtime against the bound
 source, and a default is never bound — see
 [Secrets and Config](../../environments/secrets.md) for the full semantics.
 
-## Resolve Config in init, not in fetch
+## Resolve Config in the constructor, not in fetch
 
 A `Config` yielded only inside `fetch` is never discovered at
 deploy time, so the env var won't exist at runtime:
@@ -154,7 +154,7 @@ never lives in your repo, `.env`, or logs.
 
 ## Read it from a Lambda
 
-`GetSecretValue` is a binding: yield it in init to grant IAM at
+`GetSecretValue` is a binding: yield it in the constructor to grant IAM at
 deploy time, call it at runtime for a fresh read:
 
 ```typescript
@@ -209,7 +209,7 @@ Related:
   reads it at request time.
 - [Lambda](../compute/lambda.md) — the function model env vars and bindings
   attach to.
-- [Secrets and Config](../../environments/secrets.md) — the init/runtime split
+- [Secrets and Config](../../environments/secrets.md) — the Construction/Runtime split
   and transformation semantics.
 - [Secrets & env on Cloudflare](../../cloudflare/security/secrets-env.md) — the same
   spine on Cloudflare.

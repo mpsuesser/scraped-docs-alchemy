@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
-title: "Resource lifecycle"
+title: "Resource Lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Every [Resource](resource.md) goes through the same lifecycle: **plan → reconcile → (replace) → delete**. The plan classifies each resource as create, update, replace, delete, or no-op, but the provider implements a single `reconcile` function that converges the cloud’s actual state to what’s declared — whether that’s the first provisioning, a routine update, or an adoption takeover. For the CLI flags that drive these operations, see the [CLI reference](../cli.md).

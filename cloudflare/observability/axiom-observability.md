@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/axiom-observability
 title: "Ship Worker telemetry to Axiom"
 description: "Declare Axiom datasets, a least-privilege ingest token, and monitors in the same Stack as the Worker that emits the telemetry — or let Cloudflare push Workers Logs to Axiom natively."
-access_date: 2026-09-01T03:40:51.295Z
-current_date: 2026-09-01T03:40:51.295Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Effect already emits OpenTelemetry — every span, `Metric`, and
@@ -22,6 +22,11 @@ This guide wires a Worker's telemetry into Axiom two ways:
 2. **From Cloudflare** — an `ObservabilityDestination` that pushes
    Workers Logs telemetry to Axiom.
 
+If you also provide [`Cloudflare.Telemetry()`](workers-tracing.md)
+to put Effect spans in the Cloudflare waterfall, omit `traces` on
+`Axiom.Telemetry` — Effect has a single Tracer, and the Cloudflare
+tracer wins. Use path 2 to export that same waterfall to Axiom.
+
 ## Register the Axiom provider
 
 Axiom resources deploy alongside your Cloudflare ones — merge the
@@ -37,7 +42,7 @@ providers: Layer.mergeAll(Cloudflare.providers(), Axiom.providers()),
 ```
 
 If you haven't connected an Axiom account yet, run through
-[Axiom setup](../../axiom/setup.md) first — `alchemy login` picks up
+[Axiom setup](../../axiom/setup.md) first. The Axiom provider reads
 `AXIOM_TOKEN` or a stored credential.
 
 ## Create a dataset per signal
@@ -117,7 +122,7 @@ identical props never rotate it.
 ## Bind Axiom to the Worker
 
 Import the datasets and token into the Worker's module and provide
-the `Axiom.Telemetry` binding layer on its init Effect, merged into
+the `Axiom.Telemetry` binding layer on its constructor Effect, merged into
 the single `Effect.provide` with the other binding layers. That's
 the whole integration — every span, log record, and metric the
 Worker produces is exported, flushed as each request completes:

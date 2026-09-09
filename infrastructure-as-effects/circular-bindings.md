@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/circular-bindings
 title: "Circular Bindings"
 description: "How to model two services that reference each other (Worker A ↔ Worker B, Lambda ↔ Lambda) using tagged classes and Layers."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Real systems have cycles. A web Worker calls an internal Worker for auth; the internal Worker calls back into the web Worker for billing. Two Lambdas trigger each other through a queue.
@@ -53,7 +53,7 @@ Now `A` and `B` can freely `import` each other — neither side triggers any run
 
 ## Add A’s runtime, binding B
 
-Attach A’s implementation with `A.make(...)`. Inside the Init phase, `yield* Cloudflare.Workers.bindWorker(B)` produces a typed stub whose methods dispatch to B’s deployed Worker at runtime. A also exposes its own `work` RPC method so B can call back into it.
+Attach A’s implementation with `A.make(...)`. Inside the Construction phase, `yield* Cloudflare.Workers.bindWorker(B)` produces a typed stub whose methods dispatch to B’s deployed Worker at runtime. A also exposes its own `work` RPC method so B can call back into it.
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -143,7 +143,7 @@ Under the hood, alchemy plans the cycle in two passes:
 3. `create` runs in parallel using deferred Outputs — bindings see `Output<string>` placeholders that resolve later.
 4. A converge pass calls `update` once both sides exist, wiring the real cross-references in. Types stay sound the whole way through because Outputs are typed.
 
-The same pattern works for Lambda↔Lambda, Worker↔Container, or any mix — the Tag/Layer split is a property of every Function resource ([Functions & Servers](functions-and-servers.md)), not just Workers.
+The same pattern works for Lambda↔Lambda, Worker↔Container, or any mix — the Tag/Layer split is a property of every Function resource ([Runtime](runtime.md)), not just Workers.
 
 ## When you don’t need this
 

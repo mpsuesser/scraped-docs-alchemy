@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-gateway
 title: "Add an AI Gateway"
 description: "Wire an AI Gateway into your Worker, turn it into a typed Effect LanguageModel, and run generations and streams through Workers AI with caching, rate limiting, and logs."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 You’ve now wired Durable Objects, hibernatable WebSockets, a container, and a Workflow into your Worker. The last piece in the Cloudflare track is an **AI Gateway** — a stable account-scoped endpoint that fronts every model provider (Workers AI, OpenAI, Anthropic, Bedrock, …) and gives you caching, rate limiting, retries, DLP, and a single dashboard of every request, token, and cost.
@@ -75,7 +75,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-`Cloudflare.AI.QueryGatewayBinding` is the runtime side of the binding. Provide it once at the bottom of the Init layer chain and every `QueryGateway(...)` further up will resolve.
+`Cloudflare.AI.QueryGatewayBinding` is the runtime side of the binding. Provide it once at the bottom of the constructor’s layer chain and every `QueryGateway(...)` further up will resolve.
 
 ## Build a LanguageModel layer
 
@@ -98,7 +98,7 @@ Effect.gen(function* () {
 })
 ```
 
-`parameters` is the per-call default; any individual call can still override it. The Init phase is the right place to build this layer — construction is pure and the binding factory only exists here.
+`parameters` is the per-call default; any individual call can still override it. The Construction phase is the right place to build this layer — construction is pure and the binding factory only exists here.
 
 ## Generate text on /generate
 

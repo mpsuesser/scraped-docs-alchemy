@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC between Workers, Durable Objects, and Containers with no schema — bind the class, get the client."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 The schemaless RPC pattern — what makes a member callable, how the typed client arises, what crosses the wire — is documented at [Schemaless RPC](../../apis/schemaless.md). This page walks Cloudflare's pairings. Worker → Worker and Worker → Durable Object ride the platform's native JSRPC channel (values move by structured clone, and service bindings never traverse the public internet); Containers ride the generic fetch transport.
@@ -63,7 +63,7 @@ export default class BindingEffectCaller extends Cloudflare.Worker<BindingEffect
 ) {}
 ```
 
-`bindWorker(BindingTargetWorker)` registers a service Binding at deploy time and returns a stub typed as the target's Shape — `target.greet(name)` is fully inferred from the target class, and every call rides native JSRPC. Service bindings in depth: [Workers](../compute/workers.md#schemaless-rpc).
+`bindWorker(BindingTargetWorker)` registers a service Binding at deploy time and returns a stub typed as the target's Shape — `target.greet(name)` is fully inferred from the target class, and every call rides native JSRPC. Service bindings in depth: [Workers](../compute/workers.md#call-another-worker).
 
 ## Worker → Durable Object
 
@@ -99,7 +99,7 @@ export class WorkerEnvironmentKVObject extends Cloudflare.DurableObject<WorkerEn
 ) {}
 ```
 
-A DO shape can mix value methods (`put`/`get` return Effects) with streaming methods (`tick` returns a Stream), and its init Effect may close over other bindings — here the KV Namespace it reads and writes.
+A DO shape can mix value methods (`put`/`get` return Effects) with streaming methods (`tick` returns a Stream), and its constructor Effect may close over other bindings — here the KV Namespace it reads and writes.
 
 ### Value round-trip
 
@@ -224,7 +224,7 @@ export default MyContainer.make(
 );
 ```
 
-Containers are the one pairing where the Shape is written explicitly as a type parameter — there is no init Effect on the class itself to infer from; `MyContainer.make` supplies the implementation (which, like a Worker's, may close over other bindings such as the R2 Bucket here).
+Containers are the one pairing where the Shape is written explicitly as a type parameter — there is no constructor Effect on the class itself to infer from; `MyContainer.make` supplies the implementation (which, like a Worker's, may close over other bindings such as the R2 Bucket here).
 
 ### Host it in a Durable Object
 
@@ -258,7 +258,7 @@ Containers run inside Durable Objects, so the chain is Worker → DO → Contain
 ## Dynamically-loaded Workers
 
 ```typescript
-// Init phase — register the loader binding:
+// Construction phase — register the loader binding:
 const loader = yield* Cloudflare.WorkerLoader("LOADER");
 
 // inside the fetch handler — load a sandboxed Worker from inline source:

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/dynamodb
 title: "DynamoDB"
 description: "Add a DynamoDB Table, bind GetItem and PutItem to your Lambda, and serve a typed key/value HTTP API backed by DynamoDB."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **DynamoDB** is AWS's serverless key/value store — structured
@@ -26,7 +26,7 @@ storage.
 
 DynamoDB tables need a partition key (and optionally a sort key)
 declared up-front. Yield the `Table` resource in the function's
-outer init, mirroring how you added the bucket:
+constructor, mirroring how you added the bucket:
 
 ```diff lang="typescript"
 // src/api.ts

@@ -2,15 +2,15 @@
 url: https://alchemy.run/apis/schemaless
 title: "Schemaless RPC"
 description: "The pattern behind typed, schema-free RPC — what an RPC member may be, how the typed client arises, how calls travel over the wire, and where the limits are."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 Schemaless RPC is the default for internal communication between the services you deploy together: expose methods on a runtime’s interface, bind it from another resource, and call them through a fully typed client — no schema, no runtime validation, no per-request decode cost.
 
 ## The shape
 
-RPC is a feature of every [Functions & Servers](../infrastructure-as-effects/functions-and-servers.md) runtime — the interface its Effectful Constructor returns may include methods alongside `fetch`:
+RPC is a feature of every [Runtime](../infrastructure-as-effects/runtime.md) runtime — the interface its Effectful Constructor returns may include methods alongside `fetch`:
 
 ```typescript
 export default class Greeter extends Cloudflare.Worker<Greeter>()(
@@ -72,11 +72,11 @@ return {
 };
 ```
 
-The rejection happens at declaration, not at call time — it surfaces as an assignability error on the init Effect you pass to the host class, so a shape that compiles is a shape every caller can rely on.
+The rejection happens at declaration, not at call time — it surfaces as an assignability error on the constructor Effect you pass to the host class, so a shape that compiles is a shape every caller can rely on.
 
 ## The typed client
 
-There is no schema because the class itself carries the type. `class Greeter extends Cloudflare.Worker<Greeter>()(...)` gives the class a construct signature — `new (_: never): Shape & ...` — that makes its instance type exactly the Shape the init Effect returns, and the value you get by yielding the class carries that Shape as a phantom type (`Rpc<Shape> = { "~alchemy/rpc": Shape }`) that binders read back. Binding the class produces the client:
+There is no schema because the class itself carries the type. `class Greeter extends Cloudflare.Worker<Greeter>()(...)` gives the class a construct signature — `new (_: never): Shape & ...` — that makes its instance type exactly the Shape the constructor Effect returns, and the value you get by yielding the class carries that Shape as a phantom type (`Rpc<Shape> = { "~alchemy/rpc": Shape }`) that binders read back. Binding the class produces the client:
 
 ```typescript
 // in another resource's Effectful Constructor:

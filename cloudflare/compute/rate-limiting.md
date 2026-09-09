@@ -2,19 +2,19 @@
 url: https://alchemy.run/cloudflare/compute/rate-limiting
 title: "Rate limiting"
 description: "Throttle requests inside a Worker with Cloudflare's Rate Limiting binding — declare the limit on the binding, count arbitrary keys at runtime, handle failures as typed errors."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 The Rate Limiting binding gives a Worker a counter it can consult on
-every request: pass a key — an IP, a user id, an API token — and get
-back whether that key is within its budget. There is no backing cloud
+every request. Pass a key, such as an IP, a user id, or an API token,
+and get back whether that key is within its budget. There is no backing cloud
 resource to deploy; the limit configuration lives on the binding
 itself and ships with the Worker.
 
 ## Bind a rate limit to a Worker
 
-`yield*` `Cloudflare.RateLimit(name, props)` in the Worker's init
+`yield*` `Cloudflare.RateLimit(name, props)` in the Worker's Construction
 phase and provide `RateLimitBinding` as a layer:
 
 ```typescript
@@ -52,7 +52,7 @@ export default Cloudflare.Worker(
 ```
 
 `simple.limit` is the number of requests allowed per `simple.period`
-seconds — the period must be `10` or `60`. `namespaceId` is a number
+seconds. The period must be `10` or `60`. `namespaceId` is a number
 or string that uniquely identifies this limit configuration within
 the account; reuse the same id to share one budget across Workers,
 use distinct ids for independent limits.
@@ -71,7 +71,7 @@ const b1 = yield* throttle.limit({ key: "bob" });   // { success: true }
 ```
 
 Counting is approximate and local to the Cloudflare location serving
-the request — the binding is built for cheap, fast abuse protection,
+the request. The binding is built for cheap, fast abuse protection,
 not globally consistent quotas. For exact global counting, put the
 counter in a [Durable Object](durable-objects.md).
 
@@ -94,7 +94,7 @@ const { success } = yield* throttle.limit({ key }).pipe(
 ## Declare the binding as env metadata
 
 Workers whose `main` module exports a plain async `fetch` handler
-declare the limit on `env` instead — `InferEnv` types it as
+declare the limit on `env` instead. `InferEnv` types it as
 Cloudflare's native `RateLimit` binding:
 
 ```typescript

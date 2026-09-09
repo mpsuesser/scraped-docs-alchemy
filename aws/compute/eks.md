@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/eks
 title: "EKS"
 description: "Stand up an EKS Auto Mode cluster on a Network and run containers on it — Deployments for servers, Jobs for run-to-completion work, Manifests for everything else. No YAML, no kubectl."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 **EKS** (Elastic Kubernetes Service) is AWS’s managed Kubernetes: AWS runs the Kubernetes control plane, and your containers run on it as Kubernetes objects. Alchemy targets **Auto Mode**, where AWS also manages the nodes, storage, and load-balancer integration — no machines to operate.
@@ -107,7 +107,7 @@ echo.deploymentName; // K8s-native attrs: deploymentName, serviceName, ...
 
 ## Effect servers with bindings
 
-Pass `main: import.meta.url` and an init Effect and the program is bundled into a generated image instead — the same authoring model as [Lambda](lambda.md). Bindings work identically too: `Deployment` accepts the same `{ env, policyStatements }` binding contract as a Lambda `Function`, so every AWS `Binding.Service` attaches environment variables to the Pod spec and IAM policy statements to a generated **Pod Identity role**:
+Pass `main: import.meta.url` and a constructor Effect and the program is bundled into a generated image instead — the same authoring model as [Lambda](lambda.md). Bindings work identically too: `Deployment` accepts the same `{ env, policyStatements }` binding contract as a Lambda `Function`, so every AWS `Binding.Service` attaches environment variables to the Pod spec and IAM policy statements to a generated **Pod Identity role**:
 
 ```typescript
 const api = yield* Kubernetes.Deployment(

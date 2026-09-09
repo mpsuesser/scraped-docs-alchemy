@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on AWS — a TanStack Start UI on CloudFront and Lambda that drives an Effect RPC Lambda over Drizzle and Aurora DSQL, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-09T22:57:45.923Z
+current_date: 2026-09-09T22:57:45.923Z
 ---
 
 This guide ties four pieces into one deployable app:
@@ -268,7 +268,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Yielding `Backend` deploys the function *and* everything it declared inside Init — the DSQL cluster and the execution role with the cluster-scoped `dsql:DbConnectAdmin` statement.
+Yielding `Backend` deploys the function *and* everything it declared inside the constructor — the DSQL cluster and the execution role with the cluster-scoped `dsql:DbConnectAdmin` statement.
 
 ## 6\. The /rpc proxy route
 
