@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute Runtime of every Alchemy app — declare the Worker and its handler in one file, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 In Alchemy, a Cloudflare Worker is a
@@ -184,7 +184,7 @@ boundary, where payloads need schema validation before they touch your
 code, reach for [Effect RPC](../apis/effect-rpc.md) instead.
 
 :::note
-[Runtime](../../infrastructure-as-effects/runtime.md#three-ways-to-declare-one)
+[Runtime](../../infrastructure-as-effects/runtime.md#three-ways-to-declare-a-runtime)
 covers the three declaration forms, and
 [Schemaless RPC](../../apis/schemaless.md) the calling convention.
 :::
@@ -544,10 +544,13 @@ yield* Cloudflare.Worker("Api", {
 });
 ```
 
-Set `version.parent` to upload the code as a preview version or
-canary of another stage's Worker instead. Ramping, rollback, smoke
-testing with version overrides, and pinning users to a version are
-covered in [Gradual deployments](gradual-deployments.md).
+Set `preview.of` to deploy this Worker as a
+[Preview](previews.md) of another stage's Worker
+(branch and pull-request testing, isolated Durable Objects). Set
+`version.parent` to upload a canary version of another stage's
+Worker. Ramping, rollback, smoke testing with version overrides, and
+pinning users to a version are covered in
+[Gradual deployments](gradual-deployments.md).
 
 The `version_metadata` binding tells a running Worker which version
 it is, so responses and logs can say exactly which deploy produced

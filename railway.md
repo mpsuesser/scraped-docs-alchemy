@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway
 title: "Railway"
 description: "Deploy Effect programs to Railway as Projects, Services, databases, Volumes, and Buckets."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A Project is a workspace-scoped namespace. A Service is a container — a public image, an Effect program Alchemy bundles, or a canvas Function. Postgres, MySQL, Mongo, Redis, Volumes, Variables, and Buckets live in the same TypeScript program.
@@ -36,7 +36,7 @@ The production environment is created with the Project. Extra environments (stag
 
 ## Variables
 
-- **[Variables](https://alchemy.run/railway/data/variables)** — `Config.redacted` in a Service for values from `.env`. `Railway.Variable` when Railway should own a value shared across services. `Railway.ref(Db, "DATABASE_URL")` emits `${{Db.DATABASE_URL}}` (IaC `db.env.DATABASE_URL`). The plaintext is never stored in attributes.
+- **[Variables](https://alchemy.run/railway/data/variables)** — `Config.Redacted` in a Service for values from `.env`. `Railway.Variable` when Railway should own a value shared across services. `Railway.ref(Db, "DATABASE_URL")` emits `${{Db.DATABASE_URL}}` (IaC `db.env.DATABASE_URL`). The plaintext is never stored in attributes.
 
 ## Networking
 
@@ -61,7 +61,7 @@ The production environment is created with the Project. Extra environments (stag
 | Redis | [Redis](https://alchemy.run/railway/data/redis) + `ReadRedis` / `WriteRedis` / `ReadWriteRedis` |
 | Object storage | [Bucket](https://alchemy.run/railway/data/buckets) + `PutObject` / `GetObject` |
 | Staging next to production | [Environment](https://alchemy.run/railway/compute/environments) |
-| Config / API tokens | [`Config.redacted`](https://alchemy.run/railway/data/variables). [`Railway.Variable`](https://alchemy.run/railway/data/variables) when Railway should own it |
+| Config / API tokens | [`Config.Redacted`](https://alchemy.run/railway/data/variables). [`Railway.Variable`](https://alchemy.run/railway/data/variables) when Railway should own it |
 | Cross-service env | [`Railway.ref`](https://alchemy.run/railway/data/variables#variable-references) |
 | Your own domain | [CustomDomain](https://alchemy.run/railway/networking#custom-domains) |
 | Laptop access to Postgres | [TcpProxy](https://alchemy.run/railway/networking#tcp-proxies) (or Postgres `public: true`) |

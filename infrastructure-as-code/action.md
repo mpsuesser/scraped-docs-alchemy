@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-code/action
 title: "Actions"
 description: "A node in the dependency graph that runs an Effect during apply when its inputs change."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
-An **Action** is a node in the stack’s dependency graph that runs an arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has no provider lifecycle — no replace, no read, no delete. The engine just diffs the resolved input against the last persisted hash and either runs the body or skips it.
+An **Action** is a node in the stack’s dependency graph that runs an arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has no provider lifecycle — no replace, no read, no delete. The engine just diffs the resolved input against the last persisted hash and either runs the body or skips it. If Outputs or the plan/persisted-state model are new to you, [Outputs](outputs.md) and [Resource Lifecycle](resource-lifecycle.md) are the background this page builds on.
 
 Actions are useful for one-off deploy-time work that needs to be reproducible and dependency-aware: seeding a database, posting a release notification, generating an artifact and uploading it, invalidating a CDN cache, running a migration check.
 
@@ -83,7 +83,7 @@ const rows = yield* Sync({ table: bucket.name });
 
 ## Binding resources
 
-An Action’s body often needs to *talk to* the resources in your stack — seed a database, warm a cache, enqueue a job. Bindings like [`Cloudflare.D1.QueryDatabase`](../cloudflare/data/d1.md) normally resolve against a deployed Worker’s runtime environment, which an Action doesn’t have. Provide the binding’s **`*Local`** layer instead: it talks to the service over the provider’s HTTP API using your current CLI credentials.
+An Action’s body often needs to *talk to* the resources in your stack — seed a database, warm a cache, enqueue a job. [Bindings](../infrastructure-as-effects/binding.md) like [`Cloudflare.D1.QueryDatabase`](../cloudflare/data/d1.md) normally resolve against a deployed Worker’s runtime environment, which an Action doesn’t have. Provide the binding’s **`*Local`** layer instead: it talks to the service over the provider’s HTTP API using your current CLI credentials.
 
 ```typescript
 const Seed = Action(
@@ -164,3 +164,9 @@ Cycles are rejected at plan time just like resource cycles.
 - **Not a Resource.** No `diff` / `read` / `reconcile` / `delete`. If you need lifecycle management of a cloud entity, model it as a Resource.
 - **Not a runtime function.** An Action runs at deploy time. To call code from a deployed Worker or Lambda, see [Runtime](../infrastructure-as-effects/runtime.md).
 - **Not idempotent for free.** The engine guarantees the body runs only when inputs change, but the body itself must tolerate retries on apply restart (its `running` state is persisted but not its side effects).
+
+## Where next
+
+- [Inputs & Outputs](outputs.md) — the lazy values Actions take as input and produce. Next page.
+- [Resource Lifecycle](resource-lifecycle.md) — the plan/apply model Actions participate in.
+- [Bindings](../infrastructure-as-effects/binding.md) — the runtime clients Actions reuse via `*Local` layers.

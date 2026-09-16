@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 This guide builds a Workflow end to end: a durable multi-step job
@@ -248,7 +248,7 @@ sleep → broadcast → return — is durable end to end.
 ## Bind a secret
 
 Most real workflows need credentials — an upstream API key, a
-signing token, etc. `Config.redacted` registers a `secret_text`
+signing token, etc. `Config.Redacted` registers a `secret_text`
 binding on the workflow at plantime and hands back a
 `Redacted<string>` for use inside steps:
 
@@ -262,10 +262,10 @@ binding on the workflow at plantime and hands back a
    "Notifier",
    Effect.gen(function* () {
      const rooms = yield* Room;
-+    const apiKey = yield* Config.redacted("API_KEY");
++    const apiKey = yield* Config.Redacted("API_KEY");
 ```
 
-`Config.redacted("API_KEY")` reads `API_KEY` from the active
+`Config.Redacted("API_KEY")` reads `API_KEY` from the active
 `Config` provider (env vars, `.env`, …) at plantime and binds it
 into the workflow as `secret_text`. Set it in your local `.env`:
 
@@ -292,7 +292,7 @@ site that needs it (here, an `Authorization` header):
    "Notifier",
    Effect.gen(function* () {
      const rooms = yield* Room;
-     const apiKey = yield* Config.redacted("API_KEY");
+     const apiKey = yield* Config.Redacted("API_KEY");
 
      return Effect.gen(function* () {
        const env = yield* Cloudflare.Workers.WorkerEnvironment;

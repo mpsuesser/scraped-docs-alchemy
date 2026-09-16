@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod instances of your stack with --stage, and tune resources per stage."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 In [Part 3](part-3.md) you wrote integration tests against a deployed stack. But so far everything has landed in a single environment. In this part you’ll use **stages** — isolated instances of the same Stack — to give every developer, environment, and (in [Part 5](part-5.md)) every pull request its own copy of the infrastructure.
@@ -108,13 +108,13 @@ The plan lists everything in `staging` for deletion and leaves every other stage
 
 ## Stages in tests
 
-The test harness from Part 3 defaults to a stage named `test`. You can override it per file — or per call — which is how multiple CI runs can test in parallel against the same AWS account without colliding:
+The test harness from Part 3 defaults to `test_$USER` (e.g. `test_sam`). Override it per file — or per call — which is how multiple CI runs can test in parallel against the same AWS account without colliding:
 
 ```typescript
 const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
   providers: AWS.providers(),
   state: AWS.state(),
-  stage: process.env.STAGE ?? "test",
+  stage: \`pr-${process.env.PR_NUMBER}\`,
 });
 ```
 

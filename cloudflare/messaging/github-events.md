@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/github-events
 title: "React to GitHub events from a Worker"
 description: "Subscribe a Cloudflare Worker to GitHub repository webhooks with typed payloads — alchemy provisions the webhook and verifies delivery signatures."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A push lands on `main`, a pull request opens, a release tag appears —
@@ -120,7 +120,7 @@ events. Pass one and alchemy rejects any delivery whose
 +import * as Config from "effect/Config";
 
    Effect.gen(function* () {
-+    const secret = yield* Config.redacted("GITHUB_WEBHOOK_SECRET");
++    const secret = yield* Config.Redacted("GITHUB_WEBHOOK_SECRET");
 +
      yield* GitHub.consumeRepositoryEvents(
        {
@@ -136,7 +136,7 @@ events. Pass one and alchemy rejects any delivery whose
 The webhook is provisioned with the secret, so GitHub signs every
 delivery with `HMAC-SHA256`; the Worker recomputes the signature over
 the raw body and compares in constant time, answering `401` on a
-mismatch. `Config.redacted` reads the value from your `.env` at
+mismatch. `Config.Redacted` reads the value from your `.env` at
 deploy time and binds it as a Worker secret — see
 [Secrets & env](../security/secrets-env.md).
 

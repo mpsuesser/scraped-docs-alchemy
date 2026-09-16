@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only
@@ -16,7 +16,7 @@ shared, generated, or rotated → Secrets Manager.
 
 ## Bind a secret from .env
 
-`yield* Config.redacted(...)` in the function's Construction phase reads
+`yield* Config.Redacted(...)` in the function's Construction phase reads
 your `.env` at deploy time and binds the value as a Lambda
 environment variable:
 
@@ -31,7 +31,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
   { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
-    const apiKey = yield* Config.redacted("OPENAI_API_KEY");
+    const apiKey = yield* Config.Redacted("OPENAI_API_KEY");
 
     return {
       fetch: Effect.gen(function* () {
@@ -61,12 +61,12 @@ the literal text `<redacted>`, not the value — that's the point.
 
 ## Plain vars and defaults
 
-Non-secret config uses the same mechanism with `Config.string` and
-`Config.number`:
+Non-secret config uses the same mechanism with `Config.String` and
+`Config.Number`:
 
 ```typescript
-const host = yield* Config.string("HOST");
-const port = yield* Config.number("PORT").pipe(Config.withDefault(3000));
+const host = yield* Config.String("HOST");
+const port = yield* Config.Number("PORT").pipe(Config.withDefault(3000));
 ```
 
 Values JSON round-trip through the environment, so `port` comes
@@ -87,7 +87,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
     return {
       fetch: Effect.gen(function* () {
         // 🚫 never bound — API_KEY won't exist at runtime
-        const apiKey = yield* Config.redacted("API_KEY");
+        const apiKey = yield* Config.Redacted("API_KEY");
       }),
     };
   }),

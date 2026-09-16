@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/custom-provider
 title: "Custom Provider"
 description: "Add support for a new cloud or third-party API by declaring a Resource type and implementing its lifecycle as an Effect Layer."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Providers are Effect `Layer` s — adding support for a new cloud or third-party API is “declare a type, implement a Layer”. See [Providers](provider.md) for the operation contract.
@@ -350,7 +350,7 @@ read: Effect.fn(function* ({ id, olds }) {
 }),
 ```
 
-If your provider can find an existing resource from props alone (tags, deterministic naming), brand foreign ones with `Unowned`. Plain attrs are silently imported as ours; `Unowned(attrs)` fails with `OwnedBySomeoneElse` unless the user opted into a takeover with `--adopt` — see [Resource Lifecycle › Adoption](resource-lifecycle.md#adoption).
+If your provider can find an existing resource from props alone (tags, deterministic naming), brand foreign ones with `Unowned` so the engine gates the takeover behind `--adopt`. The full three-way return semantics are in [Providers › read](provider.md#read).
 
 ## Implement list
 
@@ -514,4 +514,4 @@ If you’d rather start from a real provider:
 - [Actions](action.md) — deploy-time work that isn’t a resource.
 - [Testing Providers](../testing/testing-providers.md) — the harness patterns behind `test.provider`.
 - [Providers](provider.md) — the operation contract this guide implements.
-- [Bindings](../infrastructure-as-effects/binding.md) — next up: connecting Resources to Functions.
+- [Bindings](../infrastructure-as-effects/binding.md) — connecting Resources to Functions.

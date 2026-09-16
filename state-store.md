@@ -2,15 +2,15 @@
 url: https://alchemy.run/state-store
 title: "State Store"
 description: "How Alchemy persists resource state between deploys to compute diffs and track infrastructure."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Alchemy persists resource state between deploys so it can compute diffs — comparing the desired state in your code against the current state of your infrastructure.
 
 ## How state is stored
 
-Each resource’s state is keyed by its **fully qualified name** (FQN), which includes the namespace path and logical ID. State is scoped by **stack name** and **stage**, so different stacks and environments are fully isolated.
+Each resource’s state is keyed by its **fully qualified name** (FQN), which includes the namespace path and [logical ID](infrastructure-as-code/resource.md#logical-id). State is scoped by [stack name](infrastructure-as-code/stack.md) and [**stage**](environments/stages.md), so different stacks and environments are fully isolated.
 
 A resource’s persisted state includes:
 
@@ -19,7 +19,7 @@ A resource’s persisted state includes:
 - **Output attributes** — the values returned after creation
 - **Instance ID** — a unique identifier for this instance
 - **Lifecycle status** — `created`, `updating`, `deleting`, etc.
-- **Bindings** — data attached by policies and event sources
+- **[Bindings](infrastructure-as-effects/binding.md)** — data attached by policies and event sources
 
 ## Local state
 
@@ -103,7 +103,7 @@ Alchemy.Stack(
   "MyApp",
   {
     providers: Prisma.providers(),
-    state: postgresState({ url: Config.redacted("STATE_DATABASE_URL") }),
+    state: postgresState({ url: Config.Redacted("STATE_DATABASE_URL") }),
   },
   Effect.gen(function* () {
     // ...

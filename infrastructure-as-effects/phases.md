@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-effects/phases
 title: "Phases"
 description: "Alchemy programs run in two phases — Construction drives the deploy, Runtime handles requests. Knowing which is which is the key to writing Workers and Lambda Functions."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
-Every alchemy program runs in two phases — plantime builds the plan, runtime serves requests. Function resources — Workers, Lambdas, Containers — express both in a single program by **returning an Effect from inside an Effect**.
+Every alchemy program runs in two phases — plantime builds the plan, runtime serves requests. [Runtime](runtime.md) resources — Workers, Lambdas, Containers — express both in a single program by **returning an Effect from inside an Effect**. Earlier pages named the two halves the Construction phase and the Runtime phase; this page pins down exactly when each one runs.
 
 ## Construction vs Runtime
 
@@ -36,7 +36,7 @@ Cloudflare.Worker(
 
 The `bucket` value is established once during Construction and captured by the runtime closure. The constructor runs at most once per cold start; the runtime body runs per request with everything already wired up. Each phase has its own `Scope` with very different lifetimes — [Instance scope vs request scope](runtime.md#instance-scope-vs-request-scope) covers where cleanup can (and cannot) happen.
 
-The Runtime phase is the *only* place where `Alchemy.RuntimeContext` is available. Any Effect whose requirements include `RuntimeContext` can only execute inside the runtime closure — the type system rejects it everywhere else. The next page builds the [colored-function model](layers.md#runtime-as-a-colored-function) on top of this split.
+The Runtime phase is the *only* place where `Alchemy.RuntimeContext` is available. Any Effect whose requirements include `RuntimeContext` can only execute inside the runtime closure — the type system rejects it everywhere else. [Layers](layers.md#the-types-hold-the-boundary) builds on this split to keep whole services honest about where they can run.
 
 ## What runs when
 
@@ -96,9 +96,8 @@ The Construction/Runtime split lets you write code that:
 2. **Initializes SDK clients once at cold start** — not on every request.
 3. **Handles requests with a pre-configured context** — the `bucket` variable in the runtime body already knows which resource to talk to.
 
-Next: [Layers](layers.md) turns this phase split into a type-level model — `RuntimeContext` as a colored function.
-
 ## Where next
 
-- [Layers](layers.md) — `RuntimeContext` as a colored function; infrastructure behind service interfaces.
+- [Circular Bindings](circular-bindings.md) — the two-pass plan this phase split makes possible. Next page.
+- [Layers](layers.md) — `RuntimeContext` as a type-level boundary; infrastructure behind service interfaces.
 - [State Store](../state-store.md) — where deploy results persist between runs.

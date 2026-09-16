@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/references
 title: "References"
 description: "Read an already-deployed Resource or Stack at plan time — Resource.ref by Logical ID with optional stack/stage props, or import a Stack tag and depend on its outputs."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A reference reads something **already deployed** — a different
@@ -14,8 +14,9 @@ downstream always sees whatever was actually last deployed.
 
 ## Reference another stage
 
-`Resource.ref` takes a Logical ID; pass `stage` to read that
-Resource from a different stage of this stack:
+`Resource.ref` takes a
+[Logical ID](resource.md#logical-id); pass
+`stage` to read that Resource from a different stage of this stack:
 
 ```typescript
 const { stage } = yield* Alchemy.Stack;
@@ -115,6 +116,8 @@ attributes participate in this plan.
 
 ## Where next
 
+- [Resource Lifecycle](resource-lifecycle.md) — how
+  the referenced state got persisted in the first place. Next page.
 - [Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack) — typed Stack
   handles wiring a monorepo.
 - [Shared database across stages](../cloudflare/data/shared-database.md) —

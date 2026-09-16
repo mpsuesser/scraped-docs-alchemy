@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated deployments, PR previews, and remote state — with Cloudflare credentials managed as code."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -417,8 +417,8 @@ export default Alchemy.Stack(
     state: Cloudflare.state(),
   },
   Effect.gen(function* () {
-    const testAccountId = yield* Config.string("TEST_CLOUDFLARE_ACCOUNT_ID");
-    const prodAccountId = yield* Config.string("PROD_CLOUDFLARE_ACCOUNT_ID");
+    const testAccountId = yield* Config.String("TEST_CLOUDFLARE_ACCOUNT_ID");
+    const prodAccountId = yield* Config.String("PROD_CLOUDFLARE_ACCOUNT_ID");
 
     const testToken = yield* Cloudflare.ApiToken.AccountApiToken("TestApiToken", {
       accountId: testAccountId,

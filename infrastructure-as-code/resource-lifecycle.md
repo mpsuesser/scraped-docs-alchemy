@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
 title: "Resource Lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Every [Resource](resource.md) goes through the same lifecycle: **plan → reconcile → (replace) → delete**. The plan classifies each resource as create, update, replace, delete, or no-op, but the provider implements a single `reconcile` function that converges the cloud’s actual state to what’s declared — whether that’s the first provisioning, a routine update, or an adoption takeover. For the CLI flags that drive these operations, see the [CLI reference](../cli.md).
@@ -40,16 +40,7 @@ Use `alchemy plan` (or `alchemy deploy --dry-run`) to see the plan without apply
 
 Whether a resource is being created for the first time, updated in place, or adopted from existing infrastructure, alchemy calls a single function: `provider.reconcile`.
 
-Reconcile must be **convergent**: given the desired state in `news`, it brings the cloud to that state regardless of starting point. It receives:
-
-- `news` — desired props
-- `output` — current attributes (`undefined` on greenfield, defined after a prior reconcile or after adoption)
-- `olds` — previous props (`undefined` on greenfield AND on adoption; defined only on routine updates)
-- `bindings` — resolved binding payload from upstream policies
-
-A reconciler is shaped like **observe → ensure → sync → return**: read live cloud state via `getX` / `describeX`, create the resource if missing (catching `AlreadyExists` -style errors as races), then for each mutable aspect diff observed cloud state against desired and apply only the delta.
-
-Because each step is independently idempotent, a partial reconcile that crashed midway resumes correctly on the next run. Physical names are deterministic from `stack/stage/logical-id`, so the “observe” step finds the previous reconcile’s output even if state persistence failed.
+Reconcile must be **convergent**: given the desired props, it observes live cloud state and brings it to that state regardless of starting point. It must also be safe to retry — a partial reconcile that crashed midway resumes correctly on the next run, because physical names are deterministic from `stack/stage/logical-id` and the reconciler finds the existing resource instead of duplicating it. The parameter contract (`news` / `output` / `olds` / `bindings`) and the observe → ensure → sync shape are the provider’s concern — see [Provider › reconcile](provider.md#reconcile).
 
 A second pass — **convergence** — re-runs `reconcile` for any resource whose inputs changed because an upstream output changed mid-deploy.
 
@@ -62,6 +53,8 @@ Some property changes can’t be applied in place — for example, changing a Dy
 3. Deletes the old resource
 
 Because new and old coexist briefly, dependents get a clean cutover without downtime.
+
+Changing a **logical ID** also plans a replacement — if you merely renamed the resource, declare it with `renamedFrom` instead; see [Renaming Resources](https://alchemy.run/infrastructure-as-code/renaming).
 
 ## Delete
 
@@ -127,15 +120,7 @@ When planning a resource that has no prior state, the engine calls `provider.rea
 - **State recovery** — the resource was created on a previous deploy, but state was lost between the cloud op succeeding and the store persisting. `read` finds the live resource and the engine rebuilds `created` state from its attributes.
 - **Adoption** — you’re deploying against existing infrastructure you didn’t manage with Alchemy yet (or you wiped state intentionally). `read` recognizes the resource and the engine imports it into the new state.
 
-Providers signal “this is mine” vs. “this exists but isn’t mine” via the `Unowned(attrs)` brand. The engine routes:
-
-| `read` returns | `--adopt` off | `--adopt` on |
-| --- | --- | --- |
-| `undefined` | create | create |
-| owned (plain attrs) | silent adopt | silent adopt |
-| `Unowned(attrs)` | fail `OwnedBySomeoneElse` | take over (silently) |
-
-See [Provider › read](provider.md#read) for the implementation contract and [Adopting Resources](../cli/adopting-resources.md) for the CLI flag.
+A resource `read` recognizes as ours is adopted silently. One that exists but *isn’t* ours fails with `OwnedBySomeoneElse` — re-running with `--adopt` (or scoping the effect with `adopt(true)`) unlocks the takeover. How providers signal ownership through `read` ’s return value is part of the provider contract — see [Provider › read](provider.md#read). For the CLI flag, see [Adopting Resources](../cli/adopting-resources.md).
 
 ## Errors
 
@@ -160,6 +145,7 @@ Every lifecycle operation on this page is implemented per resource type by a [Pr
 
 ## Where next
 
+- [Renaming Resources](https://alchemy.run/infrastructure-as-code/renaming) — migrate state across a logical ID change instead of replacing. Next page.
 - [Providers](provider.md) — the object that implements `reconcile`, `delete`, `diff`, and `read` for a resource type.
 - [CLI](../cli.md) — the commands and flags that drive the lifecycle.
 - [State Store](../state-store.md) — where the persisted state behind the plan lives.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Cloudflare Workers with Cloudflare.Website.Waku — RSC server in the Worker, SSG pages as static assets, and a custom-entry seam for Durable Objects."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `Cloudflare.Website.Waku` deploys a [Waku](https://waku.gg/) app as a Cloudflare Worker. It builds the project programmatically: the React Server Components server bundle deploys as the Worker script, and the client output — including SSG-prerendered pages — deploys as static assets. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no Wrangler file and no build command to run.
@@ -97,12 +97,12 @@ export const Uploads = Cloudflare.R2.Bucket("Uploads");
 export const Website = Cloudflare.Website.Waku("Website", {
   env: {
     UPLOADS: Uploads,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 ## Read bindings in server code
 

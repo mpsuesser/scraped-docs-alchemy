@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/testing-a-stack
 title: "Testing a Stack"
 description: "Deploy your real Stack once per suite, drive it over HTTP, tear it down."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
@@ -70,7 +70,7 @@ Run the suite with your runner:
 bun test test/integ.test.ts
 ```
 
-The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test` [stage](../environments/stages.md) so they never clobber your dev deployment.
+The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test_$USER` [stage](../environments/stages.md) so they never clobber your `live_$USER` / `dev_$USER` deployments.
 
 ## Run it locally with dev mode
 
@@ -182,14 +182,14 @@ const stack = beforeAll(
 
 ## Share one Stack across files
 
-Give every file's `Test.make` the same remote state and the same stage — identical state + stage means the second file's `deploy(Stack)` is a no-op diff:
+Give every file's `Test.make` the same remote state and the same stage — identical state + stage means the second file's `deploy(Stack)` is a no-op diff. The default `test_$USER` stage already does this for a single developer; pin an explicit stage when files must share a stack across users or CI jobs:
 
 ```typescript
 // test/api.integ.test.ts AND test/queue.integ.test.ts
 const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
   providers: Cloudflare.providers(),
   state: Cloudflare.state(), // remote, shared across files and runners
-  stage: "test",             // same stage → same Stack instance
+  stage: "shared",           // same stage → same Stack instance
 });
 ```
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Fly with first-class Website resources."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Alchemy deploys frontends to Fly with a family of `Fly.Website`
@@ -51,7 +51,7 @@ container integration on top.
 Each resource creates a `Fly.App` when you omit `app`, a
 `Fly.Service` on port 3000, and a `shared_v4`
 [`IpAssignment`](https://alchemy.run/fly/networking) so `{app}.fly.dev` answers.
-`domain` requests ACME via [`Certificate`](https://alchemy.run/fly/networking#certificates)
+`domain` requests ACME via [`Certificate`](https://alchemy.run/fly/networking#use-your-own-hostname)
 (existing DNS only for v1); `url` becomes `https://{domain}`.
 The return is `{ url, app, service, ip, certificate }` —
 everything except `url` is `undefined` under `alchemy dev`.

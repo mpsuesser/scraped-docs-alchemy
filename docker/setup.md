@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/setup
 title: "Setup"
 description: "Point alchemy at a Docker daemon — the active CLI context and the DOCKER_BIN override."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Register the provider in your stack:
@@ -53,7 +53,7 @@ const image = yield* Docker.Image("app", {
   registry: {
     server: "ghcr.io",
     username: "octocat",
-    password: Config.redacted("GITHUB_TOKEN"),
+    password: Config.Redacted("GITHUB_TOKEN"),
   },
 });
 ```

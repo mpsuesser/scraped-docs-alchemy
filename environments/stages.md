@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/stages
 title: "Stages"
 description: "Stages are isolated instances of a Stack — live_sam, dev_sam, staging, prod, pr-42 — each with their own state and physical names."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A **stage** is an isolated instance of a [Stack](../infrastructure-as-code/stack.md).
@@ -19,7 +19,9 @@ If you don't pass `--stage`, **`alchemy deploy`** uses **`live_$USER`**
 `dev_sam`). Each developer gets a personal cloud sandbox and a
 separate local-dev sandbox without any config — so a bare `alchemy
 dev` cannot replace resources you deployed. Existing default `alchemy
-dev` stacks keep the `dev_$USER` name.
+dev` stacks keep the `dev_$USER` name. **`Test.make`** uses
+**`test_$USER`** the same way, so two people running the suite
+against one account don't collide.
 
 ```sh
 $ whoami
@@ -53,6 +55,7 @@ The resolution order is:
 | ----------------- | ---------------------------------------------------- |
 | `live_<user>`     | Per-developer cloud sandbox (`alchemy deploy` default) |
 | `dev_<user>`      | Per-developer local-dev sandbox (`alchemy dev` default) |
+| `test_<user>`     | Per-developer test sandbox (`Test.make` default)     |
 | `pr-<n>`          | Per-pull-request preview environment                 |
 | `staging`         | Shared pre-production                                |
 | `prod`            | Production                                           |

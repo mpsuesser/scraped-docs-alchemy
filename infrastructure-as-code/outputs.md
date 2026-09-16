@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/outputs
 title: "Inputs & Outputs"
 description: "Output<T> is alchemy's lazy reference type — the lazy values that flow between resources, get composed with .pipe, mapped, interpolated, and resolved during deploy."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A [Resource](resource.md) ’s **inputs** are the props you pass in. Its **outputs** are the attributes the cloud returns after creation. The catch: outputs don’t exist when you write the code. They only exist after the resource is deployed.
@@ -77,7 +77,7 @@ Lifts a plan-time Effect into an `Output`. The effect runs when the stack resolv
 Output.fromEffect(lookupLatestAmi());   // Output<string>
 ```
 
-This is the low-level seam for lookup helpers that read cloud state to produce a prop value. Because constructing the Output is inert, such helpers are safe to call from composition code that is re-executed inside a deployed Function, Worker, or Instance bundle — no `__ALCHEMY_RUNTIME__` guard needed. The higher-level form is [`Capability.execute`](../infrastructure-as-effects/binding.md#data-sources-execute) — invoking a binding as a plan-time data source — which the AMI finders (`AWS.EC2.getAmi`, `AWS.EC2.amazonLinux2023()`, `AWS.EC2.ubuntu2404()`, …) are built on:
+This is the low-level seam for lookup helpers that read cloud state to produce a prop value. Because constructing the Output is inert, such helpers are safe to call from composition code that is re-executed inside a deployed Function, Worker, or Instance bundle — no `__ALCHEMY_RUNTIME__` guard needed. The higher-level form is [`Capability.execute`](../infrastructure-as-effects/binding.md#plan-time-invokes) — invoking a binding as a plan-time data source — which the AMI finders (`AWS.EC2.getAmi`, `AWS.EC2.amazonLinux2023()`, `AWS.EC2.ubuntu2404()`, …) are built on:
 
 ```typescript
 const instance = yield* AWS.EC2.Instance("web", {
@@ -193,15 +193,8 @@ Use `Output.of(Ref(...))` (or [`Output.ref`](#ref)) to read a resource’s attri
 `Output.ref` produces an `Output` referencing a deployed resource’s attributes in another stack or stage:
 
 ```typescript
-const sharedBucket = Output.ref<typeof Bucket>("Bucket", {
-  stack: "shared-infra",
-  stage: "prod",
-});
-
-sharedBucket.bucketName; // Output<string>
+Output.ref<typeof Bucket>("Bucket", { stack: "shared-infra", stage: "prod" });
 ```
-
-Resolved at plan time against the persisted state store, fails with `InvalidReferenceError` when the target is missing. In day-to-day code prefer `Resource.ref` — same primitive, more ergonomic surface.
 
 See [References](references.md) for the full reference surface (`Output.ref`, `Resource.ref`, `Output.stackRef`, `Stack.stage`) and how each is resolved.
 
@@ -278,10 +271,9 @@ You normally never call `Output.evaluate` yourself — alchemy invokes it during
 | Read a resource from another stack | `Output.ref<typeof X>("id", { stack, stage })` |
 | Inspect dependencies | `Output.upstream(output)` |
 
-For the surrounding model — what an `Output` actually flows into, and how the graph deploys — see [Resources](resource.md) and [Resource lifecycle](resource-lifecycle.md). To hide resources and their Outputs behind a service interface, continue to [Layers](../infrastructure-as-effects/layers.md).
-
 ## Where next
 
-- [References](references.md) — read Outputs across stacks and stages.
+- [References](references.md) — read Outputs across stacks and stages. Next page.
 - [Resource lifecycle](resource-lifecycle.md) — how the graph deploys.
+- [Resources](resource.md) — what an Output actually flows into.
 - [Layers](../infrastructure-as-effects/layers.md) — hide resources and their Outputs behind a service interface.

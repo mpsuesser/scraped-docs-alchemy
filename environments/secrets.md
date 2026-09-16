@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
 description: "Use effect/Config to read env vars at Construction time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)
@@ -28,7 +28,7 @@ export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-    const apiKey = yield* Config.redacted("API_KEY"); 
+    const apiKey = yield* Config.Redacted("API_KEY"); 
     // apiKey is Redacted<string> — usable here in Construction AND captured as a binding
 
     return {
@@ -54,7 +54,7 @@ export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-    const apiKey = yield* Config.redacted("OPENAI_API_KEY");
+    const apiKey = yield* Config.Redacted("OPENAI_API_KEY");
     const client = createOpenAI(Redacted.value(apiKey));
 
     return {
@@ -70,18 +70,18 @@ export default Cloudflare.Worker(
 
 ## Transformations
 
-Any combinator works — `withDefault`, `orElse`, `mapAttempt`, and so
+Any combinator works — `withDefault`, `orElse`, `mapEffect`, and so
 on. What gets bound is the *source* value (the raw env var), not the
 transformed result; the combinators run again at runtime against that
 source.
 
 ```typescript
-const port = yield* Config.number("PORT").pipe(
+const port = yield* Config.Number("PORT").pipe(
   Config.withDefault(3000),
 );
 ```
 
-- If `PORT` is set, its raw value is bound. At runtime `Config.number("PORT")`
+- If `PORT` is set, its raw value is bound. At runtime `Config.Number("PORT")`
   reads it from the binding and the combinators re-apply.
 - If `PORT` is not set, nothing is bound. At runtime the source is
   still empty and `Config.withDefault(3000)` produces `3000` again.
@@ -102,7 +102,7 @@ export default Cloudflare.Worker(
     return {
       fetch: Effect.gen(function* () {
         // 🚫 nothing is bound to the Worker — API_KEY won't exist at runtime
-        const apiKey = yield* Config.redacted("API_KEY");
+        const apiKey = yield* Config.Redacted("API_KEY");
         // ...
       }),
     };
@@ -117,7 +117,7 @@ and reference that `const` from the runtime body:
 ```typescript
 // ✅ bound in Construction, used in Runtime
 Effect.gen(function* () {
-  const apiKey = yield* Config.redacted("API_KEY");
+  const apiKey = yield* Config.Redacted("API_KEY");
   return {
     fetch: Effect.gen(function* () {
       return new Response(Redacted.value(apiKey));
@@ -147,8 +147,8 @@ import * as Config from "effect/Config";
 export const Worker = Cloudflare.Worker("Worker", {
   main: "./src/worker.ts",
   env: {
-    API_KEY: Config.redacted("API_KEY"),
-    HOST:    Config.string("HOST"),
+    API_KEY: Config.Redacted("API_KEY"),
+    HOST:    Config.String("HOST"),
     Bucket, // resource references work the same
   },
 });

@@ -1,0 +1,158 @@
+---
+url: https://alchemy.run/git/getting-started
+title: "Getting Started"
+description: "A complete quickstart for a Git host protected by a shared credential. Deploy it to Cloudflare, push a repository, and clone it back."
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
+---
+
+For a step-by-step explanation, start with [Push your first repository](tutorial/part-1.md). This page provides a complete host protected by one shared credential.
+
+You need a Cloudflare account with Workers, Durable Objects, and R2 enabled. [Cloudflare setup](../cloudflare/setup.md) connects one.
+
+## Install
+
+```sh
+bun add alchemy
+```
+
+## Define the host
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as Cloudflare from "alchemy/Cloudflare";
+import * as Git from "alchemy/Git";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import * as Http from "alchemy/Http";
+import * as Redacted from "effect/Redacted";
+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
+import * as HttpApiSecurity from "effect/unstable/httpapi/HttpApiSecurity";
+
+export const GitObjects = Cloudflare.R2.Bucket("GitObjects");
+export const GitSecret = Effect.gen(function* () {
+  const Random = yield* Alchemy.Random;
+  return yield* Random("GitSecret");
+});
+
+/** One shared secret, sent as the password of HTTP Basic. */
+export const Authentication = HttpRouter.middleware(
+  Effect.gen(function* () {
+    const secret = yield* (yield* GitSecret).text;
+    return (httpEffect) =>
+      Effect.gen(function* () {
+        const { password } = yield* HttpApiBuilder.securityDecode(HttpApiSecurity.basic);
+        if (Redacted.value(password) === Redacted.value(yield* secret)) {
+          return yield* httpEffect;
+        }
+        return HttpServerResponse.empty({
+          status: 401,
+          headers: { "www-authenticate": 'Basic realm="git"' },
+        });
+      }).pipe(Effect.provide(Alchemy.RuntimeContext.phantom));
+  }),
+);
+
+const GitLive = Layer.mergeAll(
+  Git.ApiLive.pipe(Layer.provide(Authentication.layer)),
+  Git.InternalApiLive,
+).pipe(
+  Layer.provide(Git.ApiHandlersLive),
+  Layer.provide(Git.ReposDurableObject),
+  Layer.provide(Git.RegistryDurableObject),
+  Layer.provide(Git.HasherInline),
+  Layer.provide(Git.BlobStoreR2(GitObjects)),
+  Layer.provide(Http.Platform),
+);
+
+export default class GitHost extends Cloudflare.Worker<GitHost>()(
+  "Git",
+  { main: import.meta.url, ...Git.GIT_WORKER_OPTIONS },
+  Effect.gen(function* () {
+    const fetch = yield* HttpRouter.toHttpEffect(GitLive);
+    return { fetch };
+  }),
+) {}
+```
+
+`Git.ApiLive` registers the public Git routes on the application’s router. `Git.ApiHandlersLive` supplies their shared implementation. `Git.InternalApiLive` registers the internal hash route outside application authentication. Your application chooses its server, middleware, platform, and CORS policy.
+
+The engine holds no users and no credentials. Who may call a route is decided by the middleware applied to its route layer, and `Git.ApiLive` registers every git route: the REST plane, the git wire, the raw reads, and the GitHub facade. The smallest thing that secures a fresh host is one shared secret. A request that presents it may do anything; any other request is refused with a `401` that makes `git` ask for a password. The secret is an `Alchemy.Random`, minted on the first deploy and stable after it. `GIT_WORKER_OPTIONS` sets the compatibility flags and the CPU limit a push needs.
+
+Add the host to your stack. The `Random` is a resource like any other, so the stack can output its value:
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as Cloudflare from "alchemy/Cloudflare";
+import * as Output from "alchemy/Output";
+import * as Effect from "effect/Effect";
+import * as Redacted from "effect/Redacted";
+import GitHost, { GitSecret } from "./src/git.ts";
+
+export default Alchemy.Stack(
+  "GitService",
+  { providers: Cloudflare.providers(), state: Cloudflare.state() },
+  Effect.gen(function* () {
+    const git = yield* GitHost;
+    const secret = yield* GitSecret;
+    return {
+      url: git.url.as<string>(),
+      secret: Output.map(secret.text, Redacted.value),
+    };
+  }),
+);
+```
+
+## Deploy
+
+```sh
+bun alchemy deploy
+```
+
+The stack prints the Worker’s URL and the secret. The rest of this page calls them `$HOST` and `$GIT_SECRET`:
+
+```sh
+export HOST=...
+export GIT_SECRET=...
+```
+
+## Create a repository
+
+Repositories are named `owner/name`. The owner is a name you choose; with one shared secret there are no users behind it:
+
+```sh
+curl -u "x:$GIT_SECRET" -X POST "$HOST/api/v1/repos" \
+  -H "Content-Type: application/json" \
+  -d '{"owner":"acme","name":"web"}'
+```
+
+## Push
+
+Use the full `$HOST` URL from the deployment output. When Git prompts, enter `x` as the username and `$GIT_SECRET` as the password:
+
+```sh
+git remote add origin "$HOST/acme/web.git"
+git -c credential.helper= push -u origin main
+```
+
+Clone it back to prove the round trip:
+
+```sh
+git -c credential.helper= clone "$HOST/acme/web.git" verify
+git -C verify fsck --strict
+```
+
+## Continue with the tutorial
+
+The tutorial introduces one behavior per part. Each part includes a deploy and commands that verify what changed:
+
+1. [Push your first repository](tutorial/part-1.md) — deploy Git, push a commit, and clone it back.
+2. [Control access](tutorial/part-2.md) — require a shared credential and verify anonymous requests fail.
+3. [Publish a repository](tutorial/part-3.md) — allow anonymous clones while keeping writes protected.
+4. [Give users their own credentials](tutorial/part-4.md) — use accounts and individual API keys.
+5. [Add your application’s API](https://alchemy.run/git/tutorial/part-5) — serve `/me` beside Git with the same authenticated user.
+6. [Protect a branch](https://alchemy.run/git/tutorial/part-6) — reject deletion of `main` with a policy in your HTTP handler.
+
+[Building blocks](blocks.md) is the reference for each line of `GitLive`, and [Recipes](recipes.md) covers S3 bytes, Lambda hashing, and how the host scales.

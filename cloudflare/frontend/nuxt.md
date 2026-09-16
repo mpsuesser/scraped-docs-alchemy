@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Cloudflare Workers with Cloudflare.Website.Nuxt — nitro's cloudflare_module preset, native nuxt.config.ts loading, and wrangler-free local dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `Cloudflare.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app as a Cloudflare Worker. It builds the app through your project’s own `@nuxt/kit` with nitro’s `cloudflare_module` preset: the nitro server bundle deploys as the Worker script, and client assets plus prerendered pages deploy as Worker static assets. There is no `nitro.preset` to edit, no Wrangler file, and no build command to run.
@@ -99,12 +99,12 @@ export const Uploads = Cloudflare.R2.Bucket("Uploads");
 export const Website = Cloudflare.Website.Nuxt("Website", {
   env: {
     UPLOADS: Uploads,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 ## Read bindings in server code
 

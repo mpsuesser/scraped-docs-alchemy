@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/ci
 title: "CI"
 description: "Set up CI/CD pipelines for alchemy projects with GitHub Actions, automated deployments, and PR previews — with provider credentials managed as code."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 The core idea is **credentials as code**. Rather than copy-paste API keys into the GitHub UI, you let Alchemy provision exactly the credentials your CI needs — a scoped Cloudflare API token, an AWS IAM role for OIDC, etc. — and write them straight into the repo as encrypted secrets.
@@ -281,8 +281,8 @@ export default Alchemy.Stack(
     state: Cloudflare.state(),
   },
   Effect.gen(function* () {
-    const testAccountId = yield* Config.string("TEST_CLOUDFLARE_ACCOUNT_ID");
-    const prodAccountId = yield* Config.string("PROD_CLOUDFLARE_ACCOUNT_ID");
+    const testAccountId = yield* Config.String("TEST_CLOUDFLARE_ACCOUNT_ID");
+    const prodAccountId = yield* Config.String("PROD_CLOUDFLARE_ACCOUNT_ID");
 
     const policies = (accountId: string) => [
       {
@@ -481,8 +481,8 @@ export default Alchemy.Stack(
     providers: GitHub.providers(),
   },
   Effect.gen(function* () {
-    const accessKeyId = yield* Config.string("AWS_ACCESS_KEY_ID");
-    const secretAccessKey = yield* Config.redacted("AWS_SECRET_ACCESS_KEY");
+    const accessKeyId = yield* Config.String("AWS_ACCESS_KEY_ID");
+    const secretAccessKey = yield* Config.Redacted("AWS_SECRET_ACCESS_KEY");
 
     yield* GitHub.Secret("aws-access-key-id", {
       owner: "your-org",

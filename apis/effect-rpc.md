@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-rpc
 title: "Effect RPC"
 description: "Schema-first RPC for trust boundaries — declare procedures, construct handler Layers, derive typed clients from the same schema."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Effect RPC is schema-first: every procedure declares `payload`, `success`, and `error` Schemas, and every request and response is validated against them. Use it when data crosses a **trust boundary** — a web app or an external service calling into your stack. That validation has a per-request price (a frame parse, a Schema decode of the payload, a Schema encode of the result — mirrored on the client), so for internal service-to-service calls it is **discouraged**: [Schemaless RPC](schemaless.md) gives you the same typed client with no schema, no runtime checking, and no per-request validation cost.
@@ -94,7 +94,7 @@ export const TaskRpcsLive = TaskRpcs.toLayer({
 });
 ```
 
-`toLayer` is pure construction — it builds a value and never runs the server, so it is safe inside a host’s Construction phase (which also executes at plan time); each handler receives the decoded payload and returns an `Effect` that succeeds or fails with the declared schemas, and the storage-backed bodies live on the hub pages — R2 in [Effect RPC on Workers](../cloudflare/apis/effect-rpc.md), DynamoDB in [Effect RPC on Lambda](../aws/apis/effect-rpc.md).
+`toLayer` is pure construction — it builds a value and never runs the server, so it is safe inside a host’s Construction phase, which also executes at plan time ([Phases](../infrastructure-as-effects/phases.md)); each handler receives the decoded payload and returns an `Effect` that succeeds or fails with the declared schemas, and the storage-backed bodies live on the hub pages — R2 in [Effect RPC on Workers](../cloudflare/apis/effect-rpc.md), DynamoDB in [Effect RPC on Lambda](../aws/apis/effect-rpc.md).
 
 ## Serve it
 

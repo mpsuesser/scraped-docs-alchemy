@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Cloudflare’s Secrets Store is an account-level container for secrets. Unlike a plain env var, a stored secret is shared across Workers, redacted in the dashboard, and read live at runtime — bound Workers see the current value without a redeploy.
@@ -178,7 +178,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
 Both end up as bindings on the Worker — pick based on where the value lives and who shares it:
 
-- **Env vars** ([`Config.redacted`](../../environments/secrets.md)) — the value comes from *your* environment (`.env`, CI secrets) at deploy time and is baked into that one Worker. Right for third-party API keys and per-app config. See [Secrets & env](secrets-env.md) for the step-by-step.
+- **Env vars** ([`Config.Redacted`](../../environments/secrets.md)) — the value comes from *your* environment (`.env`, CI secrets) at deploy time and is baked into that one Worker. Right for third-party API keys and per-app config. See [Secrets & env](secrets-env.md) for the step-by-step.
 - **Secrets Store** — the value lives in *Cloudflare’s* account-level store. One secret can be bound into many Workers, reads happen at runtime so a rotation propagates without redeploying every consumer, and the dashboard redacts it. Right for shared credentials and tokens your infrastructure owns — like the bearer token in this guide.
 
 ## Where next

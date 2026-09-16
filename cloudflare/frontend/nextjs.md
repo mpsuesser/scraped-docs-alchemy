@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Cloudflare Workers with Cloudflare.Website.Nextjs — the OpenNext pipeline, writable ISR, and wrangler-free local dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `Cloudflare.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app as a Cloudflare Worker. It runs `next build` through the OpenNext pipeline (`@opennextjs/cloudflare`), bundles the resulting server into a self-contained Worker, and deploys client assets plus prerendered pages as Worker static assets. There is no adapter to configure and no Wrangler file.
@@ -84,12 +84,12 @@ export const Uploads = Cloudflare.R2.Bucket("Uploads");
 export const Website = Cloudflare.Website.Nextjs("Website", {
   env: {
     UPLOADS: Uploads,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 ## Read bindings in server code
 

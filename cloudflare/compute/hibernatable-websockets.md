@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 The `Counter` Durable Object you added in the previous part holds
@@ -201,7 +201,7 @@ first message after hibernation would broadcast to nobody.
 :::note
 The `state` *reference* is resolved in the outer (Construction) Effect, but
 `state.getWebSockets()` is
-[colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#runtime-as-a-colored-function),
+[colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#the-types-hold-the-boundary),
 so it can only run in the inner (runtime) Effect — which is exactly
 where it needs to be, since it must re-run every time Cloudflare
 reconstructs the instance after hibernation.

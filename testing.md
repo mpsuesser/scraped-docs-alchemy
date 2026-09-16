@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing
 title: "Testing"
 description: "How Alchemy tests work — real clouds by default, local emulators on demand, one Stack deploy per suite, isolated stages, deploy → assert → destroy."
-access_date: 2026-08-31T21:01:48.980Z
-current_date: 2026-08-31T21:01:48.980Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Alchemy tests run against real clouds by default — no mocks. A suite deploys a real Stack once, runs assertions against live resources, and tears it back down: deploy → assert → destroy. The same suite can also run entirely on your machine — see [Local mode](#local-mode-dev-true) below.
@@ -37,7 +37,7 @@ For every option, hook, and variant, see the [Test harness](testing/test-harness
 
 ## Stage isolation
 
-Tests default to the `test` stage, so they never touch your dev or prod deployments. A unique stage per PR lets multiple suites run in parallel against the same account without colliding:
+Tests default to `test_$USER` (e.g. `test_sam`), matching how `alchemy deploy` uses `live_$USER` and `alchemy dev` uses `dev_$USER` — so they never touch your live or local-dev deployments, and two people running the same suite don’t collide. A unique stage per PR lets CI suites run in parallel against the same account:
 
 ```typescript
 Test.make({ providers, stage: "ci-pr-42" });

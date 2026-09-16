@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
 description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. Your `astro.config.*` loads natively — there is no adapter to install into it and no Wrangler file to write.
@@ -73,12 +73,12 @@ export const Cache = Cloudflare.KV.Namespace("Cache");
 export const Website = Cloudflare.Website.Astro("Website", {
   env: {
     CACHE: Cache,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Cache` is a description, not a deploy — Alchemy provisions the real namespace because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Cache` is a description, not a deploy — Alchemy provisions the real namespace because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 ## Read bindings in server code
 

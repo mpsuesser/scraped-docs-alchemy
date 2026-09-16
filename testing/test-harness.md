@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for alchemy/Test — every helper, hook, and option exposed by Test.make for Bun and Vitest."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same Effect-aware harness. For the end-to-end walkthrough, see [Testing a Stack](testing-a-stack.md); for provider-lifecycle testing, see [Testing Providers](testing-providers.md).
@@ -89,7 +89,7 @@ When omitted, the harness reads `ALCHEMY_PROFILE` from env / `.env` the same way
 
 ### stage
 
-Default stage for `deploy(Stack)` / `destroy(Stack)`. Defaults to `"test"`. Override per file, or per call:
+Default stage for `deploy(Stack)` / `destroy(Stack)`. Defaults to `test_$USER` (e.g. `test_sam`) so two people running the same suite against one account don’t collide. Override per file, or per call:
 
 ```typescript
 Test.make({ providers, stage: "ci-pr-42" });

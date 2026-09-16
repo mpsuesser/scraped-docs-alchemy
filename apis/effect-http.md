@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-http
 title: "Effect HTTP"
 description: "Schema-validated REST endpoints with an rpc-like typed interface — for trust boundaries where consumers want a plain HTTP client."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Effect HTTP (`effect/unstable/httpapi`) is the same idea as [Effect RPC](effect-rpc.md): define a Schema, construct handler Layers, return an `HttpEffect` from `fetch`, call it through an rpc-like typed interface. The difference is what goes on the wire — real HTTP endpoints, with URLs, path params, query strings, headers, bodies, and content types.
@@ -106,7 +106,7 @@ const tasksGroup = HttpApiBuilder.group(TaskApi, "Tasks", (handlers) =>
 );
 ```
 
-`HttpApiBuilder.group` *constructs* a handler Layer — it runs nothing, which is what makes it safe at Construction/plan time — and each handler receives the typed request its endpoint declared: `params.id` and `payload.title` are `string` s, the handler must return a `Task`, and the only allowed failure is `TaskNotFound` — a wrong shape or an undeclared error is a compile error, not a runtime surprise.
+`HttpApiBuilder.group` *constructs* a handler Layer — it runs nothing, which is what makes it safe at Construction/plan time ([Phases](../infrastructure-as-effects/phases.md)) — and each handler receives the typed request its endpoint declared: `params.id` and `payload.title` are `string` s, the handler must return a `Task`, and the only allowed failure is `TaskNotFound` — a wrong shape or an undeclared error is a compile error, not a runtime surprise.
 
 ## Serve it
 

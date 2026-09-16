@@ -2,13 +2,14 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)
-to a Worker, Lambda Function, Container, or Server. You yield the resource and
-get back a typed client:
+to a Worker, Lambda Function, Container, or Server — any
+[Runtime](runtime.md). Inside the Runtime's
+constructor, you yield the resource and get back a typed client:
 
 ```typescript
 import * as AWS from "alchemy/AWS";

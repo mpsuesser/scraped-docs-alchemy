@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/sinks
 title: "Sinks"
 description: "A Sink is the write-side dual of an Event Source — a Binding that exposes a resource as an Effect Sink, batching writes into the batch API with least-privilege IAM."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 A **Sink** is the dual of an [Event Source](event-sources.md):
@@ -18,7 +18,7 @@ minimal IAM to go with it.
 ## A Sink in a constructor
 
 Like every Binding, a Sink is declared in the
-[Effectful Constructor](runtime.md#the-effectful-constructor-pattern)
+[Effectful Constructor](runtime.md#the-effectful-constructor)
 and used in the interface it returns:
 
 ```typescript
@@ -32,7 +32,7 @@ import { OutboundQueue } from "./queue.ts";
 
 export default class Publisher extends AWS.Lambda.Function<Publisher>()(
   "Publisher",
-  { main: import.meta.url, workersDev: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const sink = yield* AWS.SQS.QueueSink(OutboundQueue);
     // → Sink<void, string, readonly string[], never>
@@ -92,7 +92,7 @@ control of `PartitionKey`:
 ```typescript
 export default class Ingest extends AWS.Lambda.Function<Ingest>()(
   "Ingest",
-  { main: import.meta.url, workersDev: true },
+  { main: import.meta.url, functionUrl: true },
   Effect.gen(function* () {
     const sink = yield* AWS.Kinesis.StreamSink(ClickStream);
 

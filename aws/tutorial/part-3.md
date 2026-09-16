@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Lambda Function URL."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 In [Part 2](part-2.md) you deployed a Lambda with S3
@@ -91,10 +91,11 @@ already deployed). Subsequent runs are fast because Alchemy diffs and
 skips unchanged resources.
 
 :::note[Which stage do tests deploy to?]
-The test harness defaults to a stage named `test`, separate from the
-`dev_<user>` stage your `alchemy deploy` runs target — so tests never
-clobber your working deployment. More on stages in
-[Part 4](part-4.md).
+The test harness defaults to `test_$USER` (e.g. `test_sam`),
+separate from the `live_$USER` / `dev_$USER` stages your
+`alchemy deploy` / `alchemy dev` runs target — so tests never
+clobber your working deployment, and two people running the suite
+don't collide. More on stages in [Part 4](part-4.md).
 :::
 
 ## Add HTTP assertions

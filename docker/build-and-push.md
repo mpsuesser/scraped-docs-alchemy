@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/build-and-push
 title: "Build & push images"
 description: "Build a container image from a Dockerfile, push it to a registry, and hand the resulting image reference to Cloudflare Containers or AWS ECS."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 This page is the canonical home for producing a **registry image
@@ -73,7 +73,7 @@ const image = yield* Docker.Image("app", {
   registry: {
     server: "ghcr.io",
     username: "octocat",
-    password: Config.redacted("GITHUB_TOKEN"),
+    password: Config.Redacted("GITHUB_TOKEN"),
   },
 });
 ```
@@ -97,7 +97,7 @@ const mirrored = yield* Docker.RemoteImage("nginx-mirror", {
   registry: {
     server: "ghcr.io",
     username: "octocat",
-    password: Config.redacted("GITHUB_TOKEN"),
+    password: Config.Redacted("GITHUB_TOKEN"),
   },
 });
 ```

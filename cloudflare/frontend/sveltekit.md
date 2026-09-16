@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Cloudflare Workers with Cloudflare.Website.SvelteKit — a wrangler-free in-memory adapter, real bindings on platform.env, and full-HMR local dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `Cloudflare.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app as a Cloudflare Worker. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Cloudflare adapter, then re-bundles the server output for workerd. Client assets and prerendered pages deploy as Worker static assets; dynamic routes are served by the generated Worker. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it), no `@sveltejs/adapter-cloudflare` to install, and no Wrangler file.
@@ -71,12 +71,12 @@ export const Cache = Cloudflare.KV.Namespace("Cache");
 export const Website = Cloudflare.Website.SvelteKit("Website", {
   env: {
     CACHE: Cache,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Cache` is a description, not a deploy — Alchemy provisions the real namespace because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Cache` is a description, not a deploy — Alchemy provisions the real namespace because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 ## Read bindings in server code
 

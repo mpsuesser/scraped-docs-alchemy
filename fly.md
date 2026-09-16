@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly
 title: "Fly"
 description: "Deploy Effect programs to Fly.io as Apps, Machines, Services, and Sprites."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 An App is a globally unique namespace. A Machine is a Firecracker VM running a container. A Service is an Effect program running in a Fly Machine. A Sprite is an Effect program in an org-scoped sandbox that hibernates when idle.
@@ -34,7 +34,7 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 
 ## Secrets
 
-- **[Secrets](https://alchemy.run/fly/data/secrets)** — `Config.redacted` in a Service for values from `.env`. `Fly.Secret` when Fly should own a value shared across Machines. KMS keys are `SecretKey` plus `Encrypt` / `Decrypt` / `Sign` / `Verify`.
+- **[Secrets](https://alchemy.run/fly/data/secrets)** — `Config.Redacted` in a Service for values from `.env`. `Fly.Secret` when Fly should own a value shared across Machines. KMS keys are `SecretKey` plus `Encrypt` / `Decrypt` / `Sign` / `Verify`.
 
 ## Networking
 
@@ -56,10 +56,10 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 | Object storage | [Tigris](https://alchemy.run/fly/data/tigris) + `PutObject` / `GetObject` |
 | N replicas behind fly.dev | Service `count`, or more [Machine](https://alchemy.run/fly/compute/machines) resources |
 | Restore a disk | [VolumeSnapshot](https://alchemy.run/fly/data/volumes#snapshots) + mount `snapshotId` |
-| Config / API tokens | [`Config.redacted`](https://alchemy.run/fly/data/secrets). [`Fly.Secret`](https://alchemy.run/fly/data/secrets) when Fly should own it |
+| Config / API tokens | [`Config.Redacted`](https://alchemy.run/fly/data/secrets). [`Fly.Secret`](https://alchemy.run/fly/data/secrets) when Fly should own it |
 | Sign / encrypt in-app | [SecretKey](https://alchemy.run/fly/data/secrets#kms-keys) + `Encrypt` / `Sign` |
 | `{app}.fly.dev` over IPv4 | [IpAssignment](https://alchemy.run/fly/networking) `type: "shared_v4"` |
-| Your own domain | [Certificate](https://alchemy.run/fly/networking#certificates) (ACME) |
+| Your own domain | [Certificate](https://alchemy.run/fly/networking#use-your-own-hostname) (ACME) |
 
 ## Where next
 

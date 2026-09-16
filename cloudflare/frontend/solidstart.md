@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/solidstart
 title: "SolidStart"
 description: "Deploy SolidStart to Cloudflare with Cloudflare.Website.Vite — plus the hand-rolled SolidJS SSR variant for full control over the server entry."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 [SolidStart](https://start.solidjs.com/) builds through Vite: the `solidStart()` plugin in your `vite.config.ts` owns routing, SSR, and the server entry, and a single `vite build` produces the whole app. That makes it a pure-Vite project, so [`Cloudflare.Website.Vite`](vite.md) deploys it directly — no adapter config, no Wrangler file, no manual entrypoint.
@@ -76,12 +76,12 @@ export const Uploads = Cloudflare.R2.Bucket("Uploads");
 export const Website = Cloudflare.Website.Vite("Website", {
   env: {
     UPLOADS: Uploads,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 `WebsiteEnv` (from [Declare the Website](#declare-the-website)) is the typed shape of the runtime bindings — import it wherever your server code reads the Worker env. See [the Vite resource page](vite.md#environment) for how each env channel works.
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/events
 title: "Webhooks & events"
 description: "Provision GitHub repository webhooks as resources, or subscribe a Cloudflare Worker to repository events with typed payloads and verified deliveries."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 GitHub tells the world what happened to a repository through
@@ -34,7 +34,7 @@ yield* GitHub.Webhook("ci-webhook", {
 
 `events` defaults to `["push"]`; pass `["*"]` to receive every event
 GitHub emits. The `secret` (a `Redacted` string, e.g. from
-`Config.redacted` — see [Secrets & env](../cloudflare/security/secrets-env.md))
+`Config.Redacted` — see [Secrets & env](../cloudflare/security/secrets-env.md))
 makes GitHub sign each delivery with `HMAC-SHA256` in the
 `X-Hub-Signature-256` header so your receiver can verify the payload
 came from GitHub.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS fullstack app to Cloudflare Workers with Cloudflare.Website.Octane — your own vite build, Octane's Cloudflare adapter, wrangler-free."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 `Cloudflare.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app as a Cloudflare Worker. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the SSR server bundle, and your `adapter: cloudflare()` emits the module Worker entry at `dist/server/worker.js`. That entry deploys as the Worker script and `dist/client` deploys as static assets. No Wrangler file, no build command to run.
@@ -85,12 +85,12 @@ export const Cache = Cloudflare.KV.Namespace("Cache");
 export const Website = Cloudflare.Website.Octane("Website", {
   env: {
     CACHE: Cache,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
 });
 ```
 
-`Cache` is a description, not a deploy — Alchemy provisions the real namespace because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Cache` is a description, not a deploy — Alchemy provisions the real namespace because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 ## Read bindings in server code
 

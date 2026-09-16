@@ -2,13 +2,13 @@
 url: https://alchemy.run/cloudflare/security/secrets-env
 title: "Secrets & env"
 description: "Bind env vars and secrets to Workers with effect/Config, generate stable tokens with Alchemy.Random, and graduate to Secrets Store when secrets are shared across Workers."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Three ways to get a secret into a Worker, by where the value lives.
 A value from your `.env` that belongs to one Worker —
-`Config.redacted`. A token your infrastructure mints —
+`Config.Redacted`. A token your infrastructure mints —
 `Alchemy.Random`. A secret shared across Workers that must rotate
 without a redeploy — [Secrets Store](#graduate-to-secrets-store).
 
@@ -28,7 +28,7 @@ export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-    const apiKey = yield* Config.redacted("API_KEY");
+    const apiKey = yield* Config.Redacted("API_KEY");
 
     return {
       fetch: Effect.gen(function* () {
@@ -63,11 +63,11 @@ string `"<redacted>"` — `` `Bearer ${apiKey}` `` sends
 
 ## Plain vars and defaults
 
-Non-secret config uses `Config.string` / `Config.number`, and any
+Non-secret config uses `Config.String` / `Config.Number`, and any
 combinator works:
 
 ```typescript
-const port = yield* Config.number("PORT").pipe(
+const port = yield* Config.Number("PORT").pipe(
   Config.withDefault(3000),
 );
 ```
@@ -86,7 +86,7 @@ is never discovered or bound:
 Effect.gen(function* () {
   return {
     fetch: Effect.gen(function* () {
-      const apiKey = yield* Config.redacted("API_KEY");
+      const apiKey = yield* Config.Redacted("API_KEY");
       // ...
     }),
   };
@@ -99,7 +99,7 @@ the handler:
 ```typescript
 // ✅ bound in Construction, used in Runtime
 Effect.gen(function* () {
-  const apiKey = yield* Config.redacted("API_KEY");
+  const apiKey = yield* Config.Redacted("API_KEY");
   return {
     fetch: Effect.gen(function* () {
       return new Response(Redacted.value(apiKey));
@@ -121,8 +121,8 @@ import * as Config from "effect/Config";
 export const Worker = Cloudflare.Worker("Worker", {
   main: "./src/worker.ts",
   env: {
-    API_KEY: Config.redacted("API_KEY"),
-    HOST: Config.string("HOST"),
+    API_KEY: Config.Redacted("API_KEY"),
+    HOST: Config.String("HOST"),
     Bucket, // resource references work the same
   },
 });

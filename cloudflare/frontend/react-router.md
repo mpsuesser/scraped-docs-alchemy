@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 [React Router](https://reactrouter.com/) v7 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
@@ -145,7 +145,7 @@ export const Uploads = Cloudflare.R2.Bucket("Uploads");
 export const Website = Cloudflare.Website.Vite("Website", {
   env: {
     UPLOADS: Uploads,
-    API_KEY: Config.redacted("API_KEY"),
+    API_KEY: Config.Redacted("API_KEY"),
   },
   viteEnvironments: {
     entry: "rsc",
@@ -154,7 +154,7 @@ export const Website = Cloudflare.Website.Vite("Website", {
 });
 ```
 
-`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
+`Uploads` is a description, not a deploy — Alchemy provisions the real bucket because the Website binds it. `Config.Redacted` reads `API_KEY` from your environment at deploy time and binds it as a Worker secret — see [Secrets & env](../security/secrets-env.md).
 
 The Worker entry receives `env` as the standard second argument of the module-worker `fetch` contract — type it with the inferred shape:
 

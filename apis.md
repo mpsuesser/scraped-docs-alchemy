@@ -2,11 +2,11 @@
 url: https://alchemy.run/apis
 title: "APIs"
 description: "Every Function and Server returns { fetch, ...rpcs } — schemaless typed calls are the default for internal communication; Effect RPC and Effect HTTP add schemas where data crosses a trust boundary."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
-Every Function and Server in alchemy returns `{ fetch, ...rpcs }` from its [Effectful Constructor](infrastructure-as-effects/runtime.md#the-effectful-constructor-pattern) — you already saw the “return what you expose” half. The `rpcs` are the other half: plain functions returning `Effect` or `Stream`, no schema, no decorators:
+Every Function and Server in alchemy returns `{ fetch, ...rpcs }` from its [Effectful Constructor](infrastructure-as-effects/runtime.md#the-effectful-constructor) — you already saw the “return what you expose” half. The `rpcs` are the other half: plain functions returning `Effect` or `Stream`, no schema, no decorators:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";

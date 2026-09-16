@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/effect-ai
 title: "Effect AI"
 description: "Wire Effect's LanguageModel and Chat services into a Cloudflare Worker — read API keys with effect/Config, provide the model layer to your handler, plug in persistence."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-16T06:33:56.799Z
+current_date: 2026-09-16T06:33:56.799Z
 ---
 
 Effect's [`@effect/ai`](https://effect.website/docs/ai/introduction)
@@ -54,11 +54,11 @@ Effect.gen(function* () {
 pattern works in a Lambda handler, an HTTP API endpoint, an RPC
 procedure, a Workflow, or any other Effect.
 
-## Read the API key with `Config.redacted`
+## Read the API key with `Config.Redacted`
 
 Every upstream provider's client Layer (`OpenAiClient.layer`,
 `AnthropicClient.layer`, …) takes an `apiKey: Redacted<string>`.
-[`Config.redacted`](../../environments/secrets.md) resolved in the Runtime's
+[`Config.Redacted`](../../environments/secrets.md) resolved in the Runtime's
 Construction phase gives you exactly that `Redacted<string>` — and Alchemy
 automatically binds the value as a `secret_text` binding
 (Cloudflare) or environment variable (Lambda) at deploy time:
@@ -67,10 +67,10 @@ automatically binds the value as a `secret_text` binding
 import * as Config from "effect/Config";
 
 // constructor — resolves the value AND records the binding
-const apiKey = yield* Config.redacted("OPENAI_API_KEY");
+const apiKey = yield* Config.Redacted("OPENAI_API_KEY");
 ```
 
-`Config.redacted("OPENAI_API_KEY")` reads `OPENAI_API_KEY` from your
+`Config.Redacted("OPENAI_API_KEY")` reads `OPENAI_API_KEY` from your
 `ConfigProvider` (e.g. `.env`) at deploy time, records the binding,
 and resolves from that binding again at runtime — one line, both
 phases. See [Concepts › Secrets and Config](../../environments/secrets.md) for
@@ -110,7 +110,7 @@ export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-    const apiKey = yield* Config.redacted("OPENAI_API_KEY");
+    const apiKey = yield* Config.Redacted("OPENAI_API_KEY");
 
     const languageModel = OpenAiLanguageModel.layer({
       model: "gpt-4o-mini",
@@ -270,5 +270,5 @@ model })` — is the same.
 - [Add an AI Gateway](ai-gateway.md) — wire
   Workers AI behind a Cloudflare AI Gateway with caching and
   streaming.
-- [Secrets & env](../security/secrets-env.md) — how `Config.redacted`
+- [Secrets & env](../security/secrets-env.md) — how `Config.Redacted`
   feeds the upstream providers' API keys at deploy and runtime.
