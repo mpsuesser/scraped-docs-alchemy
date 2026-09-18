@@ -1,0 +1,128 @@
+---
+url: https://alchemy.run/prisma/frontend/react-router
+title: "React Router"
+description: "Deploy React Router v7 framework apps to Prisma Compute with Prisma.Website.ReactRouter — SSR on Bun and native Vite dev locally."
+access_date: 2026-09-18T03:55:07.187Z
+current_date: 2026-09-18T03:55:07.187Z
+---
+
+`Prisma.Website.ReactRouter` builds [React Router](https://reactrouter.com/) v7 in framework mode through your project’s Vite pipeline. The shared Node target wraps the server manifest with `createRequestHandler` and serves client assets first. The output runs on **Bun in Prisma Compute** from a `tar.gz` upload, without a Docker image or registry.
+
+## Install
+
+Install the build-time integration; the resource loads `/react-router` and `/react-router/node` from your project:
+
+```sh
+bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+```
+
+Keep the framework scaffold’s `react-router`, `@react-router/dev`, `@react-router/node`, `isbot`, and `vite`. Put `@react-router/node` and `isbot` in `dependencies`: React Router reads them when choosing its default server entry and may try to install `isbot` if it is missing.
+
+## Configure Vite
+
+Keep the ordinary framework plugin and your Vite plugins:
+
+```typescript
+import { reactRouter } from "@react-router/dev/vite";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [tailwindcss(), reactRouter()],
+});
+```
+
+No deployment adapter or server preset is needed.
+
+## Declare the Website
+
+```typescript
+import * as Prisma from "alchemy/Prisma";
+
+export const Website = Prisma.Website.ReactRouter("Website", {
+  rootDir: "./web",
+});
+```
+
+`rootDir` holds `package.json`, `vite.config.*`, and `react-router.config.ts`; omit it for `.`. Live deploy creates a database-less project unless you pass `project`.
+
+## Add it to the Stack
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as Effect from "effect/Effect";
+
+export default Alchemy.Stack(
+  "MyReactRouterSite",
+  { providers: Prisma.providers(), state: Alchemy.localState() },
+  Effect.gen(function* () {
+    const site = yield* Website;
+    return { url: site.url };
+  }),
+);
+```
+
+`site.url` is the Compute endpoint on deploy. Requests that miss client assets go to SSR routes, loaders, actions, and resource routes on Bun.
+
+## How the two build outputs are deployed
+
+Both `build/client` and `build/server` go into the uploaded artifact. The client directory contains browser bundles and `public/` files. `build/server/index.js` is a manifest, so Alchemy wraps it with React Router’s request handler rather than executing it as a standalone server.
+
+A custom `buildDirectory` is read from the resolved config. If you set Vite’s `base`, give React Router’s `basename` the same prefix so emitted asset paths match the deployed files.
+
+## Add environment variables
+
+```typescript
+export const Website = Prisma.Website.ReactRouter("Website", {
+  rootDir: "./web",
+  env: { API_BASE: "https://api.example.com" },
+});
+```
+
+Values are applied before build and dev and passed to Compute. `VITE_*` keys are inlined into browser code; keep secrets out of those keys. Outputs from sibling resources can be passed in `env` when declaring the Website inside your Stack generator.
+
+## Read the environment in a loader
+
+```typescript
+export function loader() {
+  return { apiBase: process.env.API_BASE ?? "unset" };
+}
+```
+
+Loaders and actions run on Bun and read `process.env`.
+
+## Read the environment in a resource route
+
+```typescript
+export function loader() {
+  return new Response(process.env.API_BASE ?? "unset");
+}
+```
+
+A route module without a default component is a resource route. It uses the same runtime environment.
+
+## Local dev
+
+`bun alchemy dev` runs React Router’s Vite dev server with HMR; the Website creates no Prisma resources. Opt into live deployment during dev:
+
+```typescript
+export const Website = Prisma.Website.ReactRouter("Website").pipe(
+  Alchemy.remote(),
+);
+```
+
+## Custom domain
+
+```typescript
+const site = yield* Prisma.Website.ReactRouter("Web", {
+  domain: "app.example.com",
+});
+```
+
+`Prisma.CustomDomain` requires the app to be on the current default branch. Configure returned DNS records yourself and verify status before cutover; see [Custom domains](websites.md#custom-domains).
+
+## Where next
+
+- [React Router API](https://alchemy.run/providers/prisma/website/reactrouter).
+- [React Router example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-react-router).
+- [Websites](websites.md) and [Compute apps](../compute/apps.md).
