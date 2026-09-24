@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/static-site
 title: "Static sites"
 description: "Deploy any static build to Prisma Compute with Prisma.Website.StaticSite — a shell command, output directory, and Bun static-file server."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.StaticSite` runs a build command, packages its output,
@@ -31,7 +31,7 @@ export const Website = Prisma.Website.StaticSite("Website", {
 
 Install the generator your command invokes. Unlike framework resources,
 `StaticSite` does not load a framework build integration from your app;
-it uses [`Command.Build`](https://alchemy.run/providers/command/build) and the shared
+it uses [`Command.Build`](https://alchemy.run/providers/command/reference#build) and the shared
 static-file server.
 
 The command is memoized from input content. Use `memo: { include: [...] }`
@@ -173,6 +173,6 @@ specifying `command` and `outdir` when your framework has a resource.
 
 ## Where next
 
-- [StaticSite API](https://alchemy.run/providers/prisma/website/staticsite).
+- [StaticSite API](https://alchemy.run/providers/prisma/website#staticsite).
 - [Static-site example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-static).
 - [Websites](websites.md) and [Compute apps](../compute/apps.md).

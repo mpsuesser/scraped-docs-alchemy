@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe/guides/subscriptions
 title: "Sell a subscription"
 description: "The full SaaS billing loop on one Cloudflare Worker — hosted Checkout, the Billing Portal, and webhooks that keep an entitlement record your app gates on."
-access_date: 2026-09-17T20:53:57.844Z
-current_date: 2026-09-17T20:53:57.844Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 You have a product with a monthly price and you want people to pay for
@@ -550,6 +550,6 @@ const idOf = (
 
 - [Connect](connect.md) — onboard other businesses and pay
   them out.
-- [BillingPortalConfiguration](https://alchemy.run/providers/stripe/billingportalconfiguration),
-  [Price](https://alchemy.run/providers/stripe/price),
-  [WebhookEndpoint](https://alchemy.run/providers/stripe/webhookendpoint) reference.
+- [BillingPortalConfiguration](https://alchemy.run/providers/stripe/reference/billing#billingportalconfiguration),
+  [Price](https://alchemy.run/providers/stripe/reference/product#price),
+  [WebhookEndpoint](https://alchemy.run/providers/stripe/reference/webhook#webhookendpoint) reference.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/branches
 title: "Branches"
 description: "Prisma branches group databases under git-style names — preview branches per stage, default-branch promotion, and database attachment."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A `Prisma.Branch` groups databases and apps under a git-style name
@@ -96,4 +96,4 @@ deletes the promoted branch.
 
 Reference:
 
-- [Branch API reference](https://alchemy.run/providers/prisma/branch)
+- [Branch API reference](https://alchemy.run/providers/prisma/reference/project#branch)

@@ -2,14 +2,21 @@
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
 description: "Use effect/Config to read env vars at Construction time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)
 to automatically bind env vars to your Worker or Lambda environment ([Runtime](../infrastructure-as-effects/runtime.md)).
 Bound values come from the env of whoever runs the deploy, so they naturally
 vary per [stage](stages.md) and [profile](profiles.md).
+
+Where those values come from is the stack's business. By default
+that is `.env` plus the shell; a stack can instead read them from
+[Doppler](https://alchemy.run/environments/doppler) or [Infisical](https://alchemy.run/environments/infisical),
+and layer several sources in a chosen order.
+See [Secret providers](https://alchemy.run/environments/secret-providers). This page is
+about what happens after a value is read.
 
 ## Bind a secret to your Worker
 
@@ -178,6 +185,7 @@ see [Secrets & env on Cloudflare](../cloudflare/security/secrets-env.md) or
 
 ## Where next
 
+- [Secret providers](https://alchemy.run/environments/secret-providers) — where `Config` values come from and in what order.
 - [Local development](local-development.md) — `alchemy dev`: local code, real cloud resources.
 - [Secrets & env on Cloudflare](../cloudflare/security/secrets-env.md) — wire a real key from `.env` into a Worker.
 - [Secrets & env on AWS](../aws/security/secrets-env.md) — the same walk for Lambda.

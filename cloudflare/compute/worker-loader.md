@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/worker-loader
 title: "Worker Loader"
 description: "Load and run ephemeral Workers at runtime from inline source — each in its own sandboxed isolate, with optional outbound-network control and typed RPC entrypoints."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A Worker Loader lets a deployed Worker spin up other Workers at
@@ -169,5 +169,5 @@ export default {
 - [Workers for Platforms](workers-for-platforms.md) —
   deploy tenant Workers as persistent resources instead of loading
   them at runtime.
-- [WorkerLoader API reference](https://alchemy.run/providers/cloudflare/workers/workerloader) —
+- [WorkerLoader API reference](https://alchemy.run/providers/cloudflare/workers#workerloader) —
   every option on `load` and `get`.

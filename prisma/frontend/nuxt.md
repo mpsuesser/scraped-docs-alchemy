@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/nuxt
 title: "Nuxt"
 description: "Deploy Nuxt to Prisma Compute with Prisma.Website.Nuxt — Nitro's Node target running on Bun and Nuxt's own dev server locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.Nuxt` builds [Nuxt](https://nuxt.com/) through your project’s `@nuxt/kit` with Nitro’s Node target. The server, client assets, and prerendered pages are uploaded as `tar.gz` and run on **Bun in Prisma Compute**. No Docker image or registry is involved.
@@ -110,6 +110,6 @@ export const Website = Prisma.Website.Nuxt("Website", {
 
 ## Where next
 
-- [Nuxt API](https://alchemy.run/providers/prisma/website/nuxt).
+- [Nuxt API](https://alchemy.run/providers/prisma/website#nuxt).
 - [Nuxt example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-nuxt).
 - [Websites](websites.md), [Compute apps](../compute/apps.md), and [Setup](../setup.md).

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/api-gateway
 title: "REST API (API Gateway v1)"
 description: "Expose a Lambda with a regional Amazon API Gateway REST API using RestApi, Resource, Method, Deployment, and Stage primitives."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 The [Deploy a Lambda Function](../compute/lambda.md) tutorial uses a **Function URL** for HTTP. Many teams still use **Amazon API Gateway** (REST, v1) as the front door.
@@ -59,7 +59,7 @@ yield* AWS.ApiGateway.Method("PrivateGet", {
 });
 ```
 
-See also [VpcLink](https://alchemy.run/providers/aws/apigateway/vpclink) in the generated API reference.
+See also [VpcLink](https://alchemy.run/providers/aws/apigateway#vpclink) in the generated API reference.
 
 ## Custom domain
 
@@ -115,11 +115,11 @@ yield* AWS.Route53.Record("ApiAlias", {
 });
 ```
 
-An alias **A** record targets the regional endpoint; `.as<string>()` narrows the optional outputs. See [DomainName](https://alchemy.run/providers/aws/apigateway/domainname) and [BasePathMapping](https://alchemy.run/providers/aws/apigateway/basepathmapping) in the API reference, and the [custom domains guide](../networking/custom-domains.md) for the broader pattern (CloudFront, static sites).
+An alias **A** record targets the regional endpoint; `.as<string>()` narrows the optional outputs. See [DomainName](https://alchemy.run/providers/aws/apigateway#domainname) and [BasePathMapping](https://alchemy.run/providers/aws/apigateway#basepathmapping) in the API reference, and the [custom domains guide](../networking/custom-domains.md) for the broader pattern (CloudFront, static sites).
 
 ## API reference
 
-Generated docs for each primitive live under **Providers → AWS → ApiGateway** in the sidebar (for example [RestApi](https://alchemy.run/providers/aws/apigateway/restapi)). Run `bun generate:api-reference` locally after changing JSDoc on resources.
+Generated docs for each primitive live under **Providers → AWS → ApiGateway** in the sidebar (for example [RestApi](https://alchemy.run/providers/aws/apigateway#restapi)). Run `bun generate:api-reference` locally after changing JSDoc on resources.
 
 ## Next steps
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:
@@ -255,8 +255,8 @@ is clicked, sends fail with a `SendEmailError`.
 
 Reference:
 
-- [Routing API reference](https://alchemy.run/providers/cloudflare/email/routing)
-- [Address API reference](https://alchemy.run/providers/cloudflare/email/address)
-- [Rule API reference](https://alchemy.run/providers/cloudflare/email/rule)
-- [CatchAll API reference](https://alchemy.run/providers/cloudflare/email/catchall)
-- [Send API reference](https://alchemy.run/providers/cloudflare/email/send)
+- [Routing API reference](https://alchemy.run/providers/cloudflare/email#routing)
+- [Address API reference](https://alchemy.run/providers/cloudflare/email#address)
+- [Rule API reference](https://alchemy.run/providers/cloudflare/email#rule)
+- [CatchAll API reference](https://alchemy.run/providers/cloudflare/email#catchall)
+- [Send API reference](https://alchemy.run/providers/cloudflare/email#send)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/dynamodb
 title: "DynamoDB"
 description: "Add a DynamoDB Table, bind GetItem and PutItem to your Lambda, and serve a typed key/value HTTP API backed by DynamoDB."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **DynamoDB** is AWS's serverless key/value store — structured
@@ -196,6 +196,6 @@ specific table — alongside the S3 grants.
   react to.
 - [SQS](../messaging/sqs.md) — a general-purpose queue for background
   work, fed from the same Lambda.
-- [`Table` reference](https://alchemy.run/providers/aws/dynamodb/table) — every
+- [`Table` reference](https://alchemy.run/providers/aws/dynamodb#table) — every
   prop and attribute, including secondary indexes, TTL, and
   point-in-time recovery.

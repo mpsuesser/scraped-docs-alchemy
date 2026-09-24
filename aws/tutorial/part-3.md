@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Lambda Function URL."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 In [Part 2](part-2.md) you deployed a Lambda with S3
@@ -171,6 +171,33 @@ const get = yield* HttpClient.get(`${url}/hello.txt`).pipe(
 ```
 :::
 
+## Allow the Bucket to be destroyed with objects in it
+
+The PUT test writes `hello.txt` into the Bucket, so the Bucket is no
+longer empty when the tests finish. S3 refuses to delete a Bucket
+that still contains objects, and Alchemy keeps that protection by
+default: destroying a non-empty Bucket fails with `BucketNotEmpty` and
+leaves the Bucket and its objects in place.
+
+This Bucket only ever holds test data, so opt in to deleting its
+objects on destroy with `forceDestroy: true`:
+
+```diff lang="typescript"
+// src/api.ts
+  Effect.gen(function* () {
+-    const bucket = yield* S3.Bucket("Bucket");
++    const bucket = yield* S3.Bucket("Bucket", {
++      forceDestroy: true,
++    });
+    const putObject = yield* S3.PutObject(bucket);
+    const getObject = yield* S3.GetObject(bucket);
+```
+
+With `forceDestroy: true`, Alchemy empties the Bucket before deleting
+it. Reserve it for Buckets whose contents are disposable (test
+fixtures, caches, previews); leave it off for Buckets that hold data
+you need to keep.
+
 ## Destroy after tests on CI
 
 Right now the stack stays deployed after tests finish. That's great
@@ -204,6 +231,7 @@ You now have:
 - `beforeAll(deploy(Stack))` to deploy once before tests
 - `yield* stack` to access outputs in each test
 - HTTP assertions using Effect's `HttpClient`
+- `forceDestroy: true` so destroy can delete a Bucket that tests wrote to
 - `afterAll.skipIf(!process.env.CI)(destroy(Stack))` for automatic
   cleanup on CI with fast iteration locally
 

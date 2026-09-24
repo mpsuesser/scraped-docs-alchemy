@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **ECS** (Elastic Container Service) is AWS’s managed container orchestrator: you describe a container — image, CPU, memory — and ECS runs it. With **Fargate**, AWS also provides the machines, so there are no servers to manage.
@@ -15,7 +15,7 @@ ECS has four primitives:
 - A **Task** is a running container launched from a Task Definition. It runs until its process exits.
 - A **Service** keeps a set number of Tasks running — restarting ones that stop, optionally routing traffic to them through a load balancer.
 
-Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/ecs/cluster), [`Task`](https://alchemy.run/providers/aws/ecs/task) — a task definition plus everything needed to build and publish its image — and [`Service`](https://alchemy.run/providers/aws/ecs/service). Each can run a plain container image, or an Effect program that Alchemy bundles into one.
+Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/ecs#cluster), [`Task`](https://alchemy.run/providers/aws/ecs#task) — a task definition plus everything needed to build and publish its image — and [`Service`](https://alchemy.run/providers/aws/ecs#service). Each can run a plain container image, or an Effect program that Alchemy bundles into one.
 
 ## Run a Task
 
@@ -76,7 +76,7 @@ The tagged form (`class Reindexer extends AWS.ECS.Task<Reindexer, Shape>()("Rein
 
 ## Invoke and schedule Tasks
 
-A `Task` is the target of the ECS control-plane bindings. From a Lambda function, a Service, or any other host, bind [`RunTask`](https://alchemy.run/providers/aws/ecs/runtask) in the **Construction phase** — this grants the host `ecs:RunTask` plus `iam:PassRole` on the task’s roles — then call it from a handler at **runtime**, where the cluster and task definition ARNs are injected automatically:
+A `Task` is the target of the ECS control-plane bindings. From a Lambda function, a Service, or any other host, bind [`RunTask`](https://alchemy.run/providers/aws/ecs#runtask) in the **Construction phase** — this grants the host `ecs:RunTask` plus `iam:PassRole` on the task’s roles — then call it from a handler at **runtime**, where the cluster and task definition ARNs are injected automatically:
 
 ```typescript
 const api = yield* AWS.Lambda.Function(
@@ -133,7 +133,7 @@ const nginx = yield* AWS.ECS.Service("Edge", {
 return { url: nginx.url }; // http://<alb-dns-name>
 ```
 
-Networking is optional to start: when `vpcId` / `subnets` are omitted the account’s **default VPC** (and its per-AZ subnets) is used, and when `securityGroups` is omitted with `loadBalancer: true`, Alchemy provisions a security group that admits the listener port. For a real deployment, build a dedicated VPC with the [`Network`](https://alchemy.run/providers/aws/ec2/network) helper and pass `vpcId` + `subnets` — see [VPC & networking](../networking.md).
+Networking is optional to start: when `vpcId` / `subnets` are omitted the account’s **default VPC** (and its per-AZ subnets) is used, and when `securityGroups` is omitted with `loadBalancer: true`, Alchemy provisions a security group that admits the listener port. For a real deployment, build a dedicated VPC with the [`Network`](https://alchemy.run/providers/aws/ec2#network) helper and pass `vpcId` + `subnets` — see [VPC & networking](../networking.md).
 
 An effectful `Service` is the server counterpart: where a `Task` impl returns `{ run }`, a `Service` impl returns `{ fetch }`:
 
@@ -165,7 +165,7 @@ const api = yield* AWS.ECS.Service("Api", {
 });
 ```
 
-Most service configuration — desired count, task definition revision, network config, deployment settings, load balancers — updates **in place** as a rolling deployment; only truly immutable aspects (service name, cluster, scheduling strategy, deployment controller type, switching between `launchType` and `capacityProviderStrategy`) replace the service. For cost-sensitive workers, swap `launchType` (default `"FARGATE"`) for a `capacityProviderStrategy` mixing `FARGATE_SPOT` and `FARGATE` — see the [`Service` reference](https://alchemy.run/providers/aws/ecs/service) for the placement, deployment, and Service Connect knobs.
+Most service configuration — desired count, task definition revision, network config, deployment settings, load balancers — updates **in place** as a rolling deployment; only truly immutable aspects (service name, cluster, scheduling strategy, deployment controller type, switching between `launchType` and `capacityProviderStrategy`) replace the service. For cost-sensitive workers, swap `launchType` (default `"FARGATE"`) for a `capacityProviderStrategy` mixing `FARGATE_SPOT` and `FARGATE` — see the [`Service` reference](https://alchemy.run/providers/aws/ecs#service) for the placement, deployment, and Service Connect knobs.
 
 ## Run background work
 
@@ -212,4 +212,4 @@ Each HTTP request still gets its own request `Scope`, released when the response
 - [Choosing a runtime](choosing-a-runtime.md) — when Lambda, EKS, or EC2 fits better than ECS.
 - [VPC & networking](../networking.md) — what the `Network` helper creates, and the primitives underneath it.
 - [EKS](eks.md) — the same platform model on managed Kubernetes.
-- [`Task` reference](https://alchemy.run/providers/aws/ecs/task), [`Service` reference](https://alchemy.run/providers/aws/ecs/service), [`Cluster` reference](https://alchemy.run/providers/aws/ecs/cluster) — every prop and attribute.
+- [`Task` reference](https://alchemy.run/providers/aws/ecs#task), [`Service` reference](https://alchemy.run/providers/aws/ecs#service), [`Cluster` reference](https://alchemy.run/providers/aws/ecs#cluster) — every prop and attribute.

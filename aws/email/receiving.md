@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/receiving
 title: "Email receiving"
 description: "Receive inbound email with SES — rule sets and rules that store mail in S3, fan out to SNS, invoke a Lambda, or bounce it, plus IP filters and the active rule set pointer."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **SES email receiving** turns a domain you've verified into an
@@ -15,19 +15,19 @@ the sender, add a header, or stop processing.
 
 The receiving primitives:
 
-- A **[`ReceiptRuleSet`](https://alchemy.run/providers/aws/ses/receiptruleset)** is
+- A **[`ReceiptRuleSet`](https://alchemy.run/providers/aws/ses#receiptruleset)** is
   the ordered container for rules. An account can hold many, but
   only one is active at a time.
-- A **[`ReceiptRule`](https://alchemy.run/providers/aws/ses/receiptrule)** matches
+- A **[`ReceiptRule`](https://alchemy.run/providers/aws/ses#receiptrule)** matches
   inbound mail by recipient and applies an ordered list of
   actions.
 - The
-  **[`ActiveReceiptRuleSet`](https://alchemy.run/providers/aws/ses/activereceiptruleset)**
+  **[`ActiveReceiptRuleSet`](https://alchemy.run/providers/aws/ses#activereceiptruleset)**
   is the single rule set SES actually evaluates — an account
   singleton pointer.
-- A **[`ReceiptFilter`](https://alchemy.run/providers/aws/ses/receiptfilter)**
+- A **[`ReceiptFilter`](https://alchemy.run/providers/aws/ses#receiptfilter)**
   allows or blocks inbound mail by source IP, before rules run.
-- **[`SendBounce`](https://alchemy.run/providers/aws/ses/sendbounce)** is a runtime
+- **[`SendBounce`](https://alchemy.run/providers/aws/ses#sendbounce)** is a runtime
   binding for bouncing a received message from inside a Lambda.
 
 :::note
@@ -261,8 +261,8 @@ received for you.
 
 Reference:
 
-- [ReceiptRuleSet API reference](https://alchemy.run/providers/aws/ses/receiptruleset)
-- [ReceiptRule API reference](https://alchemy.run/providers/aws/ses/receiptrule)
-- [ActiveReceiptRuleSet API reference](https://alchemy.run/providers/aws/ses/activereceiptruleset)
-- [ReceiptFilter API reference](https://alchemy.run/providers/aws/ses/receiptfilter)
-- [SendBounce API reference](https://alchemy.run/providers/aws/ses/sendbounce)
+- [ReceiptRuleSet API reference](https://alchemy.run/providers/aws/ses#receiptruleset)
+- [ReceiptRule API reference](https://alchemy.run/providers/aws/ses#receiptrule)
+- [ActiveReceiptRuleSet API reference](https://alchemy.run/providers/aws/ses#activereceiptruleset)
+- [ReceiptFilter API reference](https://alchemy.run/providers/aws/ses#receiptfilter)
+- [SendBounce API reference](https://alchemy.run/providers/aws/ses#sendbounce)

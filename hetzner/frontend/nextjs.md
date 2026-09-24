@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Hetzner with Hetzner.Website.Nextjs — next build plus a Node next({ dev: false }) systemd unit, and next dev under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to a Hetzner Cloud Server. It runs a real `next build`, then a long-running `next({ dev: false })` systemd unit on port 3000:
@@ -117,5 +117,5 @@ const site = yield* Hetzner.Website.Nextjs("Web", {
 
 ## Where next
 
-- [`Hetzner.Website.Nextjs` reference](https://alchemy.run/providers/hetzner/website/nextjs) — every prop and attribute
+- [`Hetzner.Website.Nextjs` reference](https://alchemy.run/providers/hetzner/website#nextjs) — every prop and attribute
 - [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/buckets
 title: "Buckets"
 description: "Prisma Buckets provision S3-compatible object storage inside a project, and Bucket access keys mint the S3 credentials — access key, one-time secret, endpoint, and the provider-side bucket name."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A `Prisma.Bucket` is an Object Store bucket inside a Prisma
@@ -105,6 +105,6 @@ Effect.gen(function* () {
 
 Reference:
 
-- [Bucket API reference](https://alchemy.run/providers/prisma/bucket)
-- [BucketAccessKey API reference](https://alchemy.run/providers/prisma/bucketaccesskey)
-- [ReadBucket](https://alchemy.run/providers/prisma/readbucket) / [WriteBucket](https://alchemy.run/providers/prisma/writebucket) / [ReadWriteBucket](https://alchemy.run/providers/prisma/readwritebucket)
+- [Bucket API reference](https://alchemy.run/providers/prisma/reference/bucket#bucket)
+- [BucketAccessKey API reference](https://alchemy.run/providers/prisma/reference/bucket#bucketaccesskey)
+- [ReadBucket](https://alchemy.run/providers/prisma/reference/bucket#readbucket) / [WriteBucket](https://alchemy.run/providers/prisma/reference/bucket#writebucket) / [ReadWriteBucket](https://alchemy.run/providers/prisma/reference/bucket#readwritebucket)

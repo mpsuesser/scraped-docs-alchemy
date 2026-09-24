@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to AWS with AWS.Website.Octane — SSR on a streaming Lambda Function URL, assets on S3 + CloudFront, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `AWS.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to AWS. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the AWS deploy target’s finishing pass wraps its fetch handler as a streaming Lambda handler. The server deploys on a Lambda Function URL; `dist/client` is served from a private S3 bucket through CloudFront. No CloudFormation, no build command to run.
@@ -18,21 +18,19 @@ bun add -d @alchemy.run/frontend-frameworks
 
 ## Configure Octane
 
-Your `octane.config.ts` picks the deploy target, exactly as in Octane’s own deployment story — select the AWS marker adapter:
+Keep native compiler and route settings in `octane.config.ts`, without an adapter:
 
 ```typescript
-import { aws } from "@alchemy.run/frontend-frameworks/octane/aws-adapter";
 import { defineConfig, RenderRoute } from "@octanejs/vite-plugin";
 
 export default defineConfig({
-  adapter: aws(),
   router: {
     routes: [new RenderRoute({ path: "/", entry: ["App", "/src/App.tsx"] })],
   },
 });
 ```
 
-A missing or foreign adapter fails the deploy with an actionable error.
+`AWS.Website.Octane` selects hosting and automatically wraps Octane’s default native Node output as a streaming Lambda handler. The legacy AWS marker adapter remains optional for existing projects.
 
 ## Declare the Website
 

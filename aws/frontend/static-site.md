@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/static-site
 title: "Static sites"
 description: "Ship a static site to S3 + CloudFront with AWS.Website.StaticSite — build-step support, Router composition, and cache invalidation on deploy."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `AWS.Website.StaticSite` deploys a directory of files as a website: it uploads
@@ -74,7 +74,7 @@ const site = yield* AWS.Website.StaticSite("Web", {
 });
 ```
 
-The build step is a [Command.Build](https://alchemy.run/providers/command/build) resource —
+The build step is a [Command.Build](https://alchemy.run/providers/command/reference#build) resource —
 memoized, so unchanged inputs skip the build
 ([details](../../command/memoization.md)). The input hash covers, by default, all
 files under `path` (filtered by your gitignore rules) plus the nearest
@@ -220,6 +220,6 @@ Hugo, or any other generator, or a pre-built SPA.
 
 - [Websites on AWS](websites.md) — the full websites surface, including
   server-side rendering
-- [StaticSite reference](https://alchemy.run/providers/aws/website/staticsite) and
-  [Router reference](https://alchemy.run/providers/aws/website/router) — every prop and attribute
+- [StaticSite reference](https://alchemy.run/providers/aws/website#staticsite) and
+  [Router reference](https://alchemy.run/providers/aws/website#router) — every prop and attribute
 - [AWS on Alchemy](../../aws.md) — the AWS provider hub

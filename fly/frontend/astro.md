@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to Fly with Fly.Website.Astro — Node SSR on a Machine, static output as a file server, and Astro's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.Astro` deploys an [Astro](https://astro.build/) project to Fly as a Node server on a Machine. Server-rendered pages run on a [`Fly.Service`](https://alchemy.run/fly/compute/services) (port 3000); static files are served first, then the Astro handler. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. Your `astro.config.*` loads natively — don’t declare an `adapter`.
@@ -150,7 +150,7 @@ export const Website = Fly.Website.Astro("Website", {
 
 ## Where next
 
-- [`Fly.Website.Astro` reference](https://alchemy.run/providers/fly/website/astro) — every prop and attribute.
+- [`Fly.Website.Astro` reference](https://alchemy.run/providers/fly/website#astro) — every prop and attribute.
 - [Services](https://alchemy.run/fly/compute/services) and [Apps](https://alchemy.run/fly/compute/apps) — the Service and App the site creates.
 - [IPs & certificates](https://alchemy.run/fly/networking) — shared IPv4 and ACME.
 - [Setup](../setup.md) — org, API token, and alchemy login.

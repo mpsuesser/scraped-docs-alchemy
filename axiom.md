@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom
 title: "Axiom"
 description: "Observability as resources — OTEL datasets, ingest tokens, monitors, notifiers, and dashboards declared next to the code that emits the data."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Axiom is an event and observability store for logs, traces, and metrics. Effect already emits OpenTelemetry, and with alchemy the receiving end is code too: datasets, ingest tokens, monitors, notifiers, and dashboards live in the same Stack as the Workers and Functions they observe, so a threshold change is a reviewable diff.
@@ -68,4 +68,4 @@ For a full end-to-end walkthrough — dataset, token, Worker wiring, and a monit
 
 ## Reference
 
-[Dataset](https://alchemy.run/providers/axiom/dataset) · [ApiToken](https://alchemy.run/providers/axiom/apitoken) · [Monitor](https://alchemy.run/providers/axiom/monitor) · [Notifier](https://alchemy.run/providers/axiom/notifier) · [Dashboard](https://alchemy.run/providers/axiom/dashboard) · [Annotation](https://alchemy.run/providers/axiom/annotation) · [View](https://alchemy.run/providers/axiom/view) · [VirtualField](https://alchemy.run/providers/axiom/virtualfield)
+[Dataset](https://alchemy.run/providers/axiom/reference/dataset#dataset) · [ApiToken](https://alchemy.run/providers/axiom/reference/api-token#apitoken) · [Monitor](https://alchemy.run/providers/axiom/reference/monitor#monitor) · [Notifier](https://alchemy.run/providers/axiom/reference/monitor#notifier) · [Dashboard](https://alchemy.run/providers/axiom/reference/dashboard#dashboard) · [Annotation](https://alchemy.run/providers/axiom/reference/dataset#annotation) · [View](https://alchemy.run/providers/axiom/reference/dashboard#view) · [VirtualField](https://alchemy.run/providers/axiom/reference/dataset#virtualfield)

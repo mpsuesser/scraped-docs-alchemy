@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/credentials
 title: "Credentials"
 description: "PlanetScale credentials as Stack resources — Postgres roles, the default role and forceReset, MySQL passwords, TTLs, CIDR allowlists, and direct vs pooled connection origins."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 PlanetScale credentials are resources: Postgres branches use **roles**
@@ -31,8 +31,20 @@ const reader = yield* Planetscale.PostgresRole("reader", {
 
 Only `name` and `successor` (the role that inherits ownership when
 this one is dropped) update in place — changing `ttl`,
-`inheritedRoles`, `database`, or `branch` replaces the role with a
-new id, name, and password.
+`inheritedRoles`, `withReplication`, `database`, or `branch` replaces
+the role with a new id, name, and password.
+
+A logical-replication consumer (Electric, Debezium, a CDC pipeline)
+needs the `REPLICATION` attribute, which Postgres never grants through
+role membership. PlanetScale issues it only alongside `postgres`:
+
+```typescript
+const replicator = yield* Planetscale.PostgresRole("replicator", {
+  database,
+  inheritedRoles: ["postgres"],
+  withReplication: true,
+});
+```
 
 ## The default role
 
@@ -121,6 +133,6 @@ carries the same direct/pooled endpoints as `Redacted` URL strings
 
 Reference:
 
-- [PostgresRole](https://alchemy.run/providers/planetscale/postgres/postgresrole) ·
-  [PostgresDefaultRole](https://alchemy.run/providers/planetscale/postgres/postgresdefaultrole) ·
-  [MySQLPassword](https://alchemy.run/providers/planetscale/mysql/mysqlpassword)
+- [PostgresRole](https://alchemy.run/providers/planetscale/postgres#postgresrole) ·
+  [PostgresDefaultRole](https://alchemy.run/providers/planetscale/postgres#postgresdefaultrole) ·
+  [MySQLPassword](https://alchemy.run/providers/planetscale/mysql#mysqlpassword)

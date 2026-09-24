@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/adopting-resources
 title: "Adopting Resources"
 description: "How alchemy takes ownership of pre-existing cloud resources — recovery by default, --adopt for foreign resources, and the programmatic AdoptPolicy."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Two situations put alchemy in front of a cloud resource it has no state for: existing infrastructure you want alchemy to start managing, and a fresh (or wiped) state store sitting in front of resources alchemy already created.
@@ -39,6 +39,9 @@ Re-importing owned resources into a fresh state store needs **no** flag — reco
 # store — no flag needed for these. Ones with foreign ownership tags
 # will surface as `OwnedBySomeoneElse` errors.
 alchemy deploy
+
+# Preview the takeover without applying it.
+alchemy plan --adopt
 
 # Force takeover of any conflicting resource regardless of tags.
 alchemy deploy --adopt

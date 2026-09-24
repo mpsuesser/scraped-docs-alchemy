@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/sending
 title: "Sending & managing email"
 description: "Send email with SES — verify identities, send from a Lambda with the SendEmail binding, manage contact lists, tenants, dedicated IP pools, account settings, and deliverability insights."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **SES sending** starts with a verified **identity** — a domain or
@@ -15,26 +15,26 @@ endpoints, account-wide settings, and deliverability insights.
 
 The sending surface:
 
-- An **[`EmailIdentity`](https://alchemy.run/providers/aws/ses/emailidentity)** is a
+- An **[`EmailIdentity`](https://alchemy.run/providers/aws/ses#emailidentity)** is a
   verified domain or address, and
-  **[`SendEmail`](https://alchemy.run/providers/aws/ses/sendemail)** is the runtime
+  **[`SendEmail`](https://alchemy.run/providers/aws/ses#sendemail)** is the runtime
   binding that sends through it.
 - An
-  **[`EmailIdentityPolicy`](https://alchemy.run/providers/aws/ses/emailidentitypolicy)**
+  **[`EmailIdentityPolicy`](https://alchemy.run/providers/aws/ses#emailidentitypolicy)**
   authorizes other accounts to send as your identity.
-- A **[`ContactList`](https://alchemy.run/providers/aws/ses/contactlist)** and its
-  **[`Contact`](https://alchemy.run/providers/aws/ses/contact)** entries model a
+- A **[`ContactList`](https://alchemy.run/providers/aws/ses#contactlist)** and its
+  **[`Contact`](https://alchemy.run/providers/aws/ses#contact)** entries model a
   managed audience with subscription topics.
 - A
-  **[`DedicatedIpPool`](https://alchemy.run/providers/aws/ses/dedicatedippool)**
+  **[`DedicatedIpPool`](https://alchemy.run/providers/aws/ses#dedicatedippool)**
   isolates sending reputation onto dedicated IPs.
-- A **[`Tenant`](https://alchemy.run/providers/aws/ses/tenant)** groups identities,
+- A **[`Tenant`](https://alchemy.run/providers/aws/ses#tenant)** groups identities,
   configuration sets, and templates for a customer or business
   unit.
 - A
-  **[`MultiRegionEndpoint`](https://alchemy.run/providers/aws/ses/multiregionendpoint)**
+  **[`MultiRegionEndpoint`](https://alchemy.run/providers/aws/ses#multiregionendpoint)**
   splits sending across regions.
-- **[`AccountSettings`](https://alchemy.run/providers/aws/ses/accountsettings)**
+- **[`AccountSettings`](https://alchemy.run/providers/aws/ses#accountsettings)**
   manages account-wide sending status, the suppression list, and
   Virtual Deliverability Manager.
 
@@ -397,14 +397,14 @@ the console or the AWS SDK for those.
 
 Reference:
 
-- [EmailIdentity API reference](https://alchemy.run/providers/aws/ses/emailidentity)
-- [SendEmail API reference](https://alchemy.run/providers/aws/ses/sendemail)
-- [EmailIdentityPolicy API reference](https://alchemy.run/providers/aws/ses/emailidentitypolicy)
-- [ContactList API reference](https://alchemy.run/providers/aws/ses/contactlist) ·
-  [Contact API reference](https://alchemy.run/providers/aws/ses/contact)
-- [CustomVerificationEmailTemplate API reference](https://alchemy.run/providers/aws/ses/customverificationemailtemplate)
-- [DedicatedIpPool API reference](https://alchemy.run/providers/aws/ses/dedicatedippool)
-- [Tenant API reference](https://alchemy.run/providers/aws/ses/tenant) ·
-  [TenantResourceAssociation API reference](https://alchemy.run/providers/aws/ses/tenantresourceassociation)
-- [MultiRegionEndpoint API reference](https://alchemy.run/providers/aws/ses/multiregionendpoint)
-- [AccountSettings API reference](https://alchemy.run/providers/aws/ses/accountsettings)
+- [EmailIdentity API reference](https://alchemy.run/providers/aws/ses#emailidentity)
+- [SendEmail API reference](https://alchemy.run/providers/aws/ses#sendemail)
+- [EmailIdentityPolicy API reference](https://alchemy.run/providers/aws/ses#emailidentitypolicy)
+- [ContactList API reference](https://alchemy.run/providers/aws/ses#contactlist) ·
+  [Contact API reference](https://alchemy.run/providers/aws/ses#contact)
+- [CustomVerificationEmailTemplate API reference](https://alchemy.run/providers/aws/ses#customverificationemailtemplate)
+- [DedicatedIpPool API reference](https://alchemy.run/providers/aws/ses#dedicatedippool)
+- [Tenant API reference](https://alchemy.run/providers/aws/ses#tenant) ·
+  [TenantResourceAssociation API reference](https://alchemy.run/providers/aws/ses#tenantresourceassociation)
+- [MultiRegionEndpoint API reference](https://alchemy.run/providers/aws/ses#multiregionendpoint)
+- [AccountSettings API reference](https://alchemy.run/providers/aws/ses#accountsettings)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/networking
 title: "VPC & networking"
 description: "The Network helper for a production-shaped VPC in one call, and the full set of EC2 networking primitives — VPCs, subnets, gateways, routes, security groups, and endpoints — for explicit control."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Most Alchemy apps on AWS never touch a VPC. Lambda functions serve public traffic from Function URLs, and bindings wire access to tables, buckets, and queues without a single subnet. Networking becomes your problem when you run an [ECS Service](compute/ecs.md), an [EKS Cluster](compute/eks.md), or an [EC2 Instance](compute/ec2.md) — all need a VPC, subnets, and security groups — or when you attach to anything that lives inside one.
@@ -12,7 +12,7 @@ Alchemy gives you two altitudes: the **`Network` helper**, which builds the stan
 
 ## The Network helper
 
-[`Network`](https://alchemy.run/providers/aws/ec2/network) creates a production-shaped VPC from the low-level primitives — VPC, internet gateway, one public and one private subnet per Availability Zone (2 AZs by default), route tables, routes, and associations — and returns every underlying resource so you can keep composing with raw `AWS.EC2.*` APIs:
+[`Network`](https://alchemy.run/providers/aws/ec2#network) creates a production-shaped VPC from the low-level primitives — VPC, internet gateway, one public and one private subnet per Availability Zone (2 AZs by default), route tables, routes, and associations — and returns every underlying resource so you can keep composing with raw `AWS.EC2.*` APIs:
 
 ```typescript
 const network = yield* AWS.EC2.Network("AppNetwork", {
@@ -54,7 +54,7 @@ If `Network` ’s layout fits, use it and stop reading. The rest of this page is
 
 ### VPC and internet gateway
 
-A [`Vpc`](https://alchemy.run/providers/aws/ec2/vpc) is a private IPv4 range; an [`InternetGateway`](https://alchemy.run/providers/aws/ec2/internetgateway) is its door to the internet:
+A [`Vpc`](https://alchemy.run/providers/aws/ec2#vpc) is a private IPv4 range; an [`InternetGateway`](https://alchemy.run/providers/aws/ec2#internetgateway) is its door to the internet:
 
 ```typescript
 const vpc = yield* AWS.EC2.Vpc("AppVpc", {
@@ -72,7 +72,7 @@ The two DNS toggles let instances resolve names and receive public DNS hostnames
 
 ### Subnets
 
-[`Subnet`](https://alchemy.run/providers/aws/ec2/subnet) s carve the VPC block into per-AZ ranges. `mapPublicIpOnLaunch` is what makes a subnet “public” from the instance’s point of view:
+[`Subnet`](https://alchemy.run/providers/aws/ec2#subnet) s carve the VPC block into per-AZ ranges. `mapPublicIpOnLaunch` is what makes a subnet “public” from the instance’s point of view:
 
 ```typescript
 const subnetA = yield* AWS.EC2.Subnet("PublicSubnetA", {
@@ -94,7 +94,7 @@ Two subnets in two AZs is the floor for anything fronted by a load balancer.
 
 ### Routing
 
-A subnet is only public once its [`RouteTable`](https://alchemy.run/providers/aws/ec2/routetable) sends `0.0.0.0/0` to the internet gateway. [`Route`](https://alchemy.run/providers/aws/ec2/route) adds the rule; [`RouteTableAssociation`](https://alchemy.run/providers/aws/ec2/routetableassociation) attaches the table to each subnet:
+A subnet is only public once its [`RouteTable`](https://alchemy.run/providers/aws/ec2#routetable) sends `0.0.0.0/0` to the internet gateway. [`Route`](https://alchemy.run/providers/aws/ec2#route) adds the rule; [`RouteTableAssociation`](https://alchemy.run/providers/aws/ec2#routetableassociation) attaches the table to each subnet:
 
 ```typescript
 const routeTable = yield* AWS.EC2.RouteTable("PublicRouteTable", {
@@ -119,7 +119,7 @@ yield* AWS.EC2.RouteTableAssociation("PublicAssocB", {
 
 ### Security groups
 
-A [`SecurityGroup`](https://alchemy.run/providers/aws/ec2/securitygroup) is the per-resource firewall — the thing you attach to service ENIs, load balancers, and instances. Declare ingress and egress rules inline:
+A [`SecurityGroup`](https://alchemy.run/providers/aws/ec2#securitygroup) is the per-resource firewall — the thing you attach to service ENIs, load balancers, and instances. Declare ingress and egress rules inline:
 
 ```typescript
 const securityGroup = yield* AWS.EC2.SecurityGroup("AppSg", {
@@ -144,11 +144,11 @@ const securityGroup = yield* AWS.EC2.SecurityGroup("AppSg", {
 });
 ```
 
-Rules can also be managed as standalone [`SecurityGroupRule`](https://alchemy.run/providers/aws/ec2/securitygrouprule) resources when different parts of your stack contribute rules to one group.
+Rules can also be managed as standalone [`SecurityGroupRule`](https://alchemy.run/providers/aws/ec2#securitygrouprule) resources when different parts of your stack contribute rules to one group.
 
 ## Private egress with NAT
 
-Private subnets reach the internet through a [`NatGateway`](https://alchemy.run/providers/aws/ec2/natgateway) living in a *public* subnet, addressed by an [`EIP`](https://alchemy.run/providers/aws/ec2/eip), with the private route table pointing `0.0.0.0/0` at it:
+Private subnets reach the internet through a [`NatGateway`](https://alchemy.run/providers/aws/ec2#natgateway) living in a *public* subnet, addressed by an [`EIP`](https://alchemy.run/providers/aws/ec2#eip), with the private route table pointing `0.0.0.0/0` at it:
 
 ```typescript
 const privateRouteTable = yield* AWS.EC2.RouteTable("PrivateRouteTable", {
@@ -174,7 +174,7 @@ This is exactly what `Network` ’s `nat: "single"` option builds (`"per-az"` re
 
 ## Gateway endpoints
 
-S3 and DynamoDB traffic from private subnets doesn’t need NAT at all — a Gateway [`VpcEndpoint`](https://alchemy.run/providers/aws/ec2/vpcendpoint) routes it over AWS’s network for free:
+S3 and DynamoDB traffic from private subnets doesn’t need NAT at all — a Gateway [`VpcEndpoint`](https://alchemy.run/providers/aws/ec2#vpcendpoint) routes it over AWS’s network for free:
 
 ```typescript
 yield* AWS.EC2.VpcEndpoint("S3Endpoint", {
@@ -191,19 +191,19 @@ yield* AWS.EC2.VpcEndpoint("S3Endpoint", {
 
 | Resource | What it does |
 | --- | --- |
-| [`Vpc`](https://alchemy.run/providers/aws/ec2/vpc) | The private IPv4 network everything else lives in |
-| [`Subnet`](https://alchemy.run/providers/aws/ec2/subnet) | A per-AZ slice of the VPC’s address range |
-| [`InternetGateway`](https://alchemy.run/providers/aws/ec2/internetgateway) | Two-way internet access for public subnets |
-| [`EgressOnlyInternetGateway`](https://alchemy.run/providers/aws/ec2/egressonlyinternetgateway) | Outbound-only IPv6 internet access |
-| [`NatGateway`](https://alchemy.run/providers/aws/ec2/natgateway) | Outbound internet for private subnets |
-| [`EIP`](https://alchemy.run/providers/aws/ec2/eip) | A static public IPv4 address |
-| [`RouteTable`](https://alchemy.run/providers/aws/ec2/routetable) / [`Route`](https://alchemy.run/providers/aws/ec2/route) / [`RouteTableAssociation`](https://alchemy.run/providers/aws/ec2/routetableassociation) | Where each subnet’s traffic goes |
-| [`SecurityGroup`](https://alchemy.run/providers/aws/ec2/securitygroup) / [`SecurityGroupRule`](https://alchemy.run/providers/aws/ec2/securitygrouprule) | Stateful per-resource firewall |
-| [`VpcEndpoint`](https://alchemy.run/providers/aws/ec2/vpcendpoint) | Private connectivity to AWS services |
-| [`NetworkAcl`](https://alchemy.run/providers/aws/ec2/networkacl) / [`NetworkAclEntry`](https://alchemy.run/providers/aws/ec2/networkaclentry) / [`NetworkAclAssociation`](https://alchemy.run/providers/aws/ec2/networkaclassociation) | Stateless subnet-level packet filtering |
+| [`Vpc`](https://alchemy.run/providers/aws/ec2#vpc) | The private IPv4 network everything else lives in |
+| [`Subnet`](https://alchemy.run/providers/aws/ec2#subnet) | A per-AZ slice of the VPC’s address range |
+| [`InternetGateway`](https://alchemy.run/providers/aws/ec2#internetgateway) | Two-way internet access for public subnets |
+| [`EgressOnlyInternetGateway`](https://alchemy.run/providers/aws/ec2#egressonlyinternetgateway) | Outbound-only IPv6 internet access |
+| [`NatGateway`](https://alchemy.run/providers/aws/ec2#natgateway) | Outbound internet for private subnets |
+| [`EIP`](https://alchemy.run/providers/aws/ec2#eip) | A static public IPv4 address |
+| [`RouteTable`](https://alchemy.run/providers/aws/ec2#routetable) / [`Route`](https://alchemy.run/providers/aws/ec2#route) / [`RouteTableAssociation`](https://alchemy.run/providers/aws/ec2#routetableassociation) | Where each subnet’s traffic goes |
+| [`SecurityGroup`](https://alchemy.run/providers/aws/ec2#securitygroup) / [`SecurityGroupRule`](https://alchemy.run/providers/aws/ec2#securitygrouprule) | Stateful per-resource firewall |
+| [`VpcEndpoint`](https://alchemy.run/providers/aws/ec2#vpcendpoint) | Private connectivity to AWS services |
+| [`NetworkAcl`](https://alchemy.run/providers/aws/ec2#networkacl) / [`NetworkAclEntry`](https://alchemy.run/providers/aws/ec2#networkaclentry) / [`NetworkAclAssociation`](https://alchemy.run/providers/aws/ec2#networkaclassociation) | Stateless subnet-level packet filtering |
 
 ## Where next
 
 - [ECS](compute/ecs.md) — run containers in the network you just built, with an Alchemy-managed public ALB.
 - [EC2](compute/ec2.md) — launch instances into it, raw or hosting an Effect program.
-- [`Network` reference](https://alchemy.run/providers/aws/ec2/network) — every prop and everything the helper returns.
+- [`Network` reference](https://alchemy.run/providers/aws/ec2#network) — every prop and everything the helper returns.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sqs
 title: "SQS"
 description: "Add an SQS Queue, publish messages from your Lambda, and consume them from a second consumer Lambda — all wired through Alchemy bindings."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **SQS** is AWS’s general-purpose message queue — anything you can serialize, dropped into a mailbox and processed asynchronously somewhere else. In Alchemy it’s the `Queue` resource plus producer bindings (`SendMessage`, `SendMessageBatch`, and the `Stream` -sink-shaped `QueueSink`) and a consumer side: `SQS.consumeQueueMessages` subscribes a Lambda to the queue as a typed `Stream<SQSRecord>`, creating the event source mapping and granting the receive/delete permissions for you.
@@ -306,4 +306,4 @@ The consumer doesn’t change — `JobsWorker` still subscribes via `SQS.consume
 
 - [Kinesis](kinesis.md) — stream higher-volume records: ordered, sharded, and with the same `Stream` consumer surface.
 - [Process DynamoDB Streams](dynamodb-streams.md) — the change-data-capture pipeline the `QueueSink` bonus above builds on.
-- [`Queue` reference](https://alchemy.run/providers/aws/sqs/queue) — FIFO queues, dead-letter targets, and every other prop.
+- [`Queue` reference](https://alchemy.run/providers/aws/sqs#queue) — FIFO queues, dead-letter targets, and every other prop.

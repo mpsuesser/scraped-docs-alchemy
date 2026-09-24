@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Cloudflare’s Secrets Store is an account-level container for secrets. Unlike a plain env var, a stored secret is shared across Workers, redacted in the dashboard, and read live at runtime — bound Workers see the current value without a redeploy.
@@ -189,6 +189,6 @@ Both end up as bindings on the Worker — pick based on where the value lives an
 
 Reference:
 
-- [Store API reference](https://alchemy.run/providers/cloudflare/secretsstore/store)
-- [Secret API reference](https://alchemy.run/providers/cloudflare/secretsstore/secret)
-- [ReadSecret API reference](https://alchemy.run/providers/cloudflare/secretsstore/readsecret)
+- [Store API reference](https://alchemy.run/providers/cloudflare/secretsstore#store)
+- [Secret API reference](https://alchemy.run/providers/cloudflare/secretsstore#secret)
+- [ReadSecret API reference](https://alchemy.run/providers/cloudflare/secretsstore#readsecret)

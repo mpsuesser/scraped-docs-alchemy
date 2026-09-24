@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy SvelteKit to Prisma Compute with Prisma.Website.SvelteKit — SSR and prerendered assets on Bun, with native Vite dev locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.SvelteKit` builds [SvelteKit](https://svelte.dev/docs/kit) with its Vite pipeline and an injected Node-target adapter. Client assets, prerendered pages, and the server handler are uploaded as a `tar.gz` artifact and served on **Bun in Prisma Compute**, not a Node container.
@@ -111,6 +111,6 @@ This creates `Prisma.CustomDomain`; the app must be on the project’s current d
 
 ## Where next
 
-- [SvelteKit API](https://alchemy.run/providers/prisma/website/sveltekit).
+- [SvelteKit API](https://alchemy.run/providers/prisma/website#sveltekit).
 - [SvelteKit example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-sveltekit).
 - [Websites](websites.md) and [Compute apps](../compute/apps.md).

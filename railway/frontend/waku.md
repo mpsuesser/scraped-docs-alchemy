@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Railway with Railway.Website.Waku — RSC server on a container Service, SSG pages in the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Railway. It builds the project programmatically: the RSC server plus SSG pages run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -71,7 +71,7 @@ Pages rendered as `"static"` are generated at build time and baked into the imag
 
 The live `url` is `https://{name}.up.railway.app`. `site.service` and `site.project` are the Railway resources underneath — `undefined` during `alchemy dev`.
 
-See the [Waku API reference](https://alchemy.run/providers/railway/website/waku) for every prop and attribute.
+See the [Waku API reference](https://alchemy.run/providers/railway/website#waku) for every prop and attribute.
 
 ## Add environment variables
 
@@ -125,6 +125,6 @@ const site = yield* Railway.Website.Waku("Web", {
 
 ## Where next
 
-- [Waku API reference](https://alchemy.run/providers/railway/website/waku)
+- [Waku API reference](https://alchemy.run/providers/railway/website#waku)
 - [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
 - [Custom domains](https://alchemy.run/railway/networking)

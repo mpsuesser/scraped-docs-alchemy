@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/build-and-push
 title: "Build & push images"
 description: "Build a container image from a Dockerfile, push it to a registry, and hand the resulting image reference to Cloudflare Containers or AWS ECS."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 This page is the canonical home for producing a **registry image
@@ -123,9 +123,17 @@ Docker wiring is involved. A reference already in Cloudflare's
 managed registry (`registry.cloudflare.com/...`) is deployed as-is —
 the Container skips its own pull-and-push round-trip.
 
+Cloudflare Containers can also build and publish directly from their
+`context` or `dockerfile` props, with caching enabled by default in the
+application's generated repository. Set the Container's `publish.repository`
+to choose a shared destination and reuse builds across stages;
+see [Share published images across stages](../cloudflare/compute/containers.md#share-published-images-across-stages).
+This is a Cloudflare Container option; standalone `Docker.Image` resources
+continue to use the `registry` configuration shown above.
+
 ## Where next
 
 Reference:
 
-- [Image API reference](https://alchemy.run/providers/docker/image)
-- [RemoteImage API reference](https://alchemy.run/providers/docker/remoteimage)
+- [Image API reference](https://alchemy.run/providers/docker/reference/image#image)
+- [RemoteImage API reference](https://alchemy.run/providers/docker/reference/image#remoteimage)

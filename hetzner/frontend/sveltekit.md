@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Hetzner with Hetzner.Website.SvelteKit — kit SSR as a systemd unit on port 3000, prerendered assets baked into the unit, and Kit's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to a Hetzner Cloud Server. It builds the app with SvelteKit’s own Vite pipeline and an in-memory Node adapter. Client assets and prerendered pages bake into the systemd unit; dynamic routes run in the kit handler on port 3000. Alchemy creates a `cpx12` / `ubuntu-24.04` Server in `fsn1` if you omit `server`, then a `Hetzner.Service` on that Server. The live URL is `http://{ipv4}:3000`. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -136,6 +136,6 @@ Passing `domain` without `zone` fails.
 
 ## Where next
 
-- [`SvelteKit` API](https://alchemy.run/providers/hetzner/website/sveltekit)
+- [`SvelteKit` API](https://alchemy.run/providers/hetzner/website#sveltekit)
 - [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
 - [DNS](https://alchemy.run/hetzner/networking/dns)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC between Workers, Durable Objects, and Containers with no schema — bind the class, get the client."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 The schemaless RPC pattern — what makes a member callable, how the typed client arises, what crosses the wire — is documented at [Schemaless RPC](../../apis/schemaless.md). This page walks Cloudflare's pairings. Worker → Worker and Worker → Durable Object ride the platform's native JSRPC channel (values move by structured clone, and service bindings never traverse the public internet); Containers ride the generic fetch transport.
@@ -273,7 +273,7 @@ const api = worker.getEntrypoint<{
 const greeting = yield* api.greet("world");
 ```
 
-`getEntrypoint` wraps the loader entrypoint in the same stub proxy — a Worker loaded at runtime speaks schemaless RPC exactly like a statically bound one; here the caller supplies the Shape as a type argument, since there is no class to infer it from. See the [Worker Loader guide](../compute/worker-loader.md) and the [WorkerLoader API reference](https://alchemy.run/providers/cloudflare/workers/workerloader).
+`getEntrypoint` wraps the loader entrypoint in the same stub proxy — a Worker loaded at runtime speaks schemaless RPC exactly like a statically bound one; here the caller supplies the Shape as a type argument, since there is no class to infer it from. See the [Worker Loader guide](../compute/worker-loader.md) and the [WorkerLoader API reference](https://alchemy.run/providers/cloudflare/workers#workerloader).
 
 ## Async (non-Effect) consumers
 

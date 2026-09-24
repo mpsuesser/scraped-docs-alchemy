@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Prisma Compute."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website` builds your frontend with its own framework and deploys
@@ -31,6 +31,7 @@ domain in that mode.
 | SolidStart | `SolidStart` | [SolidStart](solidstart.md) |
 | Astro SSR & static | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |
+| vinext | `Vinext` | [vinext](vinext.md) |
 | Nuxt | `Nuxt` | [Nuxt](nuxt.md) |
 | SvelteKit | `SvelteKit` | [SvelteKit](sveltekit.md) |
 | Waku | `Waku` | [Waku](waku.md) |
@@ -183,7 +184,7 @@ const site = yield* Prisma.Website.Astro("Web", {
 });
 ```
 
-`domain` creates a [`Prisma.CustomDomain`](https://alchemy.run/providers/prisma/customdomain)
+`domain` creates a [`Prisma.CustomDomain`](https://alchemy.run/providers/prisma/reference/compute#customdomain)
 and changes `site.url` to `https://app.example.com`. Prisma requires the
 app to be attached to the project's **current default branch**.
 

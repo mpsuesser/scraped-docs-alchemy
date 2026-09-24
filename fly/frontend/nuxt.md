@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Fly with Fly.Website.Nuxt — nitro's node preset on a Machine, assets baked into the image, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Fly. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs on a Machine, and client assets plus prerendered pages are baked into the image. Omit `app` and a `Fly.App` is created under the site; a `Fly.Service` listens on port 3000 and a shared IPv4 assignment makes `https://{app}.fly.dev` answer. There is no `nitro.preset` to edit and no build command to run.
@@ -129,7 +129,7 @@ export const Website = Fly.Website.Nuxt("Website", {
 
 ## Where next
 
-- [`Fly.Website.Nuxt` reference](https://alchemy.run/providers/fly/website/nuxt) — every prop and attribute.
+- [`Fly.Website.Nuxt` reference](https://alchemy.run/providers/fly/website#nuxt) — every prop and attribute.
 - [Services](https://alchemy.run/fly/compute/services) and [Apps](https://alchemy.run/fly/compute/apps) — the Service and App the site creates.
 - [IPs & certificates](https://alchemy.run/fly/networking) — shared IPv4 and ACME.
 - [Setup](../setup.md) — org, API token, and alchemy login.

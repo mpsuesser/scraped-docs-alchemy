@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit to Prisma Compute with Prisma.Website.Foldkit — a Vite SPA served on Bun, deep-link fallback, and native HMR locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 [Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects, so `Prisma.Website.Foldkit` is [Vite](vite.md) with SPA fallback to `index.html`. Deep links boot the app and its router takes over.
@@ -126,6 +126,6 @@ This creates `Prisma.CustomDomain`; the app must be on the project’s current d
 
 ## Where next
 
-- [Foldkit API](https://alchemy.run/providers/prisma/website/foldkit).
+- [Foldkit API](https://alchemy.run/providers/prisma/website#foldkit).
 - [Foldkit example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-foldkit).
 - [Vite](vite.md), [Websites](websites.md), and [Compute apps](../compute/apps.md).

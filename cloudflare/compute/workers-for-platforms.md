@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers-for-platforms
 title: "Workers for Platforms"
 description: "Run your customers' Workers in your own account — create a dispatch namespace, upload user Workers into it, and route requests from a platform Worker with the Get binding."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Workers for Platforms lets you run your customers' code on Cloudflare's
@@ -153,5 +153,5 @@ client wraps. Pick whichever style matches the rest of the Worker.
 
 - [Workers](workers.md) — the two-phase Worker model the
   platform Worker is built on.
-- [DispatchNamespace API reference](https://alchemy.run/providers/cloudflare/workersforplatforms/dispatchnamespace)
-- [Get API reference](https://alchemy.run/providers/cloudflare/workersforplatforms/get)
+- [DispatchNamespace API reference](https://alchemy.run/providers/cloudflare/workersforplatforms#dispatchnamespace)
+- [Get API reference](https://alchemy.run/providers/cloudflare/workersforplatforms#get)

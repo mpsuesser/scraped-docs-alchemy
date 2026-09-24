@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/dashboards
 title: "Dashboards as code"
 description: "Declare Axiom dashboards — charts, layout, filter bars, saved views, and deploy annotations — as alchemy resources next to the services they observe."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 An Axiom dashboard is a single JSON document: charts, a grid layout,
@@ -238,6 +238,6 @@ markers visually. Deploy markers next to your error charts answer
 
 Reference:
 
-- [Dashboard API reference](https://alchemy.run/providers/axiom/dashboard)
-- [View API reference](https://alchemy.run/providers/axiom/view)
-- [Annotation API reference](https://alchemy.run/providers/axiom/annotation)
+- [Dashboard API reference](https://alchemy.run/providers/axiom/reference/dashboard#dashboard)
+- [View API reference](https://alchemy.run/providers/axiom/reference/dashboard#view)
+- [Annotation API reference](https://alchemy.run/providers/axiom/reference/dataset#annotation)

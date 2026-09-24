@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/kinesis
 title: "Kinesis"
 description: "Add a Kinesis Data Stream, publish records from one Lambda, and consume them in order from another — wired through the same Stream-shaped event source."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **Kinesis Data Streams** are the tool for **ordered**, sharded,
@@ -296,6 +296,6 @@ the matching `consume*` helper at it.
   change data capture with the same consumer surface.
 - [React to S3 events](s3-events.md) — bucket
   notifications as an Effect `Stream`.
-- [`Stream` reference](https://alchemy.run/providers/aws/kinesis/stream) —
+- [`Stream` reference](https://alchemy.run/providers/aws/kinesis#stream) —
   provisioned vs on-demand mode, retention, and every other
   prop.

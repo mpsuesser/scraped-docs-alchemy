@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/aws/frontend/websites
 title: "Websites"
-description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SvelteKit, TanStack Start, Waku, Octane, or any static build to AWS with first-class Website resources."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SvelteKit, TanStack Start, Waku, Octane, or any static build to AWS with first-class Website resources."
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy deploys frontends to AWS with a family of `AWS.Website`
@@ -28,6 +28,8 @@ integration on top.
   OpenNext (`@opennextjs/aws`) pipeline, with streaming SSR, image
   optimization, and ISR wiring; your `next.config.*` is honored
   as-is.
+- [`Vinext`](vinext.md) — vinext (Next.js API on Vite)
+  apps on a streaming Lambda; your `vite.config.ts` loads natively.
 - [`Nuxt`](nuxt.md) — Nuxt apps built through nitro's
   `aws-lambda` preset; your `nuxt.config.ts` loads natively.
 - [`ReactRouter`](react-router.md) — React Router v7 in
@@ -68,6 +70,7 @@ the full live deployment.
 | React Router | `ReactRouter` | [React Router](react-router.md) |
 | Astro | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |
+| vinext | `Vinext` | [vinext](vinext.md) |
 | Nuxt | `Nuxt` | [Nuxt](nuxt.md) |
 | SvelteKit | `SvelteKit` | [SvelteKit](sveltekit.md) |
 | Waku | `Waku` | [Waku](waku.md) |
@@ -119,6 +122,6 @@ minutes to create, and each custom domain can only attach to one.
   [Octane](octane.md).
 - [Full-stack RPC + Drizzle](full-stack-tanstack-rpc-drizzle.md) —
   a TanStack Start UI driving an Effect RPC Lambda over Aurora DSQL.
-- [`StaticSite` reference](https://alchemy.run/providers/aws/website/staticsite) and
-  [`Router` reference](https://alchemy.run/providers/aws/website/router) — every prop
+- [`StaticSite` reference](https://alchemy.run/providers/aws/website#staticsite) and
+  [`Router` reference](https://alchemy.run/providers/aws/website#router) — every prop
   and attribute.

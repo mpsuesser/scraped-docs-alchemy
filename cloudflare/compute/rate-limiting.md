@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/rate-limiting
 title: "Rate limiting"
 description: "Throttle requests inside a Worker with Cloudflare's Rate Limiting binding — declare the limit on the binding, count arbitrary keys at runtime, handle failures as typed errors."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 The Rate Limiting binding gives a Worker a counter it can consult on
@@ -134,5 +134,5 @@ export default {
   the binding lives inside.
 - [Durable Objects](durable-objects.md) — exact,
   globally consistent counters when approximate isn't enough.
-- [RateLimit API reference](https://alchemy.run/providers/cloudflare/workers/ratelimit) —
+- [RateLimit API reference](https://alchemy.run/providers/cloudflare/workers#ratelimit) —
   props and client types.

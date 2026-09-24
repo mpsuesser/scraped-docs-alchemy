@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe/setup
 title: "Setup"
 description: "Connect alchemy to Stripe — secret key, profiles, CI, and how Worker bindings get their credentials."
-access_date: 2026-09-17T20:53:57.844Z
-current_date: 2026-09-17T20:53:57.844Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 ## Get a key
@@ -71,7 +71,7 @@ never wire that up by hand. Each binding you yield —
 `Stripe.CreateCustomer()`, `Stripe.CreateCheckoutSession()`, and so
 on — declares the permission it needs (`customers_write`,
 `checkout_sessions_write`, …) on a
-[`RestrictedApiKey`](https://alchemy.run/providers/stripe/restrictedapikey) resource
+[`RestrictedApiKey`](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey) resource
 that alchemy creates per Worker. The key's value is injected as a
 `secret_text` binding.
 

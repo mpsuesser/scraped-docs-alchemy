@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/local-services
 title: "Local services: Postgres with containers, networks, and volumes"
 description: "Run a local Postgres for development as alchemy resources — a pinned image, a named network and volume, a Redacted password, and a healthchecked container that converges on every deploy."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A Docker `Container` runs an image; a `Network` gives containers a
@@ -148,8 +148,8 @@ container by name, bound host ports included.
 
 Reference:
 
-- [Container API reference](https://alchemy.run/providers/docker/container)
-- [RemoteImage API reference](https://alchemy.run/providers/docker/remoteimage)
-- [Image API reference](https://alchemy.run/providers/docker/image)
-- [Network API reference](https://alchemy.run/providers/docker/network)
-- [Volume API reference](https://alchemy.run/providers/docker/volume)
+- [Container API reference](https://alchemy.run/providers/docker/reference/container#container)
+- [RemoteImage API reference](https://alchemy.run/providers/docker/reference/image#remoteimage)
+- [Image API reference](https://alchemy.run/providers/docker/reference/image#image)
+- [Network API reference](https://alchemy.run/providers/docker/reference/network#network)
+- [Volume API reference](https://alchemy.run/providers/docker/reference/volume#volume)

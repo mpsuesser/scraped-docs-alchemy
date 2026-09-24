@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sns
 title: "SNS"
 description: "Create an SNS Topic, publish to it from a Lambda with the Publish binding, fan messages out to SQS queues, and consume notifications as a typed Stream."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **SNS** is AWS's pub/sub layer: publishers send a message to a
@@ -305,6 +305,6 @@ All three move messages; they sit at different points:
   one topic per channel stops scaling.
 - [Lambda](../compute/lambda.md) — the runtime both the publisher and
   consumer above are built on.
-- [`Topic` reference](https://alchemy.run/providers/aws/sns/topic) and
-  [`Subscription` reference](https://alchemy.run/providers/aws/sns/subscription) —
+- [`Topic` reference](https://alchemy.run/providers/aws/sns#topic) and
+  [`Subscription` reference](https://alchemy.run/providers/aws/sns#subscription) —
   every prop and attribute.

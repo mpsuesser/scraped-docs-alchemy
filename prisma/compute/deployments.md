@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/compute/deployments
 title: "Deployments"
 description: "The fail-closed Compute deployment lifecycle — health-checked promotion, rollback recovery, old-generation cleanup, and env-only redeploys."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 When the artifact or deployment configuration changes,
@@ -109,5 +109,5 @@ one active deployment.
 
 Reference:
 
-- [Compute API reference](https://alchemy.run/providers/prisma/compute)
-- [Deployment API reference](https://alchemy.run/providers/prisma/deployment)
+- [Compute API reference](https://alchemy.run/providers/prisma/reference/compute#compute)
+- [Deployment API reference](https://alchemy.run/providers/prisma/reference/compute#deployment)

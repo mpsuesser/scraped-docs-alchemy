@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/connections
 title: "Connections"
 description: "Prisma Connections materialize database credentials — a conventional databaseUrl, direct and pooled connection strings, parsed origins for Hyperdrive, and the Connect runtime binding."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A `Prisma.Connection` is a credential (an API key) for one
@@ -140,4 +140,4 @@ through their bindings. To rotate again, deploy once with
 
 Reference:
 
-- [Connection API reference](https://alchemy.run/providers/prisma/connection)
+- [Connection API reference](https://alchemy.run/providers/prisma/reference/postgres#connection)

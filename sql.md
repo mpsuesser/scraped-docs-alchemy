@@ -1,58 +1,60 @@
 ---
 url: https://alchemy.run/sql
 title: "SQL"
-description: "One home for SQL in alchemy — low-level effect-sql clients, Drizzle ORM, schema migrations in the deploy graph, and the per-execution connection lifecycle."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+description: "Choose a database, connect with Effect SQL, Drizzle, or Prisma ORM, and deploy committed migrations."
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
-An alchemy app talks SQL at whichever level fits: a raw tagged-template client, an ORM, or both against the same connection. The schema rides the same deploy graph as the infrastructure, so `alchemy deploy` regenerates and applies pending migrations alongside everything else.
+## Choose a database
 
-## Databases
+See [Databases](sql/databases.md) to compare engines and connection paths, with links directly to each database’s setup guide.
 
-- [D1](cloudflare/data/d1.md) — Cloudflare’s serverless SQLite, bound natively into a Worker.
-- [Hyperdrive](cloudflare/data/hyperdrive.md) — edge connection pooling for any Postgres or MySQL: [Neon](neon.md), [PlanetScale](planetscale.md), RDS, or a database you already run.
-- [Fly Postgres](https://alchemy.run/fly/data/postgres) — billed Managed Postgres. Bind `ConnectPostgres` on a Service; `migrations` is the same surface as Neon.
-- AWS-side connections — DSQL, RDS, and Redshift bindings in the [API reference](https://alchemy.run/providers).
+## Choose a client
 
-## Clients
+| Client | Guides |
+| --- | --- |
+| Effect SQL | [Postgres](sql/effect-sql/postgres.md) · [MySQL](sql/effect-sql/mysql.md) · [D1](sql/effect-sql/d1.md) · [Durable Objects](sql/effect-sql/migrations.md#durable-object-migrations) |
+| Drizzle | [Postgres](sql/drizzle/postgres.md) · [MySQL](sql/drizzle/mysql.md) · [D1](sql/drizzle/d1.md) · [Durable Objects](sql/drizzle/migrations.md#durable-object-migrations) |
+| Prisma ORM v8 | [Contracts](sql/prisma/contracts.md) · [Postgres](sql/prisma/postgres.md) · [Migrations](sql/prisma/migrations.md) |
 
-`alchemy/SQL/*` is the low-level home: tagged-template queries with typed errors, no ORM — one subpath per backend (`alchemy/SQL/D1`, `alchemy/SQL/Postgres`, `alchemy/SQL/MySQL`), so you only load the driver you use. `alchemy/Drizzle` is the ORM sibling: a typed schema and relational queries. `Drizzle.Schema`, `Drizzle.providers()`, and `Drizzle.D1` come from the `alchemy/Drizzle` entry; the Postgres and MySQL clients live on their own subpaths (`alchemy/Drizzle/Postgres`, `alchemy/Drizzle/MySQL`) so their drivers only load when you use them, and the Durable Object client lives at `alchemy/Drizzle/Cloudflare`. Both wrap the same [`@effect/sql`](https://effect.website/) drivers and share one lifecycle.
+Prisma ORM v8 requires PostgreSQL 17+ and is separate from the [Prisma hosting provider](prisma.md).
+
+## Find an integration
+
+| Integration | Guide |
+| --- | --- |
+| Lambda + Aurora PostgreSQL + Drizzle | [AWS](aws/data/drizzle-aurora.md) |
+| Lambda + Aurora DSQL + Drizzle | [AWS](aws/data/drizzle-dsql.md) |
+| Workers + Neon or PlanetScale + Drizzle | [Cloudflare](cloudflare/data/drizzle.md) |
+| Workers + D1 + Drizzle | [Cloudflare](cloudflare/data/d1-drizzle.md) |
+| Durable Objects + SQLite | [Cloudflare](cloudflare/compute/durable-objects.md#sql-migrations) |
+| Fly Service + Postgres + Drizzle | [Fly](fly/data/drizzle-postgres.md) |
+| Hetzner Service + external Postgres + Drizzle | [Hetzner](hetzner/data/drizzle-postgres.md) |
+| Prisma Compute + Postgres + Drizzle | [Prisma](prisma/data/drizzle-postgres.md) |
+| Railway Service + Postgres + Drizzle | [Railway](railway/data/drizzle-postgres.md) |
+| Railway Service + MySQL + Drizzle | [Railway](railway/data/drizzle-mysql.md) |
+| Workers + Neon + Prisma ORM | [Cloudflare](cloudflare/data/prisma.md) |
+
+See [runnable examples](https://github.com/alchemy-run/alchemy/blob/main/examples/README.md) for complete projects.
+
+## Already have a database?
 
 ```typescript
-import * as SQL from "alchemy/SQL/D1";
-import * as Drizzle from "alchemy/Drizzle";
+import * as SQL from "alchemy/SQL/Postgres";
+import * as Config from "effect/Config";
+import * as Effect from "effect/Effect";
 
-// Raw effect-sql — tagged-template queries, typed errors
-const sql = yield* SQL.D1(d1);
-const users = yield* sql\`SELECT * FROM users WHERE id = ${id}\`;
-
-// Drizzle — typed schema, relational queries
-const db = yield* Drizzle.D1(d1, { relations });
-const user = yield* db.query.Users.findFirst({ with: { posts: true } });
+const query = Effect.gen(function* () {
+  const sql = yield* SQL.Postgres({ url: Config.Redacted("DATABASE_URL") });
+  return yield* sql\`SELECT 1 AS value\`;
+});
 ```
 
-Every client builds lazily on the first query of an execution, is reused for every query in that execution, and tears down when the event settles — [Connection lifecycle](sql/effect-sql/lifecycle.md) explains why.
+Run queries within the application’s execution scope, or use `Effect.scoped` in a standalone program; see [connection lifecycle](sql/effect-sql/lifecycle.md).
 
-## What are you building?
+## Manage schema changes
 
-| Goal | Reach for |
-| --- | --- |
-| Raw SQL on Postgres | [Effect SQL: Postgres](sql/effect-sql/postgres.md) |
-| Raw SQL on MySQL | [Effect SQL: MySQL](https://alchemy.run/sql/effect-sql/mysql) |
-| Raw SQL on D1 | [Effect SQL: D1](sql/effect-sql/d1.md) |
-| Typed schema + queries on Postgres | [Drizzle: Postgres](sql/drizzle/postgres.md) |
-| Typed schema + queries on MySQL | [Drizzle: MySQL](https://alchemy.run/sql/drizzle/mysql) |
-| Typed schema + queries on D1 | [Drizzle: D1](sql/drizzle/d1.md) |
-| Schema changes applied on deploy | [Drizzle migrations](sql/drizzle/migrations.md) |
-| Hand-written `.sql` migrations | [Effect SQL migrations](sql/effect-sql/migrations.md) |
-| A service that runs on any database | `SqlClient` + Layers — see [Provide as a service](sql/effect-sql/postgres.md#provide-as-a-service) |
+Generate migrations when schemas change, stage and review the schema, SQL, and snapshots with `git diff --cached`, then commit them before deployment. Apply the committed files using the selected database’s workflow.
 
-## Where next
-
-- [Effect SQL: Postgres](sql/effect-sql/postgres.md) / [MySQL](https://alchemy.run/sql/effect-sql/mysql) / [D1](sql/effect-sql/d1.md) — the raw clients.
-- [Drizzle: Postgres](sql/drizzle/postgres.md) / [MySQL](https://alchemy.run/sql/drizzle/mysql) / [D1](sql/drizzle/d1.md) — schema to queries, end to end.
-- [Add Drizzle ORM](cloudflare/data/drizzle.md) — full Worker wiring on Postgres via Hyperdrive.
-- [Fly Postgres](https://alchemy.run/fly/data/postgres) — Managed Postgres on a Fly Service with `ConnectPostgres`.
-- [Drizzle on D1](cloudflare/data/d1-drizzle.md) — full Worker wiring on D1.
-- [API reference](https://alchemy.run/providers) — every SQL and Drizzle export.
+[SQL files](sql/effect-sql/migrations.md) · [Drizzle migrations](sql/drizzle/migrations.md) · [Prisma migrations](sql/prisma/migrations.md)

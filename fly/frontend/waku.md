@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Fly with Fly.Website.Waku — RSC server on a Machine, SSG pages baked into the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Fly. It builds the project programmatically: the RSC server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and the client output — including SSG-prerendered pages — is baked into the image. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -71,7 +71,7 @@ Pages rendered as `"static"` are generated at build time and baked into the imag
 
 The live `url` is `https://{app}.fly.dev`. `site.app`, `site.service`, `site.ip`, and `site.certificate` are the Fly resources underneath — `undefined` during `alchemy dev`.
 
-See the [Waku API reference](https://alchemy.run/providers/fly/website/waku) for every prop and attribute.
+See the [Waku API reference](https://alchemy.run/providers/fly/website#waku) for every prop and attribute.
 
 ## Add environment variables
 
@@ -127,6 +127,6 @@ const site = yield* Fly.Website.Waku("Web", {
 
 ## Where next
 
-- [Waku API reference](https://alchemy.run/providers/fly/website/waku)
+- [Waku API reference](https://alchemy.run/providers/fly/website#waku)
 - [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
 - [IPs & certificates](https://alchemy.run/fly/networking)

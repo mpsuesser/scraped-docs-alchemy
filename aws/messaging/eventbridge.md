@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
 description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **EventBridge** is AWS’s event router — producers publish events onto a bus, rules match them by pattern, and targets receive them. **EventBridge Scheduler** is its time-based sibling: fire an invocation on a `rate(...)`, `cron(...)`, or one-time `at(...)` expression. In Alchemy the surface is:
@@ -226,4 +226,4 @@ Tasks launch as Fargate with no public IP by default (`assignPublicIp: true` to 
 - [Lambda](../compute/lambda.md) — the runtime both the consumer and scheduled targets above deploy to.
 - [SNS](sns.md) — pub/sub fan-out when you want subscriptions rather than pattern-matching rules.
 - [ECS](../compute/ecs.md) — the cluster, task, and networking that `ECS.every` schedules onto.
-- [`EventBus`](https://alchemy.run/providers/aws/eventbridge/eventbus), [`Rule`](https://alchemy.run/providers/aws/eventbridge/rule), and [`Schedule`](https://alchemy.run/providers/aws/scheduler/schedule) references — every prop and attribute.
+- [`EventBus`](https://alchemy.run/providers/aws/eventbridge#eventbus), [`Rule`](https://alchemy.run/providers/aws/eventbridge#rule), and [`Schedule`](https://alchemy.run/providers/aws/scheduler#schedule) references — every prop and attribute.

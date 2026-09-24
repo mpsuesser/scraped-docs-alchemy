@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Fly with Fly.Website.Vite — static assets on a Node Machine, fly.dev (or your domain) over HTTPS, and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.Vite` deploys a [Vite](https://vite.dev/) project to Fly. It runs `vite build` and serves the output from a tiny Node static-file server on a Machine: one [`Fly.App`](https://alchemy.run/fly/compute/apps) (created if `app` is omitted), one [`Fly.Service`](https://alchemy.run/fly/compute/services) on port 3000, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
@@ -140,6 +140,6 @@ export const Website = Fly.Website.Vite("Website", {
 
 ## Where next
 
-- [`Fly.Website.Vite` API](https://alchemy.run/providers/fly/website/vite)
+- [`Fly.Website.Vite` API](https://alchemy.run/providers/fly/website#vite)
 - [Astro](astro.md), [Next.js](nextjs.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), [Octane](octane.md) — SSR frameworks
 - [Services](https://alchemy.run/fly/compute/services), [IPs & certificates](https://alchemy.run/fly/networking)

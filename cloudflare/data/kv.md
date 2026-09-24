@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/kv
 title: "KV"
 description: "Cloudflare Workers KV is edge key-value storage — create a namespace, bind it into a Worker with read/write-scoped bindings, and get/put values with metadata."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Workers KV is Cloudflare's key-value store: values addressed by key,
@@ -200,4 +200,4 @@ Related:
 
 Reference:
 
-- [Namespace API reference](https://alchemy.run/providers/cloudflare/kv/namespace)
+- [Namespace API reference](https://alchemy.run/providers/cloudflare/kv#namespace)

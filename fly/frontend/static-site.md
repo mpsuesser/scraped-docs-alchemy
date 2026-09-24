@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Fly with Fly.Website.StaticSite — a build command, a Node static-file server on a Machine, and https://{app}.fly.dev (or your hostname) on deploy."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.StaticSite` runs a build command, content-hashes the
@@ -28,7 +28,7 @@ export const Website = Fly.Website.StaticSite("Website", {
 });
 ```
 
-The build is a [`Command.Build`](https://alchemy.run/providers/command/build) —
+The build is a [`Command.Build`](https://alchemy.run/providers/command/reference#build) —
 memoized, so unchanged inputs skip the rebuild
 ([details](../../command/memoization.md)). By default every non-gitignored
 file in `path` (plus the nearest lockfile) is hashed. Narrow it with
@@ -155,7 +155,7 @@ export const Website = Fly.Website.StaticSite("Website", {
 ## Custom domain
 
 `domain` is a hostname string. Alchemy requests ACME
-([`Fly.Certificate`](https://alchemy.run/providers/fly/certificate)) on the App and
+([`Fly.Certificate`](https://alchemy.run/providers/fly/reference/certificate#certificate)) on the App and
 `url` becomes `https://{domain}`. Point DNS at the App yourself —
 v1 does not create records:
 
@@ -191,6 +191,6 @@ generator.
 
 - [Websites on Fly](websites.md) — the full websites
   surface, including Node SSR frameworks
-- [StaticSite reference](https://alchemy.run/providers/fly/website/staticsite) — every
+- [StaticSite reference](https://alchemy.run/providers/fly/website#staticsite) — every
   prop and attribute
 - [Fly on Alchemy](../../fly.md) — the Fly provider hub

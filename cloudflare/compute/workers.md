@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute Runtime of every Alchemy app — declare the Worker and its handler in one file, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-09-17T20:53:57.844Z
-current_date: 2026-09-17T20:53:57.844Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 In Alchemy, a Cloudflare Worker is a [Runtime](../../infrastructure-as-effects/runtime.md): a [Resource](../../infrastructure-as-code/resource.md) that carries the code it runs. The name and props describe the Worker to deploy. The Effect is what it does:
@@ -406,7 +406,7 @@ Pass an existing `Cloudflare.Access.Application` instead to share one policy set
 }
 ```
 
-Every prop, including `limits`, `placement`, `logpush`, `crons`, and `tags`, is documented on the [Worker reference](https://alchemy.run/providers/cloudflare/workers/worker).
+Every prop, including `limits`, `placement`, `logpush`, `crons`, and `tags`, is documented on the [Worker reference](https://alchemy.run/providers/cloudflare/workers#worker).
 
 ## Background work and scopes
 
@@ -492,4 +492,4 @@ Related:
 
 Reference:
 
-- [Worker API reference](https://alchemy.run/providers/cloudflare/workers/worker)
+- [Worker API reference](https://alchemy.run/providers/cloudflare/workers#worker)

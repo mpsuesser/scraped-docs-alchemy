@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/tunnel
 title: "Expose private origins with Tunnel"
 description: "Connect a private origin to Cloudflare's edge with a Tunnel, declare its ingress rules as a Configuration resource, and point DNS at it with a proxied CNAME."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A Cloudflare Tunnel establishes an outbound connection from your
@@ -124,9 +124,9 @@ be deleted while routes still reference it.
 
 - [Domains & DNS](domains.md) — the zone and records the
   tunnel CNAME lives in.
-- [Tunnel API reference](https://alchemy.run/providers/cloudflare/tunnel/tunnel) —
+- [Tunnel API reference](https://alchemy.run/providers/cloudflare/tunnel#tunnel) —
   including the `ReadTunnel` / `WriteTunnel` / `ReadWriteTunnel`
   bindings for managing tunnels from inside a deployed Worker.
-- [Configuration API reference](https://alchemy.run/providers/cloudflare/tunnel/configuration)
-- [HostnameRoute API reference](https://alchemy.run/providers/cloudflare/tunnel/hostnameroute)
-- [VirtualNetwork API reference](https://alchemy.run/providers/cloudflare/tunnel/virtualnetwork)
+- [Configuration API reference](https://alchemy.run/providers/cloudflare/tunnel#configuration)
+- [HostnameRoute API reference](https://alchemy.run/providers/cloudflare/tunnel#hostnameroute)
+- [VirtualNetwork API reference](https://alchemy.run/providers/cloudflare/tunnel#virtualnetwork)

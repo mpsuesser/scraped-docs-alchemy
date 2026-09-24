@@ -1,18 +1,18 @@
 ---
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
-description: "Drizzle on Postgres — declare the schema, generate and apply migrations on deploy, and query with Drizzle.Postgres."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+description: "Provider-neutral Postgres schemas, Effect-native Drizzle queries, and connections for Workers, Lambda, and servers."
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
-Drizzle on Postgres, end to end: a schema module, a `Drizzle.Schema` resource that generates migration SQL on deploy, a database resource that applies it, and a Worker or Fly Service that queries through `Drizzle.Postgres`.
+`Drizzle.Postgres` provides typed, Effect-native queries for any compatible Postgres connection, whether your application runs on Workers, Lambda, or a server. Choose a database in [SQL databases](../databases.md) and supply its connection through your runtime’s binding or configuration.
 
-Install the toolchain — all optional peers of alchemy:
+Install the optional dependencies:
 
 ```sh
-bun add drizzle-orm @effect/sql-pg pg
-bun add -d drizzle-kit
+bun add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+bun add -d drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
 ## Define the schema
@@ -45,107 +45,42 @@ export const relations = defineRelations({ Users, Posts }, (t) => ({
 }));
 ```
 
-## Declare the schema resource and database
-
-`Drizzle.Schema` diffs the schema module on each deploy and writes pending migration SQL to `out`. Passing `schema.out` as the database’s `migrations` prop creates the dependency edge: generate first, apply second, in one `alchemy deploy`. On Neon:
+## Connect
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Drizzle from "alchemy/Drizzle/Postgres";
 import * as Effect from "effect/Effect";
+import type * as Redacted from "effect/Redacted";
+import { relations, Users } from "./schema.ts";
 
-export const Db = Effect.gen(function* () {
-  const schema = yield* Drizzle.Schema("app-schema", {
-    schema: "./src/schema.ts",
-    out: "./migrations",
+export const makeQueries = <E, R>(
+  connectionString: Effect.Effect<Redacted.Redacted<string>, E, R>,
+) =>
+  Effect.gen(function* () {
+    const db = yield* Drizzle.Postgres(connectionString, { relations });
+    return {
+      listUsers: () => db.select().from(Users),
+    };
   });
-
-  const project = yield* Neon.Project("app-db");
-  const branch = yield* Neon.Branch("app-branch", {
-    project,
-    migrations: schema,
-  });
-
-  return branch;
-});
-
-export const Hyperdrive = Effect.gen(function* () {
-  const branch = yield* Db;
-  return yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
-    origin: branch.origin,
-  });
-});
 ```
 
-`Planetscale.PostgresBranch` and `Fly.Postgres` take the same `migrations` wiring. Register `Drizzle.providers()` alongside your cloud providers in the Stack. [Migrations](migrations.md) covers what the schema resource does — and does not — decide on your behalf.
+Pass an Effect that resolves a redacted URL, such as `Config.Redacted("DATABASE_URL")` or a runtime binding’s `connectionString`; wrap an already resolved redacted URL with `Effect.succeed(url)`. Call `listUsers()` inside a request or an explicit `Effect.scoped` block so the pool follows the [connection lifecycle](../effect-sql/lifecycle.md).
 
 ## Connect in a Worker
 
-Hyperdrive pools connections at the edge; `Drizzle.Postgres` takes its connection string:
-
-```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle/Postgres";
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-import { Hyperdrive } from "./db.ts";
-import { relations, Users } from "./schema.ts";
-
-export default class Api extends Cloudflare.Worker<Api>()(
-  "Api",
-  { main: import.meta.url },
-  Effect.gen(function* () {
-    const conn = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
-    const db = yield* Drizzle.Postgres(conn.connectionString, { relations });
-
-    return {
-      fetch: Effect.gen(function* () {
-        const users = yield* db.select().from(Users);
-        return yield* HttpServerResponse.json({ users });
-      }),
-    };
-  }).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding)),
-) {}
-```
-
-Nothing connects in the constructor — the pool opens on the first query of an event, is reused for every query in that event, and closes when the event settles (see [Connection lifecycle](../effect-sql/lifecycle.md)). Plan and deploy never open a connection.
+The [Cloudflare walkthrough](../../cloudflare/data/drizzle.md) supplies the URL through Hyperdrive and configures `nodejs_compat`. Database-specific setup stays in [Neon](../../neon/guides/drizzle.md) and [PlanetScale](../../planetscale/guides/drizzle.md).
 
 ## Connect in a Fly Service
 
-[Fly Managed Postgres](https://alchemy.run/fly/data/postgres) uses the same `migrations` prop. Bind `ConnectPostgres` instead of Hyperdrive:
-
-```typescript
-import * as Drizzle from "alchemy/Drizzle/Postgres";
-import * as Fly from "alchemy/Fly";
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-import { Db } from "./db.ts";
-import { relations, Users } from "./schema.ts";
-
-export default class Api extends Fly.Service<Api>()(
-  "Api",
-  { app: Site, main: import.meta.url, port: 3000 },
-  Effect.gen(function* () {
-    const conn = yield* Fly.ConnectPostgres(Db);
-    const db = yield* Drizzle.Postgres(conn.connectionString, {
-      relations,
-    });
-    return {
-      fetch: Effect.gen(function* () {
-        const users = yield* db.select().from(Users);
-        return yield* HttpServerResponse.json({ users });
-      }),
-    };
-  }).pipe(Effect.provide(Fly.ConnectPostgresHttp)),
-) {}
-```
+The [Fly deployment guide](../../fly/data/drizzle-postgres.md) covers deployment and `ConnectPostgres`; its `connectionString` works with the same client above.
 
 ## Queries are Effects
 
 Every builder yields directly, with `SqlError` in the typed error channel:
 
 ```typescript
+import { eq } from "drizzle-orm";
+
 const [created] = yield* db
   .insert(Users)
   .values({ name, email })
@@ -166,11 +101,27 @@ const user = yield* db.query.Users.findFirst({
 });
 ```
 
+## Generate and review migrations
+
+```typescript
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  schema: "./src/schema.ts",
+  out: "./migrations",
+  dialect: "postgresql",
+});
+```
+
+```sh
+bunx drizzle-kit generate
+git add src/schema.ts drizzle.config.ts migrations
+git diff --cached
+git commit -m "Add database migration"
+```
+
+Generate on each schema change, stage and review the schema, SQL, and snapshots, then commit them before application. Apply the committed migrations with your existing runner before deploying code that needs the new schema. [Migrations](migrations.md) covers application ownership: [`Drizzle.Schema`](https://alchemy.run/providers/drizzle/reference#schema) is optional, and `alchemy deploy` does not replace an existing `drizzle-kit migrate` workflow.
+
 ## Where next
 
-- [Migrations](migrations.md) — what deploy-time schema generation actually does, and when it asks for a decision.
-- [Add Drizzle ORM (Cloudflare tutorial)](../../cloudflare/data/drizzle.md) — the same flow in the Cloudflare hub, with Neon / PlanetScale tabs and deploy walkthrough.
-- [Example: cloudflare-neon-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle) — Worker + Hyperdrive + Neon.
-- [Example: fly-postgres](https://github.com/alchemy-run/alchemy/tree/main/examples/fly-postgres) — Service + ConnectPostgres + Fly Managed Postgres.
-- [Fly Postgres](https://alchemy.run/fly/data/postgres) — the Fly cluster, `migrations`, and `ConnectPostgres`.
-- [Effect SQL: Postgres](../effect-sql/postgres.md) — tagged-template SQL over the same pool, no ORM.
+Choose a database and deployment guide in [SQL databases](../databases.md). For tagged-template queries without an ORM, use [Effect SQL: Postgres](../effect-sql/postgres.md).

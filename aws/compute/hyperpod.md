@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/hyperpod
 title: "HyperPod"
 description: "Provision SageMaker HyperPod clusters — Slurm or EKS orchestrated — and run ML workloads on them with sbatch, raw manifests, or effectful Jobs with task governance."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **SageMaker HyperPod** is AWS's persistent fleet for ML training
@@ -27,14 +27,14 @@ The HyperPod primitives:
   and per-team compute quotas reserve capacity.
 
 Alchemy models these with
-[`Cluster`](https://alchemy.run/providers/aws/sagemaker/cluster),
-[`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker/clusterschedulerconfig),
-and [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker/computequota), and
+[`Cluster`](https://alchemy.run/providers/aws/sagemaker#cluster),
+[`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker#clusterschedulerconfig),
+and [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker#computequota), and
 Kubernetes workloads opt onto HyperPod nodes by referencing their
 attributes (the group's `nodeSelector`, the quota's governed
 `namespace` and `queueName`) from plain
-[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/deployment) and
-[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/job) props.
+[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) and
+[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) props.
 
 ## Choose an orchestrator
 
@@ -137,7 +137,7 @@ enforces a few constraints, all encoded in the example:
   must be installed on the EKS cluster before the HyperPod
   cluster attaches — SageMaker validates it. The example fetches
   the chart with an `Action` and applies it with
-  [`Kubernetes.HelmChart`](https://alchemy.run/providers/kubernetes/helmchart).
+  [`Kubernetes.HelmChart`](https://alchemy.run/providers/kubernetes/reference/helm#helmchart).
 
 ```typescript
 const eks = yield* AWS.EKS.Cluster("Orchestrator", {
@@ -171,14 +171,14 @@ const hyperpod = yield* AWS.SageMaker.Cluster("HyperPod", {
 ```
 
 HyperPod nodes must live in **private subnets** — the
-[`Network`](https://alchemy.run/providers/aws/ec2/network) helper with `nat:
+[`Network`](https://alchemy.run/providers/aws/ec2#network) helper with `nat:
 "single"` builds a suitable VPC.
 
 ## Run workloads on HyperPod nodes
 
 HyperPod nodes are ordinary EKS nodes carrying well-known labels.
-[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/deployment) and
-[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/job) opt onto them with
+[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) and
+[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) opt onto them with
 each instance group's `nodeSelector` attribute — health-checked
 nodes of that group. The instance-group keys carry through to the
 cluster's attributes as types, so the reference is typed per key
@@ -209,7 +209,7 @@ const train = yield* Kubernetes.Job(
 
 For anything the typed surface doesn't cover — a Kubeflow
 `PyTorchJob`, a custom operator — apply a raw
-[`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/manifest) pinned by
+[`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) pinned by
 the node labels directly:
 
 ```typescript
@@ -273,7 +273,7 @@ labels: {
   — both orchestrators, every workload tier, task governance
 - [EKS](eks.md) — the Kubernetes surface HyperPod
   workloads ride on
-- [`Cluster`](https://alchemy.run/providers/aws/sagemaker/cluster),
-  [`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker/clusterschedulerconfig),
-  [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker/computequota) — API
+- [`Cluster`](https://alchemy.run/providers/aws/sagemaker#cluster),
+  [`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker#clusterschedulerconfig),
+  [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker#computequota) — API
   reference

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/octane
 title: "Octane"
 description: "Deploy OctaneJS to Prisma Compute with Prisma.Website.Octane — the Node target on Bun, SSR plus client assets, and native Vite dev locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.Octane` runs your [OctaneJS](https://octanejs.dev/) project’s Vite build. Octane builds the client and SSR bundles; the shared Node target wraps the fetch handler as an HTTP program. Both outputs are uploaded as `tar.gz` and run on **Bun in Prisma Compute**, not a Docker Node container.
@@ -18,21 +18,19 @@ bun add -d @alchemy.run/frontend-frameworks @vercel/nft
 
 ## Configure Octane
 
-Choose the shared Node marker adapter in `octane.config.ts`, not `aws()` or `cloudflare()`:
+Keep native compiler and route settings in `octane.config.ts`, without an adapter:
 
 ```typescript
-import { node } from "@alchemy.run/frontend-frameworks/octane/node-adapter";
 import { defineConfig, RenderRoute } from "@octanejs/vite-plugin";
 
 export default defineConfig({
-  adapter: node(),
   router: {
     routes: [new RenderRoute({ path: "/", entry: ["App", "/src/App.tsx"] })],
   },
 });
 ```
 
-A missing or foreign adapter fails the build. The adapter selects the output format; Bun is still the deployed runtime.
+`Prisma.Website.Octane` selects hosting and automatically wraps Octane’s default native Node output as an HTTP server running on Bun in Compute. The legacy Node marker adapter remains optional for existing projects.
 
 ## Configure Vite
 
@@ -123,6 +121,6 @@ const site = yield* Prisma.Website.Octane("Web", {
 
 ## Where next
 
-- [Octane API](https://alchemy.run/providers/prisma/website/octane).
+- [Octane API](https://alchemy.run/providers/prisma/website#octane).
 - [Octane example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-octane).
 - [Websites](websites.md) and [Compute apps](../compute/apps.md).

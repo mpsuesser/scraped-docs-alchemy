@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/setup
 title: "Setup"
 description: "Point alchemy at a Docker daemon — the active CLI context and the DOCKER_BIN override."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Register the provider in your stack:
@@ -41,8 +41,8 @@ environment variable, falling back to `docker` on the `PATH`.
 ## Registry credentials
 
 Registry auth is a per-resource prop, not global configuration.
-[`Image`](https://alchemy.run/providers/docker/image) and
-[`RemoteImage`](https://alchemy.run/providers/docker/remoteimage) accept a `registry`
+[`Image`](https://alchemy.run/providers/docker/reference/image#image) and
+[`RemoteImage`](https://alchemy.run/providers/docker/reference/image#remoteimage) accept a `registry`
 with `{ server, username, password }`, where `password` is a
 `Redacted` value:
 

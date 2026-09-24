@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/compute/apps
 title: "Apps"
 description: "Prisma Compute apps as Stack resources — framework builds or Effect-native services, env wiring, custom domains, and a local dev command."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Compute` deploys an application onto Prisma's managed
@@ -158,5 +158,5 @@ const app = yield* Prisma.Compute("web", {
 
 Reference:
 
-- [Compute API reference](https://alchemy.run/providers/prisma/compute)
-- [CustomDomain API reference](https://alchemy.run/providers/prisma/customdomain)
+- [Compute API reference](https://alchemy.run/providers/prisma/reference/compute#compute)
+- [CustomDomain API reference](https://alchemy.run/providers/prisma/reference/compute#customdomain)

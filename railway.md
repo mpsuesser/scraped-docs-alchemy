@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway
 title: "Railway"
 description: "Deploy Effect programs to Railway as Projects, Services, databases, Volumes, and Buckets."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A Project is a workspace-scoped namespace. A Service is a container — a public image, an Effect program Alchemy bundles, or a canvas Function. Postgres, MySQL, Mongo, Redis, Volumes, Variables, and Buckets live in the same TypeScript program.
@@ -28,8 +28,8 @@ The production environment is created with the Project. Extra environments (stag
 ## Data
 
 - **[Volumes](https://alchemy.run/railway/data/volumes)** — block disk in a Project. Create one, then mount it into a Service with `MountVolume(volume, { path })`. Snapshot with `VolumeBackup`.
-- **[Postgres](https://alchemy.run/railway/data/postgres)** — official SSL Postgres image, a Volume, `DATABASE_URL`, and an optional public TCP proxy. Bind `ConnectPostgres` on a Service; pass the connection string to Drizzle or SQL.
-- **[MySQL](https://alchemy.run/railway/data/mysql)** — official `mysql` image, `MYSQL_URL`, `ConnectMySQL`.
+- **[Postgres](railway/data/postgres.md)** — official SSL Postgres image, a Volume, `DATABASE_URL`, and an optional public TCP proxy. Bind `ConnectPostgres` on a Service; pass the connection string to Drizzle or SQL.
+- **[MySQL](railway/data/mysql.md)** — official `mysql` image, `MYSQL_URL`, `ConnectMySQL`.
 - **[Mongo](https://alchemy.run/railway/data/mongo)** — official `mongo` image, `MONGO_URL`, `ConnectMongo`.
 - **[Redis](https://alchemy.run/railway/data/redis)** — `redis:7` or `bitnami/redis`. Bind `ReadWriteRedis` on a Service.
 - **[Buckets](https://alchemy.run/railway/data/buckets)** — S3-compatible object storage. Bind `PutObject` / `GetObject` on a Service.
@@ -55,8 +55,8 @@ The production environment is created with the Project. Extra environments (stag
 | A background worker | [Service](https://alchemy.run/railway/compute/services) with `ServerHost.run` |
 | Persistent disk | [Volume](https://alchemy.run/railway/data/volumes) + `MountVolume` (one volume per service) |
 | Volume snapshot | [VolumeBackup](https://alchemy.run/railway/data/volumes#backups) |
-| Postgres | [Postgres](https://alchemy.run/railway/data/postgres) + `ConnectPostgres` |
-| MySQL | [MySQL](https://alchemy.run/railway/data/mysql) + `ConnectMySQL` |
+| Postgres | [Postgres](railway/data/postgres.md) + `ConnectPostgres` |
+| MySQL | [MySQL](railway/data/mysql.md) + `ConnectMySQL` |
 | Mongo | [Mongo](https://alchemy.run/railway/data/mongo) + `ConnectMongo` |
 | Redis | [Redis](https://alchemy.run/railway/data/redis) + `ReadRedis` / `WriteRedis` / `ReadWriteRedis` |
 | Object storage | [Bucket](https://alchemy.run/railway/data/buckets) + `PutObject` / `GetObject` |

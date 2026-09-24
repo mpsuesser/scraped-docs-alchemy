@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only
@@ -197,7 +197,7 @@ The binding adds `secretsmanager:GetSecretValue` and
 this secret's ARN only. `SecretString` comes back as `Redacted` —
 unwrap with `Redacted.value` at the point of use. The value is
 fetched per call, not baked into env, so putting a new version (the
-[`PutSecretValue` binding](https://alchemy.run/providers/aws/secretsmanager/putsecretvalue))
+[`PutSecretValue` binding](https://alchemy.run/providers/aws/secretsmanager#putsecretvalue))
 propagates on the next read.
 
 ## Where next
@@ -216,5 +216,5 @@ Related:
 
 Reference:
 
-- [`Secret` reference](https://alchemy.run/providers/aws/secretsmanager/secret)
-- [`GetSecretValue` reference](https://alchemy.run/providers/aws/secretsmanager/getsecretvalue)
+- [`Secret` reference](https://alchemy.run/providers/aws/secretsmanager#secret)
+- [`GetSecretValue` reference](https://alchemy.run/providers/aws/secretsmanager#getsecretvalue)

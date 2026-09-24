@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale
 title: "PlanetScale"
 description: "Serverless MySQL (Vitess) and Postgres with database branching — databases, branches, and credentials as Stack resources."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 PlanetScale gives you serverless MySQL (Vitess-backed) and managed Postgres with a branch-per-PR workflow. With alchemy you declare the database, its branches, and the credentials as resources in the same Stack as your Workers — branches fork per preview stage and tear down with it.
@@ -61,5 +61,5 @@ The guides that take this to production live under Cloudflare — each covers Pl
 
 ## Reference
 
-- Postgres: [PostgresDatabase](https://alchemy.run/providers/planetscale/postgres/postgresdatabase) · [PostgresBranch](https://alchemy.run/providers/planetscale/postgres/postgresbranch) · [PostgresRole](https://alchemy.run/providers/planetscale/postgres/postgresrole) · [PostgresDefaultRole](https://alchemy.run/providers/planetscale/postgres/postgresdefaultrole)
-- MySQL: [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql/mysqldatabase) · [MySQLBranch](https://alchemy.run/providers/planetscale/mysql/mysqlbranch) · [MySQLPassword](https://alchemy.run/providers/planetscale/mysql/mysqlpassword)
+- Postgres: [PostgresDatabase](https://alchemy.run/providers/planetscale/postgres#postgresdatabase) · [PostgresBranch](https://alchemy.run/providers/planetscale/postgres#postgresbranch) · [PostgresRole](https://alchemy.run/providers/planetscale/postgres#postgresrole) · [PostgresDefaultRole](https://alchemy.run/providers/planetscale/postgres#postgresdefaultrole)
+- MySQL: [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql#mysqldatabase) · [MySQLBranch](https://alchemy.run/providers/planetscale/mysql#mysqlbranch) · [MySQLPassword](https://alchemy.run/providers/planetscale/mysql#mysqlpassword)

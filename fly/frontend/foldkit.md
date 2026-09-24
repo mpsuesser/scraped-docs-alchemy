@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/foldkit
 title: "Foldkit"
 description: "Deploy a Foldkit app to Fly with Fly.Website.Foldkit — a client-only Vite SPA on a Node static-file Service, fly.dev over shared IPv4, and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 [Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects — the Foldkit Vite plugin only adds HMR and devtools wiring — so `Fly.Website.Foldkit` is [`Fly.Website.Vite`](vite.md) with SPA fallback to `index.html`. Deep links boot the app and the Foldkit router takes over.
@@ -140,7 +140,7 @@ const site = yield* Fly.Website.Foldkit("Web", {
 
 ## Where next
 
-- [`Foldkit` reference](https://alchemy.run/providers/fly/website/foldkit) — every prop and attribute
+- [`Foldkit` reference](https://alchemy.run/providers/fly/website#foldkit) — every prop and attribute
 - [Vite](vite.md) — the same static-file Service for any Vite app
 - [Websites](websites.md) — the rest of the Fly frontend family
 - [Apps](https://alchemy.run/fly/compute/apps), [Services](https://alchemy.run/fly/compute/services), [IPs & certificates](https://alchemy.run/fly/networking)

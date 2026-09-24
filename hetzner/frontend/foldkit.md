@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/foldkit
 title: "Foldkit"
 description: "Deploy a Foldkit app to Hetzner with Hetzner.Website.Foldkit — a client-only Vite SPA as a systemd unit on a Cloud Server, and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 [Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects — the Foldkit Vite plugin only adds HMR and devtools wiring — so `Hetzner.Website.Foldkit` is [`Hetzner.Website.Vite`](vite.md) with SPA fallback to `index.html`. Deep links boot the app and the Foldkit router takes over.
@@ -141,7 +141,7 @@ const site = yield* Hetzner.Website.Foldkit("Web", {
 
 ## Where next
 
-- [`Foldkit` reference](https://alchemy.run/providers/hetzner/website/foldkit) — every prop and attribute
+- [`Foldkit` reference](https://alchemy.run/providers/hetzner/website#foldkit) — every prop and attribute
 - [Vite](vite.md) — the same static-file unit, with `assets.notFoundHandling`
 - [Websites](websites.md) — the rest of the Hetzner frontend family
 - [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)

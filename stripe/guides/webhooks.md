@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe/guides/webhooks
 title: "React to Stripe events"
 description: "consumeEvents provisions the webhook endpoint and runs one Effect per delivery. When to use it, which events to listen for, and how to manage the endpoint yourself."
-access_date: 2026-09-17T20:53:57.844Z
-current_date: 2026-09-17T20:53:57.844Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Stripe tells you what happened asynchronously. A payment succeeded, a
@@ -131,5 +131,5 @@ yield* Stripe.bindWebhookSecret(api, webhook.secret);
 
 ## Reference
 
-[WebhookEndpoint](https://alchemy.run/providers/stripe/webhookendpoint) ·
-[consumeEvents](https://alchemy.run/providers/stripe/consumeeventslive)
+[WebhookEndpoint](https://alchemy.run/providers/stripe/reference/webhook#webhookendpoint) ·
+[consumeEvents](https://alchemy.run/providers/stripe/reference/webhook#consumeeventslive)

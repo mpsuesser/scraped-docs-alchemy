@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Railway with Railway.Website.Nextjs — next build plus a Node next({ dev: false }) container, and next dev under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Railway as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
@@ -116,5 +116,5 @@ Alchemy attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networki
 
 ## Where next
 
-- [`Railway.Website.Nextjs` reference](https://alchemy.run/providers/railway/website/nextjs) — every prop and attribute
+- [`Railway.Website.Nextjs` reference](https://alchemy.run/providers/railway/website#nextjs) — every prop and attribute
 - [Projects](https://alchemy.run/railway/compute/projects), [Services](https://alchemy.run/railway/compute/services), [Networking](https://alchemy.run/railway/networking)

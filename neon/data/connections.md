@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/connections
 title: "Connections"
 description: "Every Neon project and branch exposes direct and pooled connection URIs plus pre-parsed origin outputs — feed the direct origin to Hyperdrive and the pooled one to everything else."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Every Neon project and branch exposes its connection details as
@@ -95,5 +95,5 @@ Guides:
 
 Reference:
 
-- [Project API reference](https://alchemy.run/providers/neon/project)
-- [Branch API reference](https://alchemy.run/providers/neon/branch)
+- [Project API reference](https://alchemy.run/providers/neon/reference/project#project)
+- [Branch API reference](https://alchemy.run/providers/neon/reference/branch#branch)

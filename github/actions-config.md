@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/actions-config
 title: "Actions secrets & variables"
 description: "Manage GitHub Actions secrets and variables as Stack resources — encrypted secrets, plain-text variables, bulk helpers, and CI credentials provisioned as code."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 GitHub Actions workflows read configuration from two places:
@@ -252,8 +252,8 @@ for private repositories, or `public_repo` for public ones.
 
 Reference:
 
-- [Environment](https://alchemy.run/providers/github/environment) ·
-  [Secret](https://alchemy.run/providers/github/secret) ·
-  [Secrets](https://alchemy.run/providers/github/secrets) ·
-  [Variable](https://alchemy.run/providers/github/variable) ·
-  [Variables](https://alchemy.run/providers/github/variables)
+- [Environment](https://alchemy.run/providers/github/reference/actions#environment) ·
+  [Secret](https://alchemy.run/providers/github/reference/actions#secret) ·
+  [Secrets](https://alchemy.run/providers/github/reference/actions#secrets) ·
+  [Variable](https://alchemy.run/providers/github/reference/actions#variable) ·
+  [Variables](https://alchemy.run/providers/github/reference/actions#variables)

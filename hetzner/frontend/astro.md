@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to Hetzner with Hetzner.Website.Astro — Node SSR as a systemd unit on a Server, static output as a file server, and Astro's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.Astro` deploys an [Astro](https://astro.build/) project to a Hetzner Cloud Server as a systemd unit. Server-rendered pages run on a [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) (port 3000); static files are served first, then the Astro handler. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 Server in `fsn1`. The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Your `astro.config.*` loads natively — don’t declare an `adapter`.
@@ -169,7 +169,7 @@ Passing `domain` without `zone` fails.
 
 ## Where next
 
-- [`Hetzner.Website.Astro` reference](https://alchemy.run/providers/hetzner/website/astro) — every prop and attribute.
+- [`Hetzner.Website.Astro` reference](https://alchemy.run/providers/hetzner/website#astro) — every prop and attribute.
 - [Services](https://alchemy.run/hetzner/compute/services) and [Servers](https://alchemy.run/hetzner/compute/servers) — the unit and VM the site creates.
 - [Zones & records](https://alchemy.run/hetzner/networking/dns) — the Zone `domain` requires.
 - [Setup](../setup.md) — project, API token, and alchemy login.

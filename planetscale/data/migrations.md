@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/migrations
 title: "Migrations"
 description: "Apply SQL migrations and seed data to PlanetScale databases and branches as part of every deploy — ordered, hashed, tracked, and run over short-lived credentials."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Every PlanetScale database and branch resource — `PostgresDatabase`,
@@ -163,7 +163,7 @@ Related:
 
 Reference:
 
-- [PostgresDatabase](https://alchemy.run/providers/planetscale/postgres/postgresdatabase) ·
-  [PostgresBranch](https://alchemy.run/providers/planetscale/postgres/postgresbranch)
-- [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql/mysqldatabase) ·
-  [MySQLBranch](https://alchemy.run/providers/planetscale/mysql/mysqlbranch)
+- [PostgresDatabase](https://alchemy.run/providers/planetscale/postgres#postgresdatabase) ·
+  [PostgresBranch](https://alchemy.run/providers/planetscale/postgres#postgresbranch)
+- [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql#mysqldatabase) ·
+  [MySQLBranch](https://alchemy.run/providers/planetscale/mysql#mysqlbranch)

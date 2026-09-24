@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/plan
 title: "plan"
 description: "Preview what would change without applying anything. Equivalent to alchemy deploy --dry-run."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 ```sh
@@ -58,6 +58,7 @@ Creates show their desired properties. Updates and replacements show the previou
 | `--stage <name>` | Stage to plan against (defaults to `$ALCHEMY_STAGE` or `live_$USER`) |
 | `--profile <name>` | Auth profile to use (defaults to `$ALCHEMY_PROFILE` or `default`) |
 | `--env-file <path>` | Load environment variables from a file |
+| `--adopt` | Plan adoption of pre-existing cloud resources that conflict with this stack instead of failing (see [Adopting Resources](adopting-resources.md)) |
 | `--detailed` | Show declared resource properties as YAML |
 
 ## Where next

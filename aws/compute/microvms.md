@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/microvms
 title: "Lambda MicroVMs"
 description: "Build a Firecracker MicroVM image from TypeScript or a Dockerfile, then launch and drive isolated stateful instances from a Lambda Function with typed lifecycle bindings and RPC."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A Lambda **MicroVM image** is a Firecracker snapshot that boots a fully
@@ -240,7 +240,7 @@ build-affecting prop changes; otherwise the image is left untouched.
 ## Where next
 
 - [Lambda](lambda.md) — the Function model the orchestrator is built on.
-- [MicrovmImage API reference](https://alchemy.run/providers/aws/lambda/microvmimage) — all props,
+- [MicrovmImage API reference](https://alchemy.run/providers/aws/lambda#microvmimage) — all props,
   build modes, sizing, logging, and VPC egress via `NetworkConnector`.
-- [RunMicrovm](https://alchemy.run/providers/aws/lambda/runmicrovm) and the other per-instance
+- [RunMicrovm](https://alchemy.run/providers/aws/lambda#runmicrovm) and the other per-instance
   lifecycle bindings.

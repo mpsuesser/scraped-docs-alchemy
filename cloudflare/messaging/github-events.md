@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/github-events
 title: "React to GitHub events from a Worker"
 description: "Subscribe a Cloudflare Worker to GitHub repository webhooks with typed payloads — alchemy provisions the webhook and verifies delivery signatures."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A push lands on `main`, a pull request opens, a release tag appears —
@@ -158,7 +158,7 @@ handler log the delivery.
 One `consumeRepositoryEvents` call replaces the usual webhook
 plumbing:
 
-- **Provisioning** — a [`GitHub.Webhook`](https://alchemy.run/providers/github/webhook)
+- **Provisioning** — a [`GitHub.Webhook`](https://alchemy.run/providers/github/reference/webhook#webhook)
   resource is created on the repo, wired to the Worker's URL. You
   never paste a URL into repo settings.
 - **Secret distribution** — the signing secret is bound onto the
@@ -246,7 +246,7 @@ Worth reading in the example:
 `Cloudflare.Workers.GitHubRepositoryEventSourceLive` is currently the
 only implementation of the `RepositoryEventSource` contract — there
 is no AWS Lambda event source yet. On other hosts you can still
-provision a [`GitHub.Webhook`](https://alchemy.run/providers/github/webhook) directly
+provision a [`GitHub.Webhook`](https://alchemy.run/providers/github/reference/webhook#webhook) directly
 with any delivery URL, but signature verification and routing are
 yours to implement.
 
@@ -256,5 +256,5 @@ yours to implement.
   variables, and the rest of the CI/CD glue.
 - [Workers](../compute/workers.md) — the host this event source runs
   on.
-- [Webhook API reference](https://alchemy.run/providers/github/webhook) — the resource
+- [Webhook API reference](https://alchemy.run/providers/github/reference/webhook#webhook) — the resource
   provisioned under the hood.

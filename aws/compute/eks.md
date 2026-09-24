@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/eks
 title: "EKS"
 description: "Stand up an EKS Auto Mode cluster on a Network and run containers on it — Deployments for servers, Jobs for run-to-completion work, Manifests for everything else. No YAML, no kubectl."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **EKS** (Elastic Kubernetes Service) is AWS’s managed Kubernetes: AWS runs the Kubernetes control plane, and your containers run on it as Kubernetes objects. Alchemy targets **Auto Mode**, where AWS also manages the nodes, storage, and load-balancer integration — no machines to operate.
@@ -16,7 +16,7 @@ The Kubernetes primitives you’ll meet here:
 - A **Job** runs a Pod to completion; a **CronJob** does that on a schedule.
 - Everything in Kubernetes is an object described by a **manifest** you apply to the Cluster.
 
-Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/eks/cluster) with `compute: "auto"` stands up the control plane from a VPC, and the cluster-agnostic `alchemy/Kubernetes` workloads target it by passing the cluster resource as their `cluster` prop: [`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/deployment) synthesizes a Kubernetes `Deployment` + `Service`; [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/job) a `Job` or `CronJob`; and [`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/manifest) applies any raw Kubernetes object. The workloads live in the same TypeScript program as the cluster, with no YAML and no `kubectl apply` step — and the same workloads run on any other cluster your kubeconfig can reach (`Kubernetes.KubeConfig(...)`).
+Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/eks#cluster) with `compute: "auto"` stands up the control plane from a VPC, and the cluster-agnostic `alchemy/Kubernetes` workloads target it by passing the cluster resource as their `cluster` prop: [`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) synthesizes a Kubernetes `Deployment` + `Service`; [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) a `Job` or `CronJob`; and [`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) applies any raw Kubernetes object. The workloads live in the same TypeScript program as the cluster, with no YAML and no `kubectl apply` step — and the same workloads run on any other cluster your kubeconfig can reach (`Kubernetes.KubeConfig(...)`).
 
 The workload providers ship in `Kubernetes.providers()` — compose it with `AWS.providers()` in the Stack:
 
@@ -58,11 +58,11 @@ const cluster = yield* AWS.EKS.Cluster("Cluster", {
 });
 ```
 
-The cluster lands in the network’s private subnets, built on a [`Network`](https://alchemy.run/providers/aws/ec2/network). Budget for the create: an EKS control plane takes ~10 minutes to provision.
+The cluster lands in the network’s private subnets, built on a [`Network`](https://alchemy.run/providers/aws/ec2#network). Budget for the create: an EKS control plane takes ~10 minutes to provision.
 
 ## Grant access and install add-ons
 
-Auto Mode provisions with `authenticationMode: "API"`, so cluster access is granted through [`AccessEntry`](https://alchemy.run/providers/aws/eks/accessentry) resources rather than the `aws-auth` ConfigMap, and [`Addon`](https://alchemy.run/providers/aws/eks/addon) installs EKS add-ons (EKS picks the default compatible version when you don’t pin one):
+Auto Mode provisions with `authenticationMode: "API"`, so cluster access is granted through [`AccessEntry`](https://alchemy.run/providers/aws/eks#accessentry) resources rather than the `aws-auth` ConfigMap, and [`Addon`](https://alchemy.run/providers/aws/eks#addon) installs EKS add-ons (EKS picks the default compatible version when you don’t pin one):
 
 ```typescript
 const admin = yield* AWS.EKS.AccessEntry("ClusterAdmin", {
@@ -87,7 +87,7 @@ The deploying principal is bootstrapped as cluster admin (`bootstrapClusterCreat
 
 ## Deploy a server
 
-[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/deployment) is a replicated Kubernetes server — the Kubernetes analog of `AWS.ECS.Service`. It synthesizes a Kubernetes `Deployment` + `Service` (+ `ServiceAccount`) and applies them via server-side apply, with the container image coming from exactly one of three sources flat on props: `image` (a registry reference, mirrored into ECR), `context` (build your own Dockerfile), or `main` (bundle an inline Effect program). The simplest form runs a remote image with no Effect runtime in the container:
+[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) is a replicated Kubernetes server — the Kubernetes analog of `AWS.ECS.Service`. It synthesizes a Kubernetes `Deployment` + `Service` (+ `ServiceAccount`) and applies them via server-side apply, with the container image coming from exactly one of three sources flat on props: `image` (a registry reference, mirrored into ECR), `context` (build your own Dockerfile), or `main` (bundle an inline Effect program). The simplest form runs a remote image with no Effect runtime in the container:
 
 ```typescript
 const echo = yield* Kubernetes.Deployment("EchoServer", {
@@ -125,11 +125,11 @@ const api = yield* Kubernetes.Deployment(
 );
 ```
 
-Every Kubernetes workload on EKS gets Pod Identity as standard: Alchemy creates the IAM role, wires it to the workload’s ServiceAccount with a [`PodIdentityAssociation`](https://alchemy.run/providers/aws/eks/podidentityassociation), and Pods resolve credentials through the EKS Pod Identity container-credentials chain — no OIDC provider or IRSA annotation ceremony. The tagged form (`class Api extends Kubernetes.Deployment<Api, Shape>()("Api") {}` + `Api.make(props, impl)`) works exactly as it does on Lambda and Cloudflare Workers.
+Every Kubernetes workload on EKS gets Pod Identity as standard: Alchemy creates the IAM role, wires it to the workload’s ServiceAccount with a [`PodIdentityAssociation`](https://alchemy.run/providers/aws/eks#podidentityassociation), and Pods resolve credentials through the EKS Pod Identity container-credentials chain — no OIDC provider or IRSA annotation ceremony. The tagged form (`class Api extends Kubernetes.Deployment<Api, Shape>()("Api") {}` + `Api.make(props, impl)`) works exactly as it does on Lambda and Cloudflare Workers.
 
 ## Run-to-completion work with Job
 
-[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/job) runs a container to completion — the Kubernetes analog of `AWS.ECS.Task`. Same three image sources, same bindings and Pod Identity; an Effect impl returns `{ run }` instead of `{ fetch }`, executing to completion inside the Pod:
+[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) runs a container to completion — the Kubernetes analog of `AWS.ECS.Task`. Same three image sources, same bindings and Pod Identity; an Effect impl returns `{ run }` instead of `{ fetch }`, executing to completion inside the Pod:
 
 ```typescript
 const migrate = yield* Kubernetes.Job("DbMigrate", {
@@ -151,7 +151,7 @@ const nightly = yield* Kubernetes.Job("NightlyBackfill", {
 
 ## Everything else is a Manifest
 
-[`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/manifest) applies any raw Kubernetes object — StatefulSets, Namespaces, CRDs — via server-side apply. The manifest is a literal object, exactly as you would write it in YAML:
+[`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) applies any raw Kubernetes object — StatefulSets, Namespaces, CRDs — via server-side apply. The manifest is a literal object, exactly as you would write it in YAML:
 
 ```typescript
 const namespace = yield* Kubernetes.Manifest("DemoNamespace", {
@@ -168,7 +168,7 @@ There is no kubeconfig step: Alchemy authenticates to the cluster’s API with y
 
 ## Install a Helm chart
 
-[`Kubernetes.HelmChart`](https://alchemy.run/providers/kubernetes/helmchart) renders a chart with the local `helm` CLI (`helm template` — install helm on your machine, like Docker for image builds) and applies the rendered objects through the same server-side-apply path as `Manifest`:
+[`Kubernetes.HelmChart`](https://alchemy.run/providers/kubernetes/reference/helm#helmchart) renders a chart with the local `helm` CLI (`helm template` — install helm on your machine, like Docker for image builds) and applies the rendered objects through the same server-side-apply path as `Manifest`:
 
 ```typescript
 const ingress = yield* Kubernetes.HelmChart("IngressNginx", {
@@ -188,7 +188,7 @@ const ingress = yield* Kubernetes.HelmChart("IngressNginx", {
 
 ## Run on SageMaker HyperPod
 
-An EKS cluster can also orchestrate a [SageMaker HyperPod](hyperpod.md) fleet — persistent, health-checked ML compute whose nodes join the cluster as ordinary Kubernetes nodes. [`AWS.SageMaker.Cluster`](https://alchemy.run/providers/aws/sagemaker/cluster) attaches the fleet to the EKS control plane:
+An EKS cluster can also orchestrate a [SageMaker HyperPod](hyperpod.md) fleet — persistent, health-checked ML compute whose nodes join the cluster as ordinary Kubernetes nodes. [`AWS.SageMaker.Cluster`](https://alchemy.run/providers/aws/sagemaker#cluster) attaches the fleet to the EKS control plane:
 
 ```typescript
 const hyperpod = yield* AWS.SageMaker.Cluster("HyperPod", {
@@ -235,4 +235,4 @@ See [HyperPod](hyperpod.md) for the fleet’s prerequisites (lifecycle scripts, 
 - [VPC & networking](../networking.md) — what the `Network` helper builds under the cluster.
 - [HyperPod](hyperpod.md) — run training fleets on this cluster’s nodes.
 - [Choosing a runtime](choosing-a-runtime.md) — when Lambda or ECS is the better fit than running your own Kubernetes workloads.
-- [`Cluster` reference](https://alchemy.run/providers/aws/eks/cluster), [`Deployment` reference](https://alchemy.run/providers/kubernetes/deployment), [`Job` reference](https://alchemy.run/providers/kubernetes/job), [`Manifest` reference](https://alchemy.run/providers/kubernetes/manifest) — every prop and attribute.
+- [`Cluster` reference](https://alchemy.run/providers/aws/eks#cluster), [`Deployment` reference](https://alchemy.run/providers/kubernetes/reference/workloads#deployment), [`Job` reference](https://alchemy.run/providers/kubernetes/reference/workloads#job), [`Manifest` reference](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) — every prop and attribute.

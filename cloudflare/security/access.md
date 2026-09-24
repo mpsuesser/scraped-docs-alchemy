@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/access
 title: "Protect a Worker with Access"
 description: "Put Cloudflare Access in front of a Worker with the access prop — per-Worker policies, shared applications, ctx.access identity at runtime, and a local dev simulation."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Cloudflare Access puts a login wall in front of your Worker — covering
@@ -223,9 +223,9 @@ const app = yield* Cloudflare.Website.Astro("Docs", {
 
 ## See also
 
-- [Application API reference](https://alchemy.run/providers/cloudflare/access/application)
-- [Policy API reference](https://alchemy.run/providers/cloudflare/access/policy)
-- [Worker API reference](https://alchemy.run/providers/cloudflare/workers/worker)
+- [Application API reference](https://alchemy.run/providers/cloudflare/access#application)
+- [Policy API reference](https://alchemy.run/providers/cloudflare/access#policy)
+- [Worker API reference](https://alchemy.run/providers/cloudflare/workers#worker)
 - [Secrets & env](secrets-env.md) — for service-to-service
   auth without a human login, pair Access service tokens with policies
   using `serviceToken` / `"anyValidServiceToken"` rules.

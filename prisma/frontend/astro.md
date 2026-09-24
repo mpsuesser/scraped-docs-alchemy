@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/astro
 title: "Astro"
 description: "Deploy Astro SSR or a fully static site to Prisma Compute with Prisma.Website.Astro, running on Bun with native Astro dev locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.Astro` builds an [Astro](https://astro.build/) project with the shared Node target and runs it on **Bun in Prisma Compute**. Assets are served first, then the Astro SSR handler. Fully static output uses a static-file server on the same Compute runtime. Both paths upload a `tar.gz` artifact, not a container image.
@@ -126,7 +126,7 @@ export const Website = Prisma.Website.Astro("Website", {
 
 ## Where next
 
-- [Astro API](https://alchemy.run/providers/prisma/website/astro).
+- [Astro API](https://alchemy.run/providers/prisma/website#astro).
 - [Astro example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-astro).
 - [Static sites](static-site.md) and [Websites](websites.md).
 - [Compute apps](../compute/apps.md) and [Setup](../setup.md).

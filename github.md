@@ -2,8 +2,8 @@
 url: https://alchemy.run/github
 title: "GitHub"
 description: "Repositories, Actions secrets and variables, webhooks, and repository event sources as Stack resources — the glue for CI/CD."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 The GitHub provider manages repositories, Actions secrets and variables, and webhooks as resources. It’s the glue for CI/CD: your Stack can mint a scoped cloud credential and store it as an Actions secret in the same deploy — no pasting tokens into repo settings. Workers can even subscribe to repository events directly.
@@ -96,4 +96,4 @@ The canonical pattern: a one-shot stack mints a scoped cloud credential and stor
 
 ## Reference
 
-[Repository](https://alchemy.run/providers/github/repository) · [Environment](https://alchemy.run/providers/github/environment) · [Secret](https://alchemy.run/providers/github/secret) · [Secrets](https://alchemy.run/providers/github/secrets) · [Variable](https://alchemy.run/providers/github/variable) · [Variables](https://alchemy.run/providers/github/variables) · [Webhook](https://alchemy.run/providers/github/webhook) · [Comment](https://alchemy.run/providers/github/comment)
+[Repository](https://alchemy.run/providers/github/reference/repository#repository) · [Environment](https://alchemy.run/providers/github/reference/actions#environment) · [Secret](https://alchemy.run/providers/github/reference/actions#secret) · [Secrets](https://alchemy.run/providers/github/reference/actions#secrets) · [Variable](https://alchemy.run/providers/github/reference/actions#variable) · [Variables](https://alchemy.run/providers/github/reference/actions#variables) · [Webhook](https://alchemy.run/providers/github/reference/webhook#webhook) · [Comment](https://alchemy.run/providers/github/reference/issue#comment)

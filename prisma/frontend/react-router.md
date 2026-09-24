@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 framework apps to Prisma Compute with Prisma.Website.ReactRouter — SSR on Bun and native Vite dev locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.ReactRouter` builds [React Router](https://reactrouter.com/) v7 in framework mode through your project’s Vite pipeline. The shared Node target wraps the server manifest with `createRequestHandler` and serves client assets first. The output runs on **Bun in Prisma Compute** from a `tar.gz` upload, without a Docker image or registry.
@@ -123,6 +123,6 @@ const site = yield* Prisma.Website.ReactRouter("Web", {
 
 ## Where next
 
-- [React Router API](https://alchemy.run/providers/prisma/website/reactrouter).
+- [React Router API](https://alchemy.run/providers/prisma/website#reactrouter).
 - [React Router example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-react-router).
 - [Websites](websites.md) and [Compute apps](../compute/apps.md).

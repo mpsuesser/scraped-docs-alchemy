@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/nextjs
 title: "Next.js"
 description: "Deploy Next.js to Prisma Compute with Prisma.Website.Nextjs — a normal Next server on Bun, not OpenNext, and next dev locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.Nextjs` runs a real [Next.js](https://nextjs.org/) `next build`, then hosts a normal Next server on **Bun in Prisma Compute**. The shared Node target uses `next({ dev: false })`, `prepare()`, and `getRequestHandler()`. The build output, public assets, and runtime dependencies are packaged for a `tar.gz` upload; there is no Docker image or registry.
@@ -93,7 +93,7 @@ This creates `Prisma.CustomDomain` and changes `site.url` to the HTTPS hostname.
 
 ## Where next
 
-- [Next.js API](https://alchemy.run/providers/prisma/website/nextjs).
+- [Next.js API](https://alchemy.run/providers/prisma/website#nextjs).
 - [Next.js example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-nextjs).
 - [Websites](websites.md) and [Compute apps](../compute/apps.md).
 - [Connections](../data/connections.md) — database environment wiring.

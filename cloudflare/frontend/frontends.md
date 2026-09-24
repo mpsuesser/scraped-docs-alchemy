@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/cloudflare/frontend/frontends
 title: "Frontend frameworks"
-description: "Deploy Vite, Astro, Next.js, Nuxt, SvelteKit, Waku, or any static build to Cloudflare Workers with first-class Website resources."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, SvelteKit, Waku, or any static build to Cloudflare Workers with first-class Website resources."
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy deploys frontends to Cloudflare with a family of
@@ -23,6 +23,8 @@ natively; Alchemy layers its Cloudflare integration on top.
 - [`Nextjs`](nextjs.md) — Next.js apps built through
   the OpenNext pipeline, with writable ISR on KV; your `next.config.*`
   is honored as-is.
+- [`Vinext`](vinext.md) — vinext (Next.js API on Vite)
+  apps, with KV-backed ISR; your `vite.config.ts` loads natively.
 - [`Nuxt`](nuxt.md) — Nuxt apps built through
   nitro's `cloudflare_module` preset; your `nuxt.config.ts` loads
   natively.
@@ -32,7 +34,8 @@ natively; Alchemy layers its Cloudflare integration on top.
 - [`Waku`](waku.md) — Waku (React Server
   Components) apps.
 - [`Octane`](octane.md) — OctaneJS fullstack apps
-  built through Octane's own Cloudflare adapter.
+  built for Workers with native Octane and Vite configuration; no hosting
+  adapter required.
 - [`StaticSite`](static-site.md) — any build
   command's output directory, for static generators like Zola and
   Hugo.
@@ -55,6 +58,7 @@ project skips the build and deploy entirely.
 | SolidStart / SolidJS SSR | `Vite` | [SolidStart](solidstart.md) |
 | Astro | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |
+| vinext | `Vinext` | [vinext](vinext.md) |
 | Nuxt | `Nuxt` | [Nuxt](nuxt.md) |
 | SvelteKit | `SvelteKit` | [SvelteKit](sveltekit.md) |
 | Waku | `Waku` | [Waku](waku.md) |
@@ -70,7 +74,7 @@ static generator works the same way.
 ## How to choose
 
 Use the resource named after your framework. `Astro`, `Nextjs`,
-`Nuxt`, `SvelteKit`, `Waku`, and `Octane` each drive their
+`Vinext`, `Nuxt`, `SvelteKit`, `Waku`, and `Octane` each drive their
 framework's own programmatic build and know its output layout, config
 surface, and dev server.
 
@@ -98,6 +102,7 @@ without a dedicated resource.
   [SolidStart](solidstart.md),
   [Astro](astro.md),
   [Next.js](nextjs.md),
+  [vinext](vinext.md),
   [Nuxt](nuxt.md),
   [SvelteKit](sveltekit.md),
   [Waku](waku.md),

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/observability/cloudwatch
 title: "CloudWatch"
 description: "Declare CloudWatch dashboards as structured widget documents and metric alarms that fire SNS topics — versioned next to the Lambda functions and queues they observe."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 CloudWatch is AWS's built-in metrics store: every Lambda function,
@@ -180,6 +180,6 @@ here.
 
 Reference:
 
-- [`Alarm` reference](https://alchemy.run/providers/aws/cloudwatch/alarm)
-- [`Dashboard` reference](https://alchemy.run/providers/aws/cloudwatch/dashboard)
-- [`CompositeAlarm` reference](https://alchemy.run/providers/aws/cloudwatch/compositealarm)
+- [`Alarm` reference](https://alchemy.run/providers/aws/cloudwatch#alarm)
+- [`Dashboard` reference](https://alchemy.run/providers/aws/cloudwatch#dashboard)
+- [`CompositeAlarm` reference](https://alchemy.run/providers/aws/cloudwatch#compositealarm)

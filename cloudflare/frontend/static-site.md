@@ -2,14 +2,14 @@
 url: https://alchemy.run/cloudflare/frontend/static-site
 title: "Static sites"
 description: "Deploy any build command's output directory as Cloudflare Worker static assets with Cloudflare.Website.StaticSite — custom edge Workers, framework-native local dev, and memoized rebuilds."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Cloudflare.Website.StaticSite` runs a build command, content-hashes the
 output directory, and deploys it as a Cloudflare Worker serving static
 assets. The build is a plain shell command (a
-[`Command.Build`](https://alchemy.run/providers/command/build) resource under the hood — see
+[`Command.Build`](https://alchemy.run/providers/command/reference#build) resource under the hood — see
 [Memoization](../../command/memoization.md) for what gets hashed and when it
 re-runs), so it works for anything that produces a directory of files — a
 Zola or Hugo site, a bash script, or the static output of a framework the

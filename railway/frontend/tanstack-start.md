@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Railway with Railway.Website.TanStackStart — SSR on a container Service, client assets in the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Railway. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server plus client assets run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -76,7 +76,7 @@ Requests matching a built client asset are served first; everything else — SSR
 
 The live `url` is `https://{name}.up.railway.app`. `site.service` and `site.project` are the Railway resources underneath — `undefined` during `alchemy dev`.
 
-See the [TanStack Start API reference](https://alchemy.run/providers/railway/website/tanstackstart) for every prop and attribute.
+See the [TanStack Start API reference](https://alchemy.run/providers/railway/website#tanstackstart) for every prop and attribute.
 
 ## Add environment variables
 
@@ -182,6 +182,6 @@ const site = yield* Railway.Website.TanStackStart("Web", {
 
 ## Where next
 
-- [TanStack Start API reference](https://alchemy.run/providers/railway/website/tanstackstart)
+- [TanStack Start API reference](https://alchemy.run/providers/railway/website#tanstackstart)
 - [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
 - [Custom domains](https://alchemy.run/railway/networking)

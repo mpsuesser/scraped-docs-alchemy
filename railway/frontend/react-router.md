@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 (framework mode) to Railway with Railway.Website.ReactRouter — SSR on a container Service, client assets in the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Railway. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server plus client assets run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -77,7 +77,7 @@ Requests matching a built client asset are served first; everything else — SSR
 
 The live `url` is `https://{name}.up.railway.app`. `site.service` and `site.project` are the Railway resources underneath — `undefined` during `alchemy dev`.
 
-See the [React Router API reference](https://alchemy.run/providers/railway/website/reactrouter) for every prop and attribute.
+See the [React Router API reference](https://alchemy.run/providers/railway/website#reactrouter) for every prop and attribute.
 
 ## How the two build outputs are deployed
 
@@ -177,6 +177,6 @@ const site = yield* Railway.Website.ReactRouter("Web", {
 
 ## Where next
 
-- [React Router API reference](https://alchemy.run/providers/railway/website/reactrouter)
+- [React Router API reference](https://alchemy.run/providers/railway/website#reactrouter)
 - [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
 - [Custom domains](https://alchemy.run/railway/networking)

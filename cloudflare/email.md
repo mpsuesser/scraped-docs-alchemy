@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email
 title: "Email"
 description: "Cloudflare Email Routing turns a zone into a mail endpoint — enable routing, verify destinations, forward with rules and a catch-all, hand mail to a Worker, and send from Workers with the send_email binding."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Email Routing turns a zone you own into a mail endpoint: rules match inbound mail and forward it, drop it, or hand it to a Worker — and once routing is enabled, Workers can also *send* mail from the domain through a `send_email` binding.
@@ -165,10 +165,10 @@ yield* Cloudflare.Email.BlockSender("KnownPhisher", {
 
 The rest of the suite:
 
-- [Domain](https://alchemy.run/providers/cloudflare/email/domain) — per-domain dispositions and TLS enforcement.
-- [AllowPolicy](https://alchemy.run/providers/cloudflare/email/allowpolicy) — acceptable, trusted, and exempt senders.
-- [TrustedDomain](https://alchemy.run/providers/cloudflare/email/trusteddomain) — suppress lookalike and new-domain detections.
-- [ImpersonationRegistryEntry](https://alchemy.run/providers/cloudflare/email/impersonationregistryentry) — protect display names from BEC.
+- [Domain](https://alchemy.run/providers/cloudflare/email#domain) — per-domain dispositions and TLS enforcement.
+- [AllowPolicy](https://alchemy.run/providers/cloudflare/email#allowpolicy) — acceptable, trusted, and exempt senders.
+- [TrustedDomain](https://alchemy.run/providers/cloudflare/email#trusteddomain) — suppress lookalike and new-domain detections.
+- [ImpersonationRegistryEntry](https://alchemy.run/providers/cloudflare/email#impersonationregistryentry) — protect display names from BEC.
 
 ## Where next
 
@@ -184,14 +184,14 @@ Related:
 
 Reference:
 
-- [Routing API reference](https://alchemy.run/providers/cloudflare/email/routing)
-- [Address API reference](https://alchemy.run/providers/cloudflare/email/address)
-- [Rule API reference](https://alchemy.run/providers/cloudflare/email/rule)
-- [CatchAll API reference](https://alchemy.run/providers/cloudflare/email/catchall)
-- [Send API reference](https://alchemy.run/providers/cloudflare/email/send)
-- [SendingSubdomain API reference](https://alchemy.run/providers/cloudflare/email/sendingsubdomain)
-- [Domain API reference](https://alchemy.run/providers/cloudflare/email/domain)
-- [BlockSender API reference](https://alchemy.run/providers/cloudflare/email/blocksender)
-- [AllowPolicy API reference](https://alchemy.run/providers/cloudflare/email/allowpolicy)
-- [TrustedDomain API reference](https://alchemy.run/providers/cloudflare/email/trusteddomain)
-- [ImpersonationRegistryEntry API reference](https://alchemy.run/providers/cloudflare/email/impersonationregistryentry)
+- [Routing API reference](https://alchemy.run/providers/cloudflare/email#routing)
+- [Address API reference](https://alchemy.run/providers/cloudflare/email#address)
+- [Rule API reference](https://alchemy.run/providers/cloudflare/email#rule)
+- [CatchAll API reference](https://alchemy.run/providers/cloudflare/email#catchall)
+- [Send API reference](https://alchemy.run/providers/cloudflare/email#send)
+- [SendingSubdomain API reference](https://alchemy.run/providers/cloudflare/email#sendingsubdomain)
+- [Domain API reference](https://alchemy.run/providers/cloudflare/email#domain)
+- [BlockSender API reference](https://alchemy.run/providers/cloudflare/email#blocksender)
+- [AllowPolicy API reference](https://alchemy.run/providers/cloudflare/email#allowpolicy)
+- [TrustedDomain API reference](https://alchemy.run/providers/cloudflare/email#trusteddomain)
+- [ImpersonationRegistryEntry API reference](https://alchemy.run/providers/cloudflare/email#impersonationregistryentry)

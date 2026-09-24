@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Fly with Fly.Website.Nextjs — next build plus a Node next({ dev: false }) Machine, and next dev under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Fly as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
@@ -114,5 +114,5 @@ Alchemy requests an ACME [`Fly.Certificate`](https://alchemy.run/fly/networking)
 
 ## Where next
 
-- [`Fly.Website.Nextjs` reference](https://alchemy.run/providers/fly/website/nextjs) — every prop and attribute
+- [`Fly.Website.Nextjs` reference](https://alchemy.run/providers/fly/website#nextjs) — every prop and attribute
 - [Apps](https://alchemy.run/fly/compute/apps), [Services](https://alchemy.run/fly/compute/services), [IPs & certificates](https://alchemy.run/fly/networking)

@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/hetzner/frontend/websites
 title: "Websites"
-description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Hetzner with first-class Website resources."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Hetzner with first-class Website resources."
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy deploys frontends to Hetzner with a family of
@@ -33,6 +33,9 @@ Service. `domain` requires an existing Hetzner DNS
 - [`Nextjs`](nextjs.md) — Next.js as a long-running
   Node process (`next build`, then `next({ dev: false })`). Not
   OpenNext.
+- [`Vinext`](vinext.md) — vinext (Next.js API on Vite)
+  as a long-running Node process (`vinext build`, then
+  `startProdServer`). Not the Cloudflare Worker path.
 - [`Nuxt`](nuxt.md) — Nuxt apps through nitro's
   Node server; your `nuxt.config.ts` loads natively. Do not set
   `nitro.preset`.
@@ -47,9 +50,8 @@ Service. `domain` requires an existing Hetzner DNS
   Start (React or Solid), built through your own `vite build`.
 - [`Waku`](waku.md) — Waku (React Server
   Components) on Node, with SSG pages served extensionless.
-- [`Octane`](octane.md) — OctaneJS SSR. Select
-  `node()` from `@alchemy.run/frontend-frameworks/octane/node-adapter`
-  in `octane.config.ts`.
+- [`Octane`](octane.md) — OctaneJS SSR. Alchemy wraps
+  native Node output; no hosting adapter is needed in `octane.config.ts`.
 - [`Foldkit`](foldkit.md) — client-only Foldkit
   SPA; deep links fall back to `index.html`.
 - [`Vocs`](vocs.md) — prerendered Vocs docs;
@@ -75,6 +77,7 @@ files — an unchanged project skips the build.
 | SolidStart | `SolidStart` | [SolidStart](solidstart.md) |
 | Astro | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |
+| vinext | `Vinext` | [vinext](vinext.md) |
 | Nuxt | `Nuxt` | [Nuxt](nuxt.md) |
 | SvelteKit | `SvelteKit` | [SvelteKit](sveltekit.md) |
 | Waku | `Waku` | [Waku](waku.md) |
@@ -173,6 +176,6 @@ not terminate TLS.
   unit these resources deploy.
 - [Zones & records](https://alchemy.run/hetzner/networking/dns) — the Zone
   `domain` attaches to.
-- [`Vite` reference](https://alchemy.run/providers/hetzner/website/vite),
-  [`Astro` reference](https://alchemy.run/providers/hetzner/website/astro),
-  [`StaticSite` reference](https://alchemy.run/providers/hetzner/website/staticsite).
+- [`Vite` reference](https://alchemy.run/providers/hetzner/website#vite),
+  [`Astro` reference](https://alchemy.run/providers/hetzner/website#astro),
+  [`StaticSite` reference](https://alchemy.run/providers/hetzner/website#staticsite).

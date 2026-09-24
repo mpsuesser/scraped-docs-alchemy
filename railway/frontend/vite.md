@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Railway with Railway.Website.Vite — static assets on a container Service, a *.up.railway.app URL (or your domain), and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.Vite` deploys a [Vite](https://vite.dev/) project to Railway. It runs `vite build` and serves the output from a generated Node static-file server on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Omit `project` and Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects). Live `url` is `https://{name}.up.railway.app`. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
@@ -142,6 +142,6 @@ export const Website = Railway.Website.Vite("Website", {
 
 ## Where next
 
-- [`Railway.Website.Vite` API](https://alchemy.run/providers/railway/website/vite)
+- [`Railway.Website.Vite` API](https://alchemy.run/providers/railway/website#vite)
 - [Astro](astro.md), [Next.js](nextjs.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), [Octane](octane.md) — SSR frameworks
 - [Projects](https://alchemy.run/railway/compute/projects), [Services](https://alchemy.run/railway/compute/services), [Custom domains](https://alchemy.run/railway/networking)

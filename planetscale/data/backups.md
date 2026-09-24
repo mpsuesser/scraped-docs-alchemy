@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/backups
 title: "Backups & restores"
 description: "Restore a PlanetScale backup into a fresh branch with backupId, or seed a new branch from the last successful backup with seedData."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy doesn't manage PlanetScale backup schedules — create backups
@@ -75,5 +75,5 @@ the backup.
 
 Reference:
 
-- [MySQLBranch](https://alchemy.run/providers/planetscale/mysql/mysqlbranch) ·
-  [PostgresBranch](https://alchemy.run/providers/planetscale/postgres/postgresbranch)
+- [MySQLBranch](https://alchemy.run/providers/planetscale/mysql#mysqlbranch) ·
+  [PostgresBranch](https://alchemy.run/providers/planetscale/postgres#postgresbranch)

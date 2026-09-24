@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Hetzner with Hetzner.Website.StaticSite — a build command, a systemd unit on a Server, and http://{ipv4}:3000 (or your hostname) on deploy."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.StaticSite` runs a build command, packs the output
@@ -31,7 +31,7 @@ export const Website = Hetzner.Website.StaticSite("Website", {
 });
 ```
 
-The build is a [`Command.Build`](https://alchemy.run/providers/command/build) —
+The build is a [`Command.Build`](https://alchemy.run/providers/command/reference#build) —
 memoized, so unchanged inputs skip the rebuild
 ([details](../../command/memoization.md)). By default every non-gitignored
 file in `cwd` (plus the nearest lockfile) is hashed. Narrow it with
@@ -211,6 +211,6 @@ Hugo, or any other generator.
 
 - [Websites on Hetzner](websites.md) — the full
   websites surface, including Node SSR frameworks
-- [StaticSite reference](https://alchemy.run/providers/hetzner/website/staticsite) —
+- [StaticSite reference](https://alchemy.run/providers/hetzner/website#staticsite) —
   every prop and attribute
 - [Hetzner on Alchemy](../../hetzner.md) — the Hetzner provider hub

@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe
 title: "Stripe"
 description: "Sell subscriptions and onboard merchants from a Cloudflare Worker — catalog, Checkout, the Billing Portal, Connect, and webhooks declared next to the code that uses them."
-access_date: 2026-09-17T20:53:57.844Z
-current_date: 2026-09-17T20:53:57.844Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Stripe with alchemy means your billing lives in the same TypeScript program as the app that does the billing. The `Product` and `Price` are declared on the Worker that sells them. The Worker calls Stripe through typed bindings that carry their own permissions. Webhooks are one function call that provisions the endpoint and hands your handler a typed event. `bun alchemy deploy` ships all of it; `alchemy destroy` takes it down without leaving orphans in the Dashboard.
@@ -74,11 +74,11 @@ export default class Api extends Cloudflare.Worker<Api>()(
 Three ideas carry the whole integration:
 
 - **Resources** (`Product`, `Price`, `Coupon`, `WebhookEndpoint`, `BillingPortalConfiguration`, …) are Stack-managed. Alchemy creates, updates, and deletes them. Objects Stripe won’t hard-delete are deactivated instead.
-- **Bindings** (`CreateCustomer`, `CreateCheckoutSession`, `RetrieveProduct`, …) are what a Worker calls at runtime. Yielding one registers the permission it needs on a [`RestrictedApiKey`](https://alchemy.run/providers/stripe/restrictedapikey) and returns a callable. Provide the matching `*Http` layer once at the end.
+- **Bindings** (`CreateCustomer`, `CreateCheckoutSession`, `RetrieveProduct`, …) are what a Worker calls at runtime. Yielding one registers the permission it needs on a [`RestrictedApiKey`](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey) and returns a callable. Provide the matching `*Http` layer once at the end.
 - **Outputs** like `price.id` are yielded at plan time to get an accessor, then yielded again inside a route. That’s how a resource id reaches runtime.
 
 ## Reference
 
-[Product](https://alchemy.run/providers/stripe/product) · [Price](https://alchemy.run/providers/stripe/price) · [Coupon](https://alchemy.run/providers/stripe/coupon) · [Customer](https://alchemy.run/providers/stripe/customer) · [BillingPortalConfiguration](https://alchemy.run/providers/stripe/billingportalconfiguration) · [WebhookEndpoint](https://alchemy.run/providers/stripe/webhookendpoint) · [RestrictedApiKey](https://alchemy.run/providers/stripe/restrictedapikey)
+[Product](https://alchemy.run/providers/stripe/reference/product#product) · [Price](https://alchemy.run/providers/stripe/reference/product#price) · [Coupon](https://alchemy.run/providers/stripe/reference/product#coupon) · [Customer](https://alchemy.run/providers/stripe/reference/customer#customer) · [BillingPortalConfiguration](https://alchemy.run/providers/stripe/reference/billing#billingportalconfiguration) · [WebhookEndpoint](https://alchemy.run/providers/stripe/reference/webhook#webhookendpoint) · [RestrictedApiKey](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey)
 
 The full list is under **Resources** in the sidebar.

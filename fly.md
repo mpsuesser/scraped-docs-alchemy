@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly
 title: "Fly"
 description: "Deploy Effect programs to Fly.io as Apps, Machines, Services, and Sprites."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 An App is a globally unique namespace. A Machine is a Firecracker VM running a container. A Service is an Effect program running in a Fly Machine. A Sprite is an Effect program in an org-scoped sandbox that hibernates when idle.
@@ -28,7 +28,7 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 ## Data
 
 - **[Volumes](https://alchemy.run/fly/data/volumes)** — region-local block storage. Mount one into a Service with `MountVolume({ path, sizeGb })`, or pass `mounts` on a Machine. A Volume attaches to **one** Machine; `count: N` creates N disks, not one shared disk.
-- **[Postgres](https://alchemy.run/fly/data/postgres)** — billed Managed Postgres. Bind `ConnectPostgres` on a Service; pass the connection string to Drizzle or SQL. `migrations` is the same surface as Neon.
+- **[Postgres](fly/data/postgres.md)** — billed Managed Postgres. Bind `ConnectPostgres` on a Service; pass the connection string to Drizzle or SQL. `migrations` is the same surface as Neon.
 - **[Redis](https://alchemy.run/fly/data/redis)** — Upstash Redis. Bind `ReadWriteRedis` on a Service.
 - **[Tigris](https://alchemy.run/fly/data/tigris)** — S3-compatible object storage (`Fly.Bucket`). Bind `PutObject` / `GetObject` on a Service.
 
@@ -51,7 +51,7 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 | A raw container | [Machine](https://alchemy.run/fly/compute/machines) with an `image` |
 | A background worker | [Service](https://alchemy.run/fly/compute/services) with `ServerHost.run` |
 | Persistent disk | [MountVolume](https://alchemy.run/fly/data/volumes) or Machine `mounts` |
-| Managed Postgres | [Postgres](https://alchemy.run/fly/data/postgres) + `ConnectPostgres` |
+| Managed Postgres | [Postgres](fly/data/postgres.md) + `ConnectPostgres` |
 | Upstash Redis | [Redis](https://alchemy.run/fly/data/redis) + `ReadRedis` / `WriteRedis` / `ReadWriteRedis` |
 | Object storage | [Tigris](https://alchemy.run/fly/data/tigris) + `PutObject` / `GetObject` |
 | N replicas behind fly.dev | Service `count`, or more [Machine](https://alchemy.run/fly/compute/machines) resources |

@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Fly with Fly.Website.TanStackStart — SSR on a Machine, client assets baked into the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Fly. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -76,7 +76,7 @@ Requests matching a built client asset are served first; everything else — SSR
 
 The live `url` is `https://{app}.fly.dev`. `site.app`, `site.service`, `site.ip`, and `site.certificate` are the Fly resources underneath — `undefined` during `alchemy dev`.
 
-See the [TanStack Start API reference](https://alchemy.run/providers/fly/website/tanstackstart) for every prop and attribute.
+See the [TanStack Start API reference](https://alchemy.run/providers/fly/website#tanstackstart) for every prop and attribute.
 
 ## Add environment variables
 
@@ -182,6 +182,6 @@ const site = yield* Fly.Website.TanStackStart("Web", {
 
 ## Where next
 
-- [TanStack Start API reference](https://alchemy.run/providers/fly/website/tanstackstart)
+- [TanStack Start API reference](https://alchemy.run/providers/fly/website#tanstackstart)
 - [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
 - [IPs & certificates](https://alchemy.run/fly/networking)

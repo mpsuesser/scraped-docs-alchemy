@@ -2,8 +2,8 @@
 url: https://alchemy.run/what-is-alchemy
 title: "What is Alchemy?"
 description: "Alchemy is Infrastructure as Code built in pure Effect, with Infrastructure as Effects on top. Declare your cloud resources and the code that runs on them in one type-safe TypeScript program, and deploy it with one command."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy is **Infrastructure as Code** built in pure [Effect](https://effect.website/), with **Infrastructure as Effects** on top. Infrastructure as Code declares, diffs, and deploys cloud resources the way Terraform or Pulumi does. Infrastructure as Effects lets the code that runs on those resources live in the same program, as typed Effects and Layers.
@@ -41,7 +41,7 @@ That one file is a complete application. The Bucket is declared next to the Work
 
 The core of Alchemy is Infrastructure as Code, in the same family as Terraform, Pulumi, CloudFormation, and the CDK.
 
-#### Stack
+### Stack
 
 A **Stack** is the unit you deploy, an Effect that yields resources and returns the outputs you want printed:
 
@@ -80,7 +80,7 @@ Alchemy reads the current state, diffs it against your program, shows the plan, 
 
 **State** is where the result persists between runs, so the next deploy only touches what changed — the `state` option above picks where it’s stored.
 
-#### Resource
+### Resource
 
 A **Resource** is a cloud entity in a Stack managed by Alchemy: a bucket, a database, a queue, a Worker, a DNS record. Yield it in the Stack to add it to the plan:
 
@@ -100,7 +100,7 @@ yield* Cloudflare.Worker("Api", {
 });
 ```
 
-#### Provider
+### Provider
 
 A **Provider** teaches Alchemy how to read, diff, create, update, and delete one resource type. Each cloud ships its providers as an Effect Layer, and a Stack takes as many as it needs:
 
@@ -146,7 +146,7 @@ This works, and it is fully supported. `InferEnv` even types the env from the de
 
 Infrastructure as Effects adds two new concepts to Infrastructure as Code: Runtimes and Bindings.
 
-#### Runtime
+### Runtime
 
 A **Runtime** is a Resource that carries the code it runs: a Worker, Lambda Function, Container, or Server. That code is always written the same way, as an **Effectful Constructor**. Bind what you need, then return what you expose:
 
@@ -162,7 +162,7 @@ Effect.gen(function* () {
 
 The outer Effect runs both at deploy time and at cold start; what it returns runs per request. A Worker returns `fetch`, a Durable Object returns its RPC methods, a Workflow returns its run function, and every Runtime in Alchemy is a variation on that one shape.
 
-#### Binding
+### Binding
 
 A **Binding** connects a Resource to the Runtime that uses it:
 
@@ -181,7 +181,7 @@ const getItem = yield* AWS.DynamoDB.GetItem(Jobs);
 
 There is no `env.Uploads` to reach for and no hand-written policy. The binding is the SDK.
 
-#### Layers
+### Layers
 
 Every Binding is a contract paired with a **Layer** that fulfills it: the handler is written against the contract, and the Layer decides how — swap the Layer and the handler doesn’t change:
 

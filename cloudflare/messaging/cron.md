@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/cron
 title: "Scheduled jobs with Cron Triggers"
 description: "Run Worker code on a schedule — declare a cron expression with an Effect handler, deploy it, and prove the trigger fires with a bounded polling test."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Cron Triggers invoke a Worker on a schedule — nightly cleanups,
@@ -286,4 +286,4 @@ interruption and hides intent.
   building block the test uses to record fires.
 - [Workflows](../compute/workflows.md#schedule-a-workflow) —
   native cron schedules on the Workflow itself.
-- [cron API reference](https://alchemy.run/providers/cloudflare/workers/cron)
+- [cron API reference](https://alchemy.run/providers/cloudflare/workers#cron)

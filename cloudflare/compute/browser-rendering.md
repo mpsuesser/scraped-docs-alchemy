@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/browser-rendering
 title: "Browser rendering"
 description: "Attach Cloudflare Browser Rendering to a Worker — run quick actions like markdown and scrape, stream screenshots and PDFs, or drive the raw binding with puppeteer."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Browser Rendering gives a Worker a headless browser. In alchemy, the
@@ -138,5 +138,5 @@ ready to hand to promise-shaped libraries.
 
 - [Workers](workers.md) — the two-phase Worker model the
   binding lives inside.
-- [Browser API reference](https://alchemy.run/providers/cloudflare/workers/browser) —
+- [Browser API reference](https://alchemy.run/providers/cloudflare/workers#browser) —
   every quick action, option type, and result shape.

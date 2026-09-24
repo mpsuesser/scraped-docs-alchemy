@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Hetzner with Hetzner.Website.Octane — SSR as a systemd unit on port 3000, client assets baked into the unit, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to a Hetzner Cloud Server. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server runs as a systemd unit on port 3000 (`Hetzner.Service` on a `Hetzner.Server`); client assets are baked into the unit. The live URL is `http://{ipv4}:3000` — no TLS on the Service. No Dockerfile, no build command to run.
@@ -18,21 +18,19 @@ bun add -d @alchemy.run/frontend-frameworks
 
 ## Configure Octane
 
-Your `octane.config.ts` picks the deploy target, exactly as in Octane’s own deployment story — select the Node marker adapter, not `aws()` or `cloudflare()`:
+Keep native compiler and route settings in `octane.config.ts`, without an adapter:
 
 ```typescript
-import { node } from "@alchemy.run/frontend-frameworks/octane/node-adapter";
 import { defineConfig, RenderRoute } from "@octanejs/vite-plugin";
 
 export default defineConfig({
-  adapter: node(),
   router: {
     routes: [new RenderRoute({ path: "/", entry: ["App", "/src/App.tsx"] })],
   },
 });
 ```
 
-A missing or foreign adapter fails the deploy with an actionable error.
+`Hetzner.Website.Octane` selects hosting and automatically wraps Octane’s default native Node output as an HTTP server. The legacy Node marker adapter remains optional for existing projects.
 
 Vite plugins like Tailwind go in `vite.config.ts` next to it, alongside the Octane plugin:
 
@@ -153,6 +151,6 @@ See [Zones & records](https://alchemy.run/hetzner/networking/dns).
 
 ## Where next
 
-- [`Hetzner.Website.Octane` reference](https://alchemy.run/providers/hetzner/website/octane)
+- [`Hetzner.Website.Octane` reference](https://alchemy.run/providers/hetzner/website#octane)
 - [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
 - [Zones & records](https://alchemy.run/hetzner/networking/dns)

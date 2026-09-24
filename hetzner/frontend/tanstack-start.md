@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Hetzner with Hetzner.Website.TanStackStart — SSR as a systemd unit on port 3000, client assets baked into the unit, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to a Hetzner Cloud Server. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
@@ -76,7 +76,7 @@ Requests matching a built client asset are served first; everything else — SSR
 
 The live `url` is `http://{ipv4}:3000`. `site.server` and `site.service` are the Hetzner resources underneath — `undefined` during `alchemy dev`.
 
-See the [TanStack Start API reference](https://alchemy.run/providers/hetzner/website/tanstackstart) for every prop and attribute.
+See the [TanStack Start API reference](https://alchemy.run/providers/hetzner/website#tanstackstart) for every prop and attribute.
 
 ## Add environment variables
 
@@ -184,6 +184,6 @@ const site = yield* Hetzner.Website.TanStackStart("Web", {
 
 ## Where next
 
-- [TanStack Start API reference](https://alchemy.run/providers/hetzner/website/tanstackstart)
+- [TanStack Start API reference](https://alchemy.run/providers/hetzner/website#tanstackstart)
 - [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
 - [DNS](https://alchemy.run/hetzner/networking/dns)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/mysql
 title: "MySQL"
 description: "PlanetScale MySQL (Vitess) as Stack resources — databases, branches, and passwords, with SQL migrations per branch and a straight line into Cloudflare Hyperdrive."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 PlanetScale MySQL is Vitess-backed serverless MySQL with cheap,
@@ -122,8 +122,8 @@ const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
 ```
 
 At runtime, query through
-[`Drizzle.MySQL`](https://alchemy.run/sql/drizzle/mysql) or the raw
-[`SQL.MySQL`](https://alchemy.run/sql/effect-sql/mysql) client — both take Hyperdrive's
+[`Drizzle.MySQL`](../../sql/drizzle/mysql.md) or the raw
+[`SQL.MySQL`](../../sql/effect-sql/mysql.md) client — both take Hyperdrive's
 `connectionString` and default to the text protocol the proxy
 requires. See the full example —
 [cloudflare-planetscale-mysql-drizzle](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-mysql-drizzle)
@@ -179,13 +179,13 @@ guide walks through the whole pattern.
   files in depth.
 - [Hyperdrive](../../cloudflare/data/hyperdrive.md) — pooled edge connections
   from Workers.
-- [Drizzle: MySQL](https://alchemy.run/sql/drizzle/mysql) /
-  [Effect SQL: MySQL](https://alchemy.run/sql/effect-sql/mysql) — the runtime clients.
+- [Drizzle: MySQL](../../sql/drizzle/mysql.md) /
+  [Effect SQL: MySQL](../../sql/effect-sql/mysql.md) — the runtime clients.
 - [Postgres](postgres.md) — the PostgreSQL side of
   PlanetScale.
 
 Reference:
 
-- [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql/mysqldatabase) ·
-  [MySQLBranch](https://alchemy.run/providers/planetscale/mysql/mysqlbranch) ·
-  [MySQLPassword](https://alchemy.run/providers/planetscale/mysql/mysqlpassword)
+- [MySQLDatabase](https://alchemy.run/providers/planetscale/mysql#mysqldatabase) ·
+  [MySQLBranch](https://alchemy.run/providers/planetscale/mysql#mysqlbranch) ·
+  [MySQLPassword](https://alchemy.run/providers/planetscale/mysql#mysqlpassword)

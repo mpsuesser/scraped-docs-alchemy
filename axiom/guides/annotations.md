@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/annotations
 title: "Deploy markers & annotations"
 description: "Overlay deploys, incidents, and flag flips as vertical markers on Axiom charts — point or range annotations, scoped to one or more datasets, declared as alchemy resources."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 An Axiom `Annotation` is a vertical marker overlaid on every chart
@@ -106,5 +106,5 @@ the resource form for markers you want reproducible per stage.
   markers land on, plus saved views.
 - [Ingest](../data/ingest.md) — datasets, tokens, and wiring OTEL output
   into Axiom.
-- [Annotation API reference](https://alchemy.run/providers/axiom/annotation) — full
+- [Annotation API reference](https://alchemy.run/providers/axiom/reference/dataset#annotation) — full
   props and attributes.

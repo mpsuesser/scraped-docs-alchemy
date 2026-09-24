@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma
 title: "Prisma"
 description: "Prisma Postgres and Prisma Compute — projects, databases, connections, and deployed apps as Stack resources, with a zero-config local database in dev."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Prisma’s data platform gives you serverless Postgres and a managed app runtime. With alchemy you declare the project, its databases, the connections your apps use, and the Compute deployments that run them — all as resources in one Stack. In dev mode the same Stack runs against a local `@prisma/dev` Postgres with nothing to provision.
@@ -67,7 +67,7 @@ The candidate health check gates promotion. If the stable endpoint fails after p
 
 ## Runtime bindings
 
-Inside a Compute app, Lambda function, or Cloudflare Worker, `Prisma.Connect` turns a Connection into a typed runtime client whose `databaseUrl` feeds straight into `SQL.Postgres` or Drizzle:
+Inside a Compute app, Lambda function, or Cloudflare Worker, `Prisma.Connect` turns a Connection into a typed runtime client whose `databaseUrl` feeds straight into [Prisma ORM v8](sql/prisma/postgres.md), `SQL.Postgres`, or Drizzle:
 
 ```typescript
 Effect.gen(function* () {
@@ -88,14 +88,14 @@ Effect.gen(function* () {
 On Cloudflare, Prisma Postgres slots into the same path as the other Postgres providers:
 
 1. [Hyperdrive](cloudflare/data/hyperdrive.md) pools the connection’s direct `origin` at the edge
-2. [Drizzle](cloudflare/data/drizzle.md) or [`SQL.Postgres`](sql/effect-sql/postgres.md) gives the Worker a typed query layer over that connection
+2. [Prisma ORM v8](sql/prisma/postgres.md), [Drizzle](cloudflare/data/drizzle.md), or [`SQL.Postgres`](sql/effect-sql/postgres.md) gives the Worker a typed query layer over that connection
 3. [Connect from Workers](prisma/guides/cloudflare-workers.md) walks through both wiring styles
 
 ## Reference
 
-- [Project](https://alchemy.run/providers/prisma/project)
-- [Database](https://alchemy.run/providers/prisma/database)
-- [Connection](https://alchemy.run/providers/prisma/connection)
-- [Branch](https://alchemy.run/providers/prisma/branch)
-- [Compute](https://alchemy.run/providers/prisma/compute)
-- [SourceRepository](https://alchemy.run/providers/prisma/sourcerepository)
+- [Project](https://alchemy.run/providers/prisma/reference/project#project)
+- [Database](https://alchemy.run/providers/prisma/reference/postgres#database)
+- [Connection](https://alchemy.run/providers/prisma/reference/postgres#connection)
+- [Branch](https://alchemy.run/providers/prisma/reference/project#branch)
+- [Compute](https://alchemy.run/providers/prisma/reference/compute#compute)
+- [SourceRepository](https://alchemy.run/providers/prisma/reference/compute#sourcerepository)

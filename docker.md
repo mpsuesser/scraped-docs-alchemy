@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker
 title: "Docker"
 description: "Images, containers, networks, and volumes as Stack resources, driven through your active Docker CLI context."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 The Docker provider manages images, containers, networks, and volumes by shelling out to the `docker` CLI’s active context — Docker Desktop, a remote or SSH context, a CI daemon. There is no daemon API client and no credentials of its own, and the resources live in the same Stack as your cloud resources. It is separate from `Cloudflare.Container`; registry image references are the boundary between Docker-managed images and cloud container platforms.
@@ -86,4 +86,4 @@ The build *is* the diff: `diff` runs `docker build` and compares the resulting `
 
 ## Reference
 
-[Container](https://alchemy.run/providers/docker/container) · [Image](https://alchemy.run/providers/docker/image) · [Network](https://alchemy.run/providers/docker/network) · [RemoteImage](https://alchemy.run/providers/docker/remoteimage) · [Volume](https://alchemy.run/providers/docker/volume)
+[Container](https://alchemy.run/providers/docker/reference/container#container) · [Image](https://alchemy.run/providers/docker/reference/image#image) · [Network](https://alchemy.run/providers/docker/reference/network#network) · [RemoteImage](https://alchemy.run/providers/docker/reference/image#remoteimage) · [Volume](https://alchemy.run/providers/docker/reference/volume#volume)

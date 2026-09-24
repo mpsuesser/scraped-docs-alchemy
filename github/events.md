@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/events
 title: "Webhooks & events"
 description: "Provision GitHub repository webhooks as resources, or subscribe a Cloudflare Worker to repository events with typed payloads and verified deliveries."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 GitHub tells the world what happened to a repository through
@@ -130,4 +130,4 @@ but routing and signature verification are yours to implement.
 
 Reference:
 
-- [Webhook API reference](https://alchemy.run/providers/github/webhook)
+- [Webhook API reference](https://alchemy.run/providers/github/reference/webhook#webhook)

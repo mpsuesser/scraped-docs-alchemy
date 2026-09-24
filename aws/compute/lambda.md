@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **Lambda** is Alchemy’s default AWS runtime: a class that bundles an Effect program into a zip, deploys it as a Lambda Function, and generates its IAM execution role from the bindings you actually use. Serve HTTP over a public **Function URL**, or consume events — every building block in this section plugs in through the same pattern: S3 notifications (`Lambda.BucketEventSource`), SQS queues (`Lambda.QueueEventSource`), Kinesis streams (`Lambda.StreamEventSource`), and DynamoDB Streams (`Lambda.TableEventSource`).
@@ -224,8 +224,10 @@ Treat instance-level cleanup as best-effort: half a second, and not delivered on
 
 ## Where next
 
+- [Drizzle + Aurora PostgreSQL](../data/drizzle-aurora.md) — private database access, IAM authentication, verified TLS, and deployment-time schema setup.
+- [Drizzle + Aurora DSQL](../data/drizzle-dsql.md) — the separate serverless database, with an IAM-authenticated endpoint and non-admin application role.
 - [S3](../data/s3.md) — add a bucket and bind read/write operations into this function; IAM policies generated from the call sites, no policy JSON to hand-write.
 - [Secrets & env](../security/secrets-env.md) — API keys from.env and Secrets Manager credentials for this function.
 - [REST API (API Gateway v1)](../apis/api-gateway.md) — put an API Gateway REST API with stages and custom domains in front instead of a Function URL.
 - [Choosing a runtime](choosing-a-runtime.md) — when ECS, EKS, or EC2 fits better than Lambda.
-- [`Function` reference](https://alchemy.run/providers/aws/lambda/function) — every prop and attribute.
+- [`Function` reference](https://alchemy.run/providers/aws/lambda#function) — every prop and attribute.

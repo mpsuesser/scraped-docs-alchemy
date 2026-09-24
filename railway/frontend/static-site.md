@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Railway with Railway.Website.StaticSite — a build command, a container Service."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.StaticSite` runs a build command, content-hashes
@@ -30,7 +30,7 @@ export const Website = Railway.Website.StaticSite("Website", {
 });
 ```
 
-The build is a [`Command.Build`](https://alchemy.run/providers/command/build) —
+The build is a [`Command.Build`](https://alchemy.run/providers/command/reference#build) —
 memoized, so unchanged inputs skip the rebuild
 ([details](../../command/memoization.md)). By default every non-gitignored
 file in `cwd` (plus the nearest lockfile) is hashed. Narrow it with
@@ -163,7 +163,7 @@ export const Website = Railway.Website.StaticSite("Website", {
 ## Custom domain
 
 `domain` is a hostname string. Alchemy attaches a
-[`Railway.CustomDomain`](https://alchemy.run/providers/railway/customdomain)
+[`Railway.CustomDomain`](https://alchemy.run/providers/railway/reference/networking#customdomain)
 (`targetPort: 3000`) and `url` becomes `https://{domain}` instead of
 the generated `*.up.railway.app`. Railway's edge terminates TLS:
 
@@ -199,6 +199,6 @@ Hugo, or any other generator.
 
 - [Websites on Railway](websites.md) — the full
   websites surface, including Node SSR frameworks
-- [StaticSite reference](https://alchemy.run/providers/railway/website/staticsite) —
+- [StaticSite reference](https://alchemy.run/providers/railway/website#staticsite) —
   every prop and attribute
 - [Railway on Alchemy](../../railway.md) — the Railway provider hub

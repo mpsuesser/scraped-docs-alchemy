@@ -2,14 +2,14 @@
 url: https://alchemy.run/aws/compute/ec2
 title: "EC2"
 description: "Launch virtual machines with the Instance resource — as a raw compute primitive, or hosting a bundled long-lived Effect program served straight off the box."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **EC2** is for when you need the machine itself: an OS you
 control, GPUs, custom daemons, software that expects a host, or
 predictable dedicated capacity. The
-[`Instance`](https://alchemy.run/providers/aws/ec2/instance) resource plays two
+[`Instance`](https://alchemy.run/providers/aws/ec2#instance) resource plays two
 roles — a **low-level compute primitive** (launch an AMI, attach
 networking, done), or a **host for a bundled Effect program**
 that Alchemy deploys onto the machine and keeps running.
@@ -40,7 +40,7 @@ const instance = yield* AWS.EC2.Instance("AppInstance", {
 
 The resolved instance exposes `instanceId`, `publicIpAddress`,
 `privateIpAddress`, DNS names, and the rest of the observed
-state — see the [`Instance` reference](https://alchemy.run/providers/aws/ec2/instance)
+state — see the [`Instance` reference](https://alchemy.run/providers/aws/ec2#instance)
 for every prop and attribute.
 
 ## Host an Effect program
@@ -137,7 +137,7 @@ roleManagedPolicyArns: [
 ## SSH access
 
 For direct access, create an Alchemy-managed
-[`KeyPair`](https://alchemy.run/providers/aws/ec2/keypair) and pass its name to the
+[`KeyPair`](https://alchemy.run/providers/aws/ec2#keypair) and pass its name to the
 instance. The generated private key comes back as a `Redacted`
 output on the resource:
 
@@ -154,7 +154,7 @@ const key = yield* AWS.EC2.KeyPair("AppKeyPair", {
 
 An instance is only as reachable as the network you launch it
 into. The example above leans on the
-[`Network`](https://alchemy.run/providers/aws/ec2/network) helper for a
+[`Network`](https://alchemy.run/providers/aws/ec2#network) helper for a
 public-subnet VPC; when you need explicit control — private
 subnets, NAT, VPC endpoints, custom route tables — compose the
 primitives directly. [VPC & networking](../networking.md) walks
@@ -167,6 +167,6 @@ through the whole set.
   machine.
 - [VPC & networking](../networking.md) — the `Network` helper and
   the VPC primitives an instance lives in.
-- [`Instance` reference](https://alchemy.run/providers/aws/ec2/instance),
-  [`KeyPair` reference](https://alchemy.run/providers/aws/ec2/keypair) — every prop
+- [`Instance` reference](https://alchemy.run/providers/aws/ec2#instance),
+  [`KeyPair` reference](https://alchemy.run/providers/aws/ec2#keypair) — every prop
   and attribute.

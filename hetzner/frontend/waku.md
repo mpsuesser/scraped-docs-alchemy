@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Hetzner with Hetzner.Website.Waku — RSC server as a systemd unit on port 3000, SSG pages baked into the unit, and Waku's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to a Hetzner Cloud Server. It builds the project programmatically: the RSC server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and the client output — including SSG-prerendered pages — is baked into the unit. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -71,7 +71,7 @@ Pages rendered as `"static"` are generated at build time and baked into the unit
 
 The live `url` is `http://{ipv4}:3000`. `site.server` and `site.service` are the Hetzner resources underneath — `undefined` during `alchemy dev`.
 
-See the [Waku API reference](https://alchemy.run/providers/hetzner/website/waku) for every prop and attribute.
+See the [Waku API reference](https://alchemy.run/providers/hetzner/website#waku) for every prop and attribute.
 
 ## Add environment variables
 
@@ -129,6 +129,6 @@ const site = yield* Hetzner.Website.Waku("Web", {
 
 ## Where next
 
-- [Waku API reference](https://alchemy.run/providers/hetzner/website/waku)
+- [Waku API reference](https://alchemy.run/providers/hetzner/website#waku)
 - [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
 - [DNS](https://alchemy.run/hetzner/networking/dns)

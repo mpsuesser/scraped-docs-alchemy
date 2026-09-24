@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -96,7 +96,7 @@ export default Alchemy.Stack(
 );
 ```
 
-On deploy, alchemy bundles the entrypoint, builds the Docker image, pushes it to Cloudflare’s managed registry, and reconciles the application’s scaling and runtime configuration — the first deploy takes a minute or two longer while the registry is provisioned.
+On deploy, alchemy bundles the entrypoint, builds and pushes the Docker image as needed, and reconciles the application’s scaling and runtime configuration. The first deploy takes a minute or two longer while the registry is provisioned. Builds are [cached by default](#cached-builds-by-default): a matching image can be reused from the registry without invoking Docker.
 
 ## Proxy HTTP to a container port
 
@@ -142,6 +142,45 @@ export class Echo extends Cloudflare.Container<Echo>()("Echo", {
 Arbitrary images expose no RPC methods — the DO talks to them purely over their TCP port via `getTcpPort`. To build, tag, and push that image as part of the same Stack, see [Build & push images](../../docker/build-and-push.md) in the Docker hub.
 
 When `image` already references Cloudflare’s managed registry — for example a digest reference pushed by CI, like `registry.cloudflare.com/<accountId>/app@sha256:...` — alchemy deploys the reference as-is and skips the docker pull and push entirely.
+
+## Cached builds by default
+
+Dockerfile builds, inline Dockerfiles, and Effect-native `main` builds use registry caching without extra configuration:
+
+```typescript
+export class Web extends Cloudflare.Container<Web>()("Web", {
+  context: \`${import.meta.dirname}/context\`,
+}) {}
+```
+
+The default repository is `registry.cloudflare.com/<account-id>/<application-physical-name>`. The generated physical name includes the stack, stage, and resource-instance identity. Updates to that application within the stage can reuse published images, including when reverting to previously built inputs. Replacement or destroy/recreate can change the physical name and start a new cache.
+
+This is resource-specific caching within a stage, not one shared repository for every container. To reuse images across stages or applications, choose a common `publish.repository` as shown below.
+
+Set `publish.repository` to choose a destination repository shared by applications and stages in the same Cloudflare account:
+
+```typescript
+export class Web extends Cloudflare.Container<Web>()("Web", {
+  context: \`${import.meta.dirname}/context\`,
+  publish: { repository: "web" },
+}) {}
+```
+
+`"web"` is the repository name, not a source image, application name, registry host, or complete image reference. Alchemy lowercases it and adds the configured account ID. With the default registry host, a build uses:
+
+```text
+Published build: registry.cloudflare.com/<account-id>/web:<build-hash>
+Build cache:     registry.cloudflare.com/<account-id>/web:buildcache
+Deployed image:  registry.cloudflare.com/<account-id>/web@sha256:<manifest-digest>
+```
+
+The build hash identifies the inputs; the manifest digest identifies the published artifact. Stages using the same repository and matching build inputs reuse the published image without invoking Docker. Changed inputs produce a new hash tag in that repository and can reuse its shared inline build-layer cache. Each stage still has its own Container application, runtime settings, and running instances; only images and build layers are shared.
+
+All builds targeting a repository import reusable layers from its `:buildcache` tag, even when their complete input hashes differ. That tag points to the latest exported inline cache, not an aggregate of every image ever published to the repository. A finished-image cache hit leaves the layer-cache tag unchanged. The Container deploys the immutable digest, not the mutable `buildcache` tag.
+
+For an Effect-native Container, put `publish` in the props passed to `.make()`, alongside `main`. Omitting `publish` keeps the default cached, application-specific repository.
+
+For a pre-built external `image`, `publish.repository` chooses where it is re-published, but does not enable finished-image cache reuse. Images already in the target registry keep their existing repository instead of being copied into the requested one.
 
 ## Configure the container with env
 
@@ -345,7 +384,7 @@ Only image-backed containers (`image`, or `context` / `dockerfile`) can be bound
 
 ## ContainerApplication
 
-Under the hood every container is backed by a [ContainerApplication](https://alchemy.run/providers/cloudflare/containers/containerapplication) — the deployed, scalable unit that carries the image, instance type, instance counts, and observability settings. You typically extend `Cloudflare.Container` rather than using it directly, but the same props shape (`instanceType`, `observability`, `runtime`, …) flows through `.make()`.
+Under the hood every container is backed by a [ContainerApplication](https://alchemy.run/providers/cloudflare/containers#containerapplication) — the deployed, scalable unit that carries the image, instance type, instance counts, and observability settings. You typically extend `Cloudflare.Container` rather than using it directly, but the same props shape (`instanceType`, `observability`, `runtime`, …) flows through `.make()`.
 
 ## Rollouts
 
@@ -377,5 +416,5 @@ Related:
 
 Reference:
 
-- [Container API reference](https://alchemy.run/providers/cloudflare/containers/container)
-- [ContainerApplication API reference](https://alchemy.run/providers/cloudflare/containers/containerapplication)
+- [Container API reference](https://alchemy.run/providers/cloudflare/containers#container)
+- [ContainerApplication API reference](https://alchemy.run/providers/cloudflare/containers#containerapplication)

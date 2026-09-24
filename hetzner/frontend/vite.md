@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Hetzner with Hetzner.Website.Vite — static assets as a systemd unit on a Server, http://{ipv4}:3000, and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Hetzner.Website.Vite` deploys a [Vite](https://vite.dev/) project to a Hetzner Cloud Server. It runs `vite build` and serves the output from a systemd [`Service`](https://alchemy.run/hetzner/compute/services) on port 3000. Omit `server` and Alchemy creates a `cpx12` / `ubuntu-24.04` [`Server`](https://alchemy.run/hetzner/compute/servers) in `fsn1`. Live `url` is `http://{ipv4}:3000`. Your `vite.config.*` loads natively — plugins included. There is no TLS on the Service and no framework server module.
@@ -147,6 +147,6 @@ export const Website = Hetzner.Website.Vite("Website", {
 
 ## Where next
 
-- [`Hetzner.Website.Vite` API](https://alchemy.run/providers/hetzner/website/vite)
+- [`Hetzner.Website.Vite` API](https://alchemy.run/providers/hetzner/website#vite)
 - [Astro](astro.md), [Next.js](nextjs.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), [Octane](octane.md) — SSR frameworks
 - [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)

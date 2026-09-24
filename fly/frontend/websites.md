@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/fly/frontend/websites
 title: "Websites"
-description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Fly with first-class Website resources."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Fly with first-class Website resources."
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Alchemy deploys frontends to Fly with a family of `Fly.Website`
@@ -24,6 +24,9 @@ container integration on top.
 - [`Nextjs`](nextjs.md) — Next.js as a long-running
   Node process (`next build`, then `next({ dev: false })`). Not
   OpenNext.
+- [`Vinext`](vinext.md) — vinext (Next.js API on Vite)
+  as a long-running Node process (`vinext build`, then
+  `startProdServer`). Not the Cloudflare Worker path.
 - [`Nuxt`](nuxt.md) — Nuxt apps through nitro's Node
   server; your `nuxt.config.ts` loads natively. Do not set
   `nitro.preset`.
@@ -38,9 +41,8 @@ container integration on top.
   (React or Solid), built through your own `vite build`.
 - [`Waku`](waku.md) — Waku (React Server Components)
   on Node, with SSG pages served extensionless.
-- [`Octane`](octane.md) — OctaneJS SSR. Select
-  `node()` from `@alchemy.run/frontend-frameworks/octane/node-adapter`
-  in `octane.config.ts`.
+- [`Octane`](octane.md) — OctaneJS SSR. Alchemy wraps
+  native Node output; no hosting adapter is needed in `octane.config.ts`.
 - [`Foldkit`](foldkit.md) — client-only Foldkit SPA;
   deep links fall back to `index.html`.
 - [`Vocs`](vocs.md) — prerendered Vocs docs; extensionless
@@ -71,6 +73,7 @@ unchanged project skips the build.
 | SolidStart | `SolidStart` | [SolidStart](solidstart.md) |
 | Astro | `Astro` | [Astro](astro.md) |
 | Next.js | `Nextjs` | [Next.js](nextjs.md) |
+| vinext | `Vinext` | [vinext](vinext.md) |
 | Nuxt | `Nuxt` | [Nuxt](nuxt.md) |
 | SvelteKit | `SvelteKit` | [SvelteKit](sveltekit.md) |
 | Waku | `Waku` | [Waku](waku.md) |
@@ -116,7 +119,7 @@ const site = yield* Fly.Website.Vite("Web", {
 ```
 
 Server code reads `process.env`. Pair a site with
-[Postgres](https://alchemy.run/fly/data/postgres) the same way you would any other
+[Postgres](../data/postgres.md) the same way you would any other
 Service: put the connection string in `env`, or bind
 `ConnectPostgres` on a sibling [Service](https://alchemy.run/fly/compute/services).
 
@@ -159,8 +162,8 @@ point existing DNS at the App first (v1 does not create records).
   [Vocs](vocs.md).
 - [Services](https://alchemy.run/fly/compute/services) — the Node process these
   resources deploy.
-- [Postgres](https://alchemy.run/fly/data/postgres) — managed Postgres next to a
+- [Postgres](../data/postgres.md) — managed Postgres next to a
   site.
-- [`Vite` reference](https://alchemy.run/providers/fly/website/vite),
-  [`Astro` reference](https://alchemy.run/providers/fly/website/astro),
-  [`StaticSite` reference](https://alchemy.run/providers/fly/website/staticsite).
+- [`Vite` reference](https://alchemy.run/providers/fly/website#vite),
+  [`Astro` reference](https://alchemy.run/providers/fly/website#astro),
+  [`StaticSite` reference](https://alchemy.run/providers/fly/website#staticsite).

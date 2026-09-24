@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 (framework mode) to Fly with Fly.Website.ReactRouter — SSR on a Machine, client assets baked into the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Fly.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Fly. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -77,7 +77,7 @@ Requests matching a built client asset are served first; everything else — SSR
 
 The live `url` is `https://{app}.fly.dev`. `site.app`, `site.service`, `site.ip`, and `site.certificate` are the Fly resources underneath — `undefined` during `alchemy dev`.
 
-See the [React Router API reference](https://alchemy.run/providers/fly/website/reactrouter) for every prop and attribute.
+See the [React Router API reference](https://alchemy.run/providers/fly/website#reactrouter) for every prop and attribute.
 
 ## How the two build outputs are deployed
 
@@ -177,6 +177,6 @@ const site = yield* Fly.Website.ReactRouter("Web", {
 
 ## Where next
 
-- [React Router API reference](https://alchemy.run/providers/fly/website/reactrouter)
+- [React Router API reference](https://alchemy.run/providers/fly/website#reactrouter)
 - [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
 - [IPs & certificates](https://alchemy.run/fly/networking)

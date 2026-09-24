@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/rds
 title: "RDS & Aurora"
 description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with pg, or skip connections entirely with the Data API."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Aurora is AWS's managed Postgres/MySQL. Bringing it up by hand
@@ -66,7 +66,7 @@ creates and how to build the same layout by hand.
 
 ## The Aurora helper
 
-[`Aurora`](https://alchemy.run/providers/aws/rds/aurora) needs only the subnets and
+[`Aurora`](https://alchemy.run/providers/aws/rds#aurora) needs only the subnets and
 security groups the database should live in:
 
 ```typescript
@@ -119,7 +119,7 @@ const db = yield* AWS.RDS.Aurora("Database", {
 
 ## Connect from Lambda with pg
 
-The [`Connect`](https://alchemy.run/providers/aws/rds/connect) binding resolves
+The [`Connect`](https://alchemy.run/providers/aws/rds#connect) binding resolves
 connection settings — host, port, database, username, password —
 for a cluster, proxy, or proxy endpoint. Credentials are read
 from Secrets Manager **at request time**, so they never land in
@@ -311,6 +311,14 @@ and `RollbackTransaction`, each with a matching `*Http` layer.
 
 ## Where next
 
+- [Drizzle + Aurora PostgreSQL](drizzle-aurora.md) — a standalone Lambda
+  application with IAM database authentication, verified TLS, and controlled schema setup.
+- [Drizzle + Aurora DSQL](drizzle-dsql.md) — a different database with a
+  public IAM-authenticated endpoint, no Aurora PostgreSQL cluster or VPC required.
+
+- [SQL databases](../../sql/databases.md) — database engines, connection paths, and client choices.
+
+
 - [VPC & networking](../networking.md) — the `Network` helper and
   the primitives underneath it.
 - [Lambda](../compute/lambda.md) — the runtime this page binds Aurora
@@ -324,7 +332,7 @@ and `RollbackTransaction`, each with a matching `*Http` layer.
 
 Reference:
 
-- [`Aurora` reference](https://alchemy.run/providers/aws/rds/aurora) — every prop
+- [`Aurora` reference](https://alchemy.run/providers/aws/rds#aurora) — every prop
   on the helper.
-- [`Connect` reference](https://alchemy.run/providers/aws/rds/connect)
-- [`ExecuteStatement` reference](https://alchemy.run/providers/aws/rdsdata/executestatement)
+- [`Connect` reference](https://alchemy.run/providers/aws/rds#connect)
+- [`ExecuteStatement` reference](https://alchemy.run/providers/aws/rdsdata#executestatement)

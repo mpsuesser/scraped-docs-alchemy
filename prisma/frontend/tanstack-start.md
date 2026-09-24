@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start to Prisma Compute with Prisma.Website.TanStackStart — React or Solid SSR on Bun, with native Vite dev locally."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Prisma.Website.TanStackStart` builds [TanStack Start](https://tanstack.com/start) for React or Solid through your project’s Vite pipeline. The shared Node target wraps its fetch handler as an HTTP server; SSR and client assets run on **Bun in Prisma Compute** from a `tar.gz` upload. There is no Docker image or registry.
@@ -128,6 +128,6 @@ const site = yield* Prisma.Website.TanStackStart("Web", {
 
 ## Where next
 
-- [TanStack Start API](https://alchemy.run/providers/prisma/website/tanstackstart).
+- [TanStack Start API](https://alchemy.run/providers/prisma/website#tanstackstart).
 - [TanStack Start example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-website-tanstack-start).
 - [Websites](websites.md) and [Compute apps](../compute/apps.md).

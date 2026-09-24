@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/domains
 title: "Domains & DNS"
 description: "Manage Cloudflare zones, DNS records, DNSSEC, and zone settings as resources — and safely adopt the domains you already have."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Your domain is infrastructure too. Alchemy manages Cloudflare
@@ -182,7 +182,7 @@ Related:
 
 Reference:
 
-- [Zone API reference](https://alchemy.run/providers/cloudflare/zone/zone)
-- [Record API reference](https://alchemy.run/providers/cloudflare/dns/record)
-- [Setting API reference](https://alchemy.run/providers/cloudflare/zone/setting)
-- [Dnssec API reference](https://alchemy.run/providers/cloudflare/dns/dnssec)
+- [Zone API reference](https://alchemy.run/providers/cloudflare/zone#zone)
+- [Record API reference](https://alchemy.run/providers/cloudflare/dns#record)
+- [Setting API reference](https://alchemy.run/providers/cloudflare/zone#setting)
+- [Dnssec API reference](https://alchemy.run/providers/cloudflare/dns#dnssec)

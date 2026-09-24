@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
@@ -79,6 +79,8 @@ export const SandboxLive = Sandbox.make(
 ```
 
 `Stack.useSync` is the synchronous accessor for any data in the surrounding Effect context — handy for stack-level config like stage, app name, or anything else you’d want to vary per environment.
+
+To reuse matching image builds across stages, configure `publish.repository` in these same props; see [Share published images across stages](containers.md#share-published-images-across-stages).
 
 ## Implement exec as an RPC method
 

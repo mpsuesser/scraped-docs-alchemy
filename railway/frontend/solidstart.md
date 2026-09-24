@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Railway with Railway.Website.SolidStart — nitro's node preset on a container Service, prerendered pages in the image, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Railway. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server plus client assets (prerendered pages included) run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -79,7 +79,7 @@ export default Alchemy.Stack(
 
 The live `url` is `https://{name}.up.railway.app`. `site.service` and `site.project` are the Railway resources underneath — `undefined` during `alchemy dev`.
 
-See the [SolidStart API reference](https://alchemy.run/providers/railway/website/solidstart) for every prop and attribute.
+See the [SolidStart API reference](https://alchemy.run/providers/railway/website#solidstart) for every prop and attribute.
 
 ## Add environment variables
 
@@ -161,6 +161,6 @@ const site = yield* Railway.Website.SolidStart("Web", {
 
 ## Where next
 
-- [SolidStart API reference](https://alchemy.run/providers/railway/website/solidstart)
+- [SolidStart API reference](https://alchemy.run/providers/railway/website#solidstart)
 - [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
 - [Custom domains](https://alchemy.run/railway/networking)

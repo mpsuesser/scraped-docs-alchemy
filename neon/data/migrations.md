@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/migrations
 title: "Migrations"
 description: "Apply SQL migrations and seed data to Neon projects and branches as part of every deploy — ordered, hashed, and tracked in Alchemy's __alchemy_migrations table."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 Both `Neon.Project` and `Neon.Branch` accept a `migrations` prop — a
@@ -114,5 +114,5 @@ Related:
 
 Reference:
 
-- [Project API reference](https://alchemy.run/providers/neon/project)
-- [Branch API reference](https://alchemy.run/providers/neon/branch)
+- [Project API reference](https://alchemy.run/providers/neon/reference/project#project)
+- [Branch API reference](https://alchemy.run/providers/neon/reference/branch#branch)

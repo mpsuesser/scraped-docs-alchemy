@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/postgres
 title: "Postgres"
 description: "Prisma Postgres as Stack resources — projects, databases, branch attachment, and a zero-config local database under alchemy dev."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A `Prisma.Project` owns everything; a `Prisma.Postgres` database
@@ -96,6 +96,6 @@ dev session; the default (`"stateful"`) keeps data across restarts.
 
 Reference:
 
-- [Project API reference](https://alchemy.run/providers/prisma/project)
-- [Database API reference](https://alchemy.run/providers/prisma/database)
-- [Branch API reference](https://alchemy.run/providers/prisma/branch)
+- [Project API reference](https://alchemy.run/providers/prisma/reference/project#project)
+- [Database API reference](https://alchemy.run/providers/prisma/reference/postgres#database)
+- [Branch API reference](https://alchemy.run/providers/prisma/reference/project#branch)

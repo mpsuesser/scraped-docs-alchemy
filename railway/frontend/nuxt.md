@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Railway with Railway.Website.Nuxt — nitro's node preset on a Service, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 `Railway.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Railway. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server plus prerendered assets run on one `Railway.Service`. Omit `project` to create a `Railway.Project`. The URL is `https://{name}.up.railway.app` unless you set `domain`. There is no `nitro.preset` to edit and no build command to run.
@@ -131,7 +131,7 @@ Point DNS at Railway’s verification records on the CustomDomain.
 
 ## Where next
 
-- [`Railway.Website.Nuxt` reference](https://alchemy.run/providers/railway/website/nuxt) — every prop and attribute.
+- [`Railway.Website.Nuxt` reference](https://alchemy.run/providers/railway/website#nuxt) — every prop and attribute.
 - [Services](https://alchemy.run/railway/compute/services) and [Projects](https://alchemy.run/railway/compute/projects) — the Service and Project the site creates.
 - [Custom domains](https://alchemy.run/railway/networking#custom-domains) — hostnames on a Service.
 - [Setup](../setup.md) — workspace, API token, and alchemy login.

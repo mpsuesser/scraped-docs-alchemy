@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/data/ingest
 title: "Datasets & ingest"
 description: "Axiom datasets per OTel signal with OTLP endpoints as outputs, least-privilege ingest tokens, and per-stage naming with Stack.useSync."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 A `Dataset` is Axiom's top-level container — it stores your events,
@@ -177,5 +177,5 @@ tearing down a preview stage deletes its data with it. See
   the data you just ingested.
 - [Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) — the built-in
   OTel exporters and how they flush per request.
-- Reference: [Dataset](https://alchemy.run/providers/axiom/dataset) ·
-  [ApiToken](https://alchemy.run/providers/axiom/apitoken)
+- Reference: [Dataset](https://alchemy.run/providers/axiom/reference/dataset#dataset) ·
+  [ApiToken](https://alchemy.run/providers/axiom/reference/api-token#apitoken)

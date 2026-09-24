@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/workers-ai
 title: "Run Workers AI models"
 description: "Bind Workers AI into your Worker with Cloudflare.Workers.AI — run inference and list models directly, or turn the binding into a typed Effect LanguageModel, no gateway required."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-09-24T22:45:48.980Z
+current_date: 2026-09-24T22:45:48.980Z
 ---
 
 **Workers AI** runs open-weight models (Llama, Mistral, Whisper,
@@ -207,5 +207,5 @@ change in the Construction phase.
   `Chat` pattern this binding plugs into.
 - [Add an AI Gateway](ai-gateway.md) — caching, rate
   limiting, and logs in front of the same models.
-- [API reference: Cloudflare.Workers.AI](https://alchemy.run/providers/cloudflare/workers/ai)
+- [API reference: Cloudflare.Workers.AI](https://alchemy.run/providers/cloudflare/workers#ai)
   — the full binding surface (`run`, `models`, `model`, `raw`).
