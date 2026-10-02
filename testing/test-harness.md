@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for alchemy/Test — every helper, hook, and option exposed by Test.make for Bun and Vitest."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 `alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same Effect-aware harness. For the end-to-end walkthrough, see [Testing a Stack](testing-a-stack.md); for provider-lifecycle testing, see [Testing Providers](testing-providers.md).
@@ -205,7 +205,7 @@ test.provider.skipIf(condition)(name, fn);
 `HttpClient` is wired into every `test` Effect, so you can call it directly:
 
 ```typescript
-import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClient from "effect/http/HttpClient";
 
 test(
   "health check",
@@ -217,7 +217,7 @@ test(
 );
 ```
 
-The implementation comes from `effect/unstable/http/FetchHttpClient` — same client the CLI uses. For a full PUT/GET round-trip against a deployed stack, see [Testing a Stack → Drive the live URL](testing-a-stack.md).
+The implementation comes from `effect/http/FetchHttpClient` — same client the CLI uses. For a full PUT/GET round-trip against a deployed stack, see [Testing a Stack → Drive the live URL](testing-a-stack.md).
 
 ## Bun vs Vitest
 

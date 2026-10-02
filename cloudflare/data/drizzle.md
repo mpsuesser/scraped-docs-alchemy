@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Deploy a Cloudflare Worker with Drizzle queries, Hyperdrive connections, and reviewed, committed migrations on Neon or PlanetScale."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../sql.md) owns the portable client APIs. For Cloudflare’s SQLite database, use [Drizzle on D1](d1-drizzle.md).
@@ -101,7 +101,7 @@ Hyperdrive pools the direct Neon origin; local development uses the pooled origi
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Drizzle from "alchemy/Drizzle/Postgres";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Hyperdrive } from "./Hyperdrive.ts";
 import { Users } from "./schema.ts";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-1
 title: "Part 1: Push your first repository"
 description: "Deploy a Git host, push a commit, and clone it back. Add storage and hashing one layer at a time."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Start with a Git remote you can push to. This part deploys a Worker backed by Durable Objects and R2, then sends a real commit through it and clones it back.
@@ -102,7 +102,7 @@ import * as Git from "alchemy/Git";
 import * as Http from "alchemy/Http";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import * as HttpRouter from "effect/http/HttpRouter";
 import { GitLive } from "./git.ts";
 
 export default class GitHost extends Cloudflare.Worker<GitHost>()(

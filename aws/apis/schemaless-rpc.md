@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC from a Lambda Function into a MicroVM with no schema — declare the image's Shape, connect, get the client."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 The pattern — what a Shape member may be, how the typed client arises, what
@@ -18,7 +18,7 @@ riding the generic fetch transport — each call is a
 // sandbox.ts — the MicroVM image
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export class Sandbox extends AWS.Lambda.MicrovmImage<
   Sandbox,

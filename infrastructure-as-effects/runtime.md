@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/runtime
 title: "Runtime"
 description: "A Runtime is a Resource that carries the code it runs — a Worker, Lambda Function, Container, or Server declared with the Effectful Constructor pattern. Bind what you need, return what you expose."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 In Alchemy, a **Runtime** is a [Resource](../infrastructure-as-code/resource.md)
@@ -15,7 +15,7 @@ The Effect is the code. Here is the running example from
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads");
 
@@ -84,8 +84,8 @@ once and every Runtime in Alchemy is a variation on it.
 
 ```typescript
 import * as Effect from "effect/Effect";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 Effect.gen(function* () {
   return {

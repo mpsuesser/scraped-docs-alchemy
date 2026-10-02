@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/d1-drizzle
 title: "Drizzle on D1"
 description: "Deploy committed SQLite migrations to D1 and query the database from a Worker with Drizzle."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 D1 uses a native Worker binding, so it needs neither a connection string nor Hyperdrive. For external Postgres/MySQL, use [Worker + Drizzle](drizzle.md).
@@ -73,7 +73,7 @@ D1 applies pending SQL during deployment. [D1 migrations](d1.md#migrations) cove
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Drizzle from "alchemy/Drizzle";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Database } from "./Db.ts";
 import { users } from "./schema.ts";
 

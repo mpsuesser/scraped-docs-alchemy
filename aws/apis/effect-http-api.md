@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-http-api
 title: "Effect HTTP API on Lambda"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Effect HTTP defines real REST endpoints — URLs, path params, query strings, typed bodies — behind an RPC-like typed interface, which makes it the natural fit when your consumers aren’t Effect (or aren’t TypeScript at all) and want a plain HTTP client. This page is the Lambda wiring; the concept lives at [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the RPC styles.
@@ -53,9 +53,9 @@ Endpoints are declarations — they describe `(method, path, query, payload, suc
 
 ```typescript
 import * as Schema from "effect/Schema";
-import * as HttpApi from "effect/unstable/httpapi/HttpApi";
-import * as HttpApiEndpoint from "effect/unstable/httpapi/HttpApiEndpoint";
-import * as HttpApiGroup from "effect/unstable/httpapi/HttpApiGroup";
+import * as HttpApi from "effect/http-api/HttpApi";
+import * as HttpApiEndpoint from "effect/http-api/HttpApiEndpoint";
+import * as HttpApiGroup from "effect/http-api/HttpApiGroup";
 import { Job, JobId, JobNotFound } from "./Job.ts";
 
 export const getJob = HttpApiEndpoint.get("getJob", "/", {
@@ -216,10 +216,10 @@ Here’s the complete `src/JobFunction.ts`:
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as Etag from "effect/unstable/http/Etag";
-import * as HttpPlatform from "effect/unstable/http/HttpPlatform";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
+import * as Etag from "effect/http/Etag";
+import * as HttpPlatform from "effect/http/HttpPlatform";
+import * as HttpRouter from "effect/http/HttpRouter";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 import { Job, JobNotFound } from "./Job.ts";
 import { JobApi } from "./JobApi.ts";
 
@@ -337,7 +337,7 @@ import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";
-import * as HttpApiClient from "effect/unstable/httpapi/HttpApiClient";
+import * as HttpApiClient from "effect/http-api/HttpApiClient";
 import Stack from "../alchemy.run.ts";
 import { JobApi } from "../src/JobApi.ts";
 

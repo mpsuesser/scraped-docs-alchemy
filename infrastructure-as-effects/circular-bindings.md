@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/circular-bindings
 title: "Circular Bindings"
 description: "How to model two services that reference each other (Worker A ↔ Worker B, Lambda ↔ Lambda) using tagged classes and Layers."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Real systems have cycles. A web Worker calls an internal Worker for auth; the internal Worker calls back into the web Worker for billing. Two Lambdas trigger each other through a queue.
@@ -58,7 +58,7 @@ Attach A’s implementation with `A.make(...)`. Inside the Construction phase, `
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { B } from "./B.ts";
 
 export class A extends Cloudflare.Worker<A, { work: () => Effect.Effect<string> }>()("A") {}
@@ -87,7 +87,7 @@ Mirror the same pattern in `B.ts`. B’s runtime imports A’s Tag and binds it.
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { A } from "./A.ts";
 
 export class B extends Cloudflare.Worker<B, { work: () => Effect.Effect<string> }>()("B") {}

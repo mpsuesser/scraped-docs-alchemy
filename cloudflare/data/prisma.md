@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/prisma
 title: "Prisma ORM with Postgres"
 description: "Deploy Prisma ORM v8 on Cloudflare Workers with Neon Postgres, Hyperdrive, controlled migrations, and Effect-native queries."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 [Contracts](../../sql/prisma/contracts.md) · [Query API](../../sql/prisma/postgres.md) · [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-prisma)
@@ -93,7 +93,7 @@ Caching is disabled so reads immediately reflect writes. [Hyperdrive guide](hype
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as PrismaPostgres from "alchemy/Prisma/ORM/Postgres";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { contract } from "./prisma/contract.ts";
 import { Hyperdrive } from "./db.ts";
 

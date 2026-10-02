@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC between Workers, Durable Objects, and Containers with no schema — bind the class, get the client."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 The schemaless RPC pattern — what makes a member callable, how the typed client arises, what crosses the wire — is documented at [Schemaless RPC](../../apis/schemaless.md). This page walks Cloudflare's pairings. Worker → Worker and Worker → Durable Object ride the platform's native JSRPC channel (values move by structured clone, and service bindings never traverse the public internet); Containers ride the generic fetch transport.
@@ -13,7 +13,7 @@ The schemaless RPC pattern — what makes a member callable, how the typed clien
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class BindingTargetWorker extends Cloudflare.Worker<BindingTargetWorker>()(
   "BindingTargetWorker",
@@ -38,8 +38,8 @@ Any non-`fetch` function member returning an Effect or a Stream becomes callable
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import BindingTargetWorker from "./binding-target-worker.ts";
 
 export default class BindingEffectCaller extends Cloudflare.Worker<BindingEffectCaller>()(
@@ -106,7 +106,7 @@ A DO shape can mix value methods (`put`/`get` return Effects) with streaming met
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { WorkerEnvironmentKVObject } from "./object.ts";
 
 export default class KVWorker extends Cloudflare.Worker<KVWorker>()(
@@ -153,8 +153,8 @@ The stub call is both an Effect and a Stream — value methods `yield*`, streami
 // src/workerB.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Counter } from "./object.ts";
 import { WorkerA } from "./workerA.ts";
 
@@ -185,7 +185,7 @@ export default class WorkerB extends Cloudflare.Worker<WorkerB>()(
 import * as Cloudflare from "alchemy/Cloudflare";
 import type { RuntimeContext } from "alchemy/RuntimeContext";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 const Storage = Cloudflare.R2.Bucket("Storage");
 

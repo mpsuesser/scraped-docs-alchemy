@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/worker-loader
 title: "Worker Loader"
 description: "Load and run ephemeral Workers at runtime from inline source — each in its own sandboxed isolate, with optional outbound-network control and typed RPC entrypoints."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 A Worker Loader lets a deployed Worker spin up other Workers at
@@ -22,7 +22,7 @@ returns the runtime handle in one step. There is no layer to provide:
 // src/worker.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
 
 export default Cloudflare.Worker(
   "LoaderWorker",

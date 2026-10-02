@@ -2,8 +2,8 @@
 url: https://alchemy.run/what-is-alchemy
 title: "What is Alchemy?"
 description: "Alchemy is Infrastructure as Code built in pure Effect, with Infrastructure as Effects on top. Declare your cloud resources and the code that runs on them in one type-safe TypeScript program, and deploy it with one command."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Alchemy is **Infrastructure as Code** built in pure [Effect](https://effect.website/), with **Infrastructure as Effects** on top. Infrastructure as Code declares, diffs, and deploys cloud resources the way Terraform or Pulumi does. Infrastructure as Effects lets the code that runs on those resources live in the same program, as typed Effects and Layers.
@@ -13,7 +13,7 @@ Here is the whole thing in one file. An R2 Bucket, and a Worker that serves file
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads");
 

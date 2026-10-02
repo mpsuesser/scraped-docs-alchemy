@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/getting-started
 title: "Getting Started"
 description: "A complete quickstart for a Git host protected by a shared credential. Deploy it to Cloudflare, push a repository, and clone it back."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 For a step-by-step explanation, start with [Push your first repository](tutorial/part-1.md). This page provides a complete host protected by one shared credential.
@@ -24,12 +24,12 @@ import * as Cloudflare from "alchemy/Cloudflare";
 import * as Git from "alchemy/Git";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import * as HttpRouter from "effect/http/HttpRouter";
 import * as Http from "alchemy/Http";
 import * as Redacted from "effect/Redacted";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
-import * as HttpApiSecurity from "effect/unstable/httpapi/HttpApiSecurity";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
+import * as HttpApiSecurity from "effect/http-api/HttpApiSecurity";
 
 export const GitObjects = Cloudflare.R2.Bucket("GitObjects");
 export const GitSecret = Effect.gen(function* () {

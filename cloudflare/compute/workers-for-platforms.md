@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers-for-platforms
 title: "Workers for Platforms"
 description: "Run your customers' Workers in your own account — create a dispatch namespace, upload user Workers into it, and route requests from a platform Worker with the Get binding."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Workers for Platforms lets you run your customers' code on Cloudflare's
@@ -86,8 +86,8 @@ looks up a user Worker by script name and returns a `Fetcher`:
 // src/platform.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Customers } from "./namespace.ts";
 
 export default class PlatformWorker extends Cloudflare.Worker<PlatformWorker>()(

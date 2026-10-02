@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute Runtime of every Alchemy app — declare the Worker and its handler in one file, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 In Alchemy, a Cloudflare Worker is a [Runtime](../../infrastructure-as-effects/runtime.md): a [Resource](../../infrastructure-as-code/resource.md) that carries the code it runs. The name and props describe the Worker to deploy. The Effect is what it does:
@@ -11,7 +11,7 @@ In Alchemy, a Cloudflare Worker is a [Runtime](../../infrastructure-as-effects/r
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default Cloudflare.Worker(
   "Worker",
@@ -59,7 +59,7 @@ Declare a Bucket next to the Worker and bind it. The [Binding](../../infrastruct
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads");
 
@@ -117,7 +117,7 @@ Bind it from another Worker with `bindWorker` and call `greet` through the typed
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Greeter } from "./Greeter.ts";
 
 export default Cloudflare.Worker(

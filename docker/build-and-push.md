@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/build-and-push
 title: "Build & push images"
 description: "Build a container image from a Dockerfile, push it to a registry, and hand the resulting image reference to Cloudflare Containers or AWS ECS."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 This page is the canonical home for producing a **registry image
@@ -117,7 +117,9 @@ Pass `image.imageRef` (or `repoDigest`, for an immutable pin) to
 whatever runs the container:
 [Cloudflare Containers](../cloudflare/compute/containers.md) accept it as
 a bring-your-own image, and an [ECS task definition](../aws/compute/ecs.md)
-takes it as the container image. The registry reference is the
+takes it as the container image, and a
+[Kubernetes Deployment or Job](../kubernetes/workloads/images.md#build-images-with-dockerimage)
+takes it as `image`. The registry reference is the
 boundary — Cloudflare and AWS pull from the registry; no further
 Docker wiring is involved. A reference already in Cloudflare's
 managed registry (`registry.cloudflare.com/...`) is deployed as-is —

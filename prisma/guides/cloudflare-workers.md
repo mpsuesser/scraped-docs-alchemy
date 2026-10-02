@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/guides/cloudflare-workers
 title: "Connect from Cloudflare Workers"
 description: "Two ways to reach Prisma Postgres from a Worker — the Connect binding for credentials, or Hyperdrive in front of the direct origin for edge-pooled SQL."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 A Worker can consume a Prisma Postgres database two ways. Both start
@@ -15,7 +15,7 @@ import * as Drizzle from "alchemy/Drizzle/Postgres";
 import * as Prisma from "alchemy/Prisma";
 import * as SQL from "alchemy/SQL/Postgres";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 const project = yield* Prisma.Project("app", { createDatabase: false });
 const postgres = yield* Prisma.Postgres("db", { project });

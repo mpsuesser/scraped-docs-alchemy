@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/cloudflare
 title: "All on Cloudflare"
 description: "A git host on one Cloudflare account. One Worker, one bucket, two Durable Object namespaces, and dynamically loaded Workers hashing large pushes."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 The examples use `Authentication` from [Getting Started](../getting-started.md): the application’s request middleware.
@@ -16,7 +16,7 @@ import * as Git from "alchemy/Git";
 import * as GitHasher from "alchemy/Git/Hasher";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import * as HttpRouter from "effect/http/HttpRouter";
 import * as Http from "alchemy/Http";
 
 export const GitObjects = Cloudflare.R2.Bucket("GitObjects");

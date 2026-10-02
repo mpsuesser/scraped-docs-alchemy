@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/postgres
 title: "Postgres"
 description: "Official SSL Postgres in a Project. Bind Railway.ConnectPostgres and query with Drizzle or SQL."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 A [`Railway.Postgres`](https://alchemy.run/providers/railway/reference/postgres#postgres) is Postgres as a
@@ -40,7 +40,7 @@ SQL.
 
 ```typescript
 import * as Drizzle from "alchemy/Drizzle/Postgres";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends Railway.Service<Api>()(
   "Api",

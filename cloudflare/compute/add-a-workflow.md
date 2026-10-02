@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 This guide builds a Workflow end to end: a durable multi-step job
@@ -285,8 +285,8 @@ site that needs it (here, an `Authorization` header):
 
 ```diff lang="typescript"
 +import * as Redacted from "effect/Redacted";
-+import * as HttpClient from "effect/unstable/http/HttpClient";
-+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
++import * as HttpClient from "effect/http/HttpClient";
++import * as HttpClientRequest from "effect/http/HttpClientRequest";
 
  export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>()(
    "Notifier",
@@ -341,8 +341,8 @@ Worker's Construction phase. Use `create()` to start an instance and
 // src/worker.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-+import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
++import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 +import NotifyWorkflow from "./NotifyWorkflow.ts";
 
 export default Cloudflare.Worker(
@@ -407,7 +407,7 @@ import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";
-import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClient from "effect/http/HttpClient";
 import Stack from "../alchemy.run.ts";
 
 const { test, beforeAll, deploy } = Test.make({

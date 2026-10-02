@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis
 title: "APIs"
 description: "Every Function and Server returns { fetch, ...rpcs } — schemaless typed calls are the default for internal communication; Effect RPC and Effect HTTP add schemas where data crosses a trust boundary."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Every Function and Server in alchemy returns `{ fetch, ...rpcs }` from its [Effectful Constructor](infrastructure-as-effects/runtime.md#the-effectful-constructor) — you already saw the “return what you expose” half. The `rpcs` are the other half: plain functions returning `Effect` or `Stream`, no schema, no decorators:
@@ -11,7 +11,7 @@ Every Function and Server in alchemy returns `{ fetch, ...rpcs }` from its [Effe
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class BindingTargetWorker extends Cloudflare.Worker<BindingTargetWorker>()(
   "BindingTargetWorker",

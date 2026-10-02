@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/sending
 title: "Sending & managing email"
 description: "Send email with SES — verify identities, send from a Lambda with the SendEmail binding, manage contact lists, tenants, dedicated IP pools, account settings, and deliverability insights."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 **SES sending** starts with a verified **identity** — a domain or
@@ -98,7 +98,7 @@ returns a callable. Provide its implementation with
 import * as AWS from "alchemy/AWS";
 import * as SES from "alchemy/AWS/SES";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Mailer extends AWS.Lambda.Function<Mailer>()(
   "Mailer",

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -34,7 +34,7 @@ The empty function compiles, but it doesn’t do anything yet. Add a `fetch` fie
 ```typescript
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
@@ -48,7 +48,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 ) {}
 ```
 
-`HttpServerResponse.text(...)` is the same `effect/unstable/http` API used everywhere else in Effect — Alchemy adapts it to the Lambda event envelope under the hood, so your handler never sees the raw `APIGatewayProxyEvent` shape.
+`HttpServerResponse.text(...)` is the same `effect/http` API used everywhere else in Effect — Alchemy adapts it to the Lambda event envelope under the hood, so your handler never sees the raw `APIGatewayProxyEvent` shape.
 
 ## Expose a public URL
 
@@ -77,7 +77,7 @@ In Part 1 the Bucket lived in `alchemy.run.ts`, but resources can be declared in
 import * as AWS from "alchemy/AWS";
 import * as S3 from "alchemy/AWS/S3";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
@@ -120,8 +120,8 @@ Replace the static handler with one that takes the URL path as the object key an
 import * as AWS from "alchemy/AWS";
 import * as S3 from "alchemy/AWS/S3";
 import * as Effect from "effect/Effect";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 // ...
     return {

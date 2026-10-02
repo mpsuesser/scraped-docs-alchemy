@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-http-api
 title: "Effect HTTP API"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as a Cloudflare Worker."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Effect HTTP is the trust-boundary modality: schema-validated REST endpoints — real URLs, path params, query strings, payloads — that any HTTP client can call, no Effect or TypeScript required on the consumer’s side. This page deploys one to a Cloudflare Worker; the concept home is [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the modalities.
@@ -47,9 +47,9 @@ Endpoints are declarations — they describe `(method, path, params, payload, su
 
 ```typescript
 import * as Schema from "effect/Schema";
-import * as HttpApi from "effect/unstable/httpapi/HttpApi";
-import * as HttpApiEndpoint from "effect/unstable/httpapi/HttpApiEndpoint";
-import * as HttpApiGroup from "effect/unstable/httpapi/HttpApiGroup";
+import * as HttpApi from "effect/http-api/HttpApi";
+import * as HttpApiEndpoint from "effect/http-api/HttpApiEndpoint";
+import * as HttpApiGroup from "effect/http-api/HttpApiGroup";
 import { Task, TaskNotFound } from "./task.ts";
 
 export const decodeTask = Schema.decodeUnknownEffect(Task);
@@ -234,10 +234,10 @@ import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
 import * as Schema from "effect/Schema";
-import * as Etag from "effect/unstable/http/Etag";
-import * as HttpPlatform from "effect/unstable/http/HttpPlatform";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
+import * as Etag from "effect/http/Etag";
+import * as HttpPlatform from "effect/http/HttpPlatform";
+import * as HttpRouter from "effect/http/HttpRouter";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 import { TaskApi } from "./api.ts";
 import { Tasks } from "./bucket.ts";
 import { Task, TaskNotFound } from "./task.ts";
@@ -343,7 +343,7 @@ Because `TaskApi` is just a value, the same spec drives a fully typed client. Th
 
 ```typescript
 import * as Effect from "effect/Effect";
-import * as HttpApiClient from "effect/unstable/httpapi/HttpApiClient";
+import * as HttpApiClient from "effect/http-api/HttpApiClient";
 import { TaskApi } from "../src/api.ts";
 
 const program = Effect.gen(function* () {
@@ -415,10 +415,10 @@ import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
-import * as Etag from "effect/unstable/http/Etag";
-import * as HttpPlatform from "effect/unstable/http/HttpPlatform";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
+import * as Etag from "effect/http/Etag";
+import * as HttpPlatform from "effect/http/HttpPlatform";
+import * as HttpRouter from "effect/http/HttpRouter";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 import { TaskDOApi, decodeTask, encodeTask } from "./api.ts";
 import { Task } from "./task.ts";
 
@@ -469,7 +469,7 @@ export default class TasksObject extends Cloudflare.DurableObject<TasksObject>()
 Inside the Worker’s constructor, `Cloudflare.toHttpClient(stub)` wraps a DO stub as an `HttpClient`. Hand that client to `HttpApiClient.makeWith` and you get a fully typed client whose every call is a DO `fetch` under the hood:
 
 ```typescript
-import * as HttpApiClient from "effect/unstable/httpapi/HttpApiClient";
+import * as HttpApiClient from "effect/http-api/HttpApiClient";
 import TasksObject, { TaskDOApi } from "./object.ts";
 
 Effect.gen(function* () {

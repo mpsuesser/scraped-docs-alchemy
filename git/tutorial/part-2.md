@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-2
 title: "Part 2: Control access"
 description: "Protect the existing Git host with one shared credential, then verify both accepted and rejected requests."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 The host from [Part 1](part-1.md) accepts requests from anyone. Add a single shared credential so only people who have it can use the host. This part changes access to the existing repositories; it does not recreate them.
@@ -32,10 +32,10 @@ Create `src/middleware.ts`:
 import { RuntimeContext } from "alchemy";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
-import * as HttpApiSecurity from "effect/unstable/httpapi/HttpApiSecurity";
+import * as HttpRouter from "effect/http/HttpRouter";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
+import * as HttpApiSecurity from "effect/http-api/HttpApiSecurity";
 import { GitSecret } from "./secret.ts";
 
 export const Authentication = HttpRouter.middleware(

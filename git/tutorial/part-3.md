@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-3
 title: "Part 3: Publish a repository"
 description: "Allow anonymous clones of public repositories while preserving authenticated writes."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 The credential from [Part 2](part-2.md) protects every request. Now make `acme/web` readable by anyone while keeping writes protected.
@@ -26,8 +26,8 @@ Create `src/public-read.ts`:
 ```typescript
 import * as Git from "alchemy/Git";
 import * as Effect from "effect/Effect";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
+import * as HttpRouter from "effect/http/HttpRouter";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
 
 export const PublicRead = Effect.gen(function* () {
   const registry = yield* Git.RegistryStore;

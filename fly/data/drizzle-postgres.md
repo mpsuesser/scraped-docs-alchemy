@@ -2,11 +2,11 @@
 url: https://alchemy.run/fly/data/drizzle-postgres
 title: "Drizzle Postgres on Fly"
 description: "Connect a Fly Service to Managed Postgres and deploy reviewed Drizzle migrations."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
-Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the same organization's private network. Start with [Fly setup](../setup.md), the [Service tutorial](https://alchemy.run/fly/tutorial/part-2), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
+Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the same organization's private network. Start with [Fly setup](../setup.md), the [Service tutorial](https://alchemy.run/fly/tutorial/part-1), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
 
 ## Install the database dependencies
 
@@ -70,7 +70,6 @@ This provisions a billed Managed Postgres cluster, not an unmanaged Postgres Mac
 ```diff lang="typescript"
  // src/api.ts — the Service from the tutorial
  {
-   app: Site,
    main: import.meta.url,
    region: "iad",
 +  build: { install: ["pg"] },
@@ -101,7 +100,7 @@ The binding attaches the cluster to the Service's App and supplies pooled and di
 pnpm alchemy deploy
 ```
 
-Keep the tutorial's `yield* Api` and public IP in the Stack, using `Fly.providers()`. This first deployment creates the database and a handler that does not yet query application tables.
+Keep the tutorial's `yield* Api` in the Stack, using `Fly.providers()`. This first deployment creates the database and a handler that does not yet query application tables.
 
 ## Apply the committed SQL
 

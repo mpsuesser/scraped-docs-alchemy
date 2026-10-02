@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/ai-gateway
 title: "AI Gateway setup"
 description: "Buy Neon AI Gateway credits and use a model from an Effect Function."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Use Neon AI Gateway from an Effect Function with a model your organization can
@@ -57,7 +57,7 @@ configured string:
 
 ```typescript
 import * as Effect from "effect/Effect";
-import { LanguageModel } from "effect/unstable/ai";
+import { LanguageModel } from "effect/ai";
 
 const reply = yield* LanguageModel.generateText({
   prompt: "Reply with hello.",

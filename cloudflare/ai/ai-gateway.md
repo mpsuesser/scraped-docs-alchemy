@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-gateway
 title: "Add an AI Gateway"
 description: "Wire an AI Gateway into your Worker, turn it into a typed Effect LanguageModel, and run generations and streams through Workers AI with caching, rate limiting, and logs."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 You’ve now wired Durable Objects, hibernatable WebSockets, a container, and a Workflow into your Worker. The last piece in the Cloudflare track is an **AI Gateway** — a stable account-scoped endpoint that fronts every model provider (Workers AI, OpenAI, Anthropic, Bedrock, …) and gives you caching, rate limiting, retries, DLP, and a single dashboard of every request, token, and cost.
@@ -105,9 +105,9 @@ Effect.gen(function* () {
 `LanguageModel.generateText` returns a typed response with `text`, `finishReason`, structured token `usage`, and any `toolCalls`. Provide the `languageModel` layer to the handler and call it like any other Effect.
 
 ```typescript
-import { LanguageModel } from "effect/unstable/ai";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import { LanguageModel } from "effect/ai";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
   return {
     fetch: Effect.gen(function* () {
@@ -156,7 +156,7 @@ For chat-style UIs you want tokens to arrive as the model produces them, not in 
 
 ```typescript
 import * as Stream from "effect/Stream";
-import * as Sse from "effect/unstable/encoding/Sse";
+import * as Sse from "effect/encoding/Sse";
 
       if (url.pathname === "/stream" && request.method === "POST") {
         const body = (yield* request.json) as { prompt?: string };

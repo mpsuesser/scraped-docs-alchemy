@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/data/postgres
 title: "Postgres"
 description: "A billed Managed Postgres cluster. Bind Fly.ConnectPostgres and query with Drizzle or SQL."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 A [`Fly.Postgres`](https://alchemy.run/providers/fly/reference/postgres#postgres) is a Managed Postgres
@@ -47,11 +47,11 @@ SQL.
 
 ```typescript
 import * as Drizzle from "alchemy/Drizzle/Postgres";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends Fly.Service<Api>()(
   "Api",
-  { app: Site, main: import.meta.url, port: 3000 },
+  { main: import.meta.url, port: 3000 },
   Effect.gen(function* () {
     const conn = yield* Fly.ConnectPostgres(Db);
     const db = yield* Drizzle.Postgres(conn.connectionString);

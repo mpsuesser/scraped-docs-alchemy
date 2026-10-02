@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/effect-rpc
 title: "Effect RPC"
 description: "Schema-first RPC for trust boundaries — declare procedures, construct handler Layers, derive typed clients from the same schema."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Effect RPC is schema-first: every procedure declares `payload`, `success`, and `error` Schemas, and every request and response is validated against them. Use it when data crosses a **trust boundary** — a web app or an external service calling into your stack. That validation has a per-request price (a frame parse, a Schema decode of the payload, a Schema encode of the result — mirrored on the client), so for internal service-to-service calls it is **discouraged**: [Schemaless RPC](schemaless.md) gives you the same typed client with no schema, no runtime checking, and no per-request validation cost.
@@ -55,7 +55,7 @@ Each `Rpc.make` declares one procedure; `RpcGroup.make` collects them into the s
 
 ```typescript
 import * as Schema from "effect/Schema";
-import { Rpc, RpcGroup } from "effect/unstable/rpc";
+import { Rpc, RpcGroup } from "effect/rpc";
 import { CreateTaskFailed, Task, TaskNotFound } from "./Task.ts";
 
 const getTask = Rpc.make("getTask", {
@@ -103,7 +103,7 @@ export const TaskRpcsLive = TaskRpcs.toLayer({
 ```typescript
 // src/ApiHandlers.ts (continued)
 import * as Layer from "effect/Layer";
-import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
+import { RpcSerialization, RpcServer } from "effect/rpc";
 
 export const ApiHttpEffect = RpcServer.toHttpEffect(TaskRpcs).pipe(
   Effect.provide(Layer.mergeAll(TaskRpcsLive, RpcSerialization.layerJson)),
@@ -119,8 +119,8 @@ A client is the schema combined with a **Fetcher** — a plain URL for external 
 ```typescript
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as FetchHttpClient from "effect/unstable/http/FetchHttpClient";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
+import * as FetchHttpClient from "effect/http/FetchHttpClient";
+import { RpcClient, RpcSerialization } from "effect/rpc";
 import { TaskRpcs } from "./ApiSchema.ts";
 
 const program = Effect.gen(function* () {

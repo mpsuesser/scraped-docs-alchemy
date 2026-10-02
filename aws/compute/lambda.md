@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 **Lambda** is Alchemy’s default AWS runtime: a class that bundles an Effect program into a zip, deploys it as a Lambda Function, and generates its IAM execution role from the bindings you actually use. Serve HTTP over a public **Function URL**, or consume events — every building block in this section plugs in through the same pattern: S3 notifications (`Lambda.BucketEventSource`), SQS queues (`Lambda.QueueEventSource`), Kinesis streams (`Lambda.StreamEventSource`), and DynamoDB Streams (`Lambda.TableEventSource`).
@@ -71,7 +71,7 @@ The empty function compiles, but it doesn’t do anything yet. Add a `fetch` fie
 ```typescript
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
@@ -85,7 +85,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 ) {}
 ```
 
-`HttpServerResponse.text(...)` is the same `effect/unstable/http` API used everywhere else — Alchemy adapts it to the Lambda event envelope under the hood, so your handler never sees the raw `APIGatewayProxyEvent` shape.
+`HttpServerResponse.text(...)` is the same `effect/http` API used everywhere else — Alchemy adapts it to the Lambda event envelope under the hood, so your handler never sees the raw `APIGatewayProxyEvent` shape.
 
 ## Expose a public URL
 
@@ -114,7 +114,7 @@ Lambda has knobs you’ll want to tune per stage — memory, timeout, log retent
 import * as AWS from "alchemy/AWS";
 import { Stack } from "alchemy/Stack";
 import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
   "Api",
@@ -177,7 +177,7 @@ import * as AWS from "alchemy/AWS";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
-import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClient from "effect/http/HttpClient";
 import Stack from "../alchemy.run.ts";
 
 const { test, beforeAll, deploy } = Test.make({

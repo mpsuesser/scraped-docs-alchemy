@@ -2,11 +2,11 @@
 url: https://alchemy.run/fly
 title: "Fly"
 description: "Deploy Effect programs to Fly.io as Apps, Machines, Services, and Sprites."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
-An App is a globally unique namespace. A Machine is a Firecracker VM running a container. A Service is an Effect program running in a Fly Machine. A Sprite is an Effect program in an org-scoped sandbox that hibernates when idle.
+A Service is an Effect program running in Fly Machines inside its own App, with its own `{name}.fly.dev` hostname. An App is a globally unique namespace. A Machine is a Firecracker VM running a container. A Sprite is an Effect program in an org-scoped sandbox that hibernates when idle.
 
 Disks, managed data, secrets, IPs, and certificates are declared in the same TypeScript program.
 
@@ -14,9 +14,10 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 
 ## Compute
 
-- **[Apps](https://alchemy.run/fly/compute/apps)** — the parent for every other resource except Sprites, Postgres, Redis, and Tigris. Alchemy generates a globally unique name unless you pass one. `https://{appName}.fly.dev` is the public URL.
+- **[Apps](https://alchemy.run/fly/compute/apps)** — the namespace for Machines, Secrets, IPs, and certificates. Services create their own; declare one for Machines, App-level Secrets, custom domains, or to group Services. `https://{appName}.fly.dev` is the public URL.
 - **[Machines](https://alchemy.run/fly/compute/machines)** — a Firecracker VM running a container image. Use this when you already have an image (`nginx:alpine`, a registry tag). Region, guest size, proxy services, env, and mounts are all props.
-- **[Services](https://alchemy.run/fly/compute/services)** — an Effect program running in a Machine. Alchemy bundles `main`, builds the image, and updates in place when the hash changes. Set `count` to scale.
+- **[Services](https://alchemy.run/fly/compute/services)** — an Effect program running in Machines in its own App. Public by default at `api.url`, or private with `public: false`. Alchemy bundles `main`, builds the image, and updates in place when the hash changes. Set `count` to scale.
+- **[Connect Services](https://alchemy.run/fly/compute/connecting-services)** — Services calling each other’s methods with `Fly.bindService` on a stack-scoped private network (`Fly.stackNetwork`), behind one public gateway.
 - **[Sprites](https://alchemy.run/fly/compute/sprites)** — an Effect program in a Fly Sprite. Org-scoped, no parent App. Hibernates when idle. Alchemy writes the bundle onto the Sprite. No Docker image.
 - **[Regions](https://alchemy.run/fly/compute/regions)** — the datacenter a Machine, Volume, Postgres cluster, or Redis primary lives in. Default `iad`. Changing `region` replaces the resource.
 
@@ -38,13 +39,15 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 
 ## Networking
 
-- **[IPs & certificates](https://alchemy.run/fly/networking)** — shared or dedicated addresses (`IpAssignment`) so `{app}.fly.dev` answers over IPv4, plus ACME or uploaded TLS certificates for your own hostname.
+- **[IPs & certificates](https://alchemy.run/fly/networking)** — public and private Services, addresses (`IpAssignment`) for Apps you declare, plus ACME or uploaded TLS certificates for your own hostname.
 
 ## What are you building?
 
 | You’re building | Reach for |
 | --- | --- |
-| An HTTP API on Fly | [App](https://alchemy.run/fly/compute/apps) + [Service](https://alchemy.run/fly/compute/services) |
+| An HTTP API on Fly | [Service](https://alchemy.run/fly/compute/services) |
+| An internal API | [Service](https://alchemy.run/fly/compute/services#private-services) with `public: false` |
+| Several Services talking privately | [Connect Services](https://alchemy.run/fly/compute/connecting-services): `Fly.bindService` + `Fly.stackNetwork` |
 | A Vite SPA | [`Website.Vite`](fly/frontend/vite.md) |
 | An SSR site (Astro, Next, Nuxt, …) | [`Website`](fly/frontend/websites.md) |
 | A sandbox that can sleep | [Sprite](https://alchemy.run/fly/compute/sprites) |
@@ -58,12 +61,12 @@ Disks, managed data, secrets, IPs, and certificates are declared in the same Typ
 | Restore a disk | [VolumeSnapshot](https://alchemy.run/fly/data/volumes#snapshots) + mount `snapshotId` |
 | Config / API tokens | [`Config.Redacted`](https://alchemy.run/fly/data/secrets). [`Fly.Secret`](https://alchemy.run/fly/data/secrets) when Fly should own it |
 | Sign / encrypt in-app | [SecretKey](https://alchemy.run/fly/data/secrets#kms-keys) + `Encrypt` / `Sign` |
-| `{app}.fly.dev` over IPv4 | [IpAssignment](https://alchemy.run/fly/networking) `type: "shared_v4"` |
+| Addresses on your own App | [IpAssignment](https://alchemy.run/fly/networking#addresses-for-a-shared-app) `type: "shared_v4"` |
 | Your own domain | [Certificate](https://alchemy.run/fly/networking#use-your-own-hostname) (ACME) |
 
 ## Where next
 
 - [Setup](fly/setup.md) — create a Fly org, generate an API token, and connect alchemy.
-- [Tutorial](https://alchemy.run/fly/tutorial/part-1) — from empty directory to an App running an HTTP Service with a mounted Volume and a secret.
+- [Tutorial](https://alchemy.run/fly/tutorial/part-1) — from empty directory to a public HTTP Service with a mounted Volume and a secret.
 - [Websites](fly/frontend/websites.md) — Vite, Astro, Next.js, and other framework sites as a Node Service.
 - [Providers reference](https://alchemy.run/providers) — generated API docs for every Fly resource Alchemy ships.

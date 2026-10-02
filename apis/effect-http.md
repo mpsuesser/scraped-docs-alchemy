@@ -2,11 +2,11 @@
 url: https://alchemy.run/apis/effect-http
 title: "Effect HTTP"
 description: "Schema-validated REST endpoints with an rpc-like typed interface — for trust boundaries where consumers want a plain HTTP client."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
-Effect HTTP (`effect/unstable/httpapi`) is the same idea as [Effect RPC](effect-rpc.md): define a Schema, construct handler Layers, return an `HttpEffect` from `fetch`, call it through an rpc-like typed interface. The difference is what goes on the wire — real HTTP endpoints, with URLs, path params, query strings, headers, bodies, and content types.
+Effect HTTP (`effect/http-api`) is the same idea as [Effect RPC](effect-rpc.md): define a Schema, construct handler Layers, return an `HttpEffect` from `fetch`, call it through an rpc-like typed interface. The difference is what goes on the wire — real HTTP endpoints, with URLs, path params, query strings, headers, bodies, and content types.
 
 The use case is the same trust boundary — data that needs validating and sanitizing on the way in, exposed to a web app or an external service. Choose Effect HTTP over Effect RPC when your consumers aren’t Effect (or TypeScript) programs and want a plain HTTP client. The cost is also the same: every request pays for a schema decode and encode, so it’s equally discouraged for internal service-to-service calls — that’s what [schemaless RPC](schemaless.md) is for.
 
@@ -52,9 +52,9 @@ export class TaskNotFound extends Schema.TaggedErrorClass<TaskNotFound>()(
 
 ```typescript
 import * as Schema from "effect/Schema";
-import * as HttpApi from "effect/unstable/httpapi/HttpApi";
-import * as HttpApiEndpoint from "effect/unstable/httpapi/HttpApiEndpoint";
-import * as HttpApiGroup from "effect/unstable/httpapi/HttpApiGroup";
+import * as HttpApi from "effect/http-api/HttpApi";
+import * as HttpApiEndpoint from "effect/http-api/HttpApiEndpoint";
+import * as HttpApiGroup from "effect/http-api/HttpApiGroup";
 import { Task, TaskNotFound } from "./Task.ts";
 
 export const getTask = HttpApiEndpoint.get("getTask", "/:id", {
@@ -84,7 +84,7 @@ Endpoints are pure declarations of `(method, path, schemas)`: the `/:id` path pa
 ```typescript
 // src/ApiService.ts — inside the host's Construction phase (a Cloudflare Worker or Lambda Function)
 import * as Effect from "effect/Effect";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
 import { TaskApi } from "./ApiSchema.ts";
 import { Task, TaskNotFound } from "./Task.ts";
 
@@ -115,7 +115,7 @@ Assemble the API Layer and convert it into the `HttpEffect` that `fetch` expects
 ```typescript
 // src/ApiService.ts — end of the Construction phase
 import * as Layer from "effect/Layer";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import * as HttpRouter from "effect/http/HttpRouter";
 
 // platform = the host's platform service Layers — differs per host
 return {
@@ -152,7 +152,7 @@ For consumers that *are* Effect programs, the same `TaskApi` value drives a full
 
 ```typescript
 import * as Effect from "effect/Effect";
-import * as HttpApiClient from "effect/unstable/httpapi/HttpApiClient";
+import * as HttpApiClient from "effect/http-api/HttpApiClient";
 import { TaskApi } from "./ApiSchema.ts";
 
 const program = Effect.gen(function* () {

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request, so reach for it when data needs sanitizing on its way in — a web app or an external service calling your Lambda. Internal calls use [Schemaless RPC](../../apis/schemaless.md) instead (on AWS, a Lambda Function driving a [MicroVM](../compute/microvms.md)); the [RPC overview](../../apis.md) has the full decision.
@@ -55,7 +55,7 @@ Each `Rpc.make` declares one procedure: a name, a payload schema, a success sche
 
 ```typescript
 import * as Schema from "effect/Schema";
-import { Rpc, RpcGroup } from "effect/unstable/rpc";
+import { Rpc, RpcGroup } from "effect/rpc";
 import { Job, JobId, JobNotFound, PutJobFailed } from "./Job.ts";
 
 const getJob = Rpc.make("getJob", {
@@ -194,7 +194,7 @@ The outer `Effect.provide` supplies the binding implementations — `GetItemHttp
 import * as AWS from "alchemy/AWS";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
+import { RpcSerialization, RpcServer } from "effect/rpc";
 import { Job, JobNotFound, PutJobFailed } from "./Job.ts";
 import { JobRpcs } from "./JobRpcs.ts";
 
@@ -293,8 +293,8 @@ Because `JobRpcs` is just a value, the same group drives a fully typed client �
 ```typescript
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as FetchHttpClient from "effect/unstable/http/FetchHttpClient";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
+import * as FetchHttpClient from "effect/http/FetchHttpClient";
+import { RpcClient, RpcSerialization } from "effect/rpc";
 import { JobRpcs } from "../src/JobRpcs.ts";
 
 const program = Effect.gen(function* () {

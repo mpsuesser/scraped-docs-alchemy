@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on AWS — a TanStack Start UI on CloudFront and Lambda that drives an Effect RPC Lambda over Drizzle and Aurora DSQL, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 [TanStack Start](tanstack-start.md) · [Effect RPC](../apis/effect-rpc.md) · [Drizzle + DSQL](../data/drizzle-dsql.md)
@@ -41,7 +41,7 @@ Share the RPC contract between the backend and browser:
 
 ```typescript
 import * as Schema from "effect/Schema";
-import { Rpc, RpcGroup } from "effect/unstable/rpc";
+import { Rpc, RpcGroup } from "effect/rpc";
 
 export class Todo extends Schema.Class<Todo>("Todo")({
   id: Schema.String,
@@ -90,7 +90,7 @@ import * as AWS from "alchemy/AWS";
 import { eq } from "drizzle-orm";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
+import { RpcSerialization, RpcServer } from "effect/rpc";
 import { connectDatabase } from "./client.ts";
 import { Todo, TodoNotFound, TodoRpcs } from "./rpc.ts";
 import { Todos } from "./schema.ts";
@@ -239,9 +239,9 @@ Create the browser client with Effect 4’s `AtomRpc`:
 
 ```typescript
 import * as Layer from "effect/Layer";
-import * as FetchHttpClient from "effect/unstable/http/FetchHttpClient";
-import * as AtomRpc from "effect/unstable/reactivity/AtomRpc";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
+import * as FetchHttpClient from "effect/http/FetchHttpClient";
+import * as AtomRpc from "effect/reactivity/AtomRpc";
+import { RpcClient, RpcSerialization } from "effect/rpc";
 import { TodoRpcs } from "./backend/rpc.ts";
 
 export class TodoClient extends AtomRpc.Service<TodoClient>()("TodoClient", {
@@ -290,7 +290,7 @@ Read the query with `useAtomValue`; call mutations with `useAtomSet`:
 
 ```tsx
 import { useAtomSet, useAtomValue } from "@effect/atom-react";
-import * as AsyncResult from "effect/unstable/reactivity/AsyncResult";
+import * as AsyncResult from "effect/reactivity/AsyncResult";
 import { useState } from "react";
 import {
   createTodoAtom,

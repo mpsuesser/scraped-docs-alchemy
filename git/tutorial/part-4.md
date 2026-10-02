@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-4
 title: "Part 4: Give users their own credentials"
 description: "Replace the shared credential with Better Auth accounts and individual Git API keys."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 One shared credential cannot distinguish one caller from another. Replace it with Better Auth accounts and API keys, then use the authenticated user’s ID when checking access to a named repository.
@@ -105,8 +105,8 @@ Add the HTTP Basic decoder imports:
 ```typescript
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
-import * as HttpApiBuilder from "effect/unstable/httpapi/HttpApiBuilder";
-import * as HttpApiSecurity from "effect/unstable/httpapi/HttpApiSecurity";
+import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
+import * as HttpApiSecurity from "effect/http-api/HttpApiSecurity";
 ```
 
 Check for an API key before looking for a session cookie:
@@ -138,8 +138,8 @@ Replace `src/middleware.ts` with:
 ```typescript
 import { RuntimeContext } from "alchemy";
 import * as Effect from "effect/Effect";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+import * as HttpRouter from "effect/http/HttpRouter";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { ResolveUser } from "./credentials.ts";
 import { PublicRead } from "./public-read.ts";
 import { Session } from "./session.ts";
@@ -172,8 +172,8 @@ For routes naming an owner, the user’s ID must match that owner unless the req
 Add the auth imports to `src/host.ts`:
 
 ```typescript
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
-import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
+import * as HttpRouter from "effect/http/HttpRouter";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
 import { Auth, AuthDb } from "./auth.ts";
 ```

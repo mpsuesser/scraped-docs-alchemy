@@ -2,8 +2,8 @@
 url: https://alchemy.run/git
 title: "Git"
 description: "A pluggable, embeddable, self-hostable git server on Cloudflare Workers, Durable Objects, and R2. Smart HTTP for any client, a typed REST plane with pull requests, and a GitHub-compatible API."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 `alchemy/Git` is a pluggable, embeddable, self-hostable git server. It speaks git’s smart HTTP to any client, serves a typed REST plane with pull requests, and answers the GitHub REST v3 API for `gh` and Octokit. It runs on Cloudflare Workers, Durable Objects, and R2, embeds in your own `HttpApi`, and each part of it is an Effect Layer you can replace:
@@ -13,7 +13,7 @@ import * as Cloudflare from "alchemy/Cloudflare";
 import * as Git from "alchemy/Git";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import * as HttpRouter from "effect/http/HttpRouter";
 import * as Http from "alchemy/Http";
 import { Authentication } from "./api.ts";
 

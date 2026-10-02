@@ -2,8 +2,8 @@
 url: https://alchemy.run/migrating-from-v1
 title: "Migrating from v1"
 description: "Migrate your Alchemy v1 (async/await) project to Alchemy v2."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Alchemy v1 uses `async/await` with top-level `await` for
@@ -211,8 +211,8 @@ resources in the Worker's Construction phase using `yield*`:
 // src/worker.ts
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-+import { HttpServerRequest } from "effect/unstable/http/HttpServerRequest";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
++import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Bucket } from "./bucket.ts";
 
 -export default {

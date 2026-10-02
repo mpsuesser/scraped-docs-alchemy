@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon
 title: "Neon"
 description: "Declare Neon Postgres, Functions, storage, Auth, AI Gateway and websites together in an Alchemy Stack."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Declare Neon Postgres branches, Functions, object storage, managed Auth, Data API, and AI Gateway connections in the same Alchemy Stack. Functions accept native Fetch handlers or Effect applications; runtime bindings connect them to your backend without exposing the deployment API key.
@@ -103,7 +103,7 @@ const reply = yield* LanguageModel.generateText({ prompt: "Say hello." }).pipe(
 );
 ```
 
-Import `LanguageModel` from `effect/unstable/ai` and provide `Neon.QueryAIGatewayHttp` on the application. It selects injected or managed credentials automatically and exposes the model layer backed by Neon’s OpenAI-compatible Chat Completions API. Model access and prepaid credits are separate account requirements; declaring a gateway never changes billing. Complete [AI Gateway setup](neon/guides/ai-gateway.md) for access, credit purchase, and an inference check. See [AI Gateway bindings](https://alchemy.run/providers/neon/reference/ai-gateway#queryaigateway) for credentials, streaming, tools, structured output, and dialect URLs.
+Import `LanguageModel` from `effect/ai` and provide `Neon.QueryAIGatewayHttp` on the application. It selects injected or managed credentials automatically and exposes the model layer backed by Neon’s OpenAI-compatible Chat Completions API. Model access and prepaid credits are separate account requirements; declaring a gateway never changes billing. Complete [AI Gateway setup](neon/guides/ai-gateway.md) for access, credit purchase, and an inference check. See [AI Gateway bindings](https://alchemy.run/providers/neon/reference/ai-gateway#queryaigateway) for credentials, streaming, tools, structured output, and dialect URLs.
 
 ## Pooled vs direct
 

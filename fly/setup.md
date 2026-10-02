@@ -2,21 +2,21 @@
 url: https://alchemy.run/fly/setup
 title: "Setup"
 description: "Create a Fly org, generate an API token, and store it in a profile."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-02T14:04:57.255Z
+current_date: 2026-10-02T14:04:57.255Z
 ---
 
 Everything you need before deploying to Fly.io: the alchemy package, a Fly organization, and an API token stored in a profile.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) (recommended) or Node.js 22+
+- [Bun](https://bun.sh/) or Node.js 22+
 - A [Fly.io](https://fly.io/) account
 - [Docker](https://docs.docker.com/get-docker/) for [Services](https://alchemy.run/fly/compute/services) (Alchemy builds and pushes an image). Raw [Machines](https://alchemy.run/fly/compute/machines) with a public image do not need it. Neither do [Sprites](https://alchemy.run/fly/compute/sprites).
 
 ## Create a Fly organization
 
-Sign in at [fly.io/dashboard](https://fly.io/dashboard). A personal org is created with the account. Tokens are scoped to an org — the org slug is what `Fly.App` uses when you omit `orgSlug` (Alchemy reads it from the current token).
+Sign in at [fly.io/dashboard](https://fly.io/dashboard). A personal org is created with the account. Tokens are scoped to an org — the org slug is where Services create their Apps, and what `Fly.App` uses when you omit `orgSlug` (Alchemy reads it from the current token).
 
 ## Generate an API token
 
@@ -75,6 +75,6 @@ Fly has no object-storage state backend of its own, so pick one of:
 
 ## Next steps
 
-- [Tutorial part 1](https://alchemy.run/fly/tutorial/part-1) — deploy your first App.
+- [Tutorial part 1](https://alchemy.run/fly/tutorial/part-1) — deploy your first Service.
 - [Sprites](https://alchemy.run/fly/compute/sprites) — an Effect program that hibernates. No Docker.
 - [Fly overview](../fly.md) — the map of resources and guides.
