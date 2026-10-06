@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/queues
 title: "Queues"
 description: "Cloudflare Queues give you reliable, at-least-once message delivery between Workers — a WriteQueue producer binding on one side and an Effect-style consumeQueueMessages handler with automatic ack/retry on the other."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-06T02:20:08.061Z
+current_date: 2026-10-06T02:20:08.061Z
 ---
 
 A Cloudflare Queue decouples work from the request that triggered it: a Worker *produces* messages onto the queue, Cloudflare buffers them, and a consumer Worker receives them in batches with **at-least-once** delivery — failed batches are retried and eventually dead-lettered.
@@ -182,6 +182,36 @@ if (request.url.startsWith("/queue/result/") && request.method === "GET") {
   );
 }
 ```
+
+## Drain a Stream into the queue
+
+`Cloudflare.Queues.QueueSink(queue)` exposes the queue as an Effect [Sink](../../infrastructure-as-effects/sinks.md). Run any `Stream` of message bodies into it; each stream chunk becomes one `sendBatch` call, split at Cloudflare’s 100-message / 256 KB batch limits.
+
+```typescript
+const sink = yield* Cloudflare.Queues.QueueSink(Clicks);
+yield* Stream.fromIterable(events).pipe(Stream.run(sink));
+```
+
+Combined with `consumeQueueMessages`, a Worker can consume one queue, transform each batch, and drain it into another:
+
+```typescript
+Effect.gen(function* () {
+  const enriched = yield* Cloudflare.Queues.QueueSink(EnrichedClicks);
+
+  yield* Cloudflare.Queues.consumeQueueMessages<Click>(Clicks, (messages) =>
+    messages.pipe(
+      Stream.map((message) => message.body),
+      Stream.map((click) => ({ ...click, receivedAt: Date.now() })),
+      Stream.run(enriched),
+    ),
+  );
+}).pipe(
+  Effect.provide(Cloudflare.Queues.EventSourceLive),
+  Effect.provide(Cloudflare.Queues.QueueSinkBinding),
+);
+```
+
+`QueueSinkBinding` builds on the native `WriteQueueBinding`, so it is the only layer the sink needs. It also works under `alchemy dev`.
 
 ## What’s the difference vs. a native queue() handler?
 
