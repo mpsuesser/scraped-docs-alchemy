@@ -2,13 +2,13 @@
 url: https://alchemy.run/cloudflare/data/hyperdrive
 title: "Hyperdrive"
 description: "Cloudflare Hyperdrive pools connections to your external Postgres or MySQL database at the edge — provision a database (Neon or PlanetScale), front it with Hyperdrive, and bind the connection into your Worker."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Hyperdrive is a Cloudflare-managed connection pooler that sits between Workers and an external Postgres or MySQL database. The Worker sees a familiar connection string, but the connection itself is already pooled at the edge — no per-request TCP handshakes, no cold-start connection storms.
 
-Reach for Hyperdrive whenever your app needs a real relational database: managed Postgres/MySQL providers like Neon and PlanetScale, or a database you already run. (For serverless SQLite inside Cloudflare, use [D1](d1.md) instead.) This page provisions a serverless database, fronts it with Hyperdrive, and binds the connection into your Worker.
+Reach for Hyperdrive whenever your app needs a real relational database: managed Postgres/MySQL providers like Neon and PlanetScale, or a database you already run — including one in a [private network](hyperdrive-private-database.md). (For serverless SQLite inside Cloudflare, use [D1](d1.md) instead.) This page provisions a serverless database, fronts it with Hyperdrive, and binds the connection into your Worker.
 
 Three providers are wired up out of the box. Pick whichever you prefer; the rest of the page follows your selection:
 
@@ -114,8 +114,8 @@ The Worker uses a Node-compatible driver to talk to Hyperdrive over the binding.
 [`pg`](https://node-postgres.com/) — node-postgres:
 
 ```sh
-bun add pg
-bun add -d @types/pg
+pnpm add pg
+pnpm add -D @types/pg
 ```
 
 ## Bind Hyperdrive to your Worker
@@ -214,7 +214,7 @@ import { Hyperdrive } from "./Db.ts";
 
 export default class Api extends Cloudflare.Worker<Api>()(
   "Api",
-  { main: import.meta.url, compatibilityFlags: ["nodejs_compat"] },
+  { main: import.meta.url, compatibility: { flags: ["nodejs_compat"] } },
   Effect.gen(function* () {
     const connection = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
     const sql = yield* SQL.Postgres({ url: connection.connectionString });
@@ -250,6 +250,7 @@ These are detected defaults, not required boilerplate. Explicit configuration wi
 
 Guides that build on Hyperdrive:
 
+- [Private database (Workers VPC)](hyperdrive-private-database.md) — reach a database with no public endpoint, such as Aurora in an AWS VPC, through a Cloudflare Tunnel.
 - [Add Drizzle ORM](drizzle.md) — swap the raw driver for typed schemas and alchemy-managed migrations.
 - [Shared database across stages](shared-database.md) — point PR-preview stages at one long-lived database.
 - [Branch from a shared database](branch-from-shared-database.md) — copy-on-write branches per preview stage.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 A Durable Object is *hosted* by exactly one Worker, but any number of **other** Workers can bind to the same DO. This is how you share state across Workers: one Worker hosts the DO, every other Worker addresses it by `scriptName` and gets a typed RPC stub.
@@ -198,10 +198,10 @@ test(
     const { urlA, urlB } = yield* stack;
     const client = yield* HttpClient.HttpClient;
 
-    yield* client.post(\`${urlA}/\`);
-    yield* client.post(\`${urlA}/\`);
+    yield* client.post(\`${urlA}/foo\`);
+    yield* client.post(\`${urlA}/foo\`);
 
-    const res = yield* client.get(\`${urlB}/\`);
+    const res = yield* client.get(\`${urlB}/foo\`);
     expect((yield* res.json) as { value: number }).toEqual({ value: 2 });
   }),
 );
@@ -230,7 +230,7 @@ This matters most when you extract `fetch` logic into a Layer (or any service) t
 
 ## Move the Durable Object to a new host
 
-Hosting isn’t forever — suppose `Counter` should now live under `WorkerB` instead of `WorkerA`. A Durable Object class can move between Workers **with its data intact**: Cloudflare’s `transferred_classes` migration re-homes the namespace (same instances, same storage) onto the new host’s script. Moves are always *declared* — a class that disappears from one Worker and appears on another is otherwise ambiguous between “transfer the data” and “delete it, start fresh” — so the class states where it came from.
+Hosting isn’t forever — suppose `Counter` should now live under `WorkerB` instead of `WorkerA`. A Durable Object class can move between Workers **with its data intact**: Cloudflare transfers the namespace (same instances, same storage) onto the new host’s script. Moves are always *declared* — a class that disappears from one Worker and appears on another is otherwise ambiguous between “transfer the data” and “delete it, start fresh” — so the class states where it came from.
 
 ### Declare where the class came from
 
@@ -333,7 +333,7 @@ import WorkerBLive, { WorkerB } from "./src/workerB.ts";
 bun alchemy deploy
 ```
 
-`WorkerA` references `WorkerB` through `Counter.from(WorkerB)`, so the engine deploys `WorkerB` first. Its upload carries the `transferred_classes` migration — the namespace and every stored object move to `WorkerB` ’s script — and `WorkerA` ’s deploy then converges on its own (no delete migration is emitted for a class that moved away). Every counter keeps its count. Afterwards the `transferredFrom` declaration is inert — on fresh stages and on every later deploy it does nothing — so leave it in place.
+`WorkerA` references `WorkerB` through `Counter.from(WorkerB)`, so the engine deploys `WorkerB` first. Its deploy moves the namespace and every stored object to `WorkerB` ’s script, and `WorkerA` ’s deploy then converges on its own (nothing is deleted for a class that moved away). Every counter keeps its count. Afterwards the `transferredFrom` declaration is inert — on fresh stages and on every later deploy it does nothing — so leave it in place.
 
 ### Keep the host history for chained moves
 

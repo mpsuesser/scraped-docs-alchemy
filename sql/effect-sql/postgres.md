@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/postgres
 title: "Postgres"
 description: "SQL.Postgres turns a connection string into an @effect/sql-pg client — tagged-template queries with typed errors, one pool per execution."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `SQL.Postgres` provides tagged-template queries over a Postgres connection. Queries are Effects with typed `SqlError` failures, interruption, and tracing.
@@ -11,7 +11,7 @@ current_date: 2026-10-02T14:04:57.255Z
 Install the optional Postgres driver:
 
 ```sh
-bun add @effect/sql-pg pg
+pnpm add @effect/sql-pg pg
 ```
 
 ## Connect

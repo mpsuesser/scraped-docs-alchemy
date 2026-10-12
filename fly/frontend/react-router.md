@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 (framework mode) to Fly with Fly.Website.ReactRouter — SSR on a Machine, client assets baked into the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Fly. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/react-router` and `/react-router/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 The React Router side is whatever `npx create-react-router@latest` scaffolds — `react-router`, `@react-router/dev`, `@react-router/node`, `isbot`, and `vite`. Keep `@react-router/node` and `isbot` in `dependencies`: React Router picks its default `entry.server` by reading them from your `package.json`, and installs `isbot` on the fly if it is missing.

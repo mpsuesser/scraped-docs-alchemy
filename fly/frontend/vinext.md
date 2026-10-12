@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Fly with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The built app runs in a Fly Machine using vinext’s production Node server. Alchemy creates an App when `app` is omitted and deploys a Service containing `dist/` and vinext’s runtime dependencies.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Keep `vinext`, `react`, `react-dom`, and `react-server-dom-webpack` in your application dependencies, with `vite` and `@vitejs/plugin-rsc` for building. Add the Alchemy integration:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure vinext

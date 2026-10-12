@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Railway with Railway.Website.Vocs — prerendered HTML on a Railway Service, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Railway.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project as one [Railway.Service](https://alchemy.run/railway/compute/services) from a container image. Vocs prerenders static HTML; a Node static-file server serves extensionless pages (`/about` not `/about/`). Your `vocs.config.*` loads natively — there is no adapter to install.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads `/vocs/node` from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 The project also needs `vocs` and Vocs’ Waku peer dependencies.

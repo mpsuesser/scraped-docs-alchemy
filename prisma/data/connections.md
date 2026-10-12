@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/connections
 title: "Connections"
 description: "Prisma Connections materialize database credentials — a conventional databaseUrl, direct and pooled connection strings, parsed origins for Hyperdrive, and the Connect runtime binding."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 A `Prisma.Connection` is a credential (an API key) for one
@@ -110,8 +110,7 @@ friends read them back as `Redacted` values.
 A container is a real process with no workerd bindings, so env vars
 are its only channel — which is exactly why `Prisma.Connect` reaches
 it and `Cloudflare.Hyperdrive.Connect` does not. Start the container
-with `Cloudflare.Containers.layer(Api, { enableInternet: true })` so
-it can reach the database. See
+with `api.start({ enableInternet: true })` so it can reach the database. See
 [Which capabilities reach a container](../../cloudflare/compute/containers.md#which-capabilities-reach-a-container).
 
 ## Rotation

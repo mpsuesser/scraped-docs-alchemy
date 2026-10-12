@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to AWS with AWS.Website.Nuxt — nitro's aws-lambda preset on a streaming Lambda Function URL, S3 assets behind CloudFront, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to AWS. It builds the app through your project’s own `@nuxt/kit` with nitro’s `aws-lambda` preset: the nitro server runs on a Lambda Function URL with response streaming, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the Lambda. There is no `nitro.preset` to edit and no build command to run.
@@ -13,7 +13,7 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/nuxt` and `/nuxt/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Nuxt

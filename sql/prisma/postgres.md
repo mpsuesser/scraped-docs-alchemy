@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/prisma/postgres
 title: "Postgres"
 description: "Connect Prisma ORM v8 to Postgres and run Effect-native queries, streams, prepared statements, and transactions independently of your cloud provider."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Prisma ORM v8 uses a contract to type queries and plan migrations. The same Effect-native client works with a connection from configuration or a runtime binding; choose a database in [SQL databases](../databases.md).
@@ -11,8 +11,8 @@ Prisma ORM v8 uses a contract to type queries and plan migrations. The same Effe
 Prisma ORM and its CLI are optional Alchemy peers:
 
 ```sh
-bun add @prisma/orm-postgres@8.0.0-rc.11
-bun add -d prisma@8.0.0-rc.15
+pnpm add @prisma/orm-postgres@8.0.0-rc.11
+pnpm add -D prisma@8.0.0-rc.15
 ```
 
 ## Start with a contract

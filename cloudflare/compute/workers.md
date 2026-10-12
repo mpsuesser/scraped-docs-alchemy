@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute Runtime of every Alchemy app — declare the Worker and its handler in one file, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 In Alchemy, a Cloudflare Worker is a [Runtime](../../infrastructure-as-effects/runtime.md): a [Resource](../../infrastructure-as-code/resource.md) that carries the code it runs. The name and props describe the Worker to deploy. The Effect is what it does:
@@ -138,6 +138,33 @@ export default Cloudflare.Worker(
 `bindWorker(Greeter)` registers a service binding on `Api`, so each call travels over Cloudflare’s in-account service-binding fabric and never the public internet. `greeter.greet("world")` is type-checked against `Greeter` ’s declared shape end to end.
 
 Importing the `Greeter` class pulls in no runtime code. Alchemy marks `.make()` as pure, so the bundler drops the implementation from every Worker that only binds it. For external clients across a trust boundary, where payloads need schema validation before they touch your code, reach for [Effect RPC](../apis/effect-rpc.md) instead.
+
+## Call the Worker’s own RPC methods
+
+A Worker can bind itself. Declare the class first so its implementation can reference it:
+
+```typescript
+export class Greeter extends Cloudflare.Worker<
+  Greeter,
+  { greet: (name: string) => Effect.Effect<string> }
+>()("Greeter") {}
+
+export default Greeter.make(
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const self = yield* Cloudflare.Workers.bindWorker(Greeter);
+
+    return {
+      greet: (name: string) => Effect.succeed(\`Hello ${name}\`),
+      fetch: Effect.gen(function* () {
+        return HttpServerResponse.text(yield* self.greet("world"));
+      }),
+    };
+  }),
+);
+```
+
+A self binding uses workerd’s `ctx.exports` loopback, so nothing is added to the Worker’s deployed bindings.
 
 ## Serve static assets
 
@@ -289,9 +316,9 @@ export default {
 
 `InferEnv` maps each entry to its native `workers-types` client. An R2 bucket becomes `R2Bucket`, a D1 database `D1Database`, a Durable Object or [Container](containers.md#bind-on-an-async-worker) a typed `DurableObjectNamespace`, and `Config` or `Redacted` values `string`. The handler stays plain JavaScript, but the env can never drift from the infrastructure that produced it. [Python Workers](python-workers.md) are async Workers whose `main` is a `.py` file.
 
-### Named entrypoints
+### Bind another Worker or this one
 
-Binding another Worker on `env` targets its default entrypoint. To expose a named RPC entrypoint, export a class extending Cloudflare’s native [`WorkerEntrypoint`](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/rpc/) from the target Worker’s module:
+A service binding reaches a Worker’s default export or one of its named [`WorkerEntrypoint`](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/rpc/) classes. The target can be another Worker or this Worker itself. The examples below call this module:
 
 ```typescript
 import { WorkerEntrypoint } from "cloudflare:workers";
@@ -309,29 +336,35 @@ export default {
 };
 ```
 
-Import that `Api` class as a type in your infrastructure code. `Cloudflare.WorkerEntrypoint<Api>(target, "Api")` binds the named `Api` export on the target Worker. The type argument is the class’s instance type (`Api`, not `typeof Api`):
+### Another Worker’s default export
+
+Put the Worker itself on `env`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import type { Api } from "./src/target.ts";
-
-const target = yield* Cloudflare.Worker("Target", {
-  main: "./src/target.ts",
-});
+const target = yield* Cloudflare.Worker("Target", { main: "./src/target.ts" });
 
 const caller = yield* Cloudflare.Worker("Caller", {
   main: "./src/caller.ts",
-  env: {
-    API: Cloudflare.WorkerEntrypoint<Api>(target, "Api"),
-  },
+  env: { TARGET: target },
 });
 ```
 
-`InferEnv` maps the binding to Cloudflare’s native `Service<Api>` type, which checks method arguments and converts return values to promises:
+`env.TARGET` is a `Fetcher`, so `env.TARGET.fetch(request)` reaches the target’s `export default`.
+
+### Another Worker’s named entrypoint
+
+Name the class with `Cloudflare.WorkerEntrypoint`, and pass its instance type (`Api`, not `typeof Api`) to type the RPC methods:
 
 ```typescript
-import type { CallerEnv } from "../alchemy.run.ts";
+import type { Api } from "./src/target.ts";
 
+const caller = yield* Cloudflare.Worker("Caller", {
+  main: "./src/caller.ts",
+  env: { API: Cloudflare.WorkerEntrypoint<Api>(target, "Api") },
+});
+```
+
+```typescript
 export default {
   async fetch(request: Request, env: CallerEnv) {
     return new Response(await env.API.greet("alice"));
@@ -339,9 +372,45 @@ export default {
 };
 ```
 
-Without the type argument the entry is a bare `Fetcher` service stub (`fetch` + `connect` only) and RPC calls do not type-check.
+`InferEnv` maps the binding to Cloudflare’s `Service<Api>`, which checks arguments and returns promises. Without the type argument `env.API` is a plain `Fetcher` with only `fetch` and `connect`.
 
-The options form attaches properties the target reads from `this.ctx.props`, workerd’s per-binding configuration channel. `Output` values resolve at deploy time:
+### This Worker’s default export
+
+`Cloudflare.WorkerEntrypoint()` with no arguments binds the Worker to itself:
+
+```typescript
+const api = yield* Cloudflare.Worker("Api", {
+  main: "./src/target.ts",
+  env: { SELF: Cloudflare.WorkerEntrypoint() },
+});
+```
+
+`env.SELF.fetch(request)` re-enters the Worker’s own `export default`. `Cloudflare.Workers.Self` is the same binding.
+
+### This Worker’s named entrypoint
+
+Pass just the name:
+
+```typescript
+import type { Api } from "./src/target.ts";
+
+const api = yield* Cloudflare.Worker("Api", {
+  main: "./src/target.ts",
+  env: { API: Cloudflare.WorkerEntrypoint<Api>("Api") },
+});
+```
+
+When the entrypoint class extends `WorkerEntrypoint<WorkerEnv>`, declare `WorkerEnv` as an interface. A type alias is a circular type here:
+
+```typescript
+export interface WorkerEnv extends Cloudflare.InferEnv<typeof api> {}
+```
+
+Without the type argument `env.API` is a plain `Fetcher`, and either form of `WorkerEnv` works.
+
+### Pass ctx.props to an entrypoint
+
+The options form attaches properties the entrypoint reads from `this.ctx.props`, on another Worker or on this one (`Cloudflare.WorkerEntrypoint({ entrypoint, props })`). `Output` values resolve at deploy time:
 
 ```typescript
 env: {
@@ -351,6 +420,8 @@ env: {
   }),
 },
 ```
+
+Leave out `entrypoint` to target the default export.
 
 ## Configure the Worker
 

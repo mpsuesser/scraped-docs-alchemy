@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/aws
 title: "aws"
 description: "AWS provider commands — bootstrap the per-account assets bucket that Lambda deployments rely on."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 ```sh
@@ -33,10 +33,10 @@ Re-running is a no-op:
 | Option | Description |
 | --- | --- |
 | `--aws-profile <name>` | AWS CLI/SSO profile to use for credentials (default: `default`) |
-| `--region <region>` | AWS region to bootstrap. Defaults to the SSO profile’s region, then `us-east-1`. |
+| `--region <region>` | AWS region to bootstrap. Defaults to the AWS CLI profile’s region, then `us-east-1`. |
 | `--env-file <path>` | Load environment variables from a file |
 
-Bootstrap requires an AWS **SSO profile** with `sso_account_id` set — it fails with a clear error if the profile is missing one.
+Bootstrap requires an AWS CLI profile that is either **SSO** (`sso_account_id`) or **console login** (`login_session` from `aws login`). It fails with a clear error if the profile is neither.
 
 Logs are written to `.alchemy/log/bootstrap.txt`.
 

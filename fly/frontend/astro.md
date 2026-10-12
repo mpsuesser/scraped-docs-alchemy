@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to Fly with Fly.Website.Astro — Node SSR on a Machine, static output as a file server, and Astro's own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Astro` deploys an [Astro](https://astro.build/) project to Fly as a Node server on a Machine. Server-rendered pages run on a [`Fly.Service`](https://alchemy.run/fly/compute/services) (port 3000); static files are served first, then the Astro handler. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. Your `astro.config.*` loads natively — don’t declare an `adapter`.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/astro` and `/astro/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Astro

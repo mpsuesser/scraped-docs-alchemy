@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/foldkit
 title: "Foldkit"
 description: "Deploy a Foldkit app to Railway with Railway.Website.Foldkit — a client-only Vite SPA on a container Service, and Vite's own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 [Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects — the Foldkit Vite plugin only adds HMR and devtools wiring — so `Railway.Website.Foldkit` is [`Railway.Website.Vite`](vite.md) with SPA fallback to `index.html`. Deep links boot the app and the Foldkit router takes over.
@@ -15,7 +15,7 @@ Deploy creates a [`Railway.Project`](https://alchemy.run/railway/compute/project
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Vite

@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/ci
 title: "CI"
 description: "Set up CI/CD pipelines for alchemy projects with GitHub Actions, automated deployments, and PR previews — with provider credentials managed as code."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The core idea is **credentials as code**. Rather than copy-paste API keys into the GitHub UI, you let Alchemy provision exactly the credentials your CI needs — a scoped Cloudflare API token, an AWS IAM role for OIDC, etc. — and write them straight into the repo as encrypted secrets.
@@ -100,12 +100,20 @@ By the end you’ll have:
 	      pull-requests: write
 	    steps:
 	      - uses: actions/checkout@v4
-	      - name: Setup Bun
-	        uses: oven-sh/setup-bun@v2
+	      - name: Setup pnpm
+	        uses: pnpm/action-setup@v4
+	        with:
+	          version: "10"
+	          run_install: false
+	      - name: Setup Node.js
+	        uses: actions/setup-node@v4
+	        with:
+	          node-version: "24"
+	          cache: pnpm
 	      - name: Install dependencies
-	        run: bun install
+	        run: pnpm install
 	      - name: Deploy
-	        run: bun alchemy deploy --stage ${{ env.STAGE }}
+	        run: pnpm dlx alchemy deploy --stage ${{ env.STAGE }}
 	        env:
 	          PULL_REQUEST: ${{ github.event.number }}
 	          GITHUB_SHA: ${{ github.sha }}
@@ -119,10 +127,18 @@ By the end you’ll have:
 	      pull-requests: write
 	    steps:
 	      - uses: actions/checkout@v4
-	      - name: Setup Bun
-	        uses: oven-sh/setup-bun@v2
+	      - name: Setup pnpm
+	        uses: pnpm/action-setup@v4
+	        with:
+	          version: "10"
+	          run_install: false
+	      - name: Setup Node.js
+	        uses: actions/setup-node@v4
+	        with:
+	          node-version: "24"
+	          cache: pnpm
 	      - name: Install dependencies
-	        run: bun install
+	        run: pnpm install
 	      - name: Safety Check
 	        run: |-
 	          if [ "${{ env.STAGE }}" = "prod" ]; then
@@ -130,7 +146,7 @@ By the end you’ll have:
 	          exit 1
 	          fi
 	      - name: Destroy Preview Environment
-	        run: bun alchemy destroy --stage ${{ env.STAGE }}
+	        run: pnpm dlx alchemy destroy --stage ${{ env.STAGE }}
 	        env:
 	          PULL_REQUEST: ${{ github.event.number }}
 	```
@@ -154,6 +170,8 @@ Rather than hand those rights to your default [profile](profiles.md), create a s
 alchemy profile create admin
 alchemy profile edit --profile admin
 ```
+
+For Cloudflare, choose **API Token or API Key** when asked for the authentication method, not the recommended OAuth: Cloudflare’s OAuth scopes can’t manage API tokens, so an OAuth `admin` profile fails when `stacks/github.ts` creates the CI token. See [required Cloudflare permissions](#cloudflare) for which key or token to use.
 
 After creating the file, deploy it once locally under the admin profile:
 

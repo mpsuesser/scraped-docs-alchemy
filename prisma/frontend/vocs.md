@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vocs
 title: "Vocs"
 description: "Deploy Vocs documentation to Prisma Compute with Prisma.Website.Vocs — static assets and Waku RSC on Bun, with Vocs dev locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Vocs` builds a [Vocs](https://vocs.dev/) documentation site and runs it on **Bun in Prisma Compute**. The shared Node target serves client files and prerendered HTML first, then falls through to Vocs’ Waku RSC handler. The result is uploaded as `tar.gz`, not a Docker image. Extensionless pages such as `/about` retain their normal URLs.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build-time integration; the resource loads `/vocs/node` from your project. Keep `vocs` and its Waku peer dependencies installed.
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure Vocs

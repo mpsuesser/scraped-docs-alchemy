@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/migrations
 title: "Migrations"
 description: "Commit ordered SQL files and apply them on database deploy or Durable Object activation, tracked in one Alchemy-owned table."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Migrations without an ORM: commit `.sql` files to a directory and
@@ -100,9 +100,13 @@ running its migrate command.
 
 Two guard rails:
 
-- Every recorded row must match a local migration file; an orphaned
-  row fails the deploy with `MigrationHistoryConflictError` — it
-  means migrations were applied that your checkout doesn't have.
+- Every recorded row must match a local migration file by name and
+  content hash. An orphaned row fails conversion with
+  `MigrationHistoryConflictError`; an already-applied file that was
+  edited or removed fails with `RewrittenMigrationHistoryError`.
+  Add a forward migration rather than rewriting history. PlanetScale
+  development branches replace (re-fork from parent) instead of
+  failing; production branches always fail.
 - A **failed** Prisma migration (`finished_at` NULL) blocks adoption
   until repaired with `prisma migrate resolve`; rolled-back rows are
   skipped.

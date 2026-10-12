@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon
 title: "Neon"
 description: "Declare Neon Postgres, Functions, storage, Auth, AI Gateway and websites together in an Alchemy Stack."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Declare Neon Postgres branches, Functions, object storage, managed Auth, Data API, and AI Gateway connections in the same Alchemy Stack. Functions accept native Fetch handlers or Effect applications; runtime bindings connect them to your backend without exposing the deployment API key.
@@ -38,6 +38,17 @@ const featureBranch = yield* Neon.Branch("feature", {
 ```
 
 Migrations are ordered, hashed, and tracked in Alchemy’s `__alchemy_migrations` table so each file runs exactly once — see [Migrations](neon/data/migrations.md).
+
+## Roles
+
+A `Neon.Role` is a Postgres login on a branch. Give your app and your migrations their own:
+
+```typescript
+const app = yield* Neon.Role("App", { branch });
+const migrator = yield* Neon.Role("Migrator", { branch, name: "migrator" });
+```
+
+`app.password` is `Redacted` and stays the same across deploys — see [Roles](https://alchemy.run/neon/data/roles).
 
 ## Organization governance
 

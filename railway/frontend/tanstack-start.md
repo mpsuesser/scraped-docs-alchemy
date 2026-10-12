@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Railway with Railway.Website.TanStackStart — SSR on a container Service, client assets in the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Railway.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Railway. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server plus client assets run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/tanstack-start` and `/tanstack-start/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Vite

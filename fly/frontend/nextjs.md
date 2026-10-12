@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Fly with Fly.Website.Nextjs — next build plus a Node next({ dev: false }) Machine, and next dev under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Fly as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
@@ -21,7 +21,7 @@ App Router and Pages Router both work — server components, API routes, middlew
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads the package’s `/nextjs/node` export from your project at deploy time. It is only used at build time, so a dev dependency is enough. Your app still needs `next`, `react`, and `react-dom` as usual:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Next.js

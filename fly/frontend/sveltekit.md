@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Fly with Fly.Website.SvelteKit — kit SSR on a Machine, prerendered assets baked into the image, and Kit's own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to Fly. It builds the app with SvelteKit’s own Vite pipeline and an in-memory Node adapter. Client assets and prerendered pages bake into the Machine image and are served first; dynamic routes run in the kit handler on port 3000. Alchemy creates a `Fly.App` if you omit `app`, a `Fly.Service` on that App, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/sveltekit` and `/sveltekit/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure SvelteKit
@@ -93,7 +93,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     sveltekit({
-      alias: { $lib: "src/lib" },
+      prerender: { handleHttpError: "warn" },
     }),
   ],
 });

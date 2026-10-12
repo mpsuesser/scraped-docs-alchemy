@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vite-spa
 title: "React SPA"
 description: "Deploy a React single-page app to AWS with AWS.Website.Vite — the Vite build on S3 + CloudFront, deep links answered by index.html out of the box, and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`AWS.Website.Vite`](vite.md): scaffold the project, run its own `vite build`, and serve the output from a private S3 bucket through CloudFront. The composite is assets-only — it never creates a Lambda — and `spa` defaults on, so client-side routes deep-link correctly with nothing to configure. For the resource itself and every prop, see the [Vite resource page](vite.md).
@@ -13,7 +13,7 @@ This is the walkthrough for a plain React single-page app on [`AWS.Website.Vite`
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Scaffold the app
@@ -21,8 +21,8 @@ bun add -d @alchemy.run/frontend-frameworks
 Start from Vite’s official React + TypeScript template:
 
 ```sh
-bun create vite@latest web -- --template react-ts
-cd web && bun install && cd ..
+pnpm create vite web --template react-ts
+cd web && pnpm install && cd ..
 ```
 
 That drops a complete project into `./web/` with its own `index.html`, `package.json`, and `vite.config.ts`.
@@ -90,7 +90,7 @@ Deep links work with no configuration. `spa` defaults to `true`, so a request th
 Add React Router and route on the client:
 
 ```sh
-bun add react-router-dom
+pnpm add react-router-dom
 ```
 
 ```tsx

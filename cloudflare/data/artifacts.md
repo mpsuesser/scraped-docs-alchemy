@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/artifacts
 title: "Store Git Repos with Artifacts"
 description: "Use Cloudflare Artifacts to create Git repos at runtime and hand out clone tokens, all from a tiny Worker."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 **Cloudflare Artifacts** is a Git server you can drive from a
@@ -50,7 +50,7 @@ export default class Worker extends Cloudflare.Worker<Worker>()(
     return {
       fetch: Effect.gen(function* () {
         const request = yield* HttpServerRequest;
-        const name = new URL(request.url).pathname.slice(1);
+        const name = new URL(request.url, "http://localhost").pathname.slice(1);
 
         const repo = yield* artifacts.create(name, { setDefaultBranch: "main" });
 
@@ -78,7 +78,7 @@ recreating the repo, look it up with `artifacts.get(name)` and call
 ```diff lang="typescript"
  fetch: Effect.gen(function* () {
    const request = yield* HttpServerRequest;
-   const name = new URL(request.url).pathname.slice(1);
+   const name = new URL(request.url, "http://localhost").pathname.slice(1);
 
 +  if (request.method === "GET") {
 +    const repo = yield* artifacts.get(name);

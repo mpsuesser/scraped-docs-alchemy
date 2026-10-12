@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-4
 title: "Part 4: Give users their own credentials"
 description: "Replace the shared credential with Better Auth accounts and individual Git API keys."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 One shared credential cannot distinguish one caller from another. Replace it with Better Auth accounts and API keys, then use the authenticated user’s ID when checking access to a named repository.
@@ -13,7 +13,7 @@ Keep the host and storage from [Part 3](part-3.md). Existing repositories remain
 ## Install Better Auth
 
 ```sh
-bun add @alchemy.run/better-auth better-auth @better-auth/api-key
+pnpm add @alchemy.run/better-auth@latest better-auth @better-auth/api-key
 ```
 
 Better Auth will manage accounts and credentials. Git will continue to store repositories.
@@ -239,7 +239,7 @@ return { url: host.url.as<string>() };
 ## Deploy accounts and credentials
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Install `jq` for the following shell checks if you do not already have it. Continue using the same `$HOST`.

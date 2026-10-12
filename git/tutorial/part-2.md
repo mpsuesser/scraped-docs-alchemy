@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-2
 title: "Part 2: Control access"
 description: "Protect the existing Git host with one shared credential, then verify both accepted and rejected requests."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The host from [Part 1](part-1.md) accepts requests from anyone. Add a single shared credential so only people who have it can use the host. This part changes access to the existing repositories; it does not recreate them.
@@ -109,7 +109,7 @@ This exposes the shared credential in the deployment output so you can copy it f
 ## Deploy the access policy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Copy the printed credential:

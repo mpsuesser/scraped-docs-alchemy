@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/drizzle-aurora
 title: "Drizzle + Aurora PostgreSQL"
 description: "Drizzle on Lambda with private Aurora PostgreSQL, IAM authentication, verified TLS, and reviewed SQL migrations."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-aurora-drizzle) · [AWS setup](../setup.md) · [Aurora DSQL instead](drizzle-dsql.md)
@@ -99,7 +99,7 @@ The CA path is specific to [managed Lambda Node.js runtimes](https://docs.aws.am
 ## Package the driver
 
 ```sh
-pnpm add alchemy effect@4.0.0-rc.115 @effect/sql-pg@4.0.0-rc.115 \
+pnpm add alchemy effect @effect/sql-pg \
   drizzle-orm@1.0.0-rc.5-ab785fc pg
 pnpm add -D @types/pg
 ```
@@ -200,7 +200,7 @@ Run from the authorized migration runner before releasing code that requires the
 ## Run the integration test
 
 ```sh
-AWS_TEST_SLOW=1 ALCHEMY_PROFILE=testing bun test test/integ.test.ts
+ALCHEMY_PROFILE=testing bun test test/integ.test.ts
 ```
 
 This deploys real AWS resources and destroys them afterward; provisioning and cleanup take several minutes.

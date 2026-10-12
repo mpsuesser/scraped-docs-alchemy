@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/durable-objects
 title: "Durable Objects"
 description: "Durable Objects are globally-unique stateful instances with transactional storage — define one as an Effect, persist state per key, expose typed RPC methods, and stream values back to the caller."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 A Durable Object (DO) is a globally-unique stateful instance addressed by name: every request for `"user-123"` — from any Worker, anywhere in the world — lands on the *same* instance, with its own transactional SQLite-backed storage. That combination of identity + storage + single-threaded execution makes DOs the right tool for per-entity state: counters, chat rooms, game sessions, WebSocket hubs, rate limiters, collaborative documents.
@@ -116,7 +116,7 @@ export default Cloudflare.Worker(
 );
 ```
 
-`yield* Counter` in the constructor registers the DO with the Worker (binding + class-migration metadata) and hands you the namespace.
+`yield* Counter` in the constructor registers the DO with the Worker (binding + Durable Object `exports` metadata) and hands you the namespace.
 
 ## Call the DO from fetch
 
@@ -359,6 +359,16 @@ const shard = shards.getByName(\`pool:${region}:${index}\`, {
 
 Available hints are `wnam`, `enam`, `sam`, `weur`, `eeur`, `apac`, `oc`, `afr`, and `me`. Each is best-effort: Cloudflare places the instance in the nearest location it can to the hinted region, which may not be inside it. Under `alchemy dev` there is only one location to place anything in, so hints are accepted and ignored — placement is only observable once deployed.
 
+## Keep an instance inside a jurisdiction
+
+A `locationHint` is best-effort. When data must stay inside a region for compliance, address the object through `jurisdiction()` instead:
+
+```typescript
+const room = rooms.jurisdiction("eu").getByName(roomId);
+```
+
+Cloudflare creates and stores that object only inside the jurisdiction. The same name addresses a different object than it does without `jurisdiction()`, so pick one form per name and keep using it.
+
 ## Call scope vs isolate scope
 
 A Durable Object shares its isolate’s layer build with the Worker that hosts it — the entrypoint’s constructor runs **once per isolate**, and every DO activation (including hibernatable-WebSocket wakes, which re-run the constructor) reuses it. Each method call, `fetch`, `alarm`, or WebSocket event then runs with a **fresh `Scope`**, closed via `state.waitUntil` after the call settles — so `Effect.addFinalizer` inside a method runs after the RPC response is returned, and a returned `Stream` keeps the scope alive until it finishes draining.
@@ -486,6 +496,49 @@ Existing `scheduleEvent` jobs stay in `alchemy_scheduled_events`, with their IDs
 Legacy events and callbacks share the object’s single native alarm; Alchemy coordinates the earliest pending timestamp across both queues. A callback-only object does not need an `alarm` handler. Avoid manually setting or deleting the native alarm while either scheduler owns pending work.
 
 Callback names and payload formats are also persisted contracts. Keep old registrations while their jobs are pending, and keep new handlers compatible with old JSON payloads. Unknown callback names remain pending; renaming a handler does not migrate those jobs. TypeScript payload types do not validate data stored by an earlier deployment, so decode evolving payloads explicitly with a schema when needed.
+
+## Adopt a Worker deployed by Wrangler
+
+Alchemy deploys Durable Object classes with Cloudflare’s declarative [`exports`](https://developers.cloudflare.com/durable-objects/reference/durable-objects-migrations/) map, the same flow Wrangler uses since 4.107. An [adopted](../../infrastructure-as-code/resource-lifecycle.md#adoption) Worker keeps every namespace it already has, with its data and storage backend:
+
+```typescript
+const worker = yield* Cloudflare.Worker("Api", {
+  name: "my-existing-worker",
+  main: "./src/worker.ts",
+  env: { Counter: Cloudflare.DurableObject("Counter") },
+}).pipe(adopt(true));
+```
+
+A namespace whose class is no longer exported by your code stops the deploy instead of being deleted. Export the class again to keep it.
+
+## Run containers
+
+A Durable Object can start a container. Declare one Container per image with `schedulingPolicy: "durable_object"`, and bind each one the Durable Object can run.
+
+An Effect-native Durable Object `yield*` s its Containers:
+
+```typescript
+export class Agent extends Cloudflare.DurableObject<Agent>()(
+  "Agent",
+  Effect.gen(function* () {
+    const node = yield* Node;
+    const python = yield* Python;
+    return Effect.succeed({
+      start: () => node.start({ enableInternet: false }),
+    });
+  }),
+) {}
+```
+
+An async Worker lists them on the Durable Object binding:
+
+```typescript
+env: {
+  AGENT: Cloudflare.DurableObject("Agent", { containers: [Node, Python] }),
+}
+```
+
+An object runs one container at a time. See [Several images in one Durable Object](containers.md#several-images-in-one-durable-object) and [on an async Worker](containers.md#several-images-on-an-async-worker).
 
 ## Where next
 

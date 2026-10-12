@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
@@ -20,7 +20,7 @@ import type { PlatformError } from "effect/PlatformError";
 export class Sandbox extends Cloudflare.Container<
   Sandbox,
   {
-    exec: (command: string) => Effect.Effect<
+    shell: (command: string) => Effect.Effect<
       { exitCode: number; stdout: string; stderr: string },
       PlatformError
     >;
@@ -101,7 +101,7 @@ export const SandboxLive = Sandbox.make(
     const cp = yield* ChildProcessSpawner;
 
     return Sandbox.of({
-      exec: (command) =>
+      shell: (command) =>
         cp
           .spawn(ChildProcess.make(command, { shell: true }))
           .pipe(
@@ -129,7 +129,7 @@ export const SandboxLive = Sandbox.make(
 export default SandboxLive;
 ```
 
-The body shells out via Effect’s `ChildProcessSpawner` and collects stdout/stderr/exit code, but the **shape** is what matters: a function returning an `Effect` becomes a typed RPC method. When the Worker (via the Durable Object) calls `agent.exec("echo hi")`, it gets back an `Effect<{ exitCode, stdout, stderr }>` — exactly the type declared on the class.
+The body shells out via Effect’s `ChildProcessSpawner` and collects stdout/stderr/exit code, but the **shape** is what matters: a function returning an `Effect` becomes a typed RPC method. When the Durable Object calls `sandbox.shell("echo hi")`, it gets back an `Effect<{ exitCode, stdout, stderr }>` — exactly the type declared on the class.
 
 ## Add an HTTP handler
 
@@ -149,7 +149,7 @@ export const SandboxLive = Sandbox.make(
     const cp = yield* ChildProcessSpawner;
 
     return Sandbox.of({
-      exec: /* ... unchanged ... */,
+      shell: /* ... unchanged ... */,
       fetch: Effect.succeed(
         HttpServerResponse.text("Hello from the Sandbox container!"),
       ),
@@ -158,7 +158,7 @@ export const SandboxLive = Sandbox.make(
 );
 ```
 
-`fetch` and RPC methods like `exec` are independent — a caller decides which they want by either calling `getTcpPort(3000).fetch` (HTTP) or invoking `.exec(...)` directly (RPC). We’ll use both later in the bonus section.
+`fetch` and RPC methods like `shell` are independent — a caller decides which they want by either calling `getTcpPort(3000).fetch` (HTTP) or invoking `.shell(...)` directly (RPC). We’ll use both later in the bonus section.
 
 ## Bind the container from a Durable Object
 
@@ -181,9 +181,9 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
 
 Importing `Sandbox` (the class) does **not** pull in the runtime — that lives in `Sandbox.runtime.ts` and Rolldown tree-shakes it out.
 
-## Get the running container in the outer phase
+## Bind the container in the outer phase
 
-`yield* Sandbox` hands you a **running** container instance — the same typed shape you declared on the class, plus a `getTcpPort` helper. Resolve it in the **outer** Construction phase and expose `exec` from the inner phase as an RPC method:
+`yield* Sandbox` binds the container to the Durable Object and hands you its handle: the typed shape you declared on the class, plus `start`, `getTcpPort` and the rest of the container API. Resolve it in the **outer** Construction phase:
 
 ```typescript
 export default class Agent extends Cloudflare.DurableObject<Agent>()(
@@ -193,19 +193,16 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
 
     return Effect.gen(function* () {
       return {};
-      return {
-        exec: (command: string) => sandbox.exec(command),
-      };
     });
   }),
 ) {}
 ```
 
-The DO instance is now a thin RPC bridge: callers invoke `agent.exec(cmd)`, the DO forwards to `sandbox.exec(cmd)`, and the captured stdout/stderr/exitCode flow back through the typed shape.
+Binding never starts the container. It only registers the container with the Durable Object.
 
-## Configure the container with a Layer
+## Start the container before calling it
 
-`yield* Sandbox` only resolves once you tell the DO **how** to run the container. Provide `Cloudflare.Containers.layer(Sandbox, …)` on the DO’s constructor — that layer binds, starts, and monitors the container, then satisfies the `Sandbox` tag with the running instance:
+Define how to start the container once, and run it at the top of every operation that needs the container:
 
 ```typescript
 export default class Agent extends Cloudflare.DurableObject<Agent>()(
@@ -214,18 +211,18 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
     const sandbox = yield* Sandbox;
 
     return Effect.gen(function* () {
+      return {};
+      const start = sandbox.start({ enableInternet: true });
       return {
-        exec: (command: string) => sandbox.exec(command),
+        exec: (command: string) =>
+          start.pipe(Effect.andThen(sandbox.shell(command))),
       };
     });
   }),
-  }).pipe(
-    Effect.provide(
-      Cloudflare.Containers.layer(Sandbox, { enableInternet: true }),
-    ),
-  ),
 ) {}
 ```
+
+`start` is idempotent: it starts the container unless it is already running, and concurrent calls start it once. A container that stopped or crashed since the last request starts again on the next one. The DO is now a thin RPC bridge: callers invoke `agent.exec(cmd)`, and the DO starts the container and forwards to `sandbox.shell(cmd)`.
 
 ## Wire the Container into the Stack
 
@@ -351,10 +348,13 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
     const sandbox = yield* Sandbox;
 
     return Effect.gen(function* () {
+      const start = sandbox.start({ enableInternet: true });
       return {
-        exec: (command: string) => sandbox.exec(command),
+        exec: (command: string) =>
+          start.pipe(Effect.andThen(sandbox.shell(command))),
         hello: () =>
           Effect.gen(function* () {
+            yield* start;
             const { fetch } = yield* sandbox.getTcpPort(3000);
             const response = yield* fetch(
               HttpClientRequest.get("http://container/"),
@@ -363,11 +363,7 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
           }),
       };
     });
-  }).pipe(
-    Effect.provide(
-      Cloudflare.Containers.layer(Sandbox, { enableInternet: true }),
-    ),
-  ),
+  }),
 ) {}
 ```
 
@@ -388,6 +384,6 @@ if (request.url === "/sandbox/hello") {
 }
 ```
 
-`getTcpPort(n)` returns a `Fetcher` -shaped object whose `fetch` method retries with backoff while the container is still booting, so you don’t have to coordinate readiness yourself.
+`getTcpPort(n)` returns a port whose `fetch` waits until the container’s server accepts connections, so you don’t have to coordinate readiness yourself. It never starts the container: call `start` first.
 
 Next you’ll [add a Workflow](workflows.md) to orchestrate multi-step durable work that the container or DOs can trigger — perfect for jobs that need to outlive any single request.

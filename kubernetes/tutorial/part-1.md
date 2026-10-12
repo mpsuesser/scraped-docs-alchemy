@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-1
 title: "Part 1: Your First Deployment"
 description: "Create a Stack, start a Kubernetes cluster on your machine with Kubernetes.LocalCluster, deploy a replicated HTTP service with Kubernetes.Deployment, and reach it with kubectl."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 In this first part you’ll create a Stack, start a Kubernetes cluster on your machine, and deploy a replicated HTTP service. You won’t write a line of YAML.
@@ -22,15 +22,15 @@ kind runs Kubernetes inside Docker containers. Alchemy runs it for you, but it m
 Start with an empty directory and initialize a `package.json`:
 
 ```sh
-mkdir my-cluster && cd my-cluster && bun init -y
+mkdir my-cluster && cd my-cluster && pnpm init
 ```
 
 ## Install dependencies
 
-Install `alchemy@latest` and `effect@rc`:
+Install `alchemy@latest` and `effect`:
 
 ```sh
-bun add "alchemy@latest" "effect@rc" "@effect/platform-bun@rc" "@effect/platform-node@rc"
+pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Create the Stack
@@ -128,7 +128,7 @@ const web = yield* Kubernetes.Deployment("Web", {
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ```

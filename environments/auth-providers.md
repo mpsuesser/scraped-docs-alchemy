@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/auth-providers
 title: "Auth Providers"
 description: "An Auth Provider produces the credentials for a cloud's API calls — resolved lazily as Effects, so tokens and role sessions can refresh instead of pinning one static key."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Resources never take API keys as props. Each cloud registers an
@@ -112,8 +112,8 @@ export class CloudflareEnvironment extends Context.Service<
 ```
 
 AWS is the same shape, and goes one level deeper — the resolved
-environment holds its credentials as an Effect too, so expiring SSO
-and assumed-role sessions re-resolve on each access:
+environment holds its credentials as an Effect too, so expiring SSO,
+console-login, and assumed-role sessions re-resolve on each access:
 
 ```typescript
 // alchemy/AWS/Environment

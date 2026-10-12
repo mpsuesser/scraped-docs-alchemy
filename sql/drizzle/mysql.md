@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/mysql
 title: "MySQL"
 description: "Provider-neutral MySQL schemas, Effect-native Drizzle queries, and connection configuration."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Drizzle.MySQL` provides typed, Effect-native queries for compatible MySQL databases, independently of where your application runs. Choose a database in [SQL databases](../databases.md) and supply its connection through your runtime’s binding or configuration.
@@ -11,8 +11,8 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the optional dependencies:
 
 ```sh
-bun add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-mysql2 mysql2
-bun add -d drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-mysql2 mysql2
+pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
 ## Define the schema

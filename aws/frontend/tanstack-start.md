@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to AWS with AWS.Website.TanStackStart — SSR on a streaming Lambda Function URL, client assets on S3 + CloudFront, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to AWS. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs on a Lambda Function URL with response streaming, and client assets are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the Lambda.
@@ -13,7 +13,7 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/tanstack-start` and `/tanstack-start/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Vite

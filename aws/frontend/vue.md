@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to AWS with AWS.Website.Vite — S3 + CloudFront, deep links that work by default, and Vue's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 [Vue](https://vuejs.org/) is pure Vite — the whole app builds from `@vitejs/plugin-vue` in your `vite.config.ts`, so [`AWS.Website.Vite`](vite.md) deploys it with a single declaration. The build output goes to a private S3 bucket behind a CloudFront distribution; there is no server function, no build command to wire up, and no CloudFormation to write.
@@ -13,7 +13,7 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Scaffold the app
@@ -21,8 +21,8 @@ bun add -d @alchemy.run/frontend-frameworks
 Start from Vite’s official Vue + TypeScript template:
 
 ```sh
-bun create vite@latest my-vue-app -- --template vue-ts
-cd my-vue-app && bun install
+pnpm create vite my-vue-app --template vue-ts
+cd my-vue-app && pnpm install
 ```
 
 Write `alchemy.run.ts` in that project root, next to `index.html` and `vite.config.ts`. `rootDir` defaults to `"."`, so you only set it when the app lives somewhere else.
@@ -84,7 +84,7 @@ Alchemy runs `vite build`, uploads `dist` to S3, and serves it from CloudFront a
 `vue-router` in history mode (`createWebHistory`) sends a deep link like `/about` to the server as a request for a file that doesn’t exist. `AWS.Website.Vite` answers those misses with the index page and a `200`, so the router resolves the route on the client — that is the `spa` default and there is nothing to configure.
 
 ```sh
-bun add vue-router
+pnpm add vue-router
 ```
 
 ```typescript

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated deployments, PR previews, and remote state — with Cloudflare credentials managed as code."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -62,7 +62,9 @@ alchemy profile create admin
 alchemy profile edit --profile admin --add Cloudflare
 ```
 
-When prompted for a Cloudflare credential, pick one of:
+When asked for the Cloudflare authentication method, choose **API
+Token or API Key**, not the recommended OAuth: Cloudflare's OAuth
+scopes can't manage API tokens. Then pick one of:
 
 - **API Key + Email** (the Global API Key) — has full account
   access, including the ability to mint tokens.

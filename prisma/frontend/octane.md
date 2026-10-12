@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/octane
 title: "Octane"
 description: "Deploy OctaneJS to Prisma Compute with Prisma.Website.Octane — the Node target on Bun, SSR plus client assets, and native Vite dev locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Octane` runs your [OctaneJS](https://octanejs.dev/) project’s Vite build. Octane builds the client and SSR bundles; the shared Node target wraps the fetch handler as an HTTP program. Both outputs are uploaded as `tar.gz` and run on **Bun in Prisma Compute**, not a Docker Node container.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build-time integration; the resource loads `/octane` and `/octane/node` from your project:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure Octane

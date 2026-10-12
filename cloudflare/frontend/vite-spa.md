@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`Cloudflare.Website.Vite`](vite.md): build the client assets, ship them to Cloudflare, and serve them through a Worker so your frontend and backend share one URL surface and one deploy. For the resource itself — what it does, its props, `memo` semantics, and dev mode — see the [Vite resource page](vite.md).
@@ -31,8 +31,8 @@ A minimal React SPA looks like:
 ### Install React
 
 ```sh
-bun add react react-dom
-bun add -d @types/react @types/react-dom @vitejs/plugin-react
+pnpm add react react-dom
+pnpm add -D @types/react @types/react-dom @vitejs/plugin-react
 ```
 
 ### Create vite.config.ts
@@ -171,8 +171,8 @@ const web = yield* Cloudflare.Website.Vite("Website", {
 If you’d rather start from a real framework scaffold (React + TS with HMR, ESLint, etc.), use Vite’s official template:
 
 ```sh
-bun create vite@latest web -- --template react-ts
-cd web && bun install && cd ..
+pnpm create vite web --template react-ts
+cd web && pnpm install && cd ..
 ```
 
 That drops a complete project into `./web/` with its own `package.json`, `tsconfig.json`, and `vite.config.ts`.
@@ -342,7 +342,7 @@ The key (`BUCKET`) is the field name on `env`; the value identifies the resource
 `InferEnv` maps each binding to a Cloudflare runtime type (`Bucket`, `Service`, `Namespace`, …) — those types live in `@cloudflare/workers-types`. Add it to your `tsconfig.json` so the TypeScript checker can find them:
 
 ```sh
-bun add -d @cloudflare/workers-types
+pnpm add -D @cloudflare/workers-types
 ```
 
 ```json

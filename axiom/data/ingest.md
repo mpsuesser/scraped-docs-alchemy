@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/data/ingest
 title: "Datasets & ingest"
 description: "Axiom datasets per OTel signal with OTLP endpoints as outputs, least-privilege ingest tokens, and per-stage naming with Stack.useSync."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 A `Dataset` is Axiom's top-level container — it stores your events,
@@ -91,7 +91,8 @@ for the full pattern.
 - `otelEndpoint` — the root; most exporters auto-append the signal
   path.
 - `otelHeaders` — the non-secret headers Axiom expects, i.e.
-  `X-Axiom-Dataset: <name>`. The `Authorization: Bearer` header is
+  `X-Axiom-Dataset: <name>`, or `X-Axiom-Metrics-Dataset: <name>` for a
+  `otel:metrics:v1` dataset. The `Authorization: Bearer` header is
   deliberately excluded so no secret lives in dataset state — that's
   what the ingest token below is for.
 

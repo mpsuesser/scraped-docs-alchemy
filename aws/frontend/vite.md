@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vite
 title: "Vite"
 description: "Deploy a plain Vite app to AWS with AWS.Website.Vite — the vite build output on S3 behind CloudFront, SPA fallback at the edge, and Vite's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.Vite` deploys a client-only [Vite](https://vite.dev/) project to AWS. It runs your project’s own `vite build` — your `vite.config.*` loads natively, plugins included — and serves the output from a private S3 bucket through CloudFront. The site is assets-only: no Lambda is created, no CloudFormation to write, no build command to wire up.
@@ -13,7 +13,7 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Vite

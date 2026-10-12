@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql
 title: "SQL"
 description: "Choose a database, connect with Effect SQL, Drizzle, or Prisma ORM, and deploy committed migrations."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 ## Choose a database
@@ -14,8 +14,8 @@ See [Databases](sql/databases.md) to compare engines and connection paths, with 
 
 | Client | Guides |
 | --- | --- |
-| Effect SQL | [Postgres](sql/effect-sql/postgres.md) · [MySQL](sql/effect-sql/mysql.md) · [D1](sql/effect-sql/d1.md) · [Durable Objects](sql/effect-sql/migrations.md#durable-object-migrations) |
-| Drizzle | [Postgres](sql/drizzle/postgres.md) · [MySQL](sql/drizzle/mysql.md) · [D1](sql/drizzle/d1.md) · [Durable Objects](sql/drizzle/migrations.md#durable-object-migrations) |
+| Effect SQL | [Postgres](sql/effect-sql/postgres.md) · [MySQL](sql/effect-sql/mysql.md) · [D1](sql/effect-sql/d1.md) · [libSQL](https://alchemy.run/sql/effect-sql/libsql) · [Durable Objects](sql/effect-sql/migrations.md#durable-object-migrations) |
+| Drizzle | [Postgres](sql/drizzle/postgres.md) · [MySQL](sql/drizzle/mysql.md) · [D1](sql/drizzle/d1.md) · [libSQL](https://alchemy.run/sql/drizzle/libsql) · [Durable Objects](sql/drizzle/migrations.md#durable-object-migrations) |
 | Prisma ORM v8 | [Contracts](sql/prisma/contracts.md) · [Postgres](sql/prisma/postgres.md) · [Migrations](sql/prisma/migrations.md) |
 
 Prisma ORM v8 requires PostgreSQL 17+ and is separate from the [Prisma hosting provider](prisma.md).
@@ -28,6 +28,7 @@ Prisma ORM v8 requires PostgreSQL 17+ and is separate from the [Prisma hosting p
 | Lambda + Aurora DSQL + Drizzle | [AWS](aws/data/drizzle-dsql.md) |
 | Workers + Neon or PlanetScale + Drizzle | [Cloudflare](cloudflare/data/drizzle.md) |
 | Workers + D1 + Drizzle | [Cloudflare](cloudflare/data/d1-drizzle.md) |
+| Workers + Turso + Drizzle | [Turso](https://alchemy.run/turso/tutorial/part-1) |
 | Durable Objects + SQLite | [Cloudflare](cloudflare/compute/durable-objects.md#sql-migrations) |
 | Fly Service + Postgres + Drizzle | [Fly](fly/data/drizzle-postgres.md) |
 | Hetzner Service + external Postgres + Drizzle | [Hetzner](hetzner/data/drizzle-postgres.md) |

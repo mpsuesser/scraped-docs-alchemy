@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to AWS with AWS.Website.SolidStart — nitro's aws-lambda preset on a streaming Lambda Function URL, S3 assets behind CloudFront, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to AWS. It runs your project’s own `vite build` and appends nitro’s `aws-lambda` preset: the SSR server runs on a Lambda Function URL with response streaming, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the Lambda.
@@ -13,13 +13,13 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/solidstart` and `/solidstart/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 `@solidjs/vite-plugin-nitro-2` is the server half of a SolidStart build and must be a project dependency too:
 
 ```sh
-bun add @solidjs/vite-plugin-nitro-2
+pnpm add @solidjs/vite-plugin-nitro-2
 ```
 
 ## Configure Vite

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -271,7 +271,7 @@ The bucket is still part of the Stack — it’s registered when `Api` ’s Cons
 Deploy again. Alchemy detects the new function and the unchanged bucket:
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ```

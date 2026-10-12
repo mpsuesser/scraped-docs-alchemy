@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/release-agent
 title: "Build a release-automation agent"
 description: "Case study of the cloudflare-agent example — GitHub push events routed through a Worker to a per-release Durable Object that drives an AI agent with container-backed tools."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The [`cloudflare-agent` example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-agent)
@@ -29,7 +29,7 @@ and filters for release commits on `main` in ordinary handler code:
 
 ```typescript
 // src/ReleaseService.ts
-yield* Github.consumeRepositoryEvents(
+yield* GitHub.consumeRepositoryEvents(
   { owner: "alchemy-run", repository: "alchemy", events: ["push"] },
   (event) => {
     const title = event.payload.head_commit?.message.split("\n")[0] ?? "";
@@ -125,7 +125,7 @@ export class DevBox extends Cloudflare.Container<
   {
     readFile: (path: string) => Effect.Effect<string>;
     writeFile: (path: string, contents: string) => Effect.Effect<void>;
-    exec: (command: string) => Effect.Effect<{
+    shell: (command: string) => Effect.Effect<{
       exitCode: number;
       stdout: string;
       stderr: string;
@@ -141,10 +141,25 @@ export default DevBox.make(
 );
 ```
 
-The `ReleaseVersion` DO provides
-`Cloudflare.Containers.layer(DevBox, { enableInternet: true })`, so
-tool layers like `WriteFileDevBox` resolve the container and call its
-typed methods directly. The other tools follow the same pattern with
+Tool layers like `WriteFileDevBox` `yield* DevBox` and start it before
+calling its typed methods:
+
+```typescript
+// src/tools/Fs.ts
+export const WriteFileDevBox = Layer.effect(
+  WriteFile,
+  Effect.gen(function* () {
+    const devBox = yield* DevBox;
+    const start = devBox.start({ enableInternet: true });
+
+    return ({ path, contents }) =>
+      start.pipe(Effect.andThen(devBox.writeFile(path, contents)), Effect.orDie);
+  }),
+);
+```
+
+`start` is a no-op once the container is running, so every tool can
+call it. The other tools follow the same pattern with
 different backends: `Sql` runs against the DO's own SQLite storage,
 and `Eval` sandboxes generated JavaScript in a dynamically loaded
 Worker via `Cloudflare.WorkerLoader`.

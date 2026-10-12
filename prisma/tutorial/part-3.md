@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-3
 title: "Part 3: Query Postgres"
 description: "Create Prisma Postgres, bind its connection to Compute, and query it with Effect SQL."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Continue from [Part 2](part-2.md). Add an explicit Postgres database and a read-only endpoint that returns the database’s current time. This query needs no tables or migrations.
@@ -11,7 +11,7 @@ Continue from [Part 2](part-2.md). Add an explicit Postgres database and a read-
 ## Install the SQL client
 
 ```sh
-bun add "@effect/sql-pg@rc"
+pnpm add @effect/sql-pg
 ```
 
 Alchemy’s SQL helper uses the Effect Postgres client. Match its version to the other Effect packages.
@@ -114,7 +114,7 @@ A failed SQL query returns HTTP 503 without exposing connection details. Handlin
 ## Deploy the database and API
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Alchemy creates the database and connection before deploying the API with its binding. Existing resources retain their logical IDs.

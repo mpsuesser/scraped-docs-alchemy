@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/cloudflare-aws
 title: "Bytes in S3, hashing on Lambda"
 description: "Compute on Cloudflare, bytes in S3, and large pushes hashed one Lambda per chunk. One stack carries both provider sets, and Alchemy mints the cross-cloud identity."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The examples use `Authentication` from [Getting Started](../getting-started.md): the application’s request middleware.
@@ -64,7 +64,7 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## What gets created

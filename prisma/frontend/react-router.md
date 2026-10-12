@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 framework apps to Prisma Compute with Prisma.Website.ReactRouter — SSR on Bun and native Vite dev locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.ReactRouter` builds [React Router](https://reactrouter.com/) v7 in framework mode through your project’s Vite pipeline. The shared Node target wraps the server manifest with `createRequestHandler` and serves client assets first. The output runs on **Bun in Prisma Compute** from a `tar.gz` upload, without a Docker image or registry.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build-time integration; the resource loads `/react-router` and `/react-router/node` from your project:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 Keep the framework scaffold’s `react-router`, `@react-router/dev`, `@react-router/node`, `isbot`, and `vite`. Put `@react-router/node` and `isbot` in `dependencies`: React Router reads them when choosing its default server entry and may try to install `isbot` if it is missing.

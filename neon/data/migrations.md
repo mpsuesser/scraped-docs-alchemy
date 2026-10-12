@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/migrations
 title: "Migrations"
 description: "Apply SQL migrations and seed data to Neon projects and branches as part of every deploy — ordered, hashed, and tracked in Alchemy's __alchemy_migrations table."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Both `Neon.Project` and `Neon.Branch` accept a `migrations` prop — a
@@ -63,7 +63,8 @@ is frozen. Projects deployed by older Alchemy versions (which used a
 `neon_migrations` table) are upgraded in place.
 
 On each deploy, files whose names already appear in the table are
-skipped. Use `migrations: { dir, table }` to put the bookkeeping in
+skipped, and their content hashes must still match. Use
+`migrations: { dir, table }` to put the bookkeeping in
 a differently-named table:
 
 ```typescript

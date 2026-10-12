@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Prisma Compute with the shared Website API, native local development, and traced runtime dependencies."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Vinext` builds with the Vinext Vite API, then hosts vinext’s production Node server on **Bun in Prisma Compute**. Alchemy packages `dist/`, public assets, and locally installed runtime dependencies into a `tar.gz` artifact. There is no Dockerfile, registry, Wrangler configuration, or OpenNext build.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Keep `vinext`, `react`, `react-dom`, and `react-server-dom-webpack` in your application dependencies, and install `vite` and `@vitejs/plugin-rsc` for building. Add the Alchemy integration and dependency tracer:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure vinext

@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Hetzner with Hetzner.Website.Nextjs — next build plus a Node next({ dev: false }) systemd unit, and next dev under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Hetzner.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to a Hetzner Cloud Server. It runs a real `next build`, then a long-running `next({ dev: false })` systemd unit on port 3000:
@@ -21,7 +21,7 @@ App Router and Pages Router both work — server components, API routes, middlew
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads the package’s `/nextjs/node` export from your project at deploy time. It is only used at build time, so a dev dependency is enough. Your app still needs `next`, `react`, and `react-dom` as usual:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Next.js

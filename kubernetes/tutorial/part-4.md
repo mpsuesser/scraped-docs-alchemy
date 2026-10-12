@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-4
 title: "Part 4: Install a Helm Chart"
 description: "Install metrics-server from its Helm chart with Kubernetes.HelmChart, pass chart values, and check pod metrics with kubectl top."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 In [Part 3](part-3.md) you ran your own Effect programs as Jobs. Now you’ll install third-party software from a Helm chart, which is how most clusters get it.
@@ -57,7 +57,7 @@ namespace: "kube-system",
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ```

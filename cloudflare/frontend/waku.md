@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Cloudflare Workers with Cloudflare.Website.Waku — RSC server in the Worker, SSG pages as static assets, and a custom-entry seam for Durable Objects."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Cloudflare.Website.Waku` deploys a [Waku](https://waku.gg/) app as a Cloudflare Worker. It builds the project programmatically: the React Server Components server bundle deploys as the Worker script, and the client output — including SSG-prerendered pages — deploys as static assets. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no Wrangler file and no build command to run.
@@ -13,7 +13,7 @@ current_date: 2026-09-16T06:33:56.799Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/waku` export from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Waku

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy SvelteKit to Prisma Compute with Prisma.Website.SvelteKit — SSR and prerendered assets on Bun, with native Vite dev locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.SvelteKit` builds [SvelteKit](https://svelte.dev/docs/kit) with its Vite pipeline and an injected Node-target adapter. Client assets, prerendered pages, and the server handler are uploaded as a `tar.gz` artifact and served on **Bun in Prisma Compute**, not a Node container.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build-time integration; the resource loads its `/sveltekit` and `/sveltekit/node` exports from your project:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure SvelteKit
@@ -81,7 +81,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [tailwindcss(), sveltekit({ alias: { $lib: "src/lib" } })],
+  plugins: [tailwindcss(), sveltekit({ prerender: { handleHttpError: "warn" } })],
 });
 ```
 

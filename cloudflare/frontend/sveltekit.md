@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Cloudflare Workers with Cloudflare.Website.SvelteKit — a wrangler-free in-memory adapter, real bindings on platform.env, and full-HMR local dev."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Cloudflare.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app as a Cloudflare Worker. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Cloudflare adapter, then re-bundles the server output for workerd. Client assets and prerendered pages deploy as Worker static assets; dynamic routes are served by the generated Worker. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it), no `@sveltejs/adapter-cloudflare` to install, and no Wrangler file.
@@ -13,7 +13,7 @@ current_date: 2026-09-16T06:33:56.799Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/sveltekit` export from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure SvelteKit
@@ -120,7 +120,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     sveltekit({
-      alias: { $lib: "src/lib" },
+      prerender: { handleHttpError: "warn" },
     }),
   ],
 });

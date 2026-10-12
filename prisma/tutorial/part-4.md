@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-4
 title: "Part 4: A Vite Frontend"
 description: "Connect a Vite frontend to your Prisma API, develop locally, and destroy the tutorial resources."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Continue from [Part 3](part-3.md). Add a browser button that queries the API, then run the frontend locally against the deployed backend.
@@ -11,7 +11,7 @@ Continue from [Part 3](part-3.md). Add a browser button that queries the API, th
 ## Install the frontend tooling
 
 ```sh
-bun add -d vite @vercel/nft
+pnpm add -D vite @vercel/nft
 ```
 
 Vite builds the frontend. `@vercel/nft` traces the server dependencies that Alchemy includes in the deployment archive.
@@ -130,7 +130,7 @@ The website uses the same Project. Its environment references the API output, so
 ## Deploy the frontend
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Open `url` and click **Read database time**. The response should display a Postgres timestamp. Click again to execute a new query.
@@ -138,7 +138,7 @@ Open `url` and click **Read database time**. The response should display a Postg
 ## Develop locally
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 Open the local website URL that Alchemy prints. Edit the heading and confirm Vite updates the page. Click the button to query the remote API. Provider-mode changes can replace the deployed website with its local counterpart in this stage; use a separate `--stage dev` when you want to keep a production site. A separate stage creates its own remote backend resources too.
@@ -148,7 +148,7 @@ Open the local website URL that Alchemy prints. Edit the heading and confirm Vit
 Stop the dev command, then destroy the Stack:
 
 ```sh
-bun alchemy destroy
+pnpm alchemy destroy
 ```
 
 Confirm the deletion. This removes the website, API, connection, database, and Project. Use the same profile and stage used to deploy; destroy every extra stage you created. Keep `.alchemy/` until cleanup completes so Alchemy can find the resources it owns.

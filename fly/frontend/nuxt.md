@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Fly with Fly.Website.Nuxt — nitro's node preset on a Machine, assets baked into the image, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Fly. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs on a Machine, and client assets plus prerendered pages are baked into the image. Omit `app` and a `Fly.App` is created under the site; a `Fly.Service` listens on port 3000 and a shared IPv4 assignment makes `https://{app}.fly.dev` answer. There is no `nitro.preset` to edit and no build command to run.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/nuxt` and `/nuxt/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Nuxt

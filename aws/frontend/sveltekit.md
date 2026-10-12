@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to AWS with AWS.Website.SvelteKit — SSR on a streaming Lambda Function URL, assets and prerendered pages on S3 + CloudFront, and Kit's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to AWS. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory AWS adapter emitting a streaming Lambda handler. Client assets and prerendered pages are served from a private S3 bucket through CloudFront; dynamic routes stream from the Lambda Function URL. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -13,7 +13,7 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/sveltekit` and `/sveltekit/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure SvelteKit
@@ -93,7 +93,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     sveltekit({
-      alias: { $lib: "src/lib" },
+      prerender: { handleHttpError: "warn" },
     }),
   ],
 });

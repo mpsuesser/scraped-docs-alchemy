@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Hetzner with Hetzner.Website.Vocs — prerendered HTML on a systemd unit, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Hetzner.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to a Hetzner Cloud [Server](https://alchemy.run/hetzner/compute/servers) as a systemd [Service](https://alchemy.run/hetzner/compute/services) on port 3000. Vocs prerenders static HTML; unmatched paths serve extensionless pages (`/about` → `about/index.html`). The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Your `vocs.config.*` loads natively — there is no adapter to install.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads `/vocs/node` from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 Your Vocs project already needs `vocs` installed.

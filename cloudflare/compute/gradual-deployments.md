@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/gradual-deployments
 title: "Gradual deployments"
 description: "Roll out Worker deploys incrementally — upload preview versions, canary a percentage of live traffic, ramp to 100%, pin users to a version during the rollout, and verify which version served each request."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Every deploy of a Worker uploads an immutable
@@ -319,9 +319,10 @@ Platform limits to plan around:
 - A deployment splits between at most two versions, and only the last
   100 uploaded versions are deployable.
 - Each Durable Object is assigned one version by the percentages,
-  so a single object never splits across versions. Class migrations
-  cannot ride a rollout (deploy them at 100% first), and a version
-  worker cannot host DO or Workflow classes. Host them on the parent
+  so a single object never splits across versions. Durable Object class
+  changes (new, renamed, deleted or moved classes) cannot ride a
+  rollout (deploy them at 100% first), and a version worker cannot
+  host DO or Workflow classes. Host them on the parent
   and reference them
   [cross-script](cross-worker-durable-object.md).
 - Workers that implement Durable Objects do not get preview URLs.

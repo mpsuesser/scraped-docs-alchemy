@@ -2,25 +2,25 @@
 url: https://alchemy.run/getting-started
 title: "Getting started"
 description: "Install Alchemy and create your first Stack in under two minutes."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Bun](https://bun.sh/) or Node.js 24.11.1+
 - A [Cloudflare](https://dash.cloudflare.com/sign-up) account
 
 ## Create a project
 
 ```sh
-mkdir my-app && cd my-app && bun init -y
+mkdir my-app && cd my-app && pnpm init
 ```
 
 ## Install
 
 ```sh
-bun add "alchemy@latest" "effect@rc" "@effect/platform-bun@rc" "@effect/platform-node@rc"
+pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Create your Stack
@@ -53,7 +53,7 @@ export default Alchemy.Stack(
 Run `alchemy deploy` to create the Bucket on Cloudflare:
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Connect Cloudflare first with `alchemy profile edit --add Cloudflare`. Sign in with OAuth in the browser or paste an API token. The credentials are saved to your **`default`** [profile](environments/profiles.md) at `~/.alchemy/profiles.json`. No environment variables required. Logging in only ever happens through the `profile` command; a deploy with nothing configured fails with the exact command to run.

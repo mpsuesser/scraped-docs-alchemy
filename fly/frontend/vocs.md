@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Fly with Fly.Website.Vocs — prerendered HTML on a Node static-file server, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to Fly. Vocs prerenders static HTML; the node target drops server modules and Alchemy hosts a tiny static-file server on a Fly [Service](https://alchemy.run/fly/compute/services) — one [App](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. Extensionless pages work (`/about` → `about/index.html`). Your `vocs.config.*` loads natively — there is no adapter to install.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads `/vocs/node` from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 Your Vocs project already needs `vocs` installed.

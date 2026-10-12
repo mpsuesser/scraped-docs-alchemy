@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to AWS with AWS.Website.Astro — SSR on a streaming Lambda Function URL, static output on S3 + CloudFront, and Astro's own dev server under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.Astro` deploys an [Astro](https://astro.build/) project to AWS. It runs Astro’s programmatic build with a wrangler-free AWS Lambda adapter: server-rendered pages stream from a Lambda Function URL, prerendered pages and client assets are served from a private S3 bucket through CloudFront, routed at the edge. Your `astro.config.*` loads natively — there is no adapter to install into it and no CloudFormation to write.
@@ -13,7 +13,7 @@ current_date: 2026-08-30T18:54:07.274Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/astro` and `/astro/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Astro

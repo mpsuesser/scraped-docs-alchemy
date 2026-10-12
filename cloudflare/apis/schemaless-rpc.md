@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC between Workers, Durable Objects, and Containers with no schema — bind the class, get the client."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The schemaless RPC pattern — what makes a member callable, how the typed client arises, what crosses the wire — is documented at [Schemaless RPC](../../apis/schemaless.md). This page walks Cloudflare's pairings. Worker → Worker and Worker → Durable Object ride the platform's native JSRPC channel (values move by structured clone, and service bindings never traverse the public internet); Containers ride the generic fetch transport.
@@ -239,17 +239,14 @@ export class ContainerHost extends Cloudflare.DurableObject<ContainerHost>()(
     const container = yield* MyContainer;
 
     return Effect.gen(function* () {
+      const start = container.start({ enableInternet: true });
       return {
-        ping: () => container.ping(),
+        ping: () => start.pipe(Effect.andThen(container.ping())),
         // Read the object from inside the container over RPC.
-        readObjectRpc: (key: string) => container.readObject(key),
+        readObjectRpc: (key: string) => start.pipe(Effect.andThen(container.readObject(key))),
       };
     });
-  }).pipe(
-    Effect.provide(
-      Cloudflare.Containers.layer(MyContainer, { enableInternet: true }),
-    ),
-  ),
+  }),
 ) {}
 ```
 

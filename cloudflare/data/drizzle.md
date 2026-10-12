@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Deploy a Cloudflare Worker with Drizzle queries, Hyperdrive connections, and reviewed, committed migrations on Neon or PlanetScale."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../sql.md) owns the portable client APIs. For Cloudflare’s SQLite database, use [Drizzle on D1](d1-drizzle.md).
@@ -11,8 +11,8 @@ This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../s
 ## Install the client and generator
 
 ```sh
-bun add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
-bun add -d drizzle-kit@1.0.0-rc.5-ab785fc @types/pg
+pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc @types/pg
 ```
 
 Keep the exact Drizzle prerelease pins together for the Effect integration; `drizzle-kit` is a development dependency.

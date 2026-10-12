@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/astro
 title: "Astro"
 description: "Deploy Astro SSR or a fully static site to Prisma Compute with Prisma.Website.Astro, running on Bun with native Astro dev locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Astro` builds an [Astro](https://astro.build/) project with the shared Node target and runs it on **Bun in Prisma Compute**. Assets are served first, then the Astro SSR handler. Fully static output uses a static-file server on the same Compute runtime. Both paths upload a `tar.gz` artifact, not a container image.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build-time integration in your Astro project. The resource loads its `/astro` and `/astro/node` exports:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure Astro

@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Hetzner with Hetzner.Website.Nuxt — nitro's node preset as a systemd unit on port 3000, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Hetzner.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to a Hetzner Cloud Server. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs as a systemd unit on port 3000, and client assets plus prerendered pages are baked into the unit. Omit `server` to get a `cpx12` / `ubuntu-24.04` VM in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. There is no `nitro.preset` to edit and no build command to run.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/nuxt` and `/nuxt/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Nuxt

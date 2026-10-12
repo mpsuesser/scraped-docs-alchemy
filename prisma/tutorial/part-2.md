@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-2
 title: "Part 2: An HTTP API"
 description: "Deploy an Effect-native Prisma Compute service and add an HTTP health endpoint."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Continue from [Part 1](part-1.md). The Project exists, but it has no public endpoint yet. Add a Compute service that runs an Effect HTTP handler on Prisma’s Bun runtime.
@@ -110,7 +110,7 @@ Prisma checks this route when starting the service. It verifies that the HTTP pr
 ## Deploy the API
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 The deployment prints `apiUrl` for the Compute service.

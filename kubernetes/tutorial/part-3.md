@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-3
 title: "Part 3: Effect Jobs"
 description: "Write a smoke test as an Effect program, run it as a Kubernetes Job that Alchemy builds and pushes for you, watch it re-run when the program changes, and schedule it as a CronJob."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 In [Part 2](part-2.md) you configured podinfo in its own namespace. Now you’ll write your own code and run it on the cluster. You’ll start with a smoke test, written in Effect, that checks podinfo is healthy after every change. Then you’ll run the same program on a schedule.
@@ -234,7 +234,7 @@ return {
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ```

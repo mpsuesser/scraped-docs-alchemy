@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Fly with Fly.Website.Vite — static assets on a Node Machine, fly.dev (or your domain) over HTTPS, and Vite's own dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Vite` deploys a [Vite](https://vite.dev/) project to Fly. It runs `vite build` and serves the output from a tiny Node static-file server on a Machine: one [`Fly.App`](https://alchemy.run/fly/compute/apps) (created if `app` is omitted), one [`Fly.Service`](https://alchemy.run/fly/compute/services) on port 3000, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
@@ -15,7 +15,7 @@ React, Vue, and Solid client SPAs belong here, as do multi-page apps that emit o
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Vite

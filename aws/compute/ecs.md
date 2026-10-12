@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 **ECS** (Elastic Container Service) is AWS’s managed container orchestrator: you describe a container — image, CPU, memory — and ECS runs it. With **Fargate**, AWS also provides the machines, so there are no servers to manage.
@@ -33,6 +33,8 @@ const migrate = yield* AWS.ECS.Task("DbMigrate", {
 ```
 
 Deploying a `Task` automates the container supply chain: Alchemy provisions the **task and execution IAM roles**, a **CloudWatch log group**, and a **generated ECR repository** holding the image, then registers a Fargate task definition. Each deploy registers a new immutable revision.
+
+The log group keeps events forever by default. Set `logging: { retention: "2 weeks" }` on a `Task` or `Service` to expire them; the duration is rounded up to the nearest value CloudWatch Logs supports, and `"forever"` clears an existing policy.
 
 ## Three image sources
 

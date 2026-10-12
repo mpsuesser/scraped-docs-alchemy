@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare
 title: "Cloudflare"
 description: "Build and deploy full applications on Cloudflare with Alchemy — one Worker runtime plus resources like Durable Objects, D1, R2, Queues, and Hyperdrive, wired together by typed bindings."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 An alchemy app on Cloudflare is one **Worker** runtime plus the resources it talks to — databases, object storage, queues, stateful objects — all declared in the same TypeScript program and wired together by typed bindings. Deploy the whole thing with `bun alchemy deploy`; Alchemy figures out what changed.
@@ -28,10 +28,13 @@ New here? [Set up your account](cloudflare/setup.md), then start the [tutorial](
 - [KV](cloudflare/data/kv.md) — edge key-value storage for config, sessions, and cached lookups.
 - [R2](cloudflare/data/r2.md) — object storage with read/write-scoped bindings.
 - [Hyperdrive](cloudflare/data/hyperdrive.md) — edge connection pooling for external Postgres and MySQL.
+- [Pipelines](cloudflare/data/pipelines.md) — ingest events into R2 as files or Iceberg tables.
+- [Iceberg tables](cloudflare/data/iceberg-tables.md) — an Apache Iceberg warehouse on R2 that Spark, DuckDB, and PyIceberg can query.
 
 ## Messaging
 
 - [Queues](cloudflare/messaging/queues.md) — at-least-once message delivery between Workers.
+- [K2 streams](cloudflare/messaging/k2.md) — a durable, replayable log with independent subscriptions.
 
 ## Networking
 
@@ -56,6 +59,8 @@ New here? [Set up your account](cloudflare/setup.md), then start the [tutorial](
 | Real-time / WebSockets | [Durable Objects](cloudflare/compute/durable-objects.md) — see [Accept WebSockets](cloudflare/compute/hibernatable-websockets.md) |
 | Full-stack app | [Worker](cloudflare/compute/workers.md) + a React SPA — see [Add a React SPA](cloudflare/frontend/vite-spa.md) or [Frontend frameworks](cloudflare/frontend/frontends.md) |
 | Background jobs | [Queues](cloudflare/messaging/queues.md) |
+| Event log with replay | [K2 streams](cloudflare/messaging/k2.md) |
+| Analytics events as tables | [Pipelines](cloudflare/data/pipelines.md) → [Iceberg tables](cloudflare/data/iceberg-tables.md) |
 | Postgres-backed API | [Hyperdrive](cloudflare/data/hyperdrive.md) + [Drizzle](cloudflare/data/drizzle.md) |
 | Durable multi-step jobs | [Workflows](cloudflare/compute/workflows.md) |
 | AI apps | [AI Gateway](cloudflare/ai/ai-gateway.md), [Effect AI](cloudflare/ai/effect-ai.md), [AI Search](cloudflare/ai/ai-search.md) |

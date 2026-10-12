@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -52,7 +52,7 @@ export default Sandbox.make(
 
 ## Run it from a Durable Object
 
-Yield the class inside a DO’s Construction phase and provide `Cloudflare.Containers.layer` — that layer binds, starts, and monitors the container, then hands you a running instance:
+Yield the class inside a DO’s Construction phase. That binds the container to the DO and hands you its handle, without starting it:
 
 ```typescript
 import * as Cloudflare from "alchemy/Cloudflare";
@@ -65,17 +65,16 @@ export default class Agent extends Cloudflare.DurableObject<Agent>()(
     const sandbox = yield* Sandbox;
 
     return Effect.gen(function* () {
+      const start = sandbox.start({ enableInternet: true });
       return {
-        ping: () => sandbox.ping(),
+        ping: () => start.pipe(Effect.andThen(sandbox.ping())),
       };
     });
-  }).pipe(
-    Effect.provide(
-      Cloudflare.Containers.layer(Sandbox, { enableInternet: true }),
-    ),
-  ),
+  }),
 ) {}
 ```
+
+`start` is idempotent: it starts the container unless it is already running, and concurrent calls start it once, so call it at the top of each operation. RPC methods and `getTcpPort` wait until the container’s port accepts connections, but never start it.
 
 Importing `Sandbox` (the class) does not pull in the runtime file — it gets tree-shaken out of the DO’s bundle. A Worker then binds `Agent` and calls `agents.getByName(name).ping()` like any other DO method.
 
@@ -109,6 +108,7 @@ const { fetch } = yield* sandbox.getTcpPort(3000);
 return {
   hello: () =>
     Effect.gen(function* () {
+      yield* sandbox.start({ enableInternet: true });
       const response = yield* fetch(
         HttpClientRequest.get("http://container/"),
       );
@@ -117,7 +117,7 @@ return {
 };
 ```
 
-The returned `fetch` retries with backoff while the container is still booting, so you don’t coordinate readiness yourself.
+The returned `fetch` waits until the port accepts connections, so you don’t coordinate readiness yourself. It never starts the container: call `start` first.
 
 ## Process scope vs request scope
 
@@ -278,7 +278,7 @@ You never name `DATABASE_URL`. The container has no bindings — it is a process
 Start it with outbound networking, or the container never reaches the database at all:
 
 ```typescript
-Effect.provide(Cloudflare.Containers.layer(Api, { enableInternet: true }))
+yield* api.start({ enableInternet: true });
 ```
 
 ## Connect an arbitrary image to a database
@@ -319,15 +319,11 @@ On native Linux, `host-gateway` is the docker bridge IP (`172.17.0.1`). A TCP SY
 1. `@prisma/dev` (and any host server you start) stay on `127.0.0.1`.
 2. A unix socket on the host forwards to that port.
 3. The workerd `<name>-proxy` sidecar bind-mounts the socket and maps `host.docker.localhost` to `127.0.0.1` in the shared netns.
-4. A listener in that netns accepts `127.0.0.1:<port>` and forwards through the socket.
+4. A Docker-managed helper shares that network namespace, accepts `127.0.0.1:<port>`, and forwards through the socket. Alchemy waits for its listeners before completing container startup and removes the helper when the container is deleted or the dev runtime stops.
 
 The container talks to itself. The socket crosses the boundary. UFW never sees a SYN to `172.17.0.1`.
 
-If the unix-socket path cannot attach (missing `nsenter`, EPERM), Alchemy logs this UFW hole — do not set `DEFAULT_INPUT_POLICY=ACCEPT`:
-
-```plaintext
-sudo ufw allow from 172.16.0.0/12 to any port <prisma-or-dev-ports> proto tcp
-```
+The helper uses `node:22-alpine`, which Docker downloads on first use. Normal Docker access is sufficient; Alchemy does not require host-side `nsenter` permissions. If the helper fails to start, container startup reports the error.
 
 Neon and PlanetScale have no local emulator: even under `alchemy dev` the URL is a cloud host (`*.neon.tech`, `*.psdb.cloud`) and the rewrite is a no-op. The container still needs `enableInternet: true` to reach them.
 
@@ -382,6 +378,105 @@ export default {
 
 Only image-backed containers (`image`, or `context` / `dockerfile`) can be bound this way. An effectful (`main`) container’s runtime is provided by its `.make()` Layer, which needs an Effect-native Durable Object host.
 
+## Several images in one Durable Object
+
+A Durable Object can choose its image at runtime. Declare one Container per image with `schedulingPolicy: "durable_object"`:
+
+```typescript
+export class Node extends Cloudflare.Container<Node>()("Node", {
+  schedulingPolicy: "durable_object",
+  image: "node:24-slim",
+}) {}
+
+export class Python extends Cloudflare.Container<Python>()("Python", {
+  schedulingPolicy: "durable_object",
+  dockerfile: "./python/Dockerfile",
+  context: "./python",
+}) {}
+```
+
+One Container is one image: `image` copies a registry image, and `context` / `dockerfile` builds one. Alchemy publishes it to Cloudflare’s registry and prepares it before the Worker is uploaded.
+
+Bind both in the Durable Object. Each handle’s `start()` starts its own image:
+
+```typescript
+export class Agent extends Cloudflare.DurableObject<Agent>()(
+  "Agent",
+  Effect.gen(function* () {
+    const node = yield* Node;
+    const python = yield* Python;
+    return Effect.succeed({
+      run: (cmd: string[]) =>
+        Effect.gen(function* () {
+          yield* node.start({
+            instance: "lite",
+            entrypoint: ["sleep", "infinity"],
+            enableInternet: false,
+          });
+          return yield* (yield* node.exec(cmd)).output();
+        }).pipe(Effect.scoped),
+    });
+  }),
+) {}
+```
+
+Cloudflare gives a Durable Object class one container application, and each object one container. Every binding adds its image to the class’s application under the Container’s id. The handles control the same container, so start one image at a time and `destroy()` before you switch.
+
+Application-wide settings — `ssh`, `authorizedKeys`, and `observability` — can be declared on any of the class’s Containers. Two Containers that declare different values fail the deploy with `ContainerApplicationSettingsConflict`.
+
+A Container can be bound by several Durable Object classes. Each class adds the image to its own application.
+
+## Several images on an async Worker
+
+A plain Durable Object class lists its Containers on its binding. A Container can back several classes:
+
+```typescript
+const Node = Cloudflare.Container("Node", {
+  schedulingPolicy: "durable_object",
+  image: "node:24-slim",
+});
+
+const Python = Cloudflare.Container("Python", {
+  schedulingPolicy: "durable_object",
+  image: "python:3.13-slim",
+});
+
+const Rust = Cloudflare.Container("Rust", {
+  schedulingPolicy: "durable_object",
+  image: "rust:1.90-slim",
+});
+
+export const Worker = Cloudflare.Worker("App", {
+  main: "./src/worker.ts",
+  env: {
+    AGENT: Cloudflare.DurableObject("Agent", { containers: [Node, Python] }),
+    REVIEWER: Cloudflare.DurableObject("Reviewer", { containers: [Node, Rust] }),
+  },
+});
+```
+
+Each class gets its own container application. The class finds each image in `ctx.container.images` under its Container’s id:
+
+```typescript
+import { DurableObject } from "cloudflare:workers";
+
+export class Agent extends DurableObject {
+  async run(cmd: string[]) {
+    const container = this.ctx.container!;
+    if (!container.running) {
+      container.start({
+        image: container.images.Node,
+        entrypoint: ["sleep", "infinity"],
+        enableInternet: false,
+      });
+    }
+    return (await container.exec(cmd)).output();
+  }
+}
+```
+
+Only fleet Containers bind directly in `env`. A Durable Object-managed Container placed there fails with `DurableObjectContainerBindingError`.
+
 ## ContainerApplication
 
 Under the hood every container is backed by a [ContainerApplication](https://alchemy.run/providers/cloudflare/containers#containerapplication) — the deployed, scalable unit that carries the image, instance type, instance counts, and observability settings. You typically extend `Cloudflare.Container` rather than using it directly, but the same props shape (`instanceType`, `observability`, `runtime`, …) flows through `.make()`.
@@ -411,6 +506,7 @@ The full walkthrough:
 
 Related:
 
+- [Container lifecycle](container-lifecycle.md) — start, stop, sleep, and snapshot a container.
 - [Durable Objects](durable-objects.md) — every container is fronted by one.
 - [Workers](workers.md) — the entrypoint that reaches the DO (and through it, the container).
 

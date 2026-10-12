@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/nuxt
 title: "Nuxt"
 description: "Deploy Nuxt to Prisma Compute with Prisma.Website.Nuxt — Nitro's Node target running on Bun and Nuxt's own dev server locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Nuxt` builds [Nuxt](https://nuxt.com/) through your project’s `@nuxt/kit` with Nitro’s Node target. The server, client assets, and prerendered pages are uploaded as `tar.gz` and run on **Bun in Prisma Compute**. No Docker image or registry is involved.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build integration in your project; the resource loads its `/nuxt` and `/nuxt/node` exports:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure Nuxt

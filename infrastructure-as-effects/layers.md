@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/layers
 title: "Layers"
 description: "A Layer defines a service contract with swappable implementations. In Alchemy, a Layer can encapsulate Resources and Bindings, so shared services carry their own infrastructure and permissions."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 As your application grows, you'll need to start sharing components of
@@ -180,7 +180,10 @@ Changing the implementation is a one-line change:
 
 This swap crossed clouds: the Worker still runs on Cloudflare, but its
 jobs now come from a DynamoDB table on AWS, with the credentials and
-permissions wired up automatically.
+permissions wired up automatically. Alchemy creates an IAM user and a
+least-privilege role for the Worker, and each request is signed with the
+assumed role in the table's region. The Stack needs both provider sets,
+`Layer.mergeAll(Cloudflare.providers(), AWS.providers())`.
 
 Alchemy's own Bindings follow the same tag/Layer split
 ([a contract and a Layer](binding.md#a-contract-and-a-layer)).

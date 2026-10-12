@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/r2-presigned-urls
 title: "R2 presigned URLs"
 description: "Mint presigned R2 URLs so browsers upload and download objects directly, with the same code in alchemy dev and in production, from Effect-native or async Workers."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 A presigned URL lets a browser upload or download one object in an
@@ -59,7 +59,7 @@ export default Cloudflare.Worker(
 );
 ```
 
-Deployed, Alchemy mints a scoped API token for the Worker, and the
+Deployed, Alchemy mints an API token scoped to the bucket for the Worker, and the
 URLs point at `https://{accountId}.r2.cloudflarestorage.com`. Under
 `alchemy dev` they point at the Worker's local R2 endpoint,
 `http://localhost:{port}/cdn-cgi/local/r2/s3`. Signing happens inside

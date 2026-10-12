@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-1
 title: "Part 1: Push your first repository"
 description: "Deploy a Git host, push a commit, and clone it back. Add storage and hashing one layer at a time."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Start with a Git remote you can push to. This part deploys a Worker backed by Durable Objects and R2, then sends a real commit through it and clones it back.
@@ -15,8 +15,8 @@ You need Bun or Node.js 22+, Git, and a Cloudflare account with Workers, Durable
 ```sh
 mkdir git-tutorial
 cd git-tutorial
-bun init -y
-bun add alchemy effect
+pnpm init
+pnpm add alchemy@latest effect
 mkdir src
 ```
 
@@ -144,7 +144,7 @@ Yielding the Worker includes its bucket and Durable Object bindings in the stack
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Copy the printed URL, including `https://`, without a trailing slash:
@@ -200,5 +200,5 @@ The two commit IDs should match, and `fsck` should report no corrupt or missing 
 Continue to [Part 2: Control access](part-2.md). If you stop here, remove the open learning deployment:
 
 ```sh
-bun alchemy destroy
+pnpm alchemy destroy
 ```

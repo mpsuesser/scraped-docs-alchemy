@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/waku
 title: "Waku"
 description: "Deploy Waku to Prisma Compute with Prisma.Website.Waku — React Server Components and static pages on Bun, with Waku's native dev server locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Waku` builds a [Waku](https://waku.gg/) React Server Components app with the shared Node target. Its RSC server, client assets, and SSG pages run on **Bun in Prisma Compute** after a `tar.gz` upload. There is no Docker image or registry.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 Install the build-time integration in your project; the resource loads its `/waku` and `/waku/node` exports:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure Waku

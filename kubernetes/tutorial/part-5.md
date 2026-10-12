@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-5
 title: "Part 5: Deploy to Your Own Cluster"
 description: "Point the tutorial stack at a hosted Kubernetes cluster such as GKE, AKS, EKS, k3s, or anything in your kubeconfig. Keep the local cluster for development with stages, and clean up."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Everything you built in Parts 1–4 runs on a cluster on your machine. None of it is specific to that cluster. The Deployment, the Effect Jobs, and the Helm chart only need a `cluster` to run on. In this part you’ll point the stack at a cluster of your own, while keeping the local one for development.
@@ -89,7 +89,7 @@ return {
 ## Deploy to prod
 
 ```sh
-bun alchemy deploy --stage prod
+pnpm alchemy deploy --stage prod
 ```
 
 ```
@@ -155,7 +155,7 @@ Deploying `prod` again now plans the chart for deletion there.
 Destroy your own stage to remove everything on your machine, including the kind cluster and its registry:
 
 ```sh
-bun alchemy destroy
+pnpm alchemy destroy
 ```
 
 Alchemy deletes the resources in reverse dependency order and the cluster last. The next `alchemy deploy` recreates it in about 30 seconds. Run `alchemy destroy --stage prod` when you want to remove the hosted deployment too.

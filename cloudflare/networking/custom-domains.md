@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/custom-domains
 title: "Custom domains & routes"
 description: "Serve Workers from your own domain — create or adopt a Zone, attach custom domains, route hostname patterns, manage DNS records, and control the workers.dev subdomain."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Every Worker gets a `workers.dev` URL by default, but production apps
@@ -169,6 +169,27 @@ yield* Cloudflare.Workers.WorkerRoute("ApiRoute", {
 
 Both `pattern` and `script` are mutable — changing either updates the
 same physical route in place. Changing `zoneId` triggers a replacement.
+
+## Split one hostname across Workers
+
+Routes win over custom domains, so one Worker can own a hostname while
+others claim paths under it:
+
+```typescript
+yield* Cloudflare.Worker("Home", {
+  main: "./src/home.ts",
+  domain: "api.example.com",
+});
+
+yield* Cloudflare.Worker("Orders", {
+  main: "./src/orders.ts",
+  routes: [{ pattern: "api.example.com/orders*" }],
+});
+```
+
+`alchemy dev` applies the same routing locally. See
+[Federated APIs](federated-apis.md) for the full
+pattern.
 
 ## DNS records for non-Worker targets
 

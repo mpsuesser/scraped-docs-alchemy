@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/cloudflare
 title: "All on Cloudflare"
 description: "A git host on one Cloudflare account. One Worker, one bucket, two Durable Object namespaces, and dynamically loaded Workers hashing large pushes."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The examples use `Authentication` from [Getting Started](../getting-started.md): the application’s request middleware.
@@ -57,7 +57,7 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## What gets created

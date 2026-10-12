@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/workers-ai
 title: "Run Workers AI models"
 description: "Bind Workers AI into your Worker with Cloudflare.Workers.AI — run inference and list models directly, or turn the binding into a typed Effect LanguageModel, no gateway required."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 **Workers AI** runs open-weight models (Llama, Mistral, Whisper,
@@ -143,6 +143,21 @@ service, swapping Workers AI for OpenAI, Anthropic, or a
 gateway-fronted model later is a layer-level change — the handler
 code doesn't move. See [Effect AI](effect-ai.md) for the
 full pattern, including chat persistence.
+
+## Read the neurons a response billed
+
+Workers AI bills in neurons and reports the count with every
+response. The adapter carries it on the `finish` part, and
+`Cloudflare.AI.finishNeurons` reads it back as `number | undefined`:
+
+```typescript
+const response = yield* LanguageModel.generateText({ prompt });
+const finish = response.content.find((part) => part.type === "finish");
+const neurons = finish ? Cloudflare.AI.finishNeurons(finish) : undefined;
+```
+
+Streams carry it on their final `finish` part too. It is `undefined`
+for models that don't report neurons.
 
 ## Async Workers: bind via `env`
 

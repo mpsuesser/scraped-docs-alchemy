@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-1
 title: "Part 1: Your First Project"
 description: "Install Alchemy, configure Prisma credentials, and deploy your first Project."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Build a full-stack application on Prisma in four parts: a Project, an Effect-native Compute API, a Postgres database, and a Vite frontend. The [complete example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-tutorial) contains the final application and its deployment test.
@@ -26,7 +26,7 @@ Keep all of the following files in this directory.
 ## Initialize the package
 
 ```sh
-bun init -y
+pnpm init
 ```
 
 This creates the `package.json` that records your dependencies.
@@ -34,7 +34,7 @@ This creates the `package.json` that records your dependencies.
 ## Install Alchemy
 
 ```sh
-bun add "alchemy@next" "effect@rc" "@effect/platform-node@rc"
+pnpm add alchemy@latest effect @effect/platform-node
 ```
 
 Use matching Effect versions for Alchemy and the platform packages.
@@ -42,7 +42,7 @@ Use matching Effect versions for Alchemy and the platform packages.
 ## Configure credentials
 
 ```sh
-bun alchemy profile edit --add Prisma
+pnpm alchemy profile edit --add Prisma
 ```
 
 Enter your service token when prompted. [Setup](../setup.md) explains profiles and the `PRISMA_SERVICE_TOKEN` environment variable used in CI.
@@ -110,7 +110,7 @@ Yielding the resource registers it in the Stack. Returning its ID makes that val
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Alchemy creates the Project and prints `projectId`. Use the same profile and stage throughout the tutorial so each deployment updates this Stack.

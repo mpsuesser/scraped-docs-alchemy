@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on AWS — a TanStack Start UI on CloudFront and Lambda that drives an Effect RPC Lambda over Drizzle and Aurora DSQL, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 [TanStack Start](tanstack-start.md) · [Effect RPC](../apis/effect-rpc.md) · [Drizzle + DSQL](../data/drizzle-dsql.md)
@@ -31,8 +31,8 @@ The browser calls a same-origin `/rpc` route; the frontend Lambda forwards reque
 ## Install
 
 ```sh
-bun add @distilled.cloud/aws @effect/atom-react @effect/sql-pg drizzle-orm effect pg
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add @distilled.cloud/aws @effect/atom-react @effect/sql-pg drizzle-orm effect pg
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## 1\. The shared RPC contract

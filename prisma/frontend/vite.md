@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Prisma Compute with Prisma.Website.Vite — static files served on Bun and Vite's native dev server locally."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Prisma.Website.Vite` runs [Vite](https://vite.dev/) ’s build and serves its output with a generated static-file server on **Bun in Prisma Compute**. The Node-target output is uploaded as `tar.gz`, not a Docker image. There is no framework SSR handler, but the site still has a Compute runtime.
@@ -15,7 +15,7 @@ React, Vue, and Solid client SPAs belong here, as do multi-page HTML apps. Use t
 The build integration is separate from alchemy. Install it in the Vite project; the resource loads its `/vite` and `/vite/node` exports:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
 ## Configure Vite

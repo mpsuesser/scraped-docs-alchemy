@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/setup
 title: "Setup"
 description: "Install Alchemy and connect it to a Kubernetes cluster, whether a local cluster on your machine, any cluster in your kubeconfig, or an explicit connection for CI. Then add a registry for images built from your code."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 Alchemy deploys to any Kubernetes cluster whose API server it can reach. That includes a cluster on your machine, GKE, AKS, EKS, DigitalOcean, k3s, or an on-prem fleet. This page covers what you need before the first deploy. You need the alchemy package, a cluster to deploy to, a registry for images built from your code, and permission to manage objects in the cluster.
@@ -19,13 +19,13 @@ Alchemy deploys to any Kubernetes cluster whose API server it can reach. That in
 ## Create a project directory
 
 ```sh
-mkdir my-cluster && cd my-cluster && bun init -y
+mkdir my-cluster && cd my-cluster && pnpm init
 ```
 
 ## Install
 
 ```sh
-bun add "alchemy@latest" "effect@rc" "@effect/platform-bun@rc" "@effect/platform-node@rc"
+pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Add the providers

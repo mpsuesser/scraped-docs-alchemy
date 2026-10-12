@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-2
 title: "Part 2: Namespaces & Configuration"
 description: "Create a Namespace with Kubernetes.Manifest, move the Deployment into it, and configure the app with environment variables and resource limits."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 In [Part 1](part-1.md) you deployed podinfo into the `default` namespace. Now you’ll give the app a namespace of its own, declared as a raw Kubernetes object. Then you’ll configure the app from your program.
@@ -87,7 +87,7 @@ env: {
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ```

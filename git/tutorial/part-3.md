@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-3
 title: "Part 3: Publish a repository"
 description: "Allow anonymous clones of public repositories while preserving authenticated writes."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 The credential from [Part 2](part-2.md) protects every request. Now make `acme/web` readable by anyone while keeping writes protected.
@@ -79,7 +79,7 @@ The existing `Git.RegistryDurableObject` layer supplies this new dependency. The
 ## Deploy the policy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 This updates the Worker. The public flag you set earlier remains stored in the registry.

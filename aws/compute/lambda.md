@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 **Lambda** is Alchemy’s default AWS runtime: a class that bundles an Effect program into a zip, deploys it as a Lambda Function, and generates its IAM execution role from the bindings you actually use. Serve HTTP over a public **Function URL**, or consume events — every building block in this section plugs in through the same pattern: S3 notifications (`Lambda.BucketEventSource`), SQS queues (`Lambda.QueueEventSource`), Kinesis streams (`Lambda.StreamEventSource`), and DynamoDB Streams (`Lambda.TableEventSource`).
@@ -37,7 +37,7 @@ export default Alchemy.Stack(
 
 `Alchemy.Stack` is the root of every app. The first argument (`"MyApp"`) doubles as a logical id and as the prefix Alchemy uses when AWS asks for physical resource names.
 
-`providers: AWS.providers()` registers every AWS resource and IAM policy binding that ships with Alchemy, and resolves credentials from your Alchemy profile — SSO, environment variables, or stored keys, whichever you picked in [Setup](../setup.md).
+`providers: AWS.providers()` registers every AWS resource and IAM policy binding that ships with Alchemy, and resolves credentials from your Alchemy profile — SSO, console login, or stored keys, whichever you picked in [Setup](../setup.md).
 
 `state: AWS.state()` stores deploy state in an account-regional S3 bucket (`alchemy-state-{accountId}-{region}-an`), created lazily on the first deploy. Because the state lives in your AWS account rather than on disk, the same configuration works locally and in CI. (For purely local iteration you can use `Alchemy.localState()` instead, which writes state under `.alchemy/` next to your code.)
 
@@ -134,6 +134,8 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 
 `Stack.useSync` is the synchronous accessor for any value in the surrounding Effect context — handy for stack-level config like `stage`, `appName`, or anything else you’d want to vary per environment.
 
+Lambda creates the function’s log group on its first invocation and keeps events forever. Set `logging: { retention: "2 weeks" }` to have Alchemy create the group up front with that retention (the duration is rounded up to the nearest value CloudWatch Logs supports; `"forever"` clears an existing policy). The group is deleted with the function.
+
 ## Wire the function into the Stack
 
 The `Api` class is just a typed identifier — yielding it inside the Stack’s Effect is what registers the resource and starts the deploy:
@@ -206,6 +208,35 @@ You now have a deployable Lambda with a public URL.
 ## Sandbox scope vs invocation scope
 
 The constructor runs **once per sandbox**, at cold start — everything it builds (bindings, SDK clients) is reused by every invocation. Each invocation then runs with a **fresh `Scope`** that is settled *inline* before the handler returns — so `Effect.addFinalizer` in a handler runs before the response leaves, and request finalizers should be fast (closing a pool is milliseconds).
+
+### Timeouts still export their trace
+
+A Lambda that hits its timeout is killed mid-flight, and its buffered telemetry is lost with it, on exactly the invocation you most want a trace for. So the runtime watches the deadline. If the handler is still running 500 ms before the timeout, the runtime ends the invocation’s root span with an `AWS.Lambda.InvocationTimeoutError`, logs a warning, and drains the exporters. The handler is not interrupted and the response is not changed: if it does finish in that last half second, it returns as normal, and its root span stays the timeout error, marked `aws.lambda.timeout.imminent`.
+
+Size the margin for one export round-trip to your telemetry backend, or set it to zero to turn the flush off:
+
+```typescript
+import * as AWS from "alchemy/AWS";
+import * as Duration from "effect/Duration";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+
+export default class Api extends AWS.Lambda.Function<Api>()(
+  "Api",
+  {
+    main: import.meta.url,
+    functionUrl: true,
+    timeout: Duration.seconds(30),
+    // flush 1 s before the deadline instead of the default 500 ms
+    timeoutMargin: Duration.seconds(1),
+  },
+  Effect.gen(function* () {
+    return {
+      fetch: Effect.succeed(HttpServerResponse.text("Hello from Lambda!")),
+    };
+  }),
+) {}
+```
 
 Construction-level finalizers run at **sandbox shutdown**. A Lambda sandbox with no registered extensions is killed with no signal at all, so the generated entry registers an internal extension with the Extensions API — that makes Lambda send `SIGTERM` and allow 500 ms before `SIGKILL`, and the entry uses the window to close the instance scope:
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Hetzner with Hetzner.Website.SolidStart — nitro's node preset as a systemd unit on port 3000, prerendered pages baked into the unit, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Hetzner.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to a Hetzner Cloud Server. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and client assets plus prerendered pages are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
@@ -13,13 +13,13 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/solidstart` and `/solidstart/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 `@solidjs/vite-plugin-nitro-2` is the server half of a SolidStart build and must be a project dependency too:
 
 ```sh
-bun add @solidjs/vite-plugin-nitro-2
+pnpm add @solidjs/vite-plugin-nitro-2
 ```
 
 ## Configure Vite

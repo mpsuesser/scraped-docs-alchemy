@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to AWS with AWS.Website.Nextjs — the OpenNext serverless topology with streaming SSR, image optimization, and ISR wiring, plus next dev under alchemy dev."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `AWS.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to AWS using the [OpenNext](https://opennext.js.org/aws) serverless topology:
@@ -20,7 +20,7 @@ App Router and Pages Router both work — server components, API routes, middlew
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks` and its OpenNext peer; the resource loads the package’s `/nextjs/aws` export from your project at deploy time. They are only used at build time, so dev dependencies are enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @opennextjs/aws
+pnpm add -D @alchemy.run/frontend-frameworks@latest @opennextjs/aws
 ```
 
 ## Configure OpenNext

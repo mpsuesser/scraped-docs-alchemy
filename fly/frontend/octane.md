@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Fly with Fly.Website.Octane — SSR on a Machine, client assets baked into the image, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Fly.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to Fly. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server runs on a Machine (`Fly.Service` on a `Fly.App`, plus a shared IPv4 so `https://{app}.fly.dev` answers); client assets are baked into the image. No Dockerfile, no build command to run.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads the package’s `/octane` and `/octane/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 ## Configure Octane

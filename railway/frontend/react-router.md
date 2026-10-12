@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 (framework mode) to Railway with Railway.Website.ReactRouter — SSR on a container Service, client assets in the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-12T23:40:29.259Z
+current_date: 2026-10-12T23:40:29.259Z
 ---
 
 `Railway.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Railway. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server plus client assets run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -13,7 +13,7 @@ current_date: 2026-09-24T22:45:48.980Z
 The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/react-router` and `/react-router/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks
+pnpm add -D @alchemy.run/frontend-frameworks@latest
 ```
 
 The React Router side is whatever `npx create-react-router@latest` scaffolds — `react-router`, `@react-router/dev`, `@react-router/node`, `isbot`, and `vite`. Keep `@react-router/node` and `isbot` in `dependencies`: React Router picks its default `entry.server` by reading them from your `package.json`, and installs `isbot` on the fly if it is missing.
