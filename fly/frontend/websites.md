@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Fly with first-class Website resources."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy deploys frontends to Fly with a family of `Fly.Website`
@@ -43,8 +43,8 @@ container integration on top.
   on Node, with SSG pages served extensionless.
 - [`Octane`](octane.md) — OctaneJS SSR. Alchemy wraps
   native Node output; no hosting adapter is needed in `octane.config.ts`.
-- [`Foldkit`](foldkit.md) — client-only Foldkit SPA;
-  deep links fall back to `index.html`.
+- [`Foldkit`](foldkit.md) — Foldkit SPA, SSR, and prerendered apps;
+  browser-only deep links fall back to `index.html`.
 - [`Vocs`](vocs.md) — prerendered Vocs docs; extensionless
   pages (`/about` → `about/index.html`).
 - [`StaticSite`](static-site.md) — any build command's

@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Fly with Fly.Website.SolidStart — nitro's node preset on a Machine, prerendered pages baked into the image, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Fly. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets plus prerendered pages are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -43,7 +43,7 @@ Alchemy appends its own `nitroV2Plugin()` instance at build time, carrying nitro
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.SolidStart("Website");
 ```

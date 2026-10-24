@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/clusters/cluster-adapters
 title: "Cluster adapters"
 description: "The extension point between Alchemy's cluster-agnostic Kubernetes resources and the platform a cluster runs on. Covers authentication, image registries, workload identity, load balancer defaults, and how to write your own."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The Kubernetes resources don't know which platform a cluster runs
@@ -56,12 +56,12 @@ never lands in Alchemy's state:
 
 ```typescript
 // src/env-token-adapter.ts
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
-declare module "alchemy/Kubernetes" {
+declare module "@alchemy.run/kubernetes" {
   interface AuthRegistry {
     "env-token": {
       /** Environment variable holding the bearer token. */
@@ -154,7 +154,7 @@ A platform adapter such as `aws-eks` goes further:
   gone.
 
 Platforms extend the typed surfaces through module augmentation of
-`alchemy/Kubernetes`:
+`@alchemy.run/kubernetes`:
 
 - `AuthRegistry` holds connection kinds.
 - `IdentityStateRegistry` and `RegistryStateRegistry` hold persisted

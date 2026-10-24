@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -15,7 +15,7 @@ Reach for a container when a [Worker](workers.md) isn’t enough: you need a rea
 The class declares the container’s name and its public RPC surface; configuration lives on `.make()`, not here:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import type * as Effect from "effect/Effect";
 
 export class Sandbox extends Cloudflare.Container<
@@ -55,7 +55,7 @@ export default Sandbox.make(
 Yield the class inside a DO’s Construction phase. That binds the container to the DO and hands you its handle, without starting it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Sandbox } from "./Sandbox.ts";
 
@@ -233,7 +233,7 @@ The reference is what orders the deploy: the bucket is created before the contai
 An **effectful** (`main`) container runs your Effect program, so it resolves a database capability the same way a Worker does — declare the connection once, then bind it:
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 
 export const Connection = Effect.gen(function* () {
@@ -250,8 +250,8 @@ export const Connection = Effect.gen(function* () {
 ```
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
-import * as SQL from "alchemy/SQL/Postgres";
+import * as Prisma from "@alchemy.run/prisma";
+import * as SQL from "@alchemy.run/sql/Postgres";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Api } from "./Api.ts";
@@ -286,7 +286,7 @@ yield* api.start({ enableInternet: true });
 An image you brought yourself knows nothing about alchemy, so there is no capability to bind — you name the variable and hand it the connection string. Give it the provider’s **pooled** endpoint (Prisma’s `databaseUrl` already prefers it; on Neon it is `branch.pooledConnectionUri`, on PlanetScale `role.connectionUrlPooled`), since nothing else is pooling those connections on the container’s behalf:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Connection } from "./Db.ts";
 
@@ -366,7 +366,7 @@ The Durable Object class name defaults to the binding name (the `env` key). Set 
 
 ```typescript
 import { getContainer } from "@cloudflare/containers";
-import type * as Cloudflare from "alchemy/Cloudflare";
+import type * as Cloudflare from "@alchemy.run/cloudflare";
 import type { Worker } from "../alchemy.run.ts";
 
 export default {

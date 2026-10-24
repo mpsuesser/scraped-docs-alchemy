@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/s3-events
 title: "React to S3 Events"
 description: "Subscribe a Lambda Function to S3 bucket notifications, process them as an Effect Stream, and let Alchemy wire up the IAM and event-source plumbing."
-access_date: 2026-08-03T19:43:15.086Z
-current_date: 2026-08-03T19:43:15.086Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Reading and writing S3 objects on demand is one half of the story. The other half is **reacting** to objects as they arrive — for indexing, virus scanning, thumbnail generation, you name it. In this part you’ll subscribe the same Lambda from the previous part to bucket notifications and process them as an Effect `Stream`.
@@ -11,8 +11,8 @@ Reading and writing S3 objects on demand is one half of the story. The other hal
 Bucket notifications live behind an Alchemy helper: `S3.consumeBucketEvents(bucket, process)`. Add the smallest possible subscription — log every new object’s key — alongside the existing bindings:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as S3 from "alchemy/AWS/S3";
+import * as AWS from "@alchemy.run/aws";
+import * as S3 from "@alchemy.run/aws/S3";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

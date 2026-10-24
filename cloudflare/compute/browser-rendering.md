@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/browser-rendering
 title: "Browser rendering"
 description: "Attach Cloudflare Browser Rendering to a Worker — run quick actions like markdown and scrape, stream screenshots and PDFs, or drive the raw binding with puppeteer."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Browser Rendering gives a Worker a headless browser. In alchemy, the
@@ -21,7 +21,7 @@ streams, and the raw binding is one accessor away for
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 

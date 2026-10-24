@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-env
 title: "Secrets & env"
 description: "Bind env vars and secrets to Workers with effect/Config, generate stable tokens with Alchemy.Random, and graduate to Secrets Store when secrets are shared across Workers."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Three ways to get a secret into a Worker, by where the value lives.
@@ -19,7 +19,7 @@ environment at deploy time, bound to the Worker, and resolved from
 that binding at runtime:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
@@ -115,7 +115,7 @@ the `env` prop and type the handler with `InferEnv`:
 
 ```typescript
 // alchemy.run.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
 
 export const Worker = Cloudflare.Worker("Worker", {
@@ -169,7 +169,7 @@ runtime so a rotation propagates without redeploying consumers, and
 redacted in the dashboard.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { AuthTokenValue } from "./auth.ts";
 

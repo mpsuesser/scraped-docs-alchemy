@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:
@@ -22,7 +22,7 @@ Stack's `Effect.gen` body:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -136,7 +136,7 @@ send time:
 
 ```typescript
 // src/email.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Email = Cloudflare.Email.SendEmail("Email", {
   allowedSenderAddresses: ["bot@example.com"],
@@ -182,7 +182,7 @@ provide `Email.SendBinding` as the implementation layer. The client's
 
 ```typescript
 // src/notifier.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Email } from "./email.ts";

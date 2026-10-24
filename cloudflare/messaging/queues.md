@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/queues
 title: "Queues"
 description: "Cloudflare Queues give you reliable, at-least-once message delivery between Workers — a WriteQueue producer binding on one side and an Effect-style consumeQueueMessages handler with automatic ack/retry on the other."
-access_date: 2026-10-06T02:20:08.061Z
-current_date: 2026-10-06T02:20:08.061Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Cloudflare Queue decouples work from the request that triggered it: a Worker *produces* messages onto the queue, Cloudflare buffers them, and a consumer Worker receives them in batches with **at-least-once** delivery — failed batches are retried and eventually dead-lettered.
@@ -24,7 +24,7 @@ Both resources are plain `yield*` calls — no special config.
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export const Queue = Cloudflare.Queues.Queue("Queue");
@@ -38,7 +38,7 @@ The Queue’s name is generated from the stack/stage/id. The Bucket will store e
 In the Worker’s Construction phase, yield the queue resource and ask `Cloudflare.Queues.WriteQueue` for a typed sender. The sender exposes `send` / `sendBatch` that round-trip through Cloudflare’s runtime.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Bucket } from "./Bucket.ts";
 import { Queue } from "./Queue.ts";

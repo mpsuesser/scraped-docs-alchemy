@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/tunnel
 title: "Expose private origins with Tunnel"
 description: "Connect a private origin to Cloudflare's edge with a Tunnel, declare its ingress rules as a Configuration resource, and point DNS at it with a proxied CNAME."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Cloudflare Tunnel establishes an outbound connection from your
@@ -15,7 +15,7 @@ publishes it are all ordinary resources in one stack.
 ## Create a tunnel
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 const tunnel = yield* Cloudflare.Tunnel.Tunnel("MyTunnel");
 // Run the connector on your origin:

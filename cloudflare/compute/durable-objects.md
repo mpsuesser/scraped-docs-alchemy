@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/durable-objects
 title: "Durable Objects"
 description: "Durable Objects are globally-unique stateful instances with transactional storage — define one as an Effect, persist state per key, expose typed RPC methods, and stream values back to the caller."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Durable Object (DO) is a globally-unique stateful instance addressed by name: every request for `"user-123"` — from any Worker, anywhere in the world — lands on the *same* instance, with its own transactional SQLite-backed storage. That combination of identity + storage + single-threaded execution makes DOs the right tool for per-entity state: counters, chat rooms, game sessions, WebSocket hubs, rate limiters, collaborative documents.
@@ -17,7 +17,7 @@ Like Workers, a DO has two `Effect.gen` blocks: the outer one resolves the insta
 Create `src/counter.ts` with the smallest possible DO — empty public API, no state yet:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class Counter extends Cloudflare.DurableObject<Counter>()(
@@ -96,7 +96,7 @@ Workers will see `counter.increment()` returning `Effect<number>` and `counter.g
 Yield the `Counter` class in your Worker’s Construction phase to get a namespace handle:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import Counter from "./counter.ts";
@@ -123,7 +123,7 @@ export default Cloudflare.Worker(
 Inside the `fetch` handler, route `POST /counter/:name` to the DO by calling `getByName(...)` to obtain a typed stub, then invoking `increment()`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -165,7 +165,7 @@ bun alchemy deploy
 Add a test that hits `/counter/foo` twice (expecting `1` then `2`) and `/counter/bar` once (expecting `1`) — each name addresses its own stateful instance:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
@@ -207,7 +207,7 @@ RPC isn’t limited to single values — any `Effect` (or `Stream`) you return b
 Add `tick` to `src/counter.ts`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
@@ -241,7 +241,7 @@ export default class Counter extends Cloudflare.DurableObject<Counter>()(
 Forward the stream from the Worker’s `fetch` handler. Use `HttpServerResponse.stream` to flush each chunk as it arrives:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -285,7 +285,7 @@ export default Cloudflare.Worker(
 Add the test:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
@@ -382,7 +382,7 @@ Use `Alchemy.makeCallback` when work must survive the request and run later. Dur
 For this example, create a `Document` object that will save its current body and schedule a revision snapshot:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class Document extends Cloudflare.DurableObject<Document>()(
@@ -402,7 +402,7 @@ Register the handler in the **inner, per-instance Effect**, before returning the
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 // Inside Document's outer Effect:

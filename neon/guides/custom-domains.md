@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/custom-domains
 title: "Custom domains"
 description: "Register a Function hostname, configure DNS and CAA, verify HTTPS, and retire the domain safely."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Neon custom domain maps one hostname to one Function on one branch. Alchemy
@@ -26,7 +26,7 @@ its records. A hostname can belong to only one Function target at a time.
 Inside your stack, using an existing `api` Function:
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const domain = yield* Neon.CustomDomain("ApiDomain", {
   function: api,

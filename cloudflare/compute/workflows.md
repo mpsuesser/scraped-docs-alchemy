@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workflows
 title: "Workflows"
 description: "Cloudflare Workflows run durable multi-step jobs — define a typed workflow class, checkpoint steps with task and sleep, trigger instances from a Worker, and poll status until completion."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Cloudflare Workflow is a multi-step job where each named step's
@@ -28,7 +28,7 @@ Effect:
 
 ```typescript
 // src/workflow.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class MyWorkflow extends Cloudflare.Workflow<MyWorkflow>()(
@@ -262,7 +262,7 @@ handle:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

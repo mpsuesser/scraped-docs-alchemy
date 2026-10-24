@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/branches
 title: "Branches"
 description: "Prisma branches group databases under git-style names — preview branches per stage, default-branch promotion, and database attachment."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A `Prisma.Branch` groups databases and apps under a git-style name
@@ -20,7 +20,7 @@ Promoting a preview branch changes `isDefault`; it does not change
 that branch's role.
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 const branch = yield* Prisma.Branch("preview", { project });
 ```

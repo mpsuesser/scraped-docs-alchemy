@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Cloudflare Workers with the shared Website API, native local development, and KV-backed caching."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.Website.Vinext` builds a [vinext](https://vinext.dev/) App Router application with Vite and deploys its React Server Components Worker and client assets. Alchemy injects its Cloudflare Vite plugin, prerenders routes, and seeds the managed KV cache. There is no Wrangler configuration or OpenNext build.
@@ -32,7 +32,7 @@ Alchemy injects its Cloudflare runtime and KV cache plugins. No Alchemy plugin i
 ## Declare the Website
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Vinext("Website", {
   rootDir: ".",

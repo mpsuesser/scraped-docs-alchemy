@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/lifecycle
 title: "Connection lifecycle"
 description: "SQL and Drizzle clients build lazily, reuse a client within the current execution scope, and release resources when that scope closes."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `SQL.Postgres`, `SQL.MySQL`, `SQL.D1`, and their `Drizzle` counterparts share the same scope-based lifecycle. Postgres and MySQL work across runtimes; D1 requires a Cloudflare binding.
@@ -11,7 +11,7 @@ current_date: 2026-09-24T22:45:48.980Z
 ## Construction runs once, events run many times
 
 ```typescript
-import * as SQL from "alchemy/SQL/Postgres";
+import * as SQL from "@alchemy.run/sql/Postgres";
 import * as Effect from "effect/Effect";
 import type * as Redacted from "effect/Redacted";
 

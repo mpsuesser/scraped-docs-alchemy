@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-3
 title: "Part 3: Query Postgres"
 description: "Create Prisma Postgres, bind its connection to Compute, and query it with Effect SQL."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Continue from [Part 2](part-2.md). Add an explicit Postgres database and a read-only endpoint that returns the database’s current time. This query needs no tables or migrations.
@@ -11,7 +11,7 @@ Continue from [Part 2](part-2.md). Add an explicit Postgres database and a read-
 ## Install the SQL client
 
 ```sh
-pnpm add @effect/sql-pg
+pnpm add @alchemy.run/sql@latest @effect/sql-pg
 ```
 
 Alchemy’s SQL helper uses the Effect Postgres client. Match its version to the other Effect packages.
@@ -21,7 +21,7 @@ Alchemy’s SQL helper uses the Effect Postgres client. Match its version to the
 Append to `src/Database.ts`, adding the Effect import at the top:
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 
 export const Postgres = Prisma.Postgres(
@@ -71,7 +71,7 @@ Apply this change to the **runtime** Effect, the third argument to `Prisma.Compu
 ## Create the SQL client
 
 ```typescript
-import * as SQL from "alchemy/SQL/Postgres";
+import * as SQL from "@alchemy.run/sql/Postgres";
 
     const db = yield* Prisma.Connect(Connection);
     const sql = yield* SQL.Postgres({ url: db.databaseUrl });

@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Railway with Railway.Website.Nextjs — next build plus a Node next({ dev: false }) container, and next dev under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Railway as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
@@ -35,7 +35,7 @@ Pass `rootDir` when the Next.js project is not the stack root.
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.Nextjs("Website");
 ```

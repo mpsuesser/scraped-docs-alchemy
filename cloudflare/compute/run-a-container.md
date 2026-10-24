@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
@@ -13,7 +13,7 @@ Some workloads need a long-lived process — a sandboxed shell, a database clien
 Create `src/Sandbox.ts`. A Container is declared with the **tagged shape** — a second type parameter that pins the public RPC surface, analogous to declaring an Effect `Context.Service`. The type lists every method callers can invoke, and the runtime implementation has to match. The tag takes only the container’s name; configuration like the entrypoint file lives on `.make()` (next step), not here:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import type { PlatformError } from "effect/PlatformError";
 
@@ -165,7 +165,7 @@ export const SandboxLive = Sandbox.make(
 Workers don’t talk to containers directly — every container has a **Durable Object in front of it** that owns its lifecycle. Create `src/Agent.ts` with the bare DO shell that imports the `Sandbox` class:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Sandbox } from "./Sandbox.ts";
 
@@ -230,7 +230,7 @@ The Container’s `.make()` is the side-effect that registers the runtime — it
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import SandboxLive from "./src/Sandbox.runtime.ts";
 import Worker from "./src/worker.ts";
@@ -251,7 +251,7 @@ export default Alchemy.Stack(
 The Worker binds `Agent` and exposes the `/sandbox/exec` route:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -296,7 +296,7 @@ The first deploy uploads the container image to Cloudflare and provisions the re
 Add a test that POSTs a shell command and expects the captured stdout in the response:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
@@ -337,7 +337,7 @@ The first request boots the container (which takes a few seconds — hence the b
 Containers can run any HTTP server. The `Sandbox.runtime.ts` above exposes `fetch` on port `3000` by default. Add a `hello` RPC method to `Agent.ts` that proxies to it via `getTcpPort`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import { Sandbox } from "./Sandbox.ts";

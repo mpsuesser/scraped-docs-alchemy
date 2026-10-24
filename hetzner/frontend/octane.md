@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Hetzner with Hetzner.Website.Octane — SSR as a systemd unit on port 3000, client assets baked into the unit, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to a Hetzner Cloud Server. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server runs as a systemd unit on port 3000 (`Hetzner.Service` on a `Hetzner.Server`); client assets are baked into the unit. The live URL is `http://{ipv4}:3000` — no TLS on the Service. No Dockerfile, no build command to run.
@@ -49,7 +49,7 @@ export default defineConfig({
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Octane("Website");
 ```

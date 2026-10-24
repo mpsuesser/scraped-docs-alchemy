@@ -2,15 +2,15 @@
 url: https://alchemy.run/kubernetes
 title: "Kubernetes"
 description: "Run containers and Effect programs on any Kubernetes cluster with Alchemy. Declare Deployments, Jobs, raw manifests, and Helm charts in the same typed program as the rest of your infrastructure. No YAML, no kubectl apply."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`alchemy/Kubernetes` manages workloads on **any Kubernetes cluster**, such as a cluster on your laptop, k3s on a VM, an on-prem fleet, GKE, AKS, or EKS. You describe servers, jobs, and raw Kubernetes objects as Resources in TypeScript. Alchemy builds your programs into images and applies everything to the cluster with server-side apply. It tracks everything in state and deletes it on destroy.
+`@alchemy.run/kubernetes` manages workloads on **any Kubernetes cluster**, such as a cluster on your laptop, k3s on a VM, an on-prem fleet, GKE, AKS, or EKS. You describe servers, jobs, and raw Kubernetes objects as Resources in TypeScript. Alchemy builds your programs into images and applies everything to the cluster with server-side apply. It tracks everything in state and deletes it on destroy.
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

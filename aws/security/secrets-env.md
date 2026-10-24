@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/security/secrets-env
 title: "Secrets & env"
 description: "Deliver API keys from .env to a Lambda with effect/Config, and graduate to AWS Secrets Manager when the secret is a shared, generated, or rotated cloud resource."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Secrets on AWS come in two tiers. Values in your `.env` that only
@@ -22,7 +22,7 @@ environment variable:
 
 ```typescript
 // src/api.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -117,7 +117,7 @@ Reach for Secrets Manager when the secret is an AWS-native concern:
 `Redacted` so it never appears in logs or state:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Redacted from "effect/Redacted";
 
 const dbSecret = yield* AWS.SecretsManager.Secret("DbSecret", {
@@ -159,7 +159,7 @@ deploy time, call it at runtime for a fresh read:
 
 ```typescript
 // src/api.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import * as Redacted from "effect/Redacted";

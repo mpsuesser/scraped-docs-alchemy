@@ -1,16 +1,16 @@
 ---
 url: https://alchemy.run/aws/frontend/waku
 title: "Waku"
-description: "Deploy a Waku app to AWS with AWS.Website.Waku — RSC server on a streaming Lambda Function URL, SSG pages and assets on S3 + CloudFront, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy a Waku app to AWS with AWS.Website.Waku — RSC server on a Lambda Web Function, SSG pages and assets on S3 + CloudFront, and Waku's own dev server under alchemy dev."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`AWS.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to AWS. It builds the project programmatically: the RSC server runs on a Lambda Function URL with response streaming, and the client output — including SSG-prerendered pages — is served from a private S3 bucket through CloudFront. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
+`AWS.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to AWS. It builds the project programmatically: the RSC server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and the client output — including SSG-prerendered pages — is served from a private S3 bucket through CloudFront. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/waku` and `/waku/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/waku` and `/waku/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -49,7 +49,7 @@ The one key Alchemy owns is `unstable_adapter` — setting it fails the build wi
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Waku("Website");
 ```
@@ -75,7 +75,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Pages rendered as `"static"` are generated at build time, uploaded to S3, and served from the edge; dynamic pages and API routes stream from the Lambda.
+Pages rendered as `"static"` are generated at build time, uploaded to S3, and served from the edge; dynamic pages and API routes stream from the server.
 
 See [examples/aws-website-waku](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-website-waku) for the checked-in example.
 
@@ -92,11 +92,11 @@ export const Website = AWS.Website.Waku("Website", {
 });
 ```
 
-The values are set on the Lambda at deploy time and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes.
+The values are set on the server at deploy time and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes.
 
 ## Read the environment in server code
 
-Server components and API routes read the environment through waku’s `getEnv` — on AWS it is backed by the Lambda’s `process.env` at request time, and it keeps page modules portable across deploy targets:
+Server components and API routes read the environment through waku’s `getEnv` — on AWS it is backed by the server’s `process.env` at request time, and it keeps page modules portable across deploy targets:
 
 ```typescript
 import { getEnv } from "waku";
@@ -107,6 +107,17 @@ export default async function HomePage() {
 }
 
 export const getConfig = async () => ({ render: "dynamic" }) as const;
+```
+
+## Run on a Lambda Function
+
+Web Functions run in a subset of Regions. Elsewhere, set `server: "function"`: the app builds with the `/waku/aws` deploy target and runs on a Lambda Function behind a streaming Function URL, tuned with `memorySize`, `architecture`, and `runtime`:
+
+```typescript
+export const Website = AWS.Website.Waku("Website", {
+  server: "function",
+  memorySize: 2048,
+});
 ```
 
 ## Local dev

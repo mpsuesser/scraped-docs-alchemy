@@ -2,15 +2,15 @@
 url: https://alchemy.run/git/repositories
 title: "Repositories"
 description: "Create, fork, import, and manage repositories over the typed REST plane."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Repositories live at `/api/v1/repos`, declared as an Effect `HttpApi`.
 One schema types the server, the client, and your tests:
 
 ```typescript
-import { GitApi } from "alchemy/Git";
+import { GitApi } from "@alchemy.run/git";
 import * as HttpApiClient from "effect/http-api/HttpApiClient";
 
 const client = yield* HttpApiClient.make(GitApi, { baseUrl: host });

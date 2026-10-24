@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/your-own-store
 title: "Bring your own store"
 description: "Bytes have to live somewhere that is neither R2 nor S3. Implement the five operations of Git.BlobStore and provide it in place of the shipped Layers."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The examples use `Authentication` from
@@ -47,7 +47,7 @@ serving path.
 ## The Layer
 
 ```typescript
-import * as Git from "alchemy/Git";
+import * as Git from "@alchemy.run/git";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/rate-limiting
 title: "Rate limiting"
 description: "Throttle requests inside a Worker with Cloudflare's Rate Limiting binding — declare the limit on the binding, count arbitrary keys at runtime, handle failures as typed errors."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The Rate Limiting binding gives a Worker a counter it can consult on
@@ -19,7 +19,7 @@ phase and provide `RateLimitBinding` as a layer:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

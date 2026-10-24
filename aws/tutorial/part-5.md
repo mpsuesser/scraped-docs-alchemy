@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated AWS deployments and PR previews — with OIDC credentials provisioned as code."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In [Part 4](part-4.md) you deployed isolated stages by
@@ -90,8 +90,8 @@ profile) to provision the IAM role CI will use.
 ```typescript
 // stacks/github.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as GitHub from "alchemy/GitHub";
+import * as AWS from "@alchemy.run/aws";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -333,8 +333,8 @@ Post the live URL as a comment on every PR. Update `alchemy.run.ts`:
 ```diff lang="typescript"
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-+import * as GitHub from "alchemy/GitHub";
+import * as AWS from "@alchemy.run/aws";
++import * as GitHub from "@alchemy.run/github";
 +import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
 +import * as Layer from "effect/Layer";

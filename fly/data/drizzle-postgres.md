@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/data/drizzle-postgres
 title: "Drizzle Postgres on Fly"
 description: "Connect a Fly Service to Managed Postgres and deploy reviewed Drizzle migrations."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the same organization's private network. Start with [Fly setup](../setup.md), the [Service tutorial](https://alchemy.run/fly/tutorial/part-1), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
@@ -11,7 +11,7 @@ Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the 
 ## Install the database dependencies
 
 ```sh
-pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
 pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
@@ -58,7 +58,7 @@ Commit the schema, SQL, and snapshots together; CI deploys this reviewed history
 
 ```typescript
 // src/db.ts
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Db = Fly.Postgres("Db", { region: "iad" });
 ```
@@ -113,7 +113,7 @@ Supply the cluster's `connectionUri` as the migration runner's secret `DATABASE_
 ## Open the runtime client
 
 ```diff lang="typescript"
-+import * as Drizzle from "alchemy/Drizzle/Postgres";
++import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 
  const conn = yield* Fly.ConnectPostgres(Db);
 +const db = yield* Drizzle.Postgres(conn.connectionString);

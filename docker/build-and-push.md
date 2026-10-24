@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/build-and-push
 title: "Build & push images"
 description: "Build a container image from a Dockerfile, push it to a registry, and hand the resulting image reference to Cloudflare Containers or AWS ECS."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 This page is the canonical home for producing a **registry image
@@ -22,7 +22,7 @@ All you need is a Docker daemon reachable from the CLI — see
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Docker from "alchemy/Docker";
+import * as Docker from "@alchemy.run/docker";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/microvms
 title: "Lambda MicroVMs"
 description: "Build a Firecracker MicroVM image from TypeScript or a Dockerfile, then launch and drive isolated stateful instances from a Lambda Function with typed lifecycle bindings and RPC."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Lambda **MicroVM image** is a Firecracker snapshot that boots a fully
@@ -42,7 +42,7 @@ contract every Function and Server returns:
 
 ```typescript
 // sandbox.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -89,7 +89,7 @@ VM, wait for `RUNNING`, mint an auth token, then call the typed RPC stub with
 
 ```typescript
 // api.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -191,7 +191,7 @@ is provided on the Stack so it gets built and deployed alongside:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import Api from "./api.ts";
 import SandboxLive from "./sandbox.ts";
@@ -217,7 +217,7 @@ the bare build Role and the image live directly in the Stack's `Effect.gen`:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

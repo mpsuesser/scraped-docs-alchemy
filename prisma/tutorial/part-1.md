@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-1
 title: "Part 1: Your First Project"
 description: "Install Alchemy, configure Prisma credentials, and deploy your first Project."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Build a full-stack application on Prisma in four parts: a Project, an Effect-native Compute API, a Postgres database, and a Vite frontend. The [complete example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-tutorial) contains the final application and its deployment test.
@@ -34,7 +34,7 @@ This creates the `package.json` that records your dependencies.
 ## Install Alchemy
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/prisma@latest effect @effect/platform-node
 ```
 
 Use matching Effect versions for Alchemy and the platform packages.
@@ -66,7 +66,7 @@ Create `alchemy.run.ts`:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -83,7 +83,7 @@ A Stack groups resources. The Prisma providers manage them, and local state reco
 Create `src/Database.ts`:
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Project = Prisma.Project("Project", {
   createDatabase: false,

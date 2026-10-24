@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Fly with Fly.Website.Vite — static assets on a Node Machine, fly.dev (or your domain) over HTTPS, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Vite` deploys a [Vite](https://vite.dev/) project to Fly. It runs `vite build` and serves the output from a tiny Node static-file server on a Machine: one [`Fly.App`](https://alchemy.run/fly/compute/apps) (created if `app` is omitted), one [`Fly.Service`](https://alchemy.run/fly/compute/services) on port 3000, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
@@ -39,7 +39,7 @@ Do not set a Vite SSR adapter. This composite never creates a framework server m
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Vite("Website");
 ```

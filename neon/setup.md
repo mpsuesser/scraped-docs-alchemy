@@ -2,39 +2,23 @@
 url: https://alchemy.run/neon/setup
 title: "Setup"
 description: "Prepare Neon credentials, service access, regions, and external dependencies before deploying with Alchemy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-Alchemy manages Neon resources using a management API key. Account plans, model
-access, third-party OAuth applications, and DNS remain separate setup steps.
-Complete the required sections below, then follow only the feature guides your
-application needs.
+Alchemy manages Neon resources using a management API key. Account plans, model access, third-party OAuth applications, and DNS remain separate setup steps. Complete the required sections below, then follow only the feature guides your application needs.
 
 ## Create or select an account
 
-Sign in to the [Neon Console](https://console.neon.tech). Select the organization
-that should own the application and pay for its usage. Create an organization in
-Neon first if you need organization governance; Alchemy's governance resources
-manage an existing organization, not its creation or membership invitations.
+Sign in to the [Neon Console](https://console.neon.tech/). Select the organization that should own the application and pay for its usage. Create an organization in Neon first if you need organization governance; Alchemy’s governance resources manage an existing organization, not its creation or membership invitations.
 
-Copy the organization ID from **Organization Settings → General information**.
-Pass it as `orgId` when declaring an organization-owned `Neon.Project`. For a
-personal project, omit it. Confirm the deployment identity can both create and
-delete the resources it will own.
+Copy the organization ID from **Organization Settings → General information**. Pass it as `orgId` when declaring an organization-owned `Neon.Project`. For a personal project, omit it. Confirm the deployment identity can both create and delete the resources it will own.
 
 ## Choose a region and check service access
 
-Postgres availability does not imply that every backend service is available in
-the same region or on the same account. Check the current Neon documentation for
-[Functions](https://neon.com/docs/compute/functions/overview),
-[Object Storage](https://neon.com/docs/storage/overview),
-[Auth](https://neon.com/docs/auth/overview), and
-[AI Gateway](https://neon.com/docs/ai-gateway/overview) before choosing a region.
+Postgres availability does not imply that every backend service is available in the same region or on the same account. Check the current Neon documentation for [Functions](https://neon.com/docs/compute/functions/overview), [Object Storage](https://neon.com/docs/storage/overview), [Auth](https://neon.com/docs/auth/overview), and [AI Gateway](https://neon.com/docs/ai-gateway/overview) before choosing a region.
 
-The combined backend examples use Ohio (`aws-us-east-2`). Verify access on the
-intended account before deploying; this example is a region selection, not an
-entitlement grant:
+The combined backend examples use Ohio (`aws-us-east-2`). Verify access on the intended account before deploying; this example is a region selection, not an entitlement grant:
 
 ```typescript
 const project = yield* Neon.Project("Application", {
@@ -43,26 +27,28 @@ const project = yield* Neon.Project("Application", {
 });
 ```
 
-Changing a project's region requires replacement. Choose it before storing
-production data. Resources can incur normal Neon usage charges.
+Changing a project’s region requires replacement. Choose it before storing production data. Resources can incur normal Neon usage charges.
 
 ## Create the deployment key
 
-Create a management API key following Neon's
-[API key guide](https://neon.com/docs/manage/api-keys). Select a key whose scope
-covers the entire lifecycle, including destruction, rather than only reads.
+Create a management API key following Neon’s [API key guide](https://neon.com/docs/manage/api-keys). Select a key whose scope covers the entire lifecycle, including destruction, rather than only reads.
 
 | Key | Intended use | Boundary |
 | --- | --- | --- |
-| Personal management key | Deploy with the user's granted access | Inherits that user's permissions; an organization admin's personal key is required to create organization API keys |
+| Personal management key | Deploy with the user’s granted access | Inherits that user’s permissions; an organization admin’s personal key is required to create organization API keys |
 | Organization management key | Organization-wide automation | Broad administrative authority; keep it in the deployment environment |
 | Project-restricted organization key | Work within one existing project | Editor access does not include deleting the project or managing project access; unsuitable for a stack that owns that lifecycle |
 | Branch service credential (`Neon.Credential`) | Runtime storage or AI access | Separate from management keys; scopes cover the branch and descendants |
 
-Database passwords and end-user Auth JWTs are separate credentials again. Never
-place a management key in Function/Website `env`, browser code, or a runtime
-binding. See [governance permissions](governance.md#prepare-the-deployment-identity)
-for administrative controls.
+Database passwords and end-user Auth JWTs are separate credentials again. Never place a management key in Function/Website `env`, browser code, or a runtime binding. See [governance permissions](governance.md#prepare-the-deployment-identity) for administrative controls.
+
+## Install the package
+
+```sh
+pnpm add @alchemy.run/neon@latest
+```
+
+Installing it makes Neon available to `alchemy profile` and to your stack.
 
 ## Configure a local profile
 
@@ -70,38 +56,25 @@ for administrative controls.
 pnpm exec alchemy profile edit --add Neon
 ```
 
-Enter the key at the interactive prompt. Alchemy stores it under
-`~/.alchemy/credentials/<profile>/neon-stored.json`. Protect that directory and
-keep credentials out of version control. See [Profiles](../environments/profiles.md)
-for selecting a profile and using the same profile during deploy and destroy.
+Enter the key at the interactive prompt. Alchemy stores it under `~/.alchemy/credentials/<profile>/neon-stored.json`. Protect that directory and keep credentials out of version control. See [Profiles](../environments/profiles.md) for selecting a profile and using the same profile during deploy and destroy.
 
 ## Configure environment credentials and CI
 
-Store `NEON_API_KEY` in your CI system's secret store and expose it only to the
-deployment job. Set `CI=true` in that job; Alchemy resolves credentials from the
-environment instead of requiring a local profile.
+Store `NEON_API_KEY` in your CI system’s secret store and expose it only to the deployment job. Set `CI=true` in that job; Alchemy resolves credentials from the environment instead of requiring a local profile.
 
-A supplied `NEON_API_KEY` also takes precedence over a selected profile outside
-CI. If a command unexpectedly targets another account, check the process
-and dotenv environment before changing the profile. Avoid printing secrets or
-pasting them into shell history.
+A supplied `NEON_API_KEY` also takes precedence over a selected profile outside CI. If a command unexpectedly targets another account, check the process and dotenv environment before changing the profile. Avoid printing secrets or pasting them into shell history.
 
-## Register the provider
-
-Add `Neon.providers()` to your stack's provider layer. For example, when combining
-Cloudflare and Neon:
+Add `Neon.providers()` to your stack’s provider layer. For example, when combining Cloudflare and Neon:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Neon from "@alchemy.run/neon";
 import * as Layer from "effect/Layer";
 
 const providers = Layer.mergeAll(Cloudflare.providers(), Neon.providers());
 ```
 
-Pass `providers` to your existing Stack configuration. The
-[upload tutorial](tutorial.md) provides a runnable Neon application rather
-than requiring you to assemble a stack from reference snippets.
+Pass `providers` to your existing Stack configuration. The [upload tutorial](tutorial.md) provides a runnable Neon application rather than requiring you to assemble a stack from reference snippets.
 
 ## Complete feature-specific setup
 
@@ -114,31 +87,17 @@ than requiring you to assemble a stack from reference snippets.
 | Custom HTTPS hostname | DNS control, DNS-only CNAME, compatible CAA policy, and HTTPS verification | [Custom domains](guides/custom-domains.md) |
 | Safe updates and cleanup | Durable state, protected backups, and consistent stack/stage selection | [State and recovery](guides/state-recovery.md) |
 
-These are optional feature prerequisites, not requirements to use Postgres. The
-upload tutorial does not require AI access or a credit purchase. Alchemy does not
-upgrade your plan or buy credits during deployment.
+These are optional feature prerequisites, not requirements to use Postgres. The upload tutorial does not require AI access or a credit purchase. Alchemy does not upgrade your plan or buy credits during deployment.
 
 ## Prepare Function and Website builds
 
-Use Node.js 24 for the Function runtime and the package manager/toolchain required
-by your application. Repository examples also use Bun and pnpm. Website packaging
-requires the framework dependencies plus `@alchemy.run/frontend-frameworks` and
-`@vercel/nft`; follow the guide for your [frontend framework](https://alchemy.run/neon/frontend/vite).
+Use Node.js 24 for the Function runtime and the package manager/toolchain required by your application. Repository examples also use Bun and pnpm. Website packaging requires the framework dependencies plus `@alchemy.run/frontend-frameworks` and `@vercel/nft`; follow the guide for your [frontend framework](https://alchemy.run/neon/frontend/vite).
 
-Production artifacts target Linux ARM64/glibc and export a Fetch handler. Native
-addons built for macOS or a different Node ABI are not deployable substitutes.
-Local framework development is useful but does not prove the production artifact
-runs on Neon. Verify the deployed URL, including an update, before routing users
-to it.
+Production artifacts target Linux ARM64/glibc and export a Fetch handler. Native addons built for macOS or a different Node ABI are not deployable substitutes. Local framework development is useful but does not prove the production artifact runs on Neon. Verify the deployed URL, including an update, before routing users to it.
 
 ## Preserve state before the first deploy
 
-Record your stack, stage, profile, and state-store location. The tutorial uses
-local `.alchemy` state; other stacks can use a configured remote state store.
-Keep recoverable, access-controlled backups. `Redacted` values still need to be
-persisted for recovery and are not an encryption guarantee for the state store.
-See [State and recovery](guides/state-recovery.md) before deleting local files
-or replacing a deployment machine.
+Record your stack, stage, profile, and state-store location. The tutorial uses local `.alchemy` state; other stacks can use a configured remote state store. Keep recoverable, access-controlled backups. `Redacted` values still need to be persisted for recovery and are not an encryption guarantee for the state store. See [State and recovery](guides/state-recovery.md) before deleting local files or replacing a deployment machine.
 
 ## Next steps
 

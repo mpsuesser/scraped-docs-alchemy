@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/email/email-worker
 title: "Receive email in a Worker"
 description: "Receive inbound mail in a Cloudflare Worker with Cloudflare.email({ zone }).subscribe(...) — auto-creates routing and forwarding rules."
-access_date: 2026-08-30T18:54:07.274Z
-current_date: 2026-08-30T18:54:07.274Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.email({ zone }).subscribe(handler)` is the
@@ -32,7 +32,7 @@ program.
 
 ```typescript
 // src/Inbox.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Cloudflare.Worker(

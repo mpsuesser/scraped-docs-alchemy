@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [React Router](https://reactrouter.com/) v7 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
@@ -98,7 +98,7 @@ The `rsc` input is the Worker entry, and the extra `ssr` input (`worker-ssr`) is
 Declare the site as a module-level const (rather than inline in the Stack) and describe the environment topology with `viteEnvironments`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Vite("Website", {
   viteEnvironments: {

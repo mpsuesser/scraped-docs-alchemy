@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/setup
 title: "Setup"
 description: "Create a Railway workspace, generate an account API token, and store it in a profile."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Everything you need before deploying to Railway: the alchemy package, a Railway workspace, and an account API token stored in a profile.
@@ -41,7 +41,7 @@ mkdir my-app && cd my-app && pnpm init
 ## Install
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/railway@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Connect alchemy to Railway

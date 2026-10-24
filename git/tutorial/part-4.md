@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-4
 title: "Part 4: Give users their own credentials"
 description: "Replace the shared credential with Better Auth accounts and individual Git API keys."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 One shared credential cannot distinguish one caller from another. Replace it with Better Auth accounts and API keys, then use the authenticated user’s ID when checking access to a named repository.
@@ -24,7 +24,7 @@ Create `src/auth.ts`:
 
 ```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const AuthDb = Cloudflare.D1.Database("AuthDb");
 

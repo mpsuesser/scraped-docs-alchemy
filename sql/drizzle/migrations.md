@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Generate migrations when your schema changes, review and commit the SQL and snapshots, then deploy from Git."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Migration files belong in Git alongside your schema. Generate and review them
@@ -52,7 +52,7 @@ This resource applies pending SQL from `./drizzle`. CI should deploy the
 committed files, not generate a new migration history.
 
 For optional schema-generation automation, see the
-[`Drizzle.Schema` reference](https://alchemy.run/providers/drizzle/reference#schema). The workflow above
+[`Drizzle.Schema` reference](https://alchemy.run/providers/drizzle/schema). The workflow above
 keeps generation and review separate from deployment.
 
 ## Durable Object migrations
@@ -110,8 +110,8 @@ CI uses these committed files when deploying.
 
 ```typescript
 // src/Users.ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle/Cloudflare";
 import * as Effect from "effect/Effect";
 import { relations, users } from "./schema.ts";
 
@@ -234,4 +234,4 @@ Removing `Drizzle.Schema` or destroying the stack leaves the checked-in migratio
 
 - [Postgres](postgres.md) / [MySQL](mysql.md) / [D1](d1.md)
 - [Effect SQL migrations](../effect-sql/migrations.md)
-- [Schema API reference](https://alchemy.run/providers/drizzle/reference#schema)
+- [Schema API reference](https://alchemy.run/providers/drizzle/schema)

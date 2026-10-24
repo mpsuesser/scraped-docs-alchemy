@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/r2-presigned-urls
 title: "R2 presigned URLs"
 description: "Mint presigned R2 URLs so browsers upload and download objects directly, with the same code in alchemy dev and in production, from Effect-native or async Workers."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A presigned URL lets a browser upload or download one object in an
@@ -18,7 +18,7 @@ provide their `*Token` layers:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -103,7 +103,7 @@ its S3 keys. Declare it on `env`:
 
 ```typescript
 // alchemy.run.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import { Uploads } from "./src/uploads.ts";
 
 export const Api = Cloudflare.Worker("Api", {
@@ -122,7 +122,7 @@ Then sign with any S3 client. This one uses
 ```typescript
 // src/worker.ts
 import { AwsClient } from "aws4fetch";
-import type * as Cloudflare from "alchemy/Cloudflare";
+import type * as Cloudflare from "@alchemy.run/cloudflare";
 import type { ApiEnv } from "../alchemy.run.ts";
 
 export default {
@@ -171,7 +171,7 @@ rules, so a missing origin or header only shows up once deployed.
 
 ```typescript
 // src/uploads.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads", {
   cors: [

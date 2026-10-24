@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/workers-ai
 title: "Run Workers AI models"
 description: "Bind Workers AI into your Worker with Cloudflare.Workers.AI — run inference and list models directly, or turn the binding into a typed Effect LanguageModel, no gateway required."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **Workers AI** runs open-weight models (Llama, Mistral, Whisper,
@@ -29,7 +29,7 @@ the constructor's layer chain, the same way every other Worker binding works:
 
 ```typescript
 // src/AiWorker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -168,7 +168,7 @@ A plain async Worker (no Effect runtime) declares the binding on
 
 ```typescript
 // src/AiAsyncWorker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const AiAsyncWorker = Cloudflare.Worker("AiAsyncWorker", {
   main: "./src/handler.ts",

@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Hetzner with Hetzner.Website.Nuxt — nitro's node preset as a systemd unit on port 3000, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to a Hetzner Cloud Server. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs as a systemd unit on port 3000, and client assets plus prerendered pages are baked into the unit. Omit `server` to get a `cpx12` / `ubuntu-24.04` VM in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. There is no `nitro.preset` to edit and no build command to run.
@@ -38,7 +38,7 @@ Don’t set `nitro.preset` — the Node deploy target owns the preset (`"node"`)
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Nuxt("Website");
 ```

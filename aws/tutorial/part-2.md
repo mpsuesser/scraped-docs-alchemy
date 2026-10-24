@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -13,7 +13,7 @@ In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda F
 A Lambda Function in Alchemy is a class — it has both an infrastructure definition and a runtime implementation expressed as an Effect. Create `src/api.ts` with the smallest possible declaration:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
@@ -32,7 +32,7 @@ The `<Api>` type argument plus the empty `()` is a one-time bit of ceremony — 
 The empty function compiles, but it doesn’t do anything yet. Add a `fetch` field — Alchemy treats anything returned from the `Effect.gen` block as the runtime API, and `fetch` specifically is wired up to handle incoming HTTP requests:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -74,8 +74,8 @@ The resolved `Api` resource will now expose a `functionUrl` field carrying that 
 In Part 1 the Bucket lived in `alchemy.run.ts`, but resources can be declared inside any Effect the Stack runs — including a function’s Construction phase. Declaring the bucket next to the code that uses it keeps everything about the function in one file. Add it to the constructor:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as S3 from "alchemy/AWS/S3";
+import * as AWS from "@alchemy.run/aws";
+import * as S3 from "@alchemy.run/aws/S3";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -117,8 +117,8 @@ Both capability calls return a callable Effect: `putObject` takes a `PutObjectRe
 Replace the static handler with one that takes the URL path as the object key and writes the request body to the bucket:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as S3 from "alchemy/AWS/S3";
+import * as AWS from "@alchemy.run/aws";
+import * as S3 from "@alchemy.run/aws/S3";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -199,7 +199,7 @@ Applying `orDie` once at the outer layer keeps the inner code free of repetitive
 
 ## Provide the runtime layers
 
-Bindings declare a capability; **runtime layers** implement it. For S3 those are `S3.PutObjectHttp` and `S3.GetObjectHttp` — both ship in `alchemy/AWS/S3` and depend only on the AWS SDK and the ambient credentials. Provide them at the bottom of the function:
+Bindings declare a capability; **runtime layers** implement it. For S3 those are `S3.PutObjectHttp` and `S3.GetObjectHttp` — both ship in `@alchemy.run/aws/S3` and depend only on the AWS SDK and the ambient credentials. Provide them at the bottom of the function:
 
 ```typescript
 import * as Layer from "effect/Layer";
@@ -224,7 +224,7 @@ The `Api` class is just a typed identifier — yielding it inside the Stack’s 
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import Api from "./src/api.ts";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/access
 title: "Protect a Worker with Access"
 description: "Put Cloudflare Access in front of a Worker with the access prop — per-Worker policies, shared applications, ctx.access identity at runtime, and a local dev simulation."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Cloudflare Access puts a login wall in front of your Worker — covering
@@ -25,7 +25,7 @@ application — created, updated, and deleted with the Worker, and
 namespaced under it as `Api/Access`):
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -152,7 +152,7 @@ When several Workers should sit behind the same policy set, declare
 the application once and pass it to each Worker directly:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const TeamOnly = Cloudflare.Access.Application("TeamOnly", {
   type: "self_hosted",

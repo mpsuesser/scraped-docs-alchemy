@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/nextjs
 title: "Next.js"
 description: "Deploy Next.js to Prisma Compute with Prisma.Website.Nextjs — a normal Next server on Bun, not OpenNext, and next dev locally."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website.Nextjs` runs a real [Next.js](https://nextjs.org/) `next build`, then hosts a normal Next server on **Bun in Prisma Compute**. The shared Node target uses `next({ dev: false })`, `prepare()`, and `getRequestHandler()`. The build output, public assets, and runtime dependencies are packaged for a `tar.gz` upload; there is no Docker image or registry.
@@ -25,7 +25,7 @@ pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ## Declare the Website
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Nextjs("Website");
 ```

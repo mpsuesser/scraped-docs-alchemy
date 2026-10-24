@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/sinks
 title: "Sinks"
 description: "A Sink is the write-side dual of an Event Source — a Binding that exposes a resource as an Effect Sink, batching writes into the batch API with least-privilege IAM."
-access_date: 2026-10-06T02:20:08.061Z
-current_date: 2026-10-06T02:20:08.061Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A **Sink** is the dual of an [Event Source](event-sources.md):
@@ -22,7 +22,7 @@ Like every Binding, a Sink is declared in the
 and used in the interface it returns:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Stream from "effect/Stream";
@@ -192,7 +192,7 @@ Each element is one message body, and each stream chunk becomes one
 messages / 256 KB) are split into consecutive batches, in order:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

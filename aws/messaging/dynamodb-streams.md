@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/dynamodb-streams
 title: "Process DynamoDB Streams"
 description: "Enable a DynamoDB Stream on your table and consume change records as a typed Effect Stream from the same Lambda."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The DynamoDB table from the previous part stores records, but writes happen in the dark — there’s no way for downstream systems to react. **DynamoDB Streams** fix that: every change to the table emits a change record (insert / modify / remove) you can stream into a Lambda. In Alchemy this is one helper call.
@@ -11,8 +11,8 @@ The DynamoDB table from the previous part stores records, but writes happen in t
 Start with the smallest possible subscription: log just the event name (`INSERT` / `MODIFY` / `REMOVE`) for each change. Add it alongside the existing bindings:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as DynamoDB from "alchemy/AWS/DynamoDB";
+import * as AWS from "@alchemy.run/aws";
+import * as DynamoDB from "@alchemy.run/aws/DynamoDB";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

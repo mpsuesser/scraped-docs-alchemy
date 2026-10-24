@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/hyperdrive-private-database
 title: "Private database (Workers VPC)"
 description: "Connect Hyperdrive to a database inside a private network — such as Aurora in an AWS VPC — through a Cloudflare Tunnel and a Workers VPC Service, with no public endpoint."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [Hyperdrive](hyperdrive.md) can reach a database that has no
@@ -24,8 +24,8 @@ password.
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as AWS from "@alchemy.run/aws";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -49,7 +49,7 @@ the private ones.
 
 ```typescript
 // src/Database.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export const Network = AWS.EC2.Network("Network", {
@@ -120,8 +120,8 @@ public hostnames.
 
 ```typescript
 // src/Connector.ts
-import * as AWS from "alchemy/AWS";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as AWS from "@alchemy.run/aws";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { ConnectorSecurityGroup, Network } from "./Database.ts";
 
@@ -165,7 +165,7 @@ Service. It points at the Aurora writer endpoint through the tunnel.
 
 ```typescript
 // src/Hyperdrive.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
 import { Connector, Tunnel } from "./Connector.ts";

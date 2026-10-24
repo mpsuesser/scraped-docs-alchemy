@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Provider-neutral Postgres schemas, Effect-native Drizzle queries, and connections for Workers, Lambda, and servers."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Drizzle.Postgres` provides typed, Effect-native queries for any compatible Postgres connection, whether your application runs on Workers, Lambda, or a server. Choose a database in [SQL databases](../databases.md) and supply its connection through your runtime’s binding or configuration.
@@ -11,7 +11,7 @@ current_date: 2026-10-12T23:40:29.259Z
 Install the optional dependencies:
 
 ```sh
-pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
 pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
@@ -48,7 +48,7 @@ export const relations = defineRelations({ Users, Posts }, (t) => ({
 ## Connect
 
 ```typescript
-import * as Drizzle from "alchemy/Drizzle/Postgres";
+import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 import * as Effect from "effect/Effect";
 import type * as Redacted from "effect/Redacted";
 import { relations, Users } from "./schema.ts";
@@ -120,7 +120,7 @@ git diff --cached
 git commit -m "Add database migration"
 ```
 
-Generate on each schema change, stage and review the schema, SQL, and snapshots, then commit them before application. Apply the committed migrations with your existing runner before deploying code that needs the new schema. [Migrations](migrations.md) covers application ownership: [`Drizzle.Schema`](https://alchemy.run/providers/drizzle/reference#schema) is optional, and `alchemy deploy` does not replace an existing `drizzle-kit migrate` workflow.
+Generate on each schema change, stage and review the schema, SQL, and snapshots, then commit them before application. Apply the committed migrations with your existing runner before deploying code that needs the new schema. [Migrations](migrations.md) covers application ownership: [`Drizzle.Schema`](https://alchemy.run/providers/drizzle/schema) is optional, and `alchemy deploy` does not replace an existing `drizzle-kit migrate` workflow.
 
 ## Where next
 

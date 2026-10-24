@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/mysql
 title: "MySQL"
 description: "Official MySQL in a Project. Bind Railway.ConnectMySQL and query with Drizzle or SQL."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A [`Railway.MySQL`](https://alchemy.run/providers/railway/reference/mysql#mysql) is MySQL as a Service:
@@ -37,7 +37,7 @@ Yield `ConnectMySQL` in the Service's constructor. Provide
 `ConnectMySQLHttp`. Pass `conn.connectionString` to Drizzle or SQL.
 
 ```typescript
-import * as Drizzle from "alchemy/Drizzle/MySQL";
+import * as Drizzle from "@alchemy.run/drizzle/MySQL";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends Railway.Service<Api>()(

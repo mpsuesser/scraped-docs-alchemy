@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/lambda
 title: "Lambda"
 description: "Stand up an AWS Lambda Function from a single Effect, expose it over a Function URL, and call it from a test."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **Lambda** is Alchemy’s default AWS runtime: a class that bundles an Effect program into a zip, deploys it as a Lambda Function, and generates its IAM execution role from the bindings you actually use. Serve HTTP over a public **Function URL**, or consume events — every building block in this section plugs in through the same pattern: S3 notifications (`Lambda.BucketEventSource`), SQS queues (`Lambda.QueueEventSource`), Kinesis streams (`Lambda.StreamEventSource`), and DynamoDB Streams (`Lambda.TableEventSource`).
@@ -20,7 +20,7 @@ Every Alchemy app has an `alchemy.run.ts` at the root that declares the resource
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -48,7 +48,7 @@ The trailing `Effect.gen` block is where you’ll declare the resources to deplo
 A Lambda Function in Alchemy is a class. Create `src/api.ts` with the smallest possible declaration — just the class ceremony, an entrypoint, and an empty runtime:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default class Api extends AWS.Lambda.Function<Api>()(
@@ -69,7 +69,7 @@ The `<Api>` type argument plus the empty `()` is a one-time bit of ceremony — 
 The empty function compiles, but it doesn’t do anything yet. Add a `fetch` field — Alchemy treats anything returned from the `Effect.gen` block as the runtime API, and `fetch` specifically is wired up to handle incoming HTTP requests:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -111,7 +111,7 @@ The resolved `Api` resource will now expose a `functionUrl` field carrying that 
 Lambda has knobs you’ll want to tune per stage — memory, timeout, log retention. Swap the static props object for `Stack.useSync`, which gives you a synchronous accessor for any value in the surrounding Effect context:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import { Stack } from "alchemy/Stack";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -142,7 +142,7 @@ The `Api` class is just a typed identifier — yielding it inside the Stack’s 
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import Api from "./src/api.ts";
 
@@ -175,7 +175,7 @@ Alchemy bundles `src/api.ts` with Rolldown, packages it into a zip, creates the 
 Drop a quick integration test that hits the Function URL and checks the body:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
@@ -216,7 +216,7 @@ A Lambda that hits its timeout is killed mid-flight, and its buffered telemetry 
 Size the margin for one export round-trip to your telemetry backend, or set it to zero to turn the flush off:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

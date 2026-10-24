@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
 description: "Use effect/Config to read env vars at Construction time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)
@@ -26,7 +26,7 @@ at deploy time. It is always bound as a secret (`secret_text` on
 Cloudflare) regardless of which `Config` constructor you use.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
@@ -148,7 +148,7 @@ form, just declared statically:
 
 ```typescript
 // alchemy.run.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
 
 export const Worker = Cloudflare.Worker("Worker", {

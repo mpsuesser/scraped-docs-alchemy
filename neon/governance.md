@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/governance
 title: "Organization governance"
 description: "Manage existing Neon organization access, billing alerts, and private-network associations with explicit ownership and restoration."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 These resources configure an **existing** Neon organization. They use management
@@ -80,7 +80,7 @@ page. These results contain personal information; keep them out of public logs.
 ## Issue a project-restricted management key
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const project = yield* Neon.Project("Application", {
   orgId: "org-example",

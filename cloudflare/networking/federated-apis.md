@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/federated-apis
 title: "Federated APIs"
 description: "Serve one API at one URL from many Workers — each path handled by its own least-privilege Worker, routed by Cloudflare's zone routes with no gateway Worker, and emulated locally by alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Serve one API from several Workers at a single URL. Each Worker handles
@@ -59,7 +59,7 @@ handlers use. `Products` only reads the catalog:
 
 ```typescript
 // src/Products.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Http from "alchemy/Http";
 import * as Effect from "effect/Effect";
 import * as HttpApiBuilder from "effect/http-api/HttpApiBuilder";
@@ -106,7 +106,7 @@ and certificate, and answers every path no route claims:
 
 ```typescript
 // src/Home.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -129,7 +129,7 @@ Add every Worker to the Stack and return the domain Worker's URL:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Home from "./src/Home.ts";
 import Orders from "./src/Orders.ts";

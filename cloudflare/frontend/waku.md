@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Cloudflare Workers with Cloudflare.Website.Waku — RSC server in the Worker, SSG pages as static assets, and a custom-entry seam for Durable Objects."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.Website.Waku` deploys a [Waku](https://waku.gg/) app as a Cloudflare Worker. It builds the project programmatically: the React Server Components server bundle deploys as the Worker script, and the client output — including SSG-prerendered pages — deploys as static assets. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no Wrangler file and no build command to run.
@@ -49,7 +49,7 @@ The one key Alchemy owns is `unstable_adapter` — setting it fails the build wi
 Declare the site as a module-level const (rather than inline in the Stack) and derive the typed shape of its bindings from it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Waku("Website");
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on AWS — a TanStack Start UI on CloudFront and Lambda that drives an Effect RPC Lambda over Drizzle and Aurora DSQL, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [TanStack Start](tanstack-start.md) · [Effect RPC](../apis/effect-rpc.md) · [Drizzle + DSQL](../data/drizzle-dsql.md)
@@ -86,7 +86,7 @@ Copy the example’s [`schema.ts`](https://github.com/alchemy-run/alchemy/blob/m
 `connectDatabase` uses the non-admin `app_user` role with verified TLS. `DSQL.Connect` grants cluster-scoped `dsql:DbConnect` and signs IAM tokens locally; Drizzle opens the connection lazily and closes its pool with the invocation scope.
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import { eq } from "drizzle-orm";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -176,7 +176,7 @@ export default class Backend extends AWS.Lambda.Function<Backend>()(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import Backend from "./src/backend/api.ts";
 import { BootstrapDatabase } from "./src/backend/bootstrap.ts";

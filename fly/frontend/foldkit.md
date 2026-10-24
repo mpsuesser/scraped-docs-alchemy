@@ -1,18 +1,16 @@
 ---
 url: https://alchemy.run/fly/frontend/foldkit
 title: "Foldkit"
-description: "Deploy a Foldkit app to Fly with Fly.Website.Foldkit — a client-only Vite SPA on a Node static-file Service, fly.dev over shared IPv4, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Fly with native local development."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-[Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects — the Foldkit Vite plugin only adds HMR and devtools wiring — so `Fly.Website.Foldkit` is [`Fly.Website.Vite`](vite.md) with SPA fallback to `index.html`. Deep links boot the app and the Foldkit router takes over.
-
-Deploy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) (unless you pass `app`), a [`Fly.Service`](https://alchemy.run/fly/compute/services) running a static-file Node server on port 3000, and a shared IPv4 so `https://{app}.fly.dev` answers.
+`Fly.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Fly. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/foldkit` and `/foldkit/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -37,12 +35,57 @@ export default defineConfig({
 
 Alchemy runs Vite programmatically on the project root. The Foldkit plugin and the rest of your setup are preserved as-is.
 
+## Server rendering and prerendering
+
+Configure rendering in the application’s `foldkit(...)` plugin. This example uses Foldkit 0.167.0, `@foldkit/vite-plugin` 0.27.0 and compatible Effect dependencies:
+
+```typescript
+import { foldkit } from "@foldkit/vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    foldkit({
+      ssr: {
+        serverEntry: "/src/entry.server.ts",
+        clientEntry: "/src/entry.ts",
+        build: true,
+      },
+    }),
+  ],
+});
+```
+
+The server entry exports `renderPage` and `renderDocument`. Import stylesheets from the client entry and use `Runtime.hydrate` to start the browser application. Remove the source `index.html` for this build: Foldkit generates the complete HTML document, including the client script, stylesheets and module preload links.
+
+```typescript
+import { Server } from "foldkit/experimental";
+
+export const renderDocument = Server.renderDocument;
+```
+
+Keep your application’s `renderPage` export alongside the document renderer. Foldkit currently exposes its server rendering API through `foldkit/experimental`; see its [server rendering guide](https://foldkit.dev/core/server-rendering) for the application and hydration contract.
+
+For static site generation (SSG), change `build` to `{ prerender: true }` and export the URLs to generate from the server entry:
+
+```typescript
+export const prerenderPaths = ["/", "/about"];
+```
+
+SSG renders those URLs during the build. SSR renders a page when its request arrives. A hybrid application prerenders some URLs and renders others on request. The same `renderPage` and `renderDocument` exports serve both delivery policies.
+
+The same Website declaration deploys the client assets and generated handler. GET and HEAD requests serve matching assets and prerendered pages first; remaining requests go to the handler. Other methods bypass static assets. The application owns its response status and headers through `renderPage`. For an SSG-only application, return 404 for URLs outside its generated route set; allowing those URLs to render on request makes the deployment hybrid.
+
+Browser-only builds use SPA fallback. Server builds send unmatched requests to the handler. Explicit `assets.notFoundHandling` settings override these defaults.
+
+Vite’s resolved `base` also mounts the client assets. With `base: "/app/"`, `/app/assets/main.js` serves `assets/main.js` from the client output. SPA fallback is limited to that prefix; server handlers receive the original URL.
+
 ## Declare the Website
 
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Foldkit("Website");
 ```
@@ -80,17 +123,22 @@ export default Alchemy.Stack(
 
 ## Add environment variables
 
-A Foldkit SPA has no server of its own, so anything it needs from the rest of your Stack is baked into the bundle at build time — pass a `VITE_` -prefixed key in top-level `env`. Values must be strings (or `Redacted`); resolve other resources’ URLs before passing them.
+Set process environment variables through the top-level `env` map. Server code reads private values from `process.env`; Vite inlines `VITE_*` values into the browser build. Values must be strings or `Redacted` strings.
 
 ```typescript
 export const Website = Fly.Website.Foldkit("Website", {
   env: {
+    API_BASE: "https://api.example.com",
     VITE_API_URL: "https://api.example.com",
   },
 });
 ```
 
-The values are copied onto `process.env` before the Vite build and onto the Machine. Client code reads the inlined value:
+The values are copied onto `process.env` before Vite dev and build, and onto the Machine. Server code reads `process.env.API_BASE`. Client code reads `import.meta.env.VITE_API_URL`. Keep secrets out of `VITE_*` keys and serialized Foldkit Flags.
+
+## Read the environment in client code
+
+Type a custom public key with Vite’s standard environment declaration:
 
 ```typescript
 /// <reference types="vite/client" />
@@ -106,9 +154,9 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 ## Deep links
 
-A Foldkit app that uses URL routing (`Runtime.makeApplication` with `route`, `onUrlRequest`, and `onUrlChange`) resolves routes on the client, so a deep link like `/counter/42` arrives as a request for a file that doesn’t exist.
+A browser-only Foldkit app that uses URL routing (`Runtime.makeApplication` with `routing`, `onUrlRequest`, and `onUrlChange`) resolves routes on the client, so a deep link like `/counter/42` arrives as a request for a file that doesn’t exist.
 
-`Foldkit` defaults `assets.notFoundHandling` to `"single-page-application"`, which returns `index.html` (200) for unmatched paths so the Foldkit runtime can resolve the route. Use `"404-page"` to serve a real 404 instead:
+For browser-only builds, `Foldkit` defaults `assets.notFoundHandling` to `"single-page-application"`, which returns `index.html` (200) for unmatched paths so the Foldkit runtime can resolve the route. Use `"404-page"` to serve a real 404 instead:
 
 ```typescript
 export const Website = Fly.Website.Foldkit("Website", {
@@ -118,7 +166,7 @@ export const Website = Fly.Website.Foldkit("Website", {
 
 ## Local dev
 
-`alchemy dev` runs Vite’s own dev server (native HMR, Foldkit devtools) instead of deploying; `site.url` is the local address and no Fly App, Service, IP, or certificate is created. Wrap the site in `Alchemy.remote()` to deploy the live Service even during dev.
+`alchemy dev` runs Vite’s own dev server (Foldkit’s live reload and devtools) instead of deploying; `site.url` is the local address and no Fly App, Service, IP, or certificate is created. Wrap the site in `Alchemy.remote()` to deploy the live Service even during dev.
 
 Pin the dev server’s address when several apps run in one Stack:
 

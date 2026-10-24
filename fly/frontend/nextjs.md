@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Fly with Fly.Website.Nextjs — next build plus a Node next({ dev: false }) Machine, and next dev under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Fly as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
@@ -35,7 +35,7 @@ Pass `rootDir` when the Next.js project is not the stack root.
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Nextjs("Website");
 ```

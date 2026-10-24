@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Hetzner with Hetzner.Website.Vite — static assets as a systemd unit on a Server, http://{ipv4}:3000, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Vite` deploys a [Vite](https://vite.dev/) project to a Hetzner Cloud Server. It runs `vite build` and serves the output from a systemd [`Service`](https://alchemy.run/hetzner/compute/services) on port 3000. Omit `server` and Alchemy creates a `cpx12` / `ubuntu-24.04` [`Server`](https://alchemy.run/hetzner/compute/servers) in `fsn1`. Live `url` is `http://{ipv4}:3000`. Your `vite.config.*` loads natively — plugins included. There is no TLS on the Service and no framework server module.
@@ -39,7 +39,7 @@ Do not set a Vite SSR adapter. This composite never creates a framework server m
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Vite("Website");
 ```

@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/alerting
 title: "Alerting: monitors & notifiers"
 description: "Turn APL queries into alerts — Threshold, MatchEvent, and AnomalyDetection monitors wired to Slack, email, PagerDuty, and webhook notifiers, all as resources in your Stack."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 An Axiom `Monitor` is a saved APL query that runs on a fixed cadence
@@ -20,7 +20,7 @@ Everything below runs inside your Stack's `Effect.gen` — see
 ## Create a notifier
 
 ```typescript
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 
 const slack = yield* Axiom.Notifier("ops-slack", {
   name: "ops-channel",

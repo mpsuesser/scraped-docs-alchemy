@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/drizzle
 title: "Drizzle ORM with Neon"
 description: "Configure Neon projects, branches, committed Drizzle migrations, and direct or pooled connections."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Use the portable [Drizzle Postgres client](../../sql/drizzle/postgres.md) with Neon; this page configures the database and its connections. For Worker deployment, follow [Add Drizzle ORM](../../cloudflare/data/drizzle.md).
@@ -34,13 +34,13 @@ git diff --cached
 git commit -m "Add database migration"
 ```
 
-Run this when the schema changes, then review and commit the schema, generated SQL, and snapshots together before deploying. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/reference#schema) is a separate integration, not required for this workflow.
+Run this when the schema changes, then review and commit the schema, generated SQL, and snapshots together before deploying. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/schema) is a separate integration, not required for this workflow.
 
 ## Feed `migrations` from the schema
 
 ```typescript
 // src/Db.ts
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {
@@ -68,7 +68,7 @@ Deploy the committed files; this configuration does not generate SQL during depl
 ## Connect at runtime
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Hyperdrive = Effect.gen(function* () {
   const { branch } = yield* NeonDb;

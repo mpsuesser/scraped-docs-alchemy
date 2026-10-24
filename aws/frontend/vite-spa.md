@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vite-spa
 title: "React SPA"
 description: "Deploy a React single-page app to AWS with AWS.Website.Vite — the Vite build on S3 + CloudFront, deep links answered by index.html out of the box, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`AWS.Website.Vite`](vite.md): scaffold the project, run its own `vite build`, and serve the output from a private S3 bucket through CloudFront. The composite is assets-only — it never creates a Lambda — and `spa` defaults on, so client-side routes deep-link correctly with nothing to configure. For the resource itself and every prop, see the [Vite resource page](vite.md).
@@ -47,7 +47,7 @@ There is no adapter to install and no build command to wire up: Alchemy runs thi
 Declare the site as a module-level const (rather than inline in the Stack). `rootDir` points at the project directory — the one holding `index.html` and `vite.config.ts`:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Vite("Website", {
   rootDir: "./web",

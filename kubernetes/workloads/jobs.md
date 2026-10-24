@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/workloads/jobs
 title: "Jobs & CronJobs"
 description: "Run work to completion with Kubernetes.Job, as a container image or as an Effect program, and on a schedule as a CronJob. Covers how Job names, re-runs, retries, and cleanup work."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) runs work until it
@@ -50,7 +50,7 @@ described in [Why the props are an Effect](#why-the-props-are-an-effect):
 
 ```typescript
 // src/Seed.ts
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 import { Api, Cluster } from "./infra.ts";
 

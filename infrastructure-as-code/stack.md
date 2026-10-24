@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/stack
 title: "Stacks"
 description: "A Stack is a collection of Resources deployed together as a unit."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A **Stack** is the top-level unit of deployment in Alchemy. It groups resources together, wires up providers, and tracks state across deploys.
@@ -14,7 +14,7 @@ A Stack is just an Effect that you `export default` from a TypeScript file:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -39,9 +39,9 @@ A stack is not limited to one cloud. Providers are Effect Layers, so to deploy r
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Neon from "alchemy/Neon";
+import * as AWS from "@alchemy.run/aws";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -130,7 +130,7 @@ Effect.gen(function* () {
 When you declare a resource at module scope (outside any `Effect.gen`), there is no `yield*` available to read the `Stack` service. But a Resource’s props can themselves be an Effect — `Stack.useSync` builds one that computes props from the current stack, useful for parameterizing names by stage:
 
 ```typescript
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 import { Stack } from "alchemy/Stack";
 
 export const Traces = Axiom.Dataset(

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod instances of your stack with --stage, and tune resources per stage."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In [Part 3](part-3.md) you wrote integration tests against a deployed stack. But so far everything has landed in a single environment. In this part you’ll use **stages** — isolated instances of the same Stack — to give every developer, environment, and (in [Part 5](part-5.md)) every pull request its own copy of the infrastructure.
@@ -74,8 +74,8 @@ Stage names must match `[a-z0-9][-_a-z0-9]*`.
 The same program deploys to every stage, but you’ll often want different knobs per environment — more Lambda memory in prod, say. `Stack.useSync` gives module-scope resources a synchronous accessor to the surrounding Stack context, including the current `stage`:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as S3 from "alchemy/AWS/S3";
+import * as AWS from "@alchemy.run/aws";
+import * as S3 from "@alchemy.run/aws/S3";
 import { Stack } from "alchemy/Stack";
 import * as Effect from "effect/Effect";
 // ...

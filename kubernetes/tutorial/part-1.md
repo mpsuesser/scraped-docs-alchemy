@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-1
 title: "Part 1: Your First Deployment"
 description: "Create a Stack, start a Kubernetes cluster on your machine with Kubernetes.LocalCluster, deploy a replicated HTTP service with Kubernetes.Deployment, and reach it with kubectl."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In this first part you’ll create a Stack, start a Kubernetes cluster on your machine, and deploy a replicated HTTP service. You won’t write a line of YAML.
@@ -27,10 +27,10 @@ mkdir my-cluster && cd my-cluster && pnpm init
 
 ## Install dependencies
 
-Install `alchemy@latest` and `effect`:
+Install `alchemy@latest`, `@alchemy.run/kubernetes`, and `effect`:
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/kubernetes@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Create the Stack
@@ -39,7 +39,7 @@ Every Alchemy program starts with a `Stack`. A Stack is a collection of Resource
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

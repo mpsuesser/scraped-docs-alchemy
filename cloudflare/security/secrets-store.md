@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Cloudflare’s Secrets Store is an account-level container for secrets. Unlike a plain env var, a stored secret is shared across Workers, redacted in the dashboard, and read live at runtime — bound Workers see the current value without a redeploy.
@@ -13,7 +13,7 @@ In this guide you’ll build a bearer-token-protected Worker: a `Store`, a token
 ## Create the store
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Store = Cloudflare.SecretsStore.Store("AuthSecrets");
 ```
@@ -52,7 +52,7 @@ export const AuthToken = Effect.gen(function* () {
 Bind the secret in the Worker’s Construction phase with `ReadSecret`, then check the `Authorization` header in `fetch`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -104,7 +104,7 @@ The client returned by `ReadSecret` is itself an Effect that resolves to the sec
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";

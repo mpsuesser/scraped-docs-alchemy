@@ -2,18 +2,18 @@
 url: https://alchemy.run/cloudflare/setup
 title: "Setup"
 description: "Install Alchemy, create a Cloudflare account, and connect the two — OAuth or API token, saved to a local profile. No environment variables required."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-Everything you need before deploying to Cloudflare: the alchemy package, a Cloudflare account, and stored credentials.
+Everything you need before deploying to Cloudflare: the alchemy and `@alchemy.run/cloudflare` packages, a Cloudflare account, and stored credentials.
 
 ## Install
 
-Install `alchemy@latest` and `effect` in your project:
+Install `alchemy@latest`, `@alchemy.run/cloudflare` and `effect` in your project:
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/cloudflare@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 Alchemy runs on [Bun](https://bun.sh/) or Node.js 22+.
@@ -36,6 +36,10 @@ For Cloudflare you can:
 - **Paste an API token** — if you prefer explicit, scoped tokens.
 
 The OAuth flow asks whether you want to customize scopes — answer yes to pick exactly which ones to grant at a multiselect prompt (the default set covers typical use).
+
+On Cloudflare’s consent page, turn on **Account API Token Provisioning** under **Sensitive scopes**. It’s off by default, and alchemy needs it to mint scoped API tokens on your behalf.
+
+![Cloudflare’s consent page with the Account API Token Provisioning toggle under Sensitive scopes](https://alchemy.run/cloudflare/oauth-api-token-provisioning.png)
 
 Either way the result is saved to your **`default`** [profile](../environments/profiles.md) at `~/.alchemy/profiles.json` — no environment variables and no `wrangler login` required.
 

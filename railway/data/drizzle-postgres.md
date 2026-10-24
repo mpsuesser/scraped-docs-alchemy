@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/drizzle-postgres
 title: "Drizzle Postgres on Railway"
 description: "Query Railway Postgres from an Effect-native Service and apply reviewed Drizzle migrations separately."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Run Drizzle in a Railway container beside [Railway Postgres](postgres.md). Start with [Railway setup](../setup.md), the [Service tutorial](https://alchemy.run/railway/tutorial/part-2), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
@@ -11,7 +11,7 @@ Run Drizzle in a Railway container beside [Railway Postgres](postgres.md). Start
 ## Install the database dependencies
 
 ```sh
-pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
 pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
@@ -58,7 +58,7 @@ Commit the schema, SQL, and snapshots together rather than generating migrations
 
 ```typescript
 // src/db.ts
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 import { Site } from "./project.ts";
 
 export const Db = Railway.Postgres("Db", { project: Site });
@@ -118,7 +118,7 @@ The generated Railway Postgres URLs currently include `sslmode=no-verify`; a pub
 ## Open the runtime client
 
 ```diff lang="typescript"
-+import * as Drizzle from "alchemy/Drizzle/Postgres";
++import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 
  const conn = yield* Railway.ConnectPostgres(Db);
 +const db = yield* Drizzle.Postgres(conn.connectionString);

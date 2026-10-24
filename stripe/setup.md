@@ -2,25 +2,26 @@
 url: https://alchemy.run/stripe/setup
 title: "Setup"
 description: "Connect alchemy to Stripe — secret key, profiles, CI, and how Worker bindings get their credentials."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 ## Get a key
 
-Sign up at [stripe.com](https://stripe.com). Every account has a
-**test mode** with its own keys and data — use that for everything
-until you're ready to charge real cards. Copy the test secret key
-(`sk_test_…`) from
-[Developers → API keys](https://dashboard.stripe.com/test/apikeys).
+Sign up at [stripe.com](https://stripe.com/). Every account has a **test mode** with its own keys and data — use that for everything until you’re ready to charge real cards. Copy the test secret key (`sk_test_…`) from [Developers → API keys](https://dashboard.stripe.com/test/apikeys).
 
-## Register the provider
+Install `@alchemy.run/stripe`:
+
+```sh
+pnpm add @alchemy.run/stripe@latest
+```
+
+Then add its providers to the stack:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Stripe from "alchemy/Stripe";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -38,64 +39,36 @@ export default Alchemy.Stack(
 
 ## Store the key
 
-The first `alchemy deploy` that touches a Stripe resource prompts for
-the key and saves it under `~/.alchemy/credentials/<profile>/`. To set
-it up ahead of time, or to add Stripe to an existing profile:
+The first `alchemy deploy` that touches a Stripe resource prompts for the key and saves it under `~/.alchemy/credentials/<profile>/`. To set it up ahead of time, or to add Stripe to an existing profile:
 
 ```sh
 alchemy profile edit --add Stripe
 ```
 
-An optional API base URL overrides `https://api.stripe.com` (useful for
-[stripe-mock](https://github.com/stripe/stripe-mock)).
+An optional API base URL overrides `https://api.stripe.com` (useful for [stripe-mock](https://github.com/stripe/stripe-mock)).
 
-In CI (`CI=true`) profiles are bypassed and alchemy reads
-`STRIPE_API_KEY` from the environment. `STRIPE_API_BASE_URL` is
-optional.
+In CI (`CI=true`) profiles are bypassed and alchemy reads `STRIPE_API_KEY` from the environment. `STRIPE_API_BASE_URL` is optional.
 
-See [Profiles](../environments/profiles.md) for switching between accounts
-and stages.
+See [Profiles](../environments/profiles.md) for switching between accounts and stages.
 
 ## Test mode is real
 
-A `sk_test_…` key talks to a fully working Stripe account. Products,
-Prices, Customers, Checkout Sessions, and webhook deliveries all
-behave exactly as in live mode; the only difference is that cards
-like `4242 4242 4242 4242` succeed and no money moves. Deploy, destroy,
-and redeploy freely.
+A `sk_test_…` key talks to a fully working Stripe account. Products, Prices, Customers, Checkout Sessions, and webhook deliveries all behave exactly as in live mode; the only difference is that cards like `4242 4242 4242 4242` succeed and no money moves. Deploy, destroy, and redeploy freely.
 
 ## How Workers get credentials
 
-A Worker that calls Stripe at runtime needs a key on the host. You
-never wire that up by hand. Each binding you yield —
-`Stripe.CreateCustomer()`, `Stripe.CreateCheckoutSession()`, and so
-on — declares the permission it needs (`customers_write`,
-`checkout_sessions_write`, …) on a
-[`RestrictedApiKey`](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey) resource
-that alchemy creates per Worker. The key's value is injected as a
-`secret_text` binding.
+A Worker that calls Stripe at runtime needs a key on the host. You never wire that up by hand. Each binding you yield — `Stripe.CreateCustomer()`, `Stripe.CreateCheckoutSession()`, and so on — declares the permission it needs (`customers_write`, `checkout_sessions_write`, …) on a [`RestrictedApiKey`](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey) resource that alchemy creates per Worker. The key’s value is injected as a `secret_text` binding.
 
-Today Stripe has no public API for minting restricted keys, so the
-value alchemy injects is your account secret key. The permissions are
-still recorded on the resource, which means:
+Today Stripe has no public API for minting restricted keys, so the value alchemy injects is your account secret key. The permissions are still recorded on the resource, which means:
 
-- you can see exactly which Stripe scopes each Worker uses in the plan
-  output, and
-- if you'd rather the Worker hold a narrower key, create one in
-  [Dashboard → API keys → Restricted keys](https://dashboard.stripe.com/test/apikeys)
-  with those scopes and pass it as `value` — bindings will use it
-  unchanged.
+- you can see exactly which Stripe scopes each Worker uses in the plan output, and
+- if you’d rather the Worker hold a narrower key, create one in [Dashboard → API keys → Restricted keys](https://dashboard.stripe.com/test/apikeys) with those scopes and pass it as `value` — bindings will use it unchanged.
 
-When Stripe ships a mint API the same declarations will drive it with
-no code change in your Worker.
+When Stripe ships a mint API the same declarations will drive it with no code change in your Worker.
 
 ## Enable Connect (platforms only)
 
-If you're going to create connected accounts, Connect must be switched
-on once at
-[dashboard.stripe.com/connect](https://dashboard.stripe.com/test/connect).
-There's no API for that step; `POST /v1/accounts` returns an error
-until it's done.
+If you’re going to create connected accounts, Connect must be switched on once at [dashboard.stripe.com/connect](https://dashboard.stripe.com/test/connect). There’s no API for that step; `POST /v1/accounts` returns an error until it’s done.
 
 ## Next
 

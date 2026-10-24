@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/hyperdrive
 title: "Hyperdrive"
 description: "Cloudflare Hyperdrive pools connections to your external Postgres or MySQL database at the edge — provision a database (Neon or PlanetScale), front it with Hyperdrive, and bind the connection into your Worker."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Hyperdrive is a Cloudflare-managed connection pooler that sits between Workers and an external Postgres or MySQL database. The Worker sees a familiar connection string, but the connection itself is already pooled at the edge — no per-request TCP handshakes, no cold-start connection storms.
@@ -22,8 +22,8 @@ Each database provider is its own `providers()` layer. Register it alongside `Cl
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Neon from "@alchemy.run/neon";
 import * as Layer from "effect/Layer";
 
 export default Alchemy.Stack(
@@ -46,7 +46,7 @@ Create `src/Db.ts`. The shape is the same across providers — a top-level datab
 A `Neon.Project` is the top-level container. It owns a default branch, a default role, and the WAL history that copy-on-write branches fork from:
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const Db = Effect.gen(function* () {
@@ -69,8 +69,8 @@ export const Db = Effect.gen(function* () {
 Hyperdrive needs an `origin` describing where your database lives. Each provider exposes a pre-parsed `origin` output (`{ scheme, host, port, database, user, password }`) ready to feed straight in:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const Db = Effect.gen(function* () {
@@ -123,7 +123,7 @@ pnpm add -D @types/pg
 `Cloudflare.Hyperdrive.Connect(...)` returns a typed accessor for the runtime binding — connection string, host, port, user, password, database — plus a `raw` escape hatch for libraries that want the underlying `Hyperdrive` object:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -206,8 +206,8 @@ You’re now talking to your database from the edge through Hyperdrive.
 ## Use Effect SQL
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as SQL from "alchemy/SQL/Postgres";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as SQL from "@alchemy.run/sql/Postgres";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Hyperdrive } from "./Db.ts";
@@ -230,7 +230,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
 Install `@effect/sql-pg` and `pg` for this Postgres variant. The binding and stack stay the same; Effect SQL opens and closes a pool for each execution scope.
 
-For a MySQL origin, install `@effect/sql-mysql2` and `mysql2`, import `alchemy/SQL/MySQL`, and construct `SQL.MySQL({ url: connection.connectionString })`. The [Postgres](../../sql/effect-sql/postgres.md) and [MySQL](../../sql/effect-sql/mysql.md) client guides cover queries, typed errors, and transactions.
+For a MySQL origin, install `@effect/sql-mysql2` and `mysql2`, import `@alchemy.run/sql/MySQL`, and construct `SQL.MySQL({ url: connection.connectionString })`. The [Postgres](../../sql/effect-sql/postgres.md) and [MySQL](../../sql/effect-sql/mysql.md) client guides cover queries, typed errors, and transactions.
 
 ## Workers defaults
 

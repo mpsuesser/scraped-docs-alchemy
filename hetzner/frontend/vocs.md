@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Hetzner with Hetzner.Website.Vocs — prerendered HTML on a systemd unit, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to a Hetzner Cloud [Server](https://alchemy.run/hetzner/compute/servers) as a systemd [Service](https://alchemy.run/hetzner/compute/services) on port 3000. Vocs prerenders static HTML; unmatched paths serve extensionless pages (`/about` → `about/index.html`). The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Your `vocs.config.*` loads natively — there is no adapter to install.
@@ -48,7 +48,7 @@ export const Website = Hetzner.Website.Vocs("Website", {
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Vocs("Website", {
   rootDir: "./docs",

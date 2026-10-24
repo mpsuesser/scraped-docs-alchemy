@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/ci
 title: "CI"
 description: "Set up CI/CD pipelines for alchemy projects with GitHub Actions, automated deployments, and PR previews — with provider credentials managed as code."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The core idea is **credentials as code**. Rather than copy-paste API keys into the GitHub UI, you let Alchemy provision exactly the credentials your CI needs — a scoped Cloudflare API token, an AWS IAM role for OIDC, etc. — and write them straight into the repo as encrypted secrets.
@@ -43,7 +43,7 @@ By the end you’ll have:
 	Update your `alchemy.run.ts` to post a preview URL on each pull request. The comment auto-updates on every push because the logical ID stays the same.
 	```typescript
 	import * as Alchemy from "alchemy";
-	import * as GitHub from "alchemy/GitHub";
+	import * as GitHub from "@alchemy.run/github";
 	import * as Output from "alchemy/Output";
 	import * as Effect from "effect/Effect";
 	export default Alchemy.Stack(
@@ -187,8 +187,8 @@ The simplest case: a single Cloudflare account, used for both prod and PR previe
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as GitHub from "alchemy/GitHub";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Redacted from "effect/Redacted";
@@ -282,8 +282,8 @@ Your profile resolves a single account ID, so this is the one case where you pas
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as GitHub from "alchemy/GitHub";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as GitHub from "@alchemy.run/github";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -372,8 +372,8 @@ Your `--profile admin` AWS credentials need IAM admin rights for this stack: it 
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as GitHub from "alchemy/GitHub";
+import * as AWS from "@alchemy.run/aws";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -488,7 +488,7 @@ If OIDC isn’t an option (some sandbox accounts disallow it, or you’re target
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as GitHub from "alchemy/GitHub";
+import * as GitHub from "@alchemy.run/github";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";

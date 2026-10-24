@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Fly with Fly.Website.TanStackStart — SSR on a Machine, client assets baked into the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Fly. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -38,7 +38,7 @@ Alchemy drives that config’s `builder.buildApp()` and forces the SSR bundle to
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.TanStackStart("Website");
 ```

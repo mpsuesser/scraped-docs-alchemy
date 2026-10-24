@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/file-layout
 title: "File layout"
 description: "How to organize an Alchemy project — one file per Resource or Layer, group Resources that travel together by concern, and keep alchemy.run.ts as the composition root."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A typical alchemy app ([`examples/cloudflare-neon-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle)):
@@ -32,7 +32,7 @@ point:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export const DB = Cloudflare.D1.Database("DB");
@@ -66,7 +66,7 @@ A Resource declaration is a value; give it its own module:
 
 ```typescript
 // src/Photos.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Photos = Cloudflare.R2.Bucket("Photos");
 ```
@@ -79,7 +79,7 @@ making the file its own entrypoint:
 
 ```typescript
 // src/Api.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class Api extends Cloudflare.Worker<Api>()(
@@ -108,8 +108,8 @@ Resources that change together share a file:
 
 ```typescript
 // src/Db.ts
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {
@@ -179,9 +179,9 @@ With the units in `src/`, the root file shrinks to wiring:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/getting-started
 title: "Getting started"
 description: "Install Alchemy and create your first Stack in under two minutes."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 ## Prerequisites
@@ -20,7 +20,7 @@ mkdir my-app && cd my-app && pnpm init
 ## Install
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/cloudflare@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Create your Stack
@@ -29,7 +29,7 @@ Every Alchemy program starts with a Stack — create `alchemy.run.ts`:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

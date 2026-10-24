@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Fly with Fly.Website.Nuxt — nitro's node preset on a Machine, assets baked into the image, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Fly. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs on a Machine, and client assets plus prerendered pages are baked into the image. Omit `app` and a `Fly.App` is created under the site; a `Fly.Service` listens on port 3000 and a shared IPv4 assignment makes `https://{app}.fly.dev` answer. There is no `nitro.preset` to edit and no build command to run.
@@ -38,7 +38,7 @@ Don’t set `nitro.preset` — the Node deploy target owns the preset (`"node"`)
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Nuxt("Website");
 ```

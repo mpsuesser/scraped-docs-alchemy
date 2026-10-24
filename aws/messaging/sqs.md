@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sqs
 title: "SQS"
 description: "Add an SQS Queue, publish messages from your Lambda, and consume them from a second consumer Lambda — all wired through Alchemy bindings."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **SQS** is AWS’s general-purpose message queue — anything you can serialize, dropped into a mailbox and processed asynchronously somewhere else. In Alchemy it’s the `Queue` resource plus producer bindings (`SendMessage`, `SendMessageBatch`, and the `Stream` -sink-shaped `QueueSink`) and a consumer side: `SQS.consumeQueueMessages` subscribes a Lambda to the queue as a typed `Stream<SQSRecord>`, creating the event source mapping and granting the receive/delete permissions for you.
@@ -13,9 +13,9 @@ The walkthrough below builds on the [Lambda](../compute/lambda.md) and [DynamoDB
 ## Add the queue
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as DynamoDB from "alchemy/AWS/DynamoDB";
-import * as SQS from "alchemy/AWS/SQS";
+import * as AWS from "@alchemy.run/aws";
+import * as DynamoDB from "@alchemy.run/aws/DynamoDB";
+import * as SQS from "@alchemy.run/aws/SQS";
 // ...
 
 Effect.gen(function* () {
@@ -83,7 +83,7 @@ The producer also needs the runtime layer for `SendMessage` — add it to the me
 Consumers live as their own Lambda Function. Create `src/worker.ts` — bare shell first, no event source yet:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default class Worker extends AWS.Lambda.Function<Worker>()(
@@ -100,7 +100,7 @@ This consumer doesn’t need a Function URL — its only entrypoint is the SQS m
 Both producer and consumer need to reference the same queue — the cleanest way to do that is to lift the declaration out of `api.ts` into a small shared module:
 
 ```typescript
-import * as SQS from "alchemy/AWS/SQS";
+import * as SQS from "@alchemy.run/aws/SQS";
 
 export const Jobs = SQS.Queue("Jobs");
 ```
@@ -119,7 +119,7 @@ const queue = yield* Jobs;
 Yield the same `Jobs` handle in the consumer’s constructor to get a typed `Queue` resource:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import { Jobs } from "./queue.ts";
 
@@ -136,8 +136,8 @@ export default class Worker extends AWS.Lambda.Function<Worker>()(
 `SQS.consumeQueueMessages(queue, ...)` is the consumer-side mirror of `consumeBucketEvents` / `stream`: a typed `Stream<SQSRecord>` you can compose with any operator. Add the smallest possible subscription — log each message body:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as SQS from "alchemy/AWS/SQS";
+import * as AWS from "@alchemy.run/aws";
+import * as SQS from "@alchemy.run/aws/SQS";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";

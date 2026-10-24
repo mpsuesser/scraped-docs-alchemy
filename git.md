@@ -2,15 +2,15 @@
 url: https://alchemy.run/git
 title: "Git"
 description: "A pluggable, embeddable, self-hostable git server on Cloudflare Workers, Durable Objects, and R2. Smart HTTP for any client, a typed REST plane with pull requests, and a GitHub-compatible API."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`alchemy/Git` is a pluggable, embeddable, self-hostable git server. It speaks git’s smart HTTP to any client, serves a typed REST plane with pull requests, and answers the GitHub REST v3 API for `gh` and Octokit. It runs on Cloudflare Workers, Durable Objects, and R2, embeds in your own `HttpApi`, and each part of it is an Effect Layer you can replace:
+`@alchemy.run/git` is a pluggable, embeddable, self-hostable git server. It speaks git’s smart HTTP to any client, serves a typed REST plane with pull requests, and answers the GitHub REST v3 API for `gh` and Octokit. It runs on Cloudflare Workers, Durable Objects, and R2, embeds in your own `HttpApi`, and each part of it is an Effect Layer you can replace:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Git from "alchemy/Git";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Git from "@alchemy.run/git";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as HttpRouter from "effect/http/HttpRouter";
@@ -34,7 +34,7 @@ export default Cloudflare.Worker(
   Effect.gen(function* () {
     const fetch = yield* HttpRouter.toHttpEffect(GitLive.pipe(Layer.provide(Http.Platform)));
     return { fetch };
-  }),
+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
 );
 ```
 

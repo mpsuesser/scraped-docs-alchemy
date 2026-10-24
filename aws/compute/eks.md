@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/eks
 title: "EKS"
 description: "Stand up an EKS Auto Mode cluster on a Network and run containers on it — Deployments for servers, Jobs for run-to-completion work, Manifests for everything else. No YAML, no kubectl."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **EKS** (Elastic Kubernetes Service) is AWS’s managed Kubernetes: AWS runs the Kubernetes control plane, and your containers run on it as Kubernetes objects. Alchemy targets **Auto Mode**, where AWS also manages the nodes, storage, and load-balancer integration — no machines to operate.
@@ -16,13 +16,13 @@ The Kubernetes primitives you’ll meet here:
 - A **Job** runs a Pod to completion; a **CronJob** does that on a schedule.
 - Everything in Kubernetes is an object described by a **manifest** you apply to the Cluster.
 
-Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/eks#cluster) with `compute: "auto"` stands up the control plane from a VPC, and the cluster-agnostic `alchemy/Kubernetes` workloads target it by passing the cluster resource as their `cluster` prop: [`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) synthesizes a Kubernetes `Deployment` + `Service`; [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) a `Job` or `CronJob`; and [`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) applies any raw Kubernetes object. The workloads live in the same TypeScript program as the cluster, with no YAML and no `kubectl apply` step — and the same workloads run on any other cluster your kubeconfig can reach (`Kubernetes.KubeConfig(...)`).
+Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/eks#cluster) with `compute: "auto"` stands up the control plane from a VPC, and the cluster-agnostic `@alchemy.run/kubernetes` workloads target it by passing the cluster resource as their `cluster` prop: [`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) synthesizes a Kubernetes `Deployment` + `Service`; [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) a `Job` or `CronJob`; and [`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) applies any raw Kubernetes object. The workloads live in the same TypeScript program as the cluster, with no YAML and no `kubectl apply` step — and the same workloads run on any other cluster your kubeconfig can reach (`Kubernetes.KubeConfig(...)`).
 
 The workload providers ship in `Kubernetes.providers()` — compose it with `AWS.providers()` in the Stack:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as AWS from "@alchemy.run/aws";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Layer from "effect/Layer";
 
 export default Alchemy.Stack(
@@ -40,7 +40,7 @@ export default Alchemy.Stack(
 `compute: "auto"` turns on EKS Auto Mode with sensible defaults — managed compute (`system` and `general-purpose` node pools), block storage, elastic load balancing, and `API` authentication — and, when you don’t pass `roleArn`, provisions and owns the cluster and node IAM roles with the standard Auto Mode managed policies:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 const network = yield* AWS.EC2.Network("Network", {
   cidrBlock: "10.42.0.0/16",
@@ -241,7 +241,7 @@ const cluster: Kubernetes.Connection = {
 };
 ```
 
-`region` defaults to the Stack’s AWS region. The `aws-eks` auth kind is added to the `Kubernetes.Connection` type by importing `alchemy/AWS`, and it requires `AWS.providers()` in the Stack. Your AWS principal needs an access entry on the cluster. Workloads get the same ECR, Pod Identity, and load balancer behavior as on a Stack-managed cluster.
+`region` defaults to the Stack’s AWS region. The `aws-eks` auth kind is added to the `Kubernetes.Connection` type by importing `@alchemy.run/aws`, and it requires `AWS.providers()` in the Stack. Your AWS principal needs an access entry on the cluster. Workloads get the same ECR, Pod Identity, and load balancer behavior as on a Stack-managed cluster.
 
 ## Run on SageMaker HyperPod
 

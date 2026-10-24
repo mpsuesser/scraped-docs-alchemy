@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/private-networking
 title: "Private networking"
 description: "Prepare AWS PrivateLink endpoints, register them with Neon, enable private DNS, and verify database access."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Neon Private Networking routes database connections through AWS PrivateLink.
@@ -52,7 +52,7 @@ and retain the AWS resource ownership information for later cleanup.
 Inside your stack, register an endpoint that you created in AWS:
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const network = yield* Neon.OrganizationVPCEndpoint("PrivateNetwork", {
   orgId: "org-example",

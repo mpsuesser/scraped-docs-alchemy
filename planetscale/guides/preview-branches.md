@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/guides/preview-branches
 title: "Preview branches per PR"
 description: "Give every pull request its own PlanetScale branch — a long-lived database owned by a staging stage, referenced by ephemeral PR stages that fork, migrate, and tear down a branch each."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 PlanetScale's branch model maps directly onto alchemy stages: the
@@ -39,7 +39,7 @@ PR stages reference the database with `PostgresDatabase.ref`; every
 other stage creates it:
 
 ```typescript
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 
 const database = stage.startsWith("pr-")
   ? yield* Planetscale.PostgresDatabase.ref("app-db", {

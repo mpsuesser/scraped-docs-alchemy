@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/testing-a-stack
 title: "Testing a Stack"
 description: "Deploy your real Stack once per suite, drive it over HTTP, tear it down."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
@@ -14,9 +14,9 @@ Configure Providers and state once per file — `Test.make` returns everything t
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";

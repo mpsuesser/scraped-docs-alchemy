@@ -2,17 +2,17 @@
 url: https://alchemy.run/aws/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to AWS with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`AWS.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The React Server Components handler runs on a streaming Lambda Function URL. S3 stores assets and CloudFront routes asset requests to S3 and other requests to Lambda. This uses vinext, not OpenNext.
+`AWS.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The React Server Components handler runs on a [Lambda Web Function](../compute/web-functions.md), a Node HTTP server that serves many requests per environment and streams responses. S3 stores assets and CloudFront routes asset requests to S3 and other requests to the server. This uses vinext, not OpenNext.
 
-The Lambda target supports **App Router** applications. Use a Node deployment target such as [Prisma](../../prisma/frontend/vinext.md) or [Fly](../../fly/frontend/vinext.md) for Pages Router applications.
+The AWS target supports **App Router** applications. Use a Node deployment target such as [Prisma](../../prisma/frontend/vinext.md) or [Fly](../../fly/frontend/vinext.md) for Pages Router applications.
 
 ## Install
 
-Keep `vinext`, `react`, `react-dom`, and `react-server-dom-webpack` in your application dependencies, with `vite` and `@vitejs/plugin-rsc` for building. Use vinext **1.0.0-beta.10 or newer**. Alchemy uses its standalone packaging to include external runtime dependencies in the Lambda archive. Add the Alchemy integration:
+Keep `vinext`, `react`, `react-dom`, and `react-server-dom-webpack` in your application dependencies, with `vite` and `@vitejs/plugin-rsc` for building. Use vinext **1.0.0-beta.10 or newer**. Alchemy uses its standalone packaging to include external runtime dependencies in the server archive. Add the Alchemy integration:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -34,7 +34,7 @@ Alchemy injects the target-specific data-cache adapter during deployment. No Alc
 ## Declare the Website
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Vinext("Website", {
   rootDir: ".",
@@ -84,7 +84,18 @@ Request-dependent route handlers read the production environment. A prerendered 
 
 ## Configure the data cache
 
-The Website provisions an S3 bucket for ISR and `"use cache"`, sets `CACHE_BUCKET_NAME`, and grants the Lambda access. The build selects the S3 adapter. Local development uses memory and creates no bucket.
+The Website provisions an S3 bucket for ISR and `"use cache"`, sets `CACHE_BUCKET_NAME`, and grants the server access. Every environment shares the bucket. The build selects the S3 adapter. Local development uses memory and creates no bucket.
+
+## Run on a Lambda Function
+
+Web Functions run in a subset of Regions. Elsewhere, set `server: "function"` to run the handler on a Lambda Function behind a streaming Function URL, tuned with `memorySize`, `architecture`, and `runtime`:
+
+```typescript
+export const Website = AWS.Website.Vinext("Website", {
+  server: "function",
+  memorySize: 2048,
+});
+```
 
 ## Local development
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-3
 title: "Part 3: Effect Jobs"
 description: "Write a smoke test as an Effect program, run it as a Kubernetes Job that Alchemy builds and pushes for you, watch it re-run when the program changes, and schedule it as a CronJob."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In [Part 2](part-2.md) you configured podinfo in its own namespace. Now you’ll write your own code and run it on the cluster. You’ll start with a smoke test, written in Effect, that checks podinfo is healthy after every change. Then you’ll run the same program on a schedule.
@@ -11,7 +11,7 @@ In [Part 2](part-2.md) you configured podinfo in its own namespace. Now you’ll
 The Job will live in its own file and needs the cluster, the namespace, and the Deployment. Move them out of `alchemy.run.ts` into `src/infra.ts`:
 
 ```typescript
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 
 export const Cluster = Kubernetes.LocalCluster("Cluster", {
@@ -60,7 +60,7 @@ Replace the inline declarations in `alchemy.run.ts`:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 import { Cluster, Web } from "./src/infra.ts";
 
@@ -95,7 +95,7 @@ The logical IDs haven’t changed, so a deploy now would show no changes. Moving
 Create `src/SmokeTest.ts`. A `Kubernetes.Job` that runs your own code takes two Effects, one for its props and one for its implementation:
 
 ```typescript
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 import { Cluster, Namespace } from "./infra.ts";
 
@@ -126,7 +126,7 @@ export default Kubernetes.Job(
 Inside the cluster, a Service is reachable at `<service>.<namespace>.svc.cluster.local`. Build that URL from the Deployment’s attributes in the Job’s implementation:
 
 ```typescript
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
 import { Cluster, Namespace } from "./infra.ts";

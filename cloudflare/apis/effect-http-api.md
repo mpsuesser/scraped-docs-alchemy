@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-http-api
 title: "Effect HTTP API"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as a Cloudflare Worker."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Effect HTTP is the trust-boundary modality: schema-validated REST endpoints — real URLs, path params, query strings, payloads — that any HTTP client can call, no Effect or TypeScript required on the consumer’s side. This page deploys one to a Cloudflare Worker; the concept home is [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the modalities.
@@ -86,7 +86,7 @@ Nothing executes yet — `TaskApi` is purely a value-level description. The same
 Now we wire it up. Create `src/worker.ts` with an empty Construction phase:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Cloudflare.Worker(
@@ -105,7 +105,7 @@ The generator inside `Cloudflare.Worker` is the **Construction phase**. It runs 
 Tasks need to live somewhere durable. Declare a `Bucket` resource and bind it inside the constructor — `Cloudflare.R2.ReadWriteBucket(Tasks)` returns a typed handle whose `get` / `put` / `delete` / `list` methods we’ll call from the handlers below.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Tasks = Cloudflare.R2.Bucket("Tasks");
 ```
@@ -231,7 +231,7 @@ The middleware wraps every response — including the automatic `OPTIONS` prefli
 Here’s the complete `src/worker.ts`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";
@@ -305,7 +305,7 @@ export default Cloudflare.Worker(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Worker from "./src/worker.ts";
 
@@ -413,7 +413,7 @@ export class TaskDOApi extends HttpApi.make("TaskDOApi").add(TasksDOGroup) {}
 The DO’s constructor returns `{ fetch }` — an `HttpEffect` produced exactly the same way the Worker produces one, just scoped to its own `TaskDOApi`. Storage is the DO’s transactional `state.storage` instead of R2.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Path from "effect/Path";

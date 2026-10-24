@@ -1,38 +1,25 @@
 ---
 url: https://alchemy.run/gcp
 title: "GCP"
-description: "Google Cloud in one Effect program — Cloud Run services and jobs, Firestore, Pub/Sub, BigQuery, Secret Manager, and Memorystore, with IAM granted by the bindings themselves."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+description: "Build Google Cloud applications with Alchemy — a runtime (usually Cloud Run) plus typed resources, wired together by bindings that grant least-privilege IAM."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-GCP with alchemy means the Cloud Run service and everything it talks to live in the same TypeScript program. The Firestore database is declared on the service that reads it. The service calls Google APIs through typed bindings that carry their own IAM. `bun alchemy deploy` builds the container, mints a runtime service account, grants exactly the roles the bindings need, and ships it; `alchemy destroy` takes all of that back down, service account included.
-
-New here? [Set up credentials](gcp/setup.md), then pick the guide that matches what you’re building.
-
-## What are you building?
-
-- **An HTTP API with a datastore and a secret** → [Serve an API on Cloud Run](gcp/guides/cloud-run-api.md). A link shortener on one Cloud Run service, Firestore for state, Secret Manager for the API key.
-- **An ingestion pipeline** → [Ingest events into BigQuery](gcp/guides/event-pipeline.md). A service publishes to Pub/Sub, a Cloud Run Job drains the subscription into BigQuery, and the service triggers the job.
-- **Something that needs a cache** → [Cache with Memorystore](gcp/guides/memorystore.md). Redis on a private IP, reached over Direct VPC egress.
-- **Wondering where the IAM comes from** → [How bindings grant IAM](gcp/guides/bindings.md).
-
-Each guide walks a runnable example under `examples/` end to end.
-
-## What it looks like
+An Alchemy app on Google Cloud is one **runtime**, usually a Cloud Run service, plus the **resources** it uses: databases, buckets, topics, secrets. You connect them with typed **bindings**. Call `GCP.Firestore.ReadWriteDatabase(db)` in your code and Alchemy gives the service its own service account with exactly that role on that database. The code is the IAM policy.
 
 ```typescript
+import * as GCP from "@alchemy.run/gcp";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+
 export default class Api extends GCP.Function<Api>()(
   "Api",
-  { main: import.meta.url, location: "us-central1" },
+  { main: import.meta.url, invokerIamDisabled: true },
   Effect.gen(function* () {
-    // Resources — deployed with the service.
     const links = yield* GCP.Firestore.Database("Links", {
-      location: "us-central1",
       type: "FIRESTORE_NATIVE",
     });
-
-    // A binding grants its role on the runtime service account.
     const db = yield* GCP.Firestore.ReadWriteDatabase(links);
 
     return {
@@ -46,58 +33,70 @@ export default class Api extends GCP.Function<Api>()(
 ) {}
 ```
 
-Three ideas carry the whole provider:
+New here? [Set up credentials](gcp/setup.md), then start the [tutorial](gcp/tutorial/part-1.md).
 
-- **Resources** (`Firestore.Database`, `PubSub.Topic`, `BigQuery.Table`, `SecretManager.Secret`, `Redis.Instance`, …) are Stack-managed. Alchemy creates, updates, and deletes them.
-- **Bindings** (`ReadWriteDatabase`, `WriteTopic`, `ReadTable`, `ReadSecret`, `RunJob`, …) are what the container calls at runtime. Yielding one grants the IAM role it needs on a per-host service account and returns a callable. Provide the matching `*Http` layer once at the end.
-- **Outputs** like `table.tableId` are yielded at plan time to get an accessor, then yielded again where the value is needed. That’s how a resource id reaches runtime without an environment variable.
+## Pick your runtime
 
-## Hosts
+- **[Cloud Run](gcp/compute/cloud-run.md)** — HTTP services that scale to zero. The default, and what every page here builds on.
+- **[Cloud Run jobs](gcp/compute/jobs.md)** — batch work that runs to completion.
+- **[Worker pools](gcp/compute/worker-pools.md)** — always-on queue consumers with no URL.
+- **[Cloud Functions](gcp/compute/cloud-functions.md)** — the same program, built by Google, no local Docker.
+- **[GKE](gcp/compute/gke.md)** — Kubernetes Deployments and Jobs on Autopilot.
 
-| Host | Entry | Use it for |
-| --- | --- | --- |
-| `GCP.Function` (= `GCP.Run.Service`) | `fetch` | HTTP services that scale to zero |
-| `GCP.Run.Job` | `run` | batch work that starts, finishes, and exits |
-| `GCP.Run.WorkerPool` | `run` | always-on consumers with no request path |
-| `GCP.CloudFunctions.Function` | `fetch` | gen2 functions built in the cloud (Node.js) |
+Not sure? See [Choosing a runtime](gcp/compute/choosing-a-runtime.md).
 
-The Run hosts build a container image locally, so Docker has to be running to deploy them. Cloud Functions build from an uploaded archive.
+## Data
 
-## Event sources
+- **[Firestore](gcp/data/firestore.md)** — documents as plain objects, no instance to size.
+- **[Cloud Storage](gcp/data/storage.md)** — buckets with read and write clients and signed URLs.
+- **[Cloud SQL](gcp/data/cloud-sql.md)** — Postgres over the Cloud SQL socket, with Drizzle.
+- **[BigQuery](gcp/data/bigquery.md)** — stream rows in, query with parameters.
+- **[Memorystore](gcp/data/memorystore.md)** — Redis on a private IP.
 
-Google calls your code through an event source: `consumeTopicMessages` (Pub/Sub push or pull), `consumeBucketEvents` (Cloud Storage), `consumeSchedule` (Cloud Scheduler), and `consumeEvents` (Eventarc). See [How bindings grant IAM](gcp/guides/bindings.md#event-sources).
+## Messaging & events
 
-## Examples
+- **[Pub/Sub](gcp/messaging/pubsub.md)** — publish, then consume by push or pull, with filters and dead letters.
+- **[Cloud Scheduler](gcp/messaging/scheduler.md)** — cron handlers on your service.
+- **[Storage events](gcp/messaging/storage-events.md)** — run code when an object lands.
+- **[Eventarc](gcp/messaging/eventarc.md)** — react to Firestore changes and other Google events.
 
-Every example deploys, is exercised by a live integration test, and tears itself down.
+## Frontend & APIs
 
-| Example | What it shows |
+- **[Websites](gcp/frontend/websites.md)** — Astro, Next.js, Nuxt, SvelteKit, Vite, and more on Cloud Run.
+- **[Effect HTTP](gcp/apis/effect-http-api.md)** and **[Effect RPC](gcp/apis/effect-rpc.md)** — typed APIs with typed clients.
+
+## AI, security, and operations
+
+- **[Vertex AI](gcp/ai/vertex-ai.md)** — Gemini with no API key.
+- **[IAM & bindings](gcp/security/iam.md)** — exactly what each binding grants.
+- **[Secret Manager & KMS](gcp/security/secrets-kms.md)** — credentials and encryption.
+- **[Logging & Monitoring](gcp/observability/monitoring.md)** — uptime checks and alerts in the same Stack.
+- **[VPC](gcp/networking/vpc.md)** and **[Private services](gcp/networking/private-services.md)** — private IPs and service-to-service calls.
+
+## What are you building?
+
+| You’re building | Reach for |
 | --- | --- |
-| `gcp-cloud-run-api` | HTTP API on Cloud Run with Firestore and Secret Manager |
-| `gcp-cloud-function` | Effect-native Cloud Function (Node 22) over Firestore |
-| `gcp-event-pipeline` | Service → Pub/Sub → Cloud Run Job → BigQuery |
-| `gcp-pubsub-worker` | Job queue: API publishes, a WorkerPool pulls |
-| `gcp-pubsub-fanout` | Push fan-out to two services, attribute filter, dead-letter topic |
-| `gcp-storage-uploads` | Upload API plus a bucket-event indexer |
-| `gcp-cron` | Two Cloud Scheduler crons on one service, rows in BigQuery |
-| `gcp-scheduled-job` | Nightly Cloud Run Job from Cloud Scheduler and an admin route |
-| `gcp-eventarc-firestore` | Eventarc reacting to Firestore document creation |
-| `gcp-secrets-kms` | Encryption API with KMS and a Secret Manager API key |
-| `gcp-service-to-service` | Private service called with Google-signed identity (`InvokeService`) |
-| `gcp-cloud-sql-drizzle` | Drizzle over Cloud SQL Postgres via the Cloud Run socket |
-| `gcp-memorystore-redis` | Rate limiter on Memorystore over Direct VPC |
-| `gcp-gke` | Guestbook on GKE Autopilot: Deployments, a seed Job, Firestore via Workload Identity |
-| `gcp-vertex-ai` | Gemini on Vertex AI (`GenerateContent`) |
-| `gcp-static-site` | Static site from a public Cloud Storage bucket |
-
-## Reference
-
-[Run.Service](https://alchemy.run/providers/gcp/run#service) · [Run.Job](https://alchemy.run/providers/gcp/run#job) · [Firestore.Database](https://alchemy.run/providers/gcp/firestore#database) · [PubSub.Topic](https://alchemy.run/providers/gcp/pubsub#topic) · [BigQuery.Table](https://alchemy.run/providers/gcp/bigquery#table) · [SecretManager.Secret](https://alchemy.run/providers/gcp/secretmanager#secret) · [Storage.Bucket](https://alchemy.run/providers/gcp/storage#bucket) · [Redis.Instance](https://alchemy.run/providers/gcp/redis#instance)
-
-The full list is under **Resources** in the sidebar.
+| An HTTP API | [Cloud Run](gcp/compute/cloud-run.md) + [Firestore](gcp/data/firestore.md) |
+| A typed API | [Effect HTTP on Cloud Run](gcp/apis/effect-http-api.md) |
+| A Postgres-backed app | [Cloud SQL](gcp/data/cloud-sql.md) |
+| A website | [Websites](gcp/frontend/websites.md) |
+| A static site | [Static sites](gcp/frontend/static-site.md) |
+| Background jobs | [Pub/Sub](gcp/messaging/pubsub.md) + a [worker pool](gcp/compute/worker-pools.md) |
+| An analytics pipeline | [Pub/Sub](gcp/messaging/pubsub.md) → [BigQuery](gcp/data/bigquery.md) |
+| Scheduled work | [Cloud Scheduler](gcp/messaging/scheduler.md) or a [scheduled job](gcp/compute/jobs.md#run-it-on-a-schedule) |
+| Upload processing | [Storage events](gcp/messaging/storage-events.md) |
+| A chat endpoint | [Vertex AI](gcp/ai/vertex-ai.md) |
+| Kubernetes workloads | [GKE](gcp/compute/gke.md) |
 
 ## Out of scope
 
-Alchemy manages infrastructure, not end-user content. APIs whose objects are a person’s data — Gmail messages and settings, Forms, Calendar events, Drive files, Classroom courses, Chat messages, Tasks, Keep notes, People contacts, Blogger posts, YouTube videos and reports, Fitness data, Apps Script projects, Street View photos, Fact Check claims, and Business Profile listings — are deliberately not modelled as resources. Neither is `prodtt-sasportal`, a test-environment copy of the SAS Portal API.
+Alchemy manages infrastructure, not end-user content. APIs whose objects are a person’s data are not modelled as resources: Gmail, Forms, Calendar, Drive, Classroom, Chat, Tasks, Keep, People, Blogger, YouTube, Fitness, Apps Script, Street View, Fact Check, and Business Profile. Neither is `prodtt-sasportal`, a test copy of the SAS Portal API.
 
-The advertising and marketing APIs — Analytics Admin, Display & Video 360, Tag Manager, Workspace Reseller, AdSense, AdSense Platform, Ad Exchange Buyer II, Campaign Manager 360 (DFA Reporting), and DoubleClick Bid Manager — are also out of scope: they act on a user’s accounts and require user OAuth scopes, which a service account or Workload Identity host cannot hold. The Content API for Shopping and Apigee Registry are retired by Google and are not modelled.
+The advertising and marketing APIs (Analytics Admin, Display & Video 360, Tag Manager, Workspace Reseller, AdSense, AdSense Platform, Ad Exchange Buyer II, Campaign Manager 360, and DoubleClick Bid Manager) need a user’s OAuth consent, which a service account can’t hold. The Content API for Shopping and Apigee Registry are retired by Google.
+
+## Where next
+
+- [Setup](gcp/setup.md) — connect your project.
+- [Tutorial](gcp/tutorial/part-1.md) — from an empty folder to CI/CD in five parts.
+- [Providers reference](https://alchemy.run/providers) — generated docs for every GCP resource, well beyond the services covered here.

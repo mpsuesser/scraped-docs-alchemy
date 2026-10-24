@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/blocks/hasher
 title: "Hasher"
 description: "Every object a push sends is inflated and hashed before a ref moves. That is CPU, and where it runs is a Layer, in the Worker, in dynamically loaded Workers, or on Lambda."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A push arrives as a pack. Before any ref moves, every object in it is
@@ -56,7 +56,7 @@ kilobyte pushes that make up almost all of a repository's life.
 ## In dynamically loaded Workers
 
 ```typescript
-import * as GitHasher from "alchemy/Git/Hasher";
+import * as GitHasher from "@alchemy.run/git/Hasher";
 
 Layer.provide(GitHasher.HasherWorkerLoader())
 ```
@@ -74,8 +74,8 @@ GitHasher.HasherWorkerLoader({ concurrency: 2 })
 ## On Lambda
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as GitHasher from "alchemy/Git/Hasher";
+import * as AWS from "@alchemy.run/aws";
+import * as GitHasher from "@alchemy.run/git/Hasher";
 
 Layer.provide(GitHasher.HasherLambda(GitHasher.HasherFunction)),
 Layer.provide(AWS.Lambda.InvokeFunctionHttp),

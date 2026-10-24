@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Railway with Railway.Website.StaticSite — a build command, a container Service."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.StaticSite` runs a build command, content-hashes
@@ -22,7 +22,7 @@ module-level const:
 
 ```typescript
 // alchemy.run.ts
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.StaticSite("Website", {
   command: "hugo --minify",
@@ -30,7 +30,7 @@ export const Website = Railway.Website.StaticSite("Website", {
 });
 ```
 
-The build is a [`Command.Build`](https://alchemy.run/providers/command/reference#build) —
+The build is a [`Command.Build`](https://alchemy.run/providers/command/build) —
 memoized, so unchanged inputs skip the rebuild
 ([details](../../command/memoization.md)). By default every non-gitignored
 file in `cwd` (plus the nearest lockfile) is hashed. Narrow it with

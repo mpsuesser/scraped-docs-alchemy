@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Fly with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The built app runs in a Fly Machine using vinext’s production Node server. Alchemy creates an App when `app` is omitted and deploys a Service containing `dist/` and vinext’s runtime dependencies.
@@ -32,7 +32,7 @@ Alchemy injects the target-specific data-cache adapter during deployment. No Alc
 ## Declare the Website
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Vinext("Website", {
   rootDir: ".",

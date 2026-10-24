@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/d1-drizzle
 title: "Drizzle on D1"
 description: "Deploy committed SQLite migrations to D1 and query the database from a Worker with Drizzle."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 D1 uses a native Worker binding, so it needs neither a connection string nor Hyperdrive. For external Postgres/MySQL, use [Worker + Drizzle](drizzle.md).
@@ -11,7 +11,7 @@ D1 uses a native Worker binding, so it needs neither a connection string nor Hyp
 ## Install
 
 ```sh
-pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-d1
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-d1
 pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
@@ -57,7 +57,7 @@ Generate migrations when the schema changes; CI deploys these committed files.
 
 ```typescript
 // src/Db.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Database = Cloudflare.D1.Database("Database", {
   migrations: "./drizzle",
@@ -70,8 +70,8 @@ D1 applies pending SQL during deployment. [D1 migrations](d1.md#migrations) cove
 
 ```typescript
 // src/Api.ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Database } from "./Db.ts";
@@ -100,7 +100,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Api from "./src/Api.ts";
 

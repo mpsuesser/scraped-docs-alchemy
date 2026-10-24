@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/cloudflare-aws
 title: "Bytes in S3, hashing on Lambda"
 description: "Compute on Cloudflare, bytes in S3, and large pushes hashed one Lambda per chunk. One stack carries both provider sets, and Alchemy mints the cross-cloud identity."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The examples use `Authentication` from [Getting Started](../getting-started.md): the application’s request middleware.
@@ -11,10 +11,10 @@ The examples use `Authentication` from [Getting Started](../getting-started.md):
 The Worker and the Durable Objects stay on Cloudflare. Packs, bundles, and spilled pushes live in S3, and every 4 MiB chunk of a push is hashed on its own Lambda:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Git from "alchemy/Git";
-import * as GitHasher from "alchemy/Git/Hasher";
+import * as AWS from "@alchemy.run/aws";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Git from "@alchemy.run/git";
+import * as GitHasher from "@alchemy.run/git/Hasher";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as HttpRouter from "effect/http/HttpRouter";
@@ -44,8 +44,8 @@ export default class GitHost extends Cloudflare.Worker<GitHost>()(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as AWS from "@alchemy.run/aws";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import GitHost from "./src/git.ts";

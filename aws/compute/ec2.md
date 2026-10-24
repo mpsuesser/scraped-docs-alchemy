@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ec2
 title: "EC2"
 description: "Launch virtual machines with the Instance resource — as a raw compute primitive, or hosting a bundled long-lived Effect program served straight off the box."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **EC2** is for when you need the machine itself: an OS you
@@ -55,7 +55,7 @@ helper returns an `Output` that only resolves at deploy time:
 
 ```typescript
 // src/server.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

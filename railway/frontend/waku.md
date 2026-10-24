@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Railway with Railway.Website.Waku — RSC server on a container Service, SSG pages in the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Railway. It builds the project programmatically: the RSC server plus SSG pages run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -39,7 +39,7 @@ Options set on the resource (`srcDir`, `distDir`, `basePath`) merge over the fil
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.Waku("Website");
 ```

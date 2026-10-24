@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/python-workers
 title: "Python Workers"
 description: "Deploy Cloudflare Python Workers by pointing main at a .py file — alchemy uploads the modules, vendors pyproject.toml dependencies with uv, and serves them locally through workerd's built-in Pyodide."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Cloudflare [Python Workers](https://developers.cloudflare.com/workers/languages/python/)
@@ -31,7 +31,7 @@ Point `main` at the Python entry and declare bindings with `env`:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

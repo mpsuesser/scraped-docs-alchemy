@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-5
 title: "Part 5: Deploy to Your Own Cluster"
 description: "Point the tutorial stack at a hosted Kubernetes cluster such as GKE, AKS, EKS, k3s, or anything in your kubeconfig. Keep the local cluster for development with stages, and clean up."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Everything you built in Parts 1–4 runs on a cluster on your machine. None of it is specific to that cluster. The Deployment, the Effect Jobs, and the Helm chart only need a `cluster` to run on. In this part you’ll point the stack at a cluster of your own, while keeping the local one for development.
@@ -41,7 +41,7 @@ Every Alchemy deploy targets a **stage**. By default that’s your own `live_<yo
 
 ```typescript
 import { Stage } from "alchemy";
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 
 export const Cluster = Kubernetes.LocalCluster("Cluster", {
@@ -129,7 +129,7 @@ Many hosted clusters include metrics-server, and applying the chart over it woul
 
 ```typescript
 import { Stage } from "alchemy";
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 ```
 
 ```typescript

@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Fly with Fly.Website.StaticSite — a build command, a Node static-file server on a Machine, and https://{app}.fly.dev (or your hostname) on deploy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.StaticSite` runs a build command, content-hashes the
@@ -21,14 +21,14 @@ as a module-level const:
 
 ```typescript
 // alchemy.run.ts
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.StaticSite("Website", {
   build: { command: "hugo --minify", output: "public" },
 });
 ```
 
-The build is a [`Command.Build`](https://alchemy.run/providers/command/reference#build) —
+The build is a [`Command.Build`](https://alchemy.run/providers/command/build) —
 memoized, so unchanged inputs skip the rebuild
 ([details](../../command/memoization.md)). By default every non-gitignored
 file in `path` (plus the nearest lockfile) is hashed. Narrow it with

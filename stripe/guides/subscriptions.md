@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe/guides/subscriptions
 title: "Sell a subscription"
 description: "The full SaaS billing loop on one Cloudflare Worker — hosted Checkout, the Billing Portal, and webhooks that keep an entitlement record your app gates on."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 You have a product with a monthly price and you want people to pay for
@@ -316,9 +316,10 @@ reaches `active` and then `canceled`.
 <summary><code>examples/stripe-billing/src/Api.ts</code></summary>
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Stripe from "alchemy/Stripe";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 

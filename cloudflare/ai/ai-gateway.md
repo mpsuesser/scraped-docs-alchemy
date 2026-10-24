@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-gateway
 title: "Add an AI Gateway"
 description: "Wire an AI Gateway into your Worker, turn it into a typed Effect LanguageModel, and run generations and streams through Workers AI with caching, rate limiting, and logs."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 You’ve now wired Durable Objects, hibernatable WebSockets, a container, and a Workflow into your Worker. The last piece in the Cloudflare track is an **AI Gateway** — a stable account-scoped endpoint that fronts every model provider (Workers AI, OpenAI, Anthropic, Bedrock, …) and gives you caching, rate limiting, retries, DLP, and a single dashboard of every request, token, and cost.
@@ -17,7 +17,7 @@ Don’t need caching, rate limiting, or the request log? The plain [Workers AI b
 Create `src/AiGateway.ts` with a single resource definition. The two flags below enable response caching (60-second TTL) and request logging — every prompt, completion, latency, and token count will show up in the AI Gateway dashboard.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Gateway = Cloudflare.AI.Gateway("Gateway", {
   cacheTtl: 60,
@@ -55,7 +55,7 @@ export default Alchemy.Stack(
 `Cloudflare.AI.QueryGateway(Gateway)` returns a typed client whose methods are wrapped in Effect — `run` for raw inference, `getUrl` for the gateway endpoint, `getLog` / `patchLog` for the request log, and `model({...})` for building a `LanguageModel` layer.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Gateway } from "./AiGateway.ts";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/repository
 title: "Repositories"
 description: "Manage GitHub repositories as Stack resources — create or adopt a repo, converge its settings on every deploy, rename in place, and opt into deletion explicitly."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `GitHub.Repository` manages the lifecycle of a repository owned by a
@@ -21,7 +21,7 @@ New here? [Set up credentials](setup.md) first.
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as GitHub from "alchemy/GitHub";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -181,7 +181,7 @@ For anything the resource model doesn't cover, the
 every GitHub resource uses:
 
 ```typescript
-import * as GitHub from "alchemy/GitHub";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 
 const program = Effect.gen(function* () {

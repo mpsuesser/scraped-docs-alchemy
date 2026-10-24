@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/actions-config
 title: "Actions secrets & variables"
 description: "Manage GitHub Actions secrets and variables as Stack resources — encrypted secrets, plain-text variables, bulk helpers, and CI credentials provisioned as code."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 GitHub Actions workflows read configuration from two places:
@@ -23,7 +23,7 @@ resources.
 wrapped with `Redacted.make` so it never appears in logs or state:
 
 ```typescript
-import * as GitHub from "alchemy/GitHub";
+import * as GitHub from "@alchemy.run/github";
 import * as Redacted from "effect/Redacted";
 
 yield* GitHub.Secret("deploy-token", {
@@ -191,8 +191,8 @@ token never touches your terminal or the GitHub UI:
 ```typescript
 // stacks/github.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as GitHub from "alchemy/GitHub";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 

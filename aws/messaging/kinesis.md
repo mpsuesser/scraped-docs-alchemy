@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/kinesis
 title: "Kinesis"
 description: "Add a Kinesis Data Stream, publish records from one Lambda, and consume them in order from another — wired through the same Stream-shaped event source."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **Kinesis Data Streams** are the tool for **ordered**, sharded,
@@ -30,7 +30,7 @@ import the same handle:
 
 ```typescript
 // src/stream.ts
-import * as Kinesis from "alchemy/AWS/Kinesis";
+import * as Kinesis from "@alchemy.run/aws/Kinesis";
 
 export const Events = Kinesis.Stream("Events", {
   streamMode: "ON_DEMAND",
@@ -45,10 +45,10 @@ fine for the example. Switch to `"PROVISIONED"` with an explicit
 
 ```diff lang="typescript"
 // src/api.ts
-import * as DynamoDB from "alchemy/AWS/DynamoDB";
-+import * as Kinesis from "alchemy/AWS/Kinesis";
-import * as S3 from "alchemy/AWS/S3";
-import * as SQS from "alchemy/AWS/SQS";
+import * as DynamoDB from "@alchemy.run/aws/DynamoDB";
++import * as Kinesis from "@alchemy.run/aws/Kinesis";
+import * as S3 from "@alchemy.run/aws/S3";
+import * as SQS from "@alchemy.run/aws/SQS";
 import { Jobs } from "./queue.ts";
 +import { Events } from "./stream.ts";
 // ...
@@ -112,7 +112,7 @@ handle:
 
 ```typescript
 // src/audit.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import { Events } from "./stream.ts";
 
@@ -135,8 +135,8 @@ partition key:
 
 ```diff lang="typescript"
 // src/audit.ts
-import * as AWS from "alchemy/AWS";
-+import * as Kinesis from "alchemy/AWS/Kinesis";
+import * as AWS from "@alchemy.run/aws";
++import * as Kinesis from "@alchemy.run/aws/Kinesis";
 +import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 +import * as Stream from "effect/Stream";

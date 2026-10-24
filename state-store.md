@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store
 title: "State Store"
 description: "How Alchemy persists resource state between deploys to compute diffs and track infrastructure."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy persists resource state between deploys so it can compute diffs — comparing the desired state in your code against the current state of your infrastructure.
@@ -65,7 +65,7 @@ Alchemy.Stack(
 
 ### First-run bootstrap
 
-The first time you run `alchemy deploy`, `plan`, or `dev` against a stack configured with `Cloudflare.state()`, Alchemy can’t find the state-store Worker on your account and pauses to ask permission before deploying it. Confirming kicks off a one-time deploy of the state-store and its supporting resources:
+The first time you run `alchemy deploy`, `plan`, or `dev` against a stack configured with `Cloudflare.state()`, Alchemy can’t find the state-store Worker on your account and deploys it, once, with its supporting resources:
 
 *Interactive demonstration unavailable in static documentation.*
 
@@ -77,26 +77,44 @@ What gets created:
 - **`StateStoreSecrets`** — the Secrets Store that holds the two secrets above, scoped to your Cloudflare account
 - **`StateStoreAuthTokenValue` / `StateStoreEncryptionKeyValue`** — the generated random values bound into the secrets above
 
-These resources are reused across every stack and stage that uses `Cloudflare.state()` on this account — no duplication per project. Subsequent runs detect the existing Worker and skip the prompt.
+These resources are reused across every stack and stage that uses `Cloudflare.state()` on this account — no duplication per project. Subsequent runs detect the existing Worker and use it.
+
+In CI (`CI=true`) a missing store fails the run instead: a deploy there should find its store provisioned, not create one as a side effect. Provision it once ahead of time:
+
+```sh
+alchemy state bootstrap --backend cloudflare --profile <your-ci-profile>
+```
+
+`AWS.state()` behaves the same way: it creates its S3 bucket on first use, except in CI, where `alchemy state bootstrap --backend aws` provisions it.
+
+`GCP.state()` does the same with a Cloud Storage bucket in your project, `alchemy-state-<project>`. In CI, provision it with `alchemy state bootstrap --backend gcp`.
 
 ### Where credentials live
 
-After the bootstrap, Alchemy writes the state-store URL and bearer token to a credentials file under your Alchemy profile directory (`~/.alchemy/<profile>/cloudflare-state-store.json` by default). On CI, set `CI=true`; the credentials are resolved from the Secrets Store on every run via a short-lived edge-preview Worker, so nothing needs to be persisted to disk.
+After the bootstrap, Alchemy writes the state-store URL and bearer token to a credentials file under your Alchemy profile directory (`~/.alchemy/profiles/<profile>/state-stores/cloudflare.json`). On CI, set `CI=true`; the credentials are resolved from the Secrets Store on every run via a short-lived edge-preview Worker, so nothing needs to be persisted to disk.
 
-### Customizing the worker name
+### More than one store per account
 
-By default the state-store Worker is named `alchemy-state-store`. Pass `workerName` to use a separate state store — for example, when you want a dedicated store per Cloudflare account or per team:
+By default the state-store Worker is named `alchemy-state-store`. Pass `name` for a separate store, for example one per team. It gets its own Worker, its own secrets in the Secrets Store, and its own cached credentials:
 
 ```typescript
-state: Cloudflare.state({ workerName: "alchemy-state-store-team-a" }),
+state: Cloudflare.state({ name: "team-a" }), // Worker alchemy-state-store-team-a
 ```
+
+Address it from the CLI with `--name`:
+
+```sh
+alchemy state list --backend cloudflare --name team-a
+```
+
+`AWS.state({ name })` does the same with a separate S3 bucket (`alchemy-state-<name>-<account>-<region>-an`). Pass `bucketName` to choose the full bucket name yourself. `GCP.state({ name })` uses `alchemy-state-<name>-<project>`.
 
 ## Postgres state store
 
 `postgresState()` persists state in a Postgres database you already run, and it locks: each `(stack, stage)` holds a session advisory lock for the duration of a run, so two concurrent deploys of the same stage cannot interleave.
 
 ```typescript
-import { postgresState } from "alchemy/State/PostgresState";
+import { postgresState } from "@alchemy.run/sql/PostgresState";
 import * as Config from "effect/Config";
 
 Alchemy.Stack(
@@ -111,7 +129,7 @@ Alchemy.Stack(
 );
 ```
 
-It is imported from `alchemy/State/PostgresState` rather than the `State` barrel because it depends on the optional `pg` driver, which must stay out of bundled worker code. Install `pg` and `@effect/sql-pg` to use it.
+It is imported from `@alchemy.run/sql/PostgresState` rather than the `State` barrel because it depends on the optional `pg` driver, which must stay out of bundled worker code. Install `pg` and `@effect/sql-pg` to use it.
 
 ## State and lifecycle
 

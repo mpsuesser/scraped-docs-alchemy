@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/dashboards
 title: "Dashboards as code"
 description: "Declare Axiom dashboards — charts, layout, filter bars, saved views, and deploy annotations — as alchemy resources next to the services they observe."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 An Axiom dashboard is a single JSON document: charts, a grid layout,
@@ -19,7 +19,7 @@ a dataset to query ([ingest](../data/ingest.md)).
 ## Start with an empty dashboard
 
 ```typescript
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 
 yield* Axiom.Dashboard("ops", {
   dashboard: {
@@ -44,7 +44,7 @@ place, so the deployed dashboard always matches what's in your code.
 ## Add a chart
 
 ```typescript
-import type { Chart, LayoutCell } from "alchemy/Axiom";
+import type { Chart, LayoutCell } from "@alchemy.run/axiom";
 
 const errors: Chart = {
   id: "errors-5m",

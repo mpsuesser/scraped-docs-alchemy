@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/shared-database
 title: "Shared database across stages"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, copy-on-write branches, no extra clusters."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [Stages](../../environments/stages.md) make it cheap to spin up isolated copies
@@ -32,8 +32,8 @@ project — wasteful for short-lived PR previews:
 ```typescript
 // src/Db.ts
 import * as Alchemy from "alchemy";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {
@@ -140,8 +140,8 @@ copy-on-write and free; projects aren't.
 ```typescript
 // src/Db.ts
 import * as Alchemy from "alchemy";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {

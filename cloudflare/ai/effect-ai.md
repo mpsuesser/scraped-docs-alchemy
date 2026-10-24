@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/effect-ai
 title: "Effect AI"
 description: "Wire Effect's LanguageModel and Chat services into a Cloudflare Worker — read API keys with effect/Config, provide the model layer to your handler, plug in persistence."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Effect's [`@effect/ai`](https://effect.website/docs/ai/introduction)
@@ -97,7 +97,7 @@ Effect HTTP client that every provider's client Layer depends on:
 
 ```typescript
 // src/Worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

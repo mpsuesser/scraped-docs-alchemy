@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v7 (framework mode) to Fly with Fly.Website.ReactRouter — SSR on a Machine, client assets baked into the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Fly. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -39,7 +39,7 @@ export default defineConfig({
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.ReactRouter("Website");
 ```

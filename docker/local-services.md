@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/local-services
 title: "Local services: Postgres with containers, networks, and volumes"
 description: "Run a local Postgres for development as alchemy resources — a pinned image, a named network and volume, a Redacted password, and a healthchecked container that converges on every deploy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Docker `Container` runs an image; a `Network` gives containers a
@@ -24,7 +24,7 @@ registered — see [Setup](setup.md) and the
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Docker from "alchemy/Docker";
+import * as Docker from "@alchemy.run/docker";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 

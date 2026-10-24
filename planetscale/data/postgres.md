@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/postgres
 title: "Postgres"
 description: "PlanetScale Postgres as Stack resources — databases, branches, roles with least-privilege inherited roles, and direct vs pooled connection origins."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 PlanetScale Postgres is managed PostgreSQL with database branching. In
@@ -25,7 +25,7 @@ Network-attached (NAS) sizes like `"PS_10"` are expanded to the full
 SKU using the target region and architecture:
 
 ```typescript
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 
 const database = yield* Planetscale.PostgresDatabase("app-db", {
   region: { slug: "us-east" },
@@ -148,7 +148,7 @@ into consumers like [Cloudflare Hyperdrive](../../cloudflare/data/hyperdrive.md)
   direct connection, e.g. Hyperdrive's local-dev origin.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
   origin: role.origin, // direct — Hyperdrive pools at the edge
@@ -168,7 +168,7 @@ an Interface VPC endpoint. With private DNS enabled, use
 `privateHost` for workloads in that VPC:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 const endpoint = yield* AWS.EC2.VpcEndpoint("postgres-private-link", {
   vpcId: vpc.vpcId,

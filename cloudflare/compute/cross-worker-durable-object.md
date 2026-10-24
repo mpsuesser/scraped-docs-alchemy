@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A Durable Object is *hosted* by exactly one Worker, but any number of **other** Workers can bind to the same DO. This is how you share state across Workers: one Worker hosts the DO, every other Worker addresses it by `scriptName` and gets a typed RPC stub.
@@ -16,7 +16,7 @@ The DO class lives in a separate file so both Workers can import it as a typed i
 
 ```typescript
 import type { RuntimeContext } from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export class Counter extends Cloudflare.DurableObject<
@@ -72,7 +72,7 @@ Only Workers that import this file as `import CounterLive from "./object.ts"` wi
 The key move is the **third type argument** on `Cloudflare.Worker`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import { Counter } from "./object.ts";
 
 export class WorkerA extends Cloudflare.Worker<WorkerA, {}, Counter>()(
@@ -87,7 +87,7 @@ export class WorkerA extends Cloudflare.Worker<WorkerA, {}, Counter>()(
 `WorkerA.make(...)` is where the runtime lives. Provide `CounterLive` (the default export from `object.ts`) so that WorkerA’s bundle actually contains the DO class:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -121,7 +121,7 @@ export default WorkerA.make(
 `WorkerB` does **not** host the DO. It imports `WorkerA` purely as a type and uses `Counter.from(WorkerA)` to declare a binding to the existing namespace running under WorkerA’s script:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -153,7 +153,7 @@ The Stack composes both Workers. WorkerA’s Layer is provided so its `Counter` 
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import WorkerALive, { WorkerA } from "./src/workerA.ts";
 import WorkerB from "./src/workerB.ts";
@@ -179,7 +179,7 @@ export default Alchemy.Stack(
 Hit `urlA/foo` to increment, then `urlB/foo` to read — both Workers route to the same DO instance by name:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Vitest";
 import { expect } from "@effect/vitest";
 import * as Effect from "effect/Effect";
@@ -254,7 +254,7 @@ export class Counter extends Cloudflare.DurableObject<
 `WorkerB` takes over the host role: it declares `Counter` in its `Deps`, provides `CounterLive`, and binds with `.from(Self)`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

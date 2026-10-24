@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Fly with Fly.Website.Octane — SSR on a Machine, client assets baked into the image, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to Fly. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server runs on a Machine (`Fly.Service` on a `Fly.App`, plus a shared IPv4 so `https://{app}.fly.dev` answers); client assets are baked into the image. No Dockerfile, no build command to run.
@@ -49,7 +49,7 @@ export default defineConfig({
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Octane("Website");
 ```

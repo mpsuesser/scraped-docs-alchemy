@@ -2,20 +2,22 @@
 url: https://alchemy.run/prisma/setup
 title: "Setup"
 description: "Connect alchemy to Prisma — account, service tokens, and profiles."
-access_date: 2026-09-18T03:55:07.187Z
-current_date: 2026-09-18T03:55:07.187Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-Sign up at [prisma.io](https://www.prisma.io) and create a service
-token in the [Prisma Console](https://console.prisma.io) (workspace
-settings → service tokens). Register the provider next to your
-cloud's:
+Sign up at [prisma.io](https://www.prisma.io/) and create a service token in the [Prisma Console](https://console.prisma.io/) (workspace settings → service tokens). Install `@alchemy.run/prisma`:
+
+```sh
+pnpm add @alchemy.run/prisma@latest
+```
+
+Then register the provider next to your cloud’s:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Prisma from "alchemy/Prisma";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -34,23 +36,15 @@ export default Alchemy.Stack(
 );
 ```
 
-Run `alchemy profile edit --add Prisma`. The service token is entered
-interactively and saved under
-`~/.alchemy/credentials/<profile>/prisma-stored.json`.
+Run `alchemy profile edit --add Prisma`. The service token is entered interactively and saved under `~/.alchemy/credentials/<profile>/prisma-stored.json`.
 
-In CI (`CI=true`), profiles are bypassed. Set `PRISMA_SERVICE_TOKEN` or
-`PRISMA_API_TOKEN`; Alchemy reads it directly and persists nothing.
+In CI (`CI=true`), profiles are bypassed. Set `PRISMA_SERVICE_TOKEN` or `PRISMA_API_TOKEN`; Alchemy reads it directly and persists nothing.
 
-See [Profiles](../environments/profiles.md) for how credentials are stored
-and switched.
+See [Profiles](../environments/profiles.md) for how credentials are stored and switched.
 
 ## Local dev
 
-`bun alchemy dev` needs no Prisma credentials. Database resources run
-against a local `@prisma/dev` Postgres, Compute resources run their
-configured `dev.command`, and the remaining Prisma resources return
-compatible local outputs. See
-[Postgres](data/postgres.md) for the dev database options.
+`bun alchemy dev` needs no Prisma credentials. Database resources run against a local `@prisma/dev` Postgres, Compute resources run their configured `dev.command`, and the remaining Prisma resources return compatible local outputs. See [Postgres](data/postgres.md) for the dev database options.
 
 ## Next steps
 

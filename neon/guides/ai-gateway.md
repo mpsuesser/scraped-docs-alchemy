@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/ai-gateway
 title: "AI Gateway setup"
 description: "Buy Neon AI Gateway credits and use a model from an Effect Function."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Use Neon AI Gateway from an Effect Function with a model your organization can
@@ -25,7 +25,7 @@ can access. The examples use the supported `aws-us-east-2` region.
 Inside your stack, using an existing `branch`:
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const gateway = yield* Neon.AIGateway("AI", { branch });
 ```

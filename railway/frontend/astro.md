@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to Railway with Railway.Website.Astro — Node SSR on a Service container, static output as a file server, and Astro's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.Astro` deploys an [Astro](https://astro.build/) project to Railway as a container. Server-rendered pages run on a [`Railway.Service`](https://alchemy.run/railway/compute/services) (port 3000); static files are served first, then the Astro handler. Omit `project` and Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects). Your `astro.config.*` loads natively — don’t declare an `adapter`.
@@ -25,7 +25,7 @@ Your `astro.config.*` file loads natively — integrations, Vite plugins, and an
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.Astro("Website");
 ```

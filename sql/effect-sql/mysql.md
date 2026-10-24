@@ -2,22 +2,22 @@
 url: https://alchemy.run/sql/effect-sql/mysql
 title: "MySQL"
 description: "SQL.MySQL turns a connection string into an @effect/sql-mysql2 client — portable tagged-template queries with typed errors and one pool per execution."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `SQL.MySQL` provides tagged-template queries over a MySQL connection. Queries are Effects with typed `SqlError` failures, interruption, and tracing.
 
-Install the optional MySQL driver:
+Install `@alchemy.run/sql` and the optional MySQL driver:
 
 ```sh
-pnpm add @effect/sql-mysql2 mysql2
+pnpm add @alchemy.run/sql@latest @effect/sql-mysql2 mysql2
 ```
 
 ## Connect
 
 ```typescript
-import * as SQL from "alchemy/SQL/MySQL";
+import * as SQL from "@alchemy.run/sql/MySQL";
 import * as Effect from "effect/Effect";
 import type * as Redacted from "effect/Redacted";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/ecs
 title: "ECS"
 description: "Run containers on AWS with ECS and Fargate — Task definitions that run to completion, Services that keep containers running behind a load balancer, with images bundled from an Effect program, built from your Dockerfile, or mirrored from a registry."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **ECS** (Elastic Container Service) is AWS’s managed container orchestrator: you describe a container — image, CPU, memory — and ECS runs it. With **Fargate**, AWS also provides the machines, so there are no servers to manage.
@@ -22,7 +22,7 @@ Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/ecs
 The simplest `Task` runs a pre-built registry image — no Effect runtime in the container:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 const migrate = yield* AWS.ECS.Task("DbMigrate", {
   image: "public.ecr.aws/docker/library/busybox:stable",
@@ -174,8 +174,8 @@ Most service configuration — desired count, task definition revision, network 
 Containers are always-on, so an effectful container can do more than answer requests. Yield `ServerHost` and register long-running loops with `host.run` — they execute alongside the HTTP handler for the life of the container:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import { ServerHost } from "alchemy/Server";
+import * as AWS from "@alchemy.run/aws";
+import { ServerHost } from "alchemy/Runtime/Process";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/postgres
 title: "Postgres"
 description: "Prisma Postgres as Stack resources — projects, databases, branch attachment, and a zero-config local database under alchemy dev."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A `Prisma.Project` owns everything; a `Prisma.Postgres` database
@@ -13,7 +13,7 @@ other resource.
 ## Project
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 const project = yield* Prisma.Project("app", {
   createDatabase: false,

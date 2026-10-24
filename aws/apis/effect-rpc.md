@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request, so reach for it when data needs sanitizing on its way in — a web app or an external service calling your Lambda. Internal calls use [Schemaless RPC](../../apis/schemaless.md) instead (on AWS, a Lambda Function driving a [MicroVM](../compute/microvms.md)); the [RPC overview](../../apis.md) has the full decision.
@@ -84,7 +84,7 @@ export class JobRpcs extends RpcGroup.make(getJob, createJob) {}
 Create `src/JobFunction.ts` with an empty Construction phase and a public Function URL:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
@@ -191,7 +191,7 @@ The outer `Effect.provide` supplies the binding implementations — `GetItemHttp
 ### Putting it together
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import { RpcSerialization, RpcServer } from "effect/rpc";
@@ -261,7 +261,7 @@ export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import JobFunction from "./src/JobFunction.ts";
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/receiving
 title: "Email receiving"
 description: "Receive inbound email with SES — rule sets and rules that store mail in S3, fan out to SNS, invoke a Lambda, or bounce it, plus IP filters and the active rule set pointer."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **SES email receiving** turns a domain you've verified into an
@@ -45,8 +45,8 @@ The snippets below run inside a Stack's `Effect.gen` body:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as SES from "alchemy/AWS/SES";
+import * as AWS from "@alchemy.run/aws";
+import * as SES from "@alchemy.run/aws/SES";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe/guides/connect
 title: "Onboard merchants with Connect"
 description: "Build a Connect platform on a Cloudflare Worker — create Express accounts, send merchants through hosted onboarding, and learn from account.updated when they can take payments."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Stripe Connect is for platforms: a marketplace, a SaaS that invoices
@@ -61,7 +61,7 @@ CREATE TABLE merchants (
 
 ```typescript
 // src/database.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Database = Cloudflare.D1.Database("Database", {
   migrations: "./migrations",
@@ -308,9 +308,10 @@ same shape as above.
 <summary><code>examples/stripe-connect/src/Api.ts</code></summary>
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Stripe from "alchemy/Stripe";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Database } from "./database.ts";

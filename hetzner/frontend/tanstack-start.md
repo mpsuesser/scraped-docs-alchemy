@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Hetzner with Hetzner.Website.TanStackStart — SSR as a systemd unit on port 3000, client assets baked into the unit, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to a Hetzner Cloud Server. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
@@ -38,7 +38,7 @@ Alchemy drives that config’s `builder.buildApp()` and forces the SSR bundle to
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.TanStackStart("Website");
 ```

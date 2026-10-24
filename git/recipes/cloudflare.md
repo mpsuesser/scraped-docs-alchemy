@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/cloudflare
 title: "All on Cloudflare"
 description: "A git host on one Cloudflare account. One Worker, one bucket, two Durable Object namespaces, and dynamically loaded Workers hashing large pushes."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The examples use `Authentication` from [Getting Started](../getting-started.md): the application’s request middleware.
@@ -11,9 +11,9 @@ The examples use `Authentication` from [Getting Started](../getting-started.md):
 Everything on one account, with large pushes hashed by dynamically loaded Workers so nothing leaves Cloudflare:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Git from "alchemy/Git";
-import * as GitHasher from "alchemy/Git/Hasher";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Git from "@alchemy.run/git";
+import * as GitHasher from "@alchemy.run/git/Hasher";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as HttpRouter from "effect/http/HttpRouter";
@@ -36,13 +36,13 @@ export default class GitHost extends Cloudflare.Worker<GitHost>()(
   Effect.gen(function* () {
     const fetch = yield* HttpRouter.toHttpEffect(GitLive.pipe(Layer.provide(Http.Platform)));
     return { fetch };
-  }),
+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
 ) {}
 ```
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import GitHost from "./src/git.ts";
 

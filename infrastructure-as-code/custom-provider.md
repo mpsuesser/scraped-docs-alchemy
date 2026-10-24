@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/custom-provider
 title: "Custom Provider"
 description: "Add support for a new cloud or third-party API by declaring a Resource type and implementing its lifecycle as an Effect Layer."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Providers are Effect `Layer` s — adding support for a new cloud or third-party API is “declare a type, implement a Layer”. See [Providers](provider.md) for the operation contract.
@@ -503,8 +503,8 @@ To verify replacement semantics, change a `stables` field (or the field your `di
 
 If you’d rather start from a real provider:
 
-- [`Axiom/VirtualField.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/Axiom/VirtualField.ts) — minimal CRUD with `diff` and `read`
-- [`Cloudflare/R2/Bucket.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/Cloudflare/R2/Bucket.ts) — production provider with bindings and replace semantics
+- [`Axiom/VirtualField.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/axiom/src/VirtualField.ts) — minimal CRUD with `diff` and `read`
+- [`Cloudflare/R2/Bucket.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/cloudflare/src/R2/Bucket.ts) — production provider with bindings and replace semantics
 
 ## Where next
 

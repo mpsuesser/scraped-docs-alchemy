@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes/scaling
 title: "Scaling"
 description: "Reads scale like a CDN and writes scale like git. The shape, the per-repository limits, the measured numbers, and a worked example of pushing something large and swapping the hasher."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The examples use `Authentication` from
@@ -67,7 +67,7 @@ Ingest dominates. Every object was inflated and hashed on the one
 thread that received the body. Swap the hasher and deploy:
 
 ```diff lang="typescript"
-+import * as GitHasher from "alchemy/Git/Hasher";
++import * as GitHasher from "@alchemy.run/git/Hasher";
 
 const GitLive = Git.ApiLive.pipe(
   Layer.provide(Git.ApiHandlersLive),

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Cloudflare Workers with Cloudflare.Website.Nextjs — the OpenNext pipeline, writable ISR, and wrangler-free local dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app as a Cloudflare Worker. It runs `next build` through the OpenNext pipeline (`@opennextjs/cloudflare`), bundles the resulting server into a self-contained Worker, and deploys client assets plus prerendered pages as Worker static assets. No OpenNext config or Wrangler file is required.
@@ -25,7 +25,7 @@ Alchemy leaves native `next.config.*` and Tailwind configuration unchanged. No A
 Declare the site as a module-level const (rather than inline in the Stack) and derive the typed shape of its bindings from it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Nextjs("Website");
 

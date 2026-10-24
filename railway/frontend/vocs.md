@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Railway with Railway.Website.Vocs — prerendered HTML on a Railway Service, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project as one [Railway.Service](https://alchemy.run/railway/compute/services) from a container image. Vocs prerenders static HTML; a Node static-file server serves extensionless pages (`/about` not `/about/`). Your `vocs.config.*` loads natively — there is no adapter to install.
@@ -48,7 +48,7 @@ export const Website = Railway.Website.Vocs("Website", {
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.Vocs("Website", {
   rootDir: "./docs",

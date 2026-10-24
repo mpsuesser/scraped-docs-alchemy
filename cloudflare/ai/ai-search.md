@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/ai-search
 title: "Add AI Search (AutoRAG)"
 description: "Stand up a Cloudflare AI Search (AutoRAG) pipeline over an R2 bucket with one Search call, bind it into your Worker as a typed Effect client, and answer questions over your own documents."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Cloudflare **AI Search** indexes the documents in an
@@ -23,7 +23,7 @@ Create `src/Docs.ts` with a bucket definition.
 
 ```typescript
 // src/Docs.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Docs = Cloudflare.R2.Bucket("Docs", {});
 ```
@@ -38,7 +38,7 @@ field selects R2 as the data source.
 
 ```typescript
 // src/Search.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import { Docs } from "./Docs.ts";
 
 export const Search = Cloudflare.AI.Search("Search", {
@@ -195,7 +195,7 @@ Call it during the Worker's Construction phase.
 
 ```diff lang="typescript"
 // src/Api.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 +import { Search } from "./Search.ts";
 

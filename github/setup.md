@@ -2,15 +2,20 @@
 url: https://alchemy.run/github/setup
 title: "Setup"
 description: "Connect alchemy to GitHub — account, credentials, and profiles."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-Register the provider next to your cloud's:
+Install `@alchemy.run/github`:
+
+```sh
+pnpm add @alchemy.run/github@latest
+```
+
+Then register the provider next to your cloud’s:
 
 ```typescript
-// alchemy.run.ts
-import * as GitHub from "alchemy/GitHub";
+import * as GitHub from "@alchemy.run/github";
 
 providers: Layer.mergeAll(Cloudflare.providers(), GitHub.providers()),
 ```
@@ -18,21 +23,15 @@ providers: Layer.mergeAll(Cloudflare.providers(), GitHub.providers()),
 Run `alchemy profile edit --add GitHub` and pick between two local options:
 
 - **`gh` CLI** — shells out to `gh auth token` (recommended).
-- **Stored PAT** — a personal access token entered interactively,
-  saved under `~/.alchemy/credentials/<profile>/`.
+- **Stored PAT** — a personal access token entered interactively, saved under `~/.alchemy/credentials/<profile>/`.
 
-When `CI=true`, profiles are bypassed and Alchemy reads
-`GITHUB_ACCESS_TOKEN` or `GITHUB_TOKEN` directly.
+When `CI=true`, profiles are bypassed and Alchemy reads `GITHUB_ACCESS_TOKEN` or `GITHUB_TOKEN` directly.
 
-See [Profiles](../environments/profiles.md) for how credentials are stored
-and switched.
+See [Profiles](../environments/profiles.md) for how credentials are stored and switched.
 
 ## GitHub Enterprise
 
-Both profile methods and CI environment credentials work against GitHub Enterprise Server and GitHub
-Enterprise Cloud with data residency. `alchemy profile edit
-re-configure GitHub` prompts for the host. Leave it blank for github.com, or enter your
-enterprise host (e.g. `github.example.com` or `acme.ghe.com`).
+Both profile methods and CI environment credentials work against GitHub Enterprise Server and GitHub Enterprise Cloud with data residency. `alchemy profile edit re-configure GitHub` prompts for the host. Leave it blank for github.com, or enter your enterprise host (e.g. `github.example.com` or `acme.ghe.com`).
 
 The host is normalized into the REST API base URL automatically:
 
@@ -40,31 +39,21 @@ The host is normalized into the REST API base URL automatically:
 - `acme.ghe.com` → `https://api.acme.ghe.com` (data residency)
 - an explicit URL like `https://github.example.com/api/v3` is used as-is
 
-Alternatively, set the host in the environment — `GITHUB_BASE_URL`,
-`GITHUB_API_URL` (set automatically on GitHub Actions runners), or
-`GH_HOST` — and every method picks it up without reconfiguring. On an
-enterprise host, CI environment resolution also honors the `gh`
-CLI's `GH_ENTERPRISE_TOKEN` / `GITHUB_ENTERPRISE_TOKEN` before falling
-back to `GITHUB_ACCESS_TOKEN` / `GITHUB_TOKEN`, and the `gh` CLI method
-runs `gh auth token --hostname <host>` (run
-`gh auth login --hostname <host>` once first).
+Alternatively, set the host in the environment — `GITHUB_BASE_URL`, `GITHUB_API_URL` (set automatically on GitHub Actions runners), or `GH_HOST` — and every method picks it up without reconfiguring. On an enterprise host, CI environment resolution also honors the `gh` CLI’s `GH_ENTERPRISE_TOKEN` / `GITHUB_ENTERPRISE_TOKEN` before falling back to `GITHUB_ACCESS_TOKEN` / `GITHUB_TOKEN`, and the `gh` CLI method runs `gh auth token --hostname <host>` (run `gh auth login --hostname <host>` once first).
 
 ### Pin the host in code
 
-To fix the host for the whole app — independent of profile
-configuration or the environment — pass it to `providers()`:
+To fix the host for the whole app — independent of profile configuration or the environment — pass it to `providers()`:
 
 ```typescript
 providers: GitHub.providers({ baseUrl: "github.example.com" }),
 ```
 
-The auth provider sees the pinned host too: the configure flow stops
-prompting for it and authenticates against it directly.
+The auth provider sees the pinned host too: the configure flow stops prompting for it and authenticates against it directly.
 
 ### Per-resource host override
 
-Every GitHub resource also takes its own `baseUrl` prop, so a single
-stack can span github.com and an enterprise instance:
+Every GitHub resource also takes its own `baseUrl` prop, so a single stack can span github.com and an enterprise instance:
 
 ```typescript
 yield* GitHub.Repository("mirror", {
@@ -74,39 +63,29 @@ yield* GitHub.Repository("mirror", {
 });
 ```
 
-Resolution order is: resource `baseUrl` → `providers({ baseUrl })` →
-the host from the login profile or environment. Changing a resource's
-`baseUrl` replaces it — the same name on a different GitHub instance
-is a different physical resource.
+Resolution order is: resource `baseUrl` → `providers({ baseUrl })` → the host from the login profile or environment. Changing a resource’s `baseUrl` replaces it — the same name on a different GitHub instance is a different physical resource.
 
 ## Token scopes
 
 - `repo` — always required.
 - `workflow` — when you manage [Actions secrets and variables](actions-config.md).
-- `delete_repo` — only when you opt a [repository](repository.md)
-  into deletion via `destroy()`. Repositories default to retain on
-  removal, so most tokens never need it.
+- `delete_repo` — only when you opt a [repository](repository.md) into deletion via `destroy()`. Repositories default to retain on removal, so most tokens never need it.
 
 ## Programmatic credentials
 
-Skip profiles entirely by building the credentials layer from a token
-you already have in hand — useful in tests:
+Skip profiles entirely by building the credentials layer from a token you already have in hand — useful in tests:
 
 ```typescript
 Effect.provide(GitHub.fromToken(token))
 ```
 
-`fromToken` accepts a plain string or a `Redacted` value, plus an
-optional `baseUrl` for GitHub Enterprise:
+`fromToken` accepts a plain string or a `Redacted` value, plus an optional `baseUrl` for GitHub Enterprise:
 
 ```typescript
 Effect.provide(GitHub.fromToken(token, { baseUrl: "github.example.com" }))
 ```
 
-To read from the environment instead, `GitHub.fromEnv()` builds the
-same layer from `GITHUB_ACCESS_TOKEN` or `GITHUB_TOKEN` (and resolves
-the enterprise host from `GITHUB_BASE_URL` / `GITHUB_API_URL` /
-`GH_HOST` when set).
+To read from the environment instead, `GitHub.fromEnv()` builds the same layer from `GITHUB_ACCESS_TOKEN` or `GITHUB_TOKEN` (and resolves the enterprise host from `GITHUB_BASE_URL` / `GITHUB_API_URL` / `GH_HOST` when set).
 
 ## Next steps
 

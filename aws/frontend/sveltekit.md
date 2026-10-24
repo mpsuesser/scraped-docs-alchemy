@@ -1,16 +1,16 @@
 ---
 url: https://alchemy.run/aws/frontend/sveltekit
 title: "SvelteKit"
-description: "Deploy a SvelteKit app to AWS with AWS.Website.SvelteKit — SSR on a streaming Lambda Function URL, assets and prerendered pages on S3 + CloudFront, and Kit's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy a SvelteKit app to AWS with AWS.Website.SvelteKit — SSR on a Lambda Web Function, assets and prerendered pages on S3 + CloudFront, and Kit's own dev server under alchemy dev."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`AWS.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to AWS. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory AWS adapter emitting a streaming Lambda handler. Client assets and prerendered pages are served from a private S3 bucket through CloudFront; dynamic routes stream from the Lambda Function URL. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
+`AWS.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to AWS. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Node adapter; the server runs on a [Lambda Web Function](../compute/web-functions.md). Client assets and prerendered pages are served from a private S3 bucket through CloudFront; dynamic routes stream from the server. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/sveltekit` and `/sveltekit/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/sveltekit` and `/sveltekit/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -25,7 +25,7 @@ Your project’s `vite.config.ts` loads natively — your Vite plugins and the k
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.SvelteKit("Website");
 ```
@@ -51,7 +51,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Routes with `export const prerender = true` are uploaded to S3 and served from the edge without invoking the server; server routes (`+server.ts`) and server load functions stream from the Lambda.
+Routes with `export const prerender = true` are uploaded to S3 and served from the edge without invoking the server; server routes (`+server.ts`) and server load functions stream from the server.
 
 See [examples/aws-website-sveltekit](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-website-sveltekit) for the checked-in example.
 
@@ -68,11 +68,11 @@ export const Website = AWS.Website.SvelteKit("Website", {
 });
 ```
 
-The values are set on the Lambda at deploy time and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes.
+The values are set on the server at deploy time and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes.
 
 ## Read the environment in server code
 
-The Kit server runs in a plain Node Lambda, so server routes read the environment from `process.env` (or kit’s `$env/dynamic/private`, which is initialized from it):
+The Kit server is a plain Node server, so server routes read the environment from `process.env` (or kit’s `$env/dynamic/private`, which is initialized from it):
 
 ```typescript
 export const load = () => {
@@ -110,6 +110,17 @@ export const Website = AWS.Website.SvelteKit("Website", {
 ```
 
 No functions or plugins in the bag — `preprocess`, `vitePlugin`, and the other construction-time options belong in your `sveltekit(...)` call. Don’t set `kit.adapter` — Alchemy injects its own wrangler-free AWS adapter (an adapter declared in your `sveltekit(...)` call is replaced with a warning).
+
+## Run on a Lambda Function
+
+Web Functions run in a subset of Regions. Elsewhere, set `server: "function"`: the app builds with the `/sveltekit/aws` deploy target and runs on a Lambda Function behind a streaming Function URL, tuned with `memorySize`, `architecture`, and `runtime`:
+
+```typescript
+export const Website = AWS.Website.SvelteKit("Website", {
+  server: "function",
+  memorySize: 2048,
+});
+```
 
 ## Local dev
 

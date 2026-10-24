@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Lambda Function URL."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In [Part 2](part-2.md) you deployed a Lambda with S3
@@ -19,7 +19,7 @@ you used in your `Stack`:
 
 ```typescript
 // test/integ.test.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
@@ -105,7 +105,7 @@ function actually handles requests:
 
 ```diff lang="typescript"
 // test/integ.test.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";

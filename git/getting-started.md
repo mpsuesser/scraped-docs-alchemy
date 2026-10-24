@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/getting-started
 title: "Getting Started"
 description: "A complete quickstart for a Git host protected by a shared credential. Deploy it to Cloudflare, push a repository, and clone it back."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 For a step-by-step explanation, start with [Push your first repository](tutorial/part-1.md). This page provides a complete host protected by one shared credential.
@@ -13,15 +13,15 @@ You need a Cloudflare account with Workers, Durable Objects, and R2 enabled. [Cl
 ## Install
 
 ```sh
-pnpm add alchemy@latest
+pnpm add alchemy@latest @alchemy.run/cloudflare@latest @alchemy.run/git@latest effect
 ```
 
 ## Define the host
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Git from "alchemy/Git";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Git from "@alchemy.run/git";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as HttpRouter from "effect/http/HttpRouter";
@@ -73,7 +73,7 @@ export default class GitHost extends Cloudflare.Worker<GitHost>()(
   Effect.gen(function* () {
     const fetch = yield* HttpRouter.toHttpEffect(GitLive);
     return { fetch };
-  }),
+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
 ) {}
 ```
 
@@ -85,7 +85,7 @@ Add the host to your stack. The `Random` is a resource like any other, so the st
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";

@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/connections
 title: "Connections"
 description: "Every Neon project and branch exposes direct and pooled connection URIs plus pre-parsed origin outputs — feed the direct origin to Hyperdrive and the pooled one to everything else."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Every Neon project and branch exposes its connection details as
@@ -16,7 +16,7 @@ Both `Neon.Project` and `Neon.Branch` expose the same four
 attributes:
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const project = yield* Neon.Project("app-db");
 const branch = yield* Neon.Branch("preview", { project });

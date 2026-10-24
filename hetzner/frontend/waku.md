@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Hetzner with Hetzner.Website.Waku — RSC server as a systemd unit on port 3000, SSG pages baked into the unit, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to a Hetzner Cloud Server. It builds the project programmatically: the RSC server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and the client output — including SSG-prerendered pages — is baked into the unit. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -39,7 +39,7 @@ Options set on the resource (`srcDir`, `distDir`, `basePath`) merge over the fil
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Waku("Website");
 ```

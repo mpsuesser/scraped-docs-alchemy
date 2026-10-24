@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/vectorize
 title: "Vector search with Vectorize"
 description: "Create a Vectorize index, bind it to a Worker with SearchIndex, and run filtered nearest-neighbor queries over vector embeddings."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Vectorize is Cloudflare's globally distributed vector database.
@@ -19,7 +19,7 @@ Worker can reference it:
 
 ```typescript
 // src/embeddings.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Embeddings = Cloudflare.Vectorize.Index("Embeddings", {
   dimensions: 768,
@@ -68,7 +68,7 @@ to an Effect-native client at runtime:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -160,7 +160,7 @@ that binds them:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Embeddings } from "./src/embeddings.ts";
 import Worker from "./src/worker.ts";

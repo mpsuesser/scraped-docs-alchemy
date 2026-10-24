@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/observability
 title: "Observability"
 description: "Effect emits OpenTelemetry natively and the exporter is a Layer. Provision the receiving end — datasets, monitors, notifiers, alarms — as resources in the same Stack as the code that emits the signals."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Effect already emits traces, metrics, and logs, and every alchemy
@@ -52,7 +52,7 @@ OTLP endpoints as outputs:
 
 ```typescript
 // src/observability.ts
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 
 export const Traces = Axiom.Dataset("Traces", {
   name: "app-traces",
@@ -164,7 +164,7 @@ topics, and dashboards are structured documents — all declared next
 to the resources they observe:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 const alerts = yield* AWS.SNS.Topic("Alerts");
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/static-site
 title: "Static sites"
 description: "Ship a static site to S3 + CloudFront with AWS.Website.StaticSite — build-step support, Router composition, and cache invalidation on deploy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `AWS.Website.StaticSite` deploys a directory of files as a website: it uploads
@@ -20,7 +20,7 @@ output:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -74,7 +74,7 @@ const site = yield* AWS.Website.StaticSite("Web", {
 });
 ```
 
-The build step is a [Command.Build](https://alchemy.run/providers/command/reference#build) resource —
+The build step is a [Command.Build](https://alchemy.run/providers/command/build) resource —
 memoized, so unchanged inputs skip the build
 ([details](../../command/memoization.md)). The input hash covers, by default, all
 files under `path` (filtered by your gitignore rules) plus the nearest

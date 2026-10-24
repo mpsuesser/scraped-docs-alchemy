@@ -2,8 +2,8 @@
 url: https://alchemy.run/what-is-alchemy
 title: "What is Alchemy?"
 description: "Alchemy is Infrastructure as Code built in pure Effect, with Infrastructure as Effects on top. Declare your cloud resources and the code that runs on them in one type-safe TypeScript program, and deploy it with one command."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy is **Infrastructure as Code** built in pure [Effect](https://effect.website/), with **Infrastructure as Effects** on top. Infrastructure as Code declares, diffs, and deploys cloud resources the way Terraform or Pulumi does. Infrastructure as Effects lets the code that runs on those resources live in the same program, as typed Effects and Layers.
@@ -11,7 +11,7 @@ Alchemy is **Infrastructure as Code** built in pure [Effect](https://effect.webs
 Here is the whole thing in one file. An R2 Bucket, and a Worker that serves files from it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -47,7 +47,7 @@ A **Stack** is the unit you deploy, an Effect that yields resources and returns 
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Api from "./src/api.ts";
 
@@ -115,7 +115,7 @@ The type system checks the wiring. Yield an AWS resource in a Stack that only pr
 With only Infrastructure as Code, Alchemy looks like and functions like any other IaC tool. One file declares the Bucket and the Worker, passing the Bucket on the Worker’s `env`. Another file is the handler, reaching for the Bucket through that env:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads");
 

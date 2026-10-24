@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/effect-sql/migrations
 title: "Migrations"
 description: "Commit ordered SQL files and apply them on database deploy or Durable Object activation, tracked in one Alchemy-owned table."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Migrations without an ORM: commit `.sql` files to a directory and
@@ -138,7 +138,7 @@ git commit -m "Add schema migration"
 The same directory input accepts handwritten SQL or drizzle-kit's
 `<timestamp>_<name>/migration.sql` layout; see [Drizzle migrations](../drizzle/migrations.md).
 Optional generation automation is documented separately in the
-[`Drizzle.Schema` reference](https://alchemy.run/providers/drizzle/reference#schema).
+[`Drizzle.Schema` reference](https://alchemy.run/providers/drizzle/schema).
 
 ## Durable Object migrations
 
@@ -157,7 +157,7 @@ working directory, **not** the source module.
 Load the directory in the outer Effect:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export class Users extends Cloudflare.DurableObject<Users>()(

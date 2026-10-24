@@ -1,18 +1,16 @@
 ---
 url: https://alchemy.run/prisma/frontend/foldkit
 title: "Foldkit"
-description: "Deploy Foldkit to Prisma Compute with Prisma.Website.Foldkit — a Vite SPA served on Bun, deep-link fallback, and native HMR locally."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Prisma Compute with native local development."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-[Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects, so `Prisma.Website.Foldkit` is [Vite](vite.md) with SPA fallback to `index.html`. Deep links boot the app and its router takes over.
-
-The client build and generated server are uploaded as `tar.gz` and served on **Bun in Prisma Compute**. There is no Foldkit SSR handler, but the deployment still runs a Compute static-file server; no Docker image or registry is needed.
+`Prisma.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Prisma Compute. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
 
 ## Install
 
-Install the build-time integration; the resource loads `/vite` and `/vite/node` from your frontend project:
+Install the build-time integration; the resource loads `/foldkit` and `/foldkit/neon` from your frontend project:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
@@ -33,10 +31,55 @@ export default defineConfig({
 });
 ```
 
+## Server rendering and prerendering
+
+Configure rendering in the application’s `foldkit(...)` plugin. This example uses Foldkit 0.167.0, `@foldkit/vite-plugin` 0.27.0 and compatible Effect dependencies:
+
+```typescript
+import { foldkit } from "@foldkit/vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    foldkit({
+      ssr: {
+        serverEntry: "/src/entry.server.ts",
+        clientEntry: "/src/entry.ts",
+        build: true,
+      },
+    }),
+  ],
+});
+```
+
+The server entry exports `renderPage` and `renderDocument`. Import stylesheets from the client entry and use `Runtime.hydrate` to start the browser application. Remove the source `index.html` for this build: Foldkit generates the complete HTML document, including the client script, stylesheets and module preload links.
+
+```typescript
+import { Server } from "foldkit/experimental";
+
+export const renderDocument = Server.renderDocument;
+```
+
+Keep your application’s `renderPage` export alongside the document renderer. Foldkit currently exposes its server rendering API through `foldkit/experimental`; see its [server rendering guide](https://foldkit.dev/core/server-rendering) for the application and hydration contract.
+
+For static site generation (SSG), change `build` to `{ prerender: true }` and export the URLs to generate from the server entry:
+
+```typescript
+export const prerenderPaths = ["/", "/about"];
+```
+
+SSG renders those URLs during the build. SSR renders a page when its request arrives. A hybrid application prerenders some URLs and renders others on request. The same `renderPage` and `renderDocument` exports serve both delivery policies.
+
+The same Website declaration deploys the client assets and generated handler. GET and HEAD requests serve matching assets and prerendered pages first; remaining requests go to the handler. Other methods bypass static assets. The application owns its response status and headers through `renderPage`. For an SSG-only application, return 404 for URLs outside its generated route set; allowing those URLs to render on request makes the deployment hybrid.
+
+Browser-only builds use SPA fallback. Server builds send unmatched requests to the handler. Explicit `assets.notFoundHandling` settings override these defaults.
+
+Vite’s resolved `base` also mounts the client assets. With `base: "/app/"`, `/app/assets/main.js` serves `assets/main.js` from the client output. SPA fallback is limited to that prefix; server handlers receive the original URL.
+
 ## Declare the Website
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Foldkit("Website", {
   rootDir: "applications/web",
@@ -74,9 +117,9 @@ export const Website = Prisma.Website.Foldkit("Website", {
 });
 ```
 
-`env` is applied before build and dev, and passed to Compute. The SPA only sees values Vite inlines at build time. `VITE_*` keys are public, so never put secrets in them.
+`env` is applied before build and dev, and passed to Compute. Server code reads private values from `process.env`. Vite inlines `VITE_*` keys into the browser build; keep secrets out of those keys and serialized Foldkit Flags.
 
-## Read the environment
+## Read the environment in client code
 
 ```typescript
 /// <reference types="vite/client" />
@@ -96,7 +139,7 @@ Vite replaces the lookup with the build-time value.
 
 ## Deep links
 
-`assets.notFoundHandling` defaults to `"single-page-application"`. A path like `/counter/42` returns `index.html` with status 200, letting Foldkit’s client router resolve it. For real 404 responses instead:
+For browser-only builds, `assets.notFoundHandling` defaults to `"single-page-application"`. A path like `/counter/42` returns `index.html` with status 200, letting Foldkit’s client router resolve it. For real 404 responses instead:
 
 ```typescript
 export const Website = Prisma.Website.Foldkit("Website", {
@@ -106,7 +149,7 @@ export const Website = Prisma.Website.Foldkit("Website", {
 
 ## Local dev
 
-`bun alchemy dev` runs Vite with Foldkit HMR and devtools. The Website creates no Prisma resources. `.pipe(Alchemy.remote())` selects the live path during dev. Pin the local address when running several apps:
+`bun alchemy dev` runs Vite with Foldkit live reload and devtools. The Website creates no Prisma resources. `.pipe(Alchemy.remote())` selects the live path during dev. Pin the local address when running several apps:
 
 ```typescript
 export const Website = Prisma.Website.Foldkit("Website", {

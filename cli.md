@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli
 title: "CLI"
 description: "Every alchemy command at a glance — the command map, common options, and how the interactive TUI decides when to render."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 ```sh
@@ -29,11 +29,13 @@ alchemy
 │                      # manage credentials and accounts (bare \`profile\` opens the dashboard)
 │
 ├─ state list|read|delete        # inspect and manage the state store (bare \`state\` opens the explorer)
+├─ state bootstrap|teardown|logs # provision, delete, or debug a provider's state store (--backend)
 │
 └─ provider
    ├─ check-env           # CI preflight: verify required provider env vars are set
-   ├─ aws bootstrap|teardown
-   └─ cloudflare bootstrap|teardown|token|state logs
+   ├─ aws bootstrap|teardown         # the deploy assets bucket
+   ├─ cloudflare token
+   └─ prisma generate
 ```
 
 Each command has its own page: [deploy](cli/deploy.md), [plan](cli/plan.md), [destroy](cli/destroy.md), [drift](cli/drift.md), [unsafe nuke](cli/nuke.md), [dev](cli/dev.md), [logs](cli/logs.md), [profile](cli/profile.md), [state](cli/state.md), [AWS provider commands](cli/aws.md), and [Cloudflare provider commands](cli/cloudflare.md). The workflow guides cover [adopting resources](cli/adopting-resources.md) and [inspecting state](cli/inspecting-state.md).

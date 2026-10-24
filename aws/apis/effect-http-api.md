@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-http-api
 title: "Effect HTTP API on Lambda"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Effect HTTP defines real REST endpoints — URLs, path params, query strings, typed bodies — behind an RPC-like typed interface, which makes it the natural fit when your consumers aren’t Effect (or aren’t TypeScript at all) and want a plain HTTP client. This page is the Lambda wiring; the concept lives at [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the RPC styles.
@@ -85,7 +85,7 @@ Nothing executes yet — `JobApi` is purely a value-level description. The same 
 Now wire it up. Create `src/JobFunction.ts` with an empty Construction phase and a public Function URL:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
@@ -213,7 +213,7 @@ return {
 Here’s the complete `src/JobFunction.ts`:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Etag from "effect/http/Etag";
@@ -288,7 +288,7 @@ export default class JobFunction extends AWS.Lambda.Function<JobFunction>()(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import JobFunction from "./src/JobFunction.ts";
 
@@ -332,7 +332,7 @@ Invalid payloads get automatic 400 responses with structured validation errors, 
 Because `JobApi` is just a value, the same spec drives a fully typed client — no codegen, no string URLs. Combine `HttpApiClient` with the test harness to deploy the Stack and exercise the API end-to-end:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";

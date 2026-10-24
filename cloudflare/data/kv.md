@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/kv
 title: "KV"
 description: "Cloudflare Workers KV is edge key-value storage — create a namespace, bind it into a Worker with read/write-scoped bindings, and get/put values with metadata."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Workers KV is Cloudflare's key-value store: values addressed by key,
@@ -21,7 +21,7 @@ strongly-consistent state coordinated per object, use
 
 ```typescript
 // src/cache.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Cache = Cloudflare.KV.Namespace("Cache");
 ```
@@ -31,7 +31,7 @@ Yield it inside your Stack:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Cache } from "./src/cache.ts";
 
@@ -66,7 +66,7 @@ client in the runtime handlers. This Worker stores a value on
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

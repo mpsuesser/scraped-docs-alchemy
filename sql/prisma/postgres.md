@@ -2,16 +2,16 @@
 url: https://alchemy.run/sql/prisma/postgres
 title: "Postgres"
 description: "Connect Prisma ORM v8 to Postgres and run Effect-native queries, streams, prepared statements, and transactions independently of your cloud provider."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Prisma ORM v8 uses a contract to type queries and plan migrations. The same Effect-native client works with a connection from configuration or a runtime binding; choose a database in [SQL databases](../databases.md).
 
-Prisma ORM and its CLI are optional Alchemy peers:
+Install `@alchemy.run/prisma` with Prisma ORM and its CLI, which are optional Alchemy peers:
 
 ```sh
-pnpm add @prisma/orm-postgres@8.0.0-rc.11
+pnpm add @alchemy.run/prisma@latest @prisma/orm-postgres@8.0.0-rc.11
 pnpm add -D prisma@8.0.0-rc.15
 ```
 
@@ -22,7 +22,7 @@ Follow [Contracts](contracts.md) to define `User` and `Post` in PSL or TypeScrip
 ## Connect
 
 ```typescript
-import * as PrismaPostgres from "alchemy/Prisma/ORM/Postgres";
+import * as PrismaPostgres from "@alchemy.run/prisma/ORM/Postgres";
 import * as Effect from "effect/Effect";
 import type * as Redacted from "effect/Redacted";
 import { contract } from "./prisma/contract.ts";

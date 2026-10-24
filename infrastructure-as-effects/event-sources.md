@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/event-sources
 title: "Event Sources"
 description: "An event source is a binding that runs your Function when something happens on a resource — one call wires the event-source mapping, the permissions, and a typed handler."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 An **Event Source** is a [Binding](binding.md)
@@ -13,7 +13,7 @@ You name the resource and a handler, and the messages arrive as an
 Effect `Stream`:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 
@@ -104,7 +104,7 @@ Consume a Cloudflare queue the same way. The consumer settings go on
 the call, and the handler receives a `Stream` of typed messages:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

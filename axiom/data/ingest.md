@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/data/ingest
 title: "Datasets & ingest"
 description: "Axiom datasets per OTel signal with OTLP endpoints as outputs, least-privilege ingest tokens, and per-stage naming with Stack.useSync."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A `Dataset` is Axiom's top-level container — it stores your events,
@@ -14,7 +14,7 @@ same Stack as the Workers and Functions that emit the data.
 ## Create a dataset
 
 ```typescript
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 
 const logs = yield* Axiom.Dataset("logs", {
   name: "my-app-logs",
@@ -151,7 +151,7 @@ own. `Stack.useSync` computes props from the resolved stage — handy
 at module scope where there's no `yield*` available:
 
 ```typescript
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 import { Stack } from "alchemy/Stack";
 
 export const Traces = Axiom.Dataset(

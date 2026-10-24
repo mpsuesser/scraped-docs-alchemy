@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with a Cloudflare R2 Bucket, and deploy it."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with a Cloudflare R2 Bucket, and deploy it, all in under five minutes.
@@ -23,10 +23,10 @@ mkdir my-app && cd my-app && pnpm init
 
 ## Install dependencies
 
-Install `alchemy@latest` and `effect`:
+Install `alchemy@latest`, `@alchemy.run/cloudflare`, and `effect`:
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/cloudflare@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Create the Stack
@@ -60,7 +60,7 @@ For this tutorial we’ll use `Cloudflare.state()`, which persists state in a Cl
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -90,7 +90,7 @@ Let’s add a Cloudflare R2 Bucket to our Stack and observe the type error:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -115,7 +115,7 @@ Replace `Layer.empty` with `Cloudflare.providers()` to resolve the type error:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -139,7 +139,7 @@ Stack outputs let you see important values after a deploy. Return an object from
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

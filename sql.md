@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql
 title: "SQL"
 description: "Choose a database, connect with Effect SQL, Drizzle, or Prisma ORM, and deploy committed migrations."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 ## Choose a database
@@ -42,7 +42,7 @@ See [runnable examples](https://github.com/alchemy-run/alchemy/blob/main/example
 ## Already have a database?
 
 ```typescript
-import * as SQL from "alchemy/SQL/Postgres";
+import * as SQL from "@alchemy.run/sql/Postgres";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
 

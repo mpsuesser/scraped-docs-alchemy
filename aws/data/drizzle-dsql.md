@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/drizzle-dsql
 title: "Drizzle + Aurora DSQL"
 description: "Drizzle on Lambda with Aurora DSQL, a non-admin database role, verified TLS, and an explicit DSQL migration boundary."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-dsql-drizzle) · [AWS setup](../setup.md) · [Aurora PostgreSQL instead](drizzle-aurora.md)
@@ -26,7 +26,7 @@ These resources are billable. Deletion protection is disabled; destroy deletes t
 ## Create the cluster
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Database = AWS.DSQL.Cluster("Database", {
   deletionProtectionEnabled: false,
@@ -67,7 +67,7 @@ The [deployment Action](https://github.com/alchemy-run/alchemy/blob/main/example
 ## Connect from Lambda
 
 ```typescript
-import * as Drizzle from "alchemy/Drizzle/Postgres";
+import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 import * as Effect from "effect/Effect";
 import * as Redacted from "effect/Redacted";
 

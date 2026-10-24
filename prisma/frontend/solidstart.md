@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/solidstart
 title: "SolidStart"
 description: "Deploy SolidStart to Prisma Compute with Prisma.Website.SolidStart — Nitro's Node target on Bun and SolidStart's native Vite dev server locally."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website.SolidStart` runs your [SolidStart](https://start.solidjs.com/) project’s Vite build with Nitro’s Node preset. SSR, client assets, and prerendered pages run on **Bun in Prisma Compute** from a `tar.gz` artifact, not a Docker image.
@@ -39,7 +39,7 @@ Alchemy appends `nitroV2Plugin()` with its Node preset at build time. Don’t re
 ## Declare the Website
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.SolidStart("Website", {
   rootDir: "./app",

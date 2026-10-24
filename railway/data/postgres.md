@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/postgres
 title: "Postgres"
 description: "Official SSL Postgres in a Project. Bind Railway.ConnectPostgres and query with Drizzle or SQL."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A [`Railway.Postgres`](https://alchemy.run/providers/railway/reference/postgres#postgres) is Postgres as a
@@ -39,7 +39,7 @@ Yield `ConnectPostgres` in the Service's constructor. Provide
 SQL.
 
 ```typescript
-import * as Drizzle from "alchemy/Drizzle/Postgres";
+import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
 export default class Api extends Railway.Service<Api>()(
@@ -126,7 +126,7 @@ Resource-valued props accept the resource or an Effect producing it.
 
 ```typescript
 // src/db.ts
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Site = Railway.Project("Site");
 export const Db = Railway.Postgres("Db", { project: Site });

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/tutorial/part-2
 title: "Part 2: An HTTP API"
 description: "Deploy an Effect-native Prisma Compute service and add an HTTP health endpoint."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Continue from [Part 1](part-1.md). The Project exists, but it has no public endpoint yet. Add a Compute service that runs an Effect HTTP handler on Prisma’s Bun runtime.
@@ -13,7 +13,7 @@ Continue from [Part 1](part-1.md). The Project exists, but it has no public endp
 Create `src/Api.ts`:
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Project } from "./Database.ts";

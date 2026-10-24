@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/credentials
 title: "Credentials"
 description: "PlanetScale credentials as Stack resources — Postgres roles, the default role and forceReset, MySQL passwords, TTLs, CIDR allowlists, and direct vs pooled connection origins."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 PlanetScale credentials are resources: Postgres branches use **roles**
@@ -20,7 +20,7 @@ downstream resources automatically.
 permissions come from `inheritedRoles`:
 
 ```typescript
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 
 const reader = yield* Planetscale.PostgresRole("reader", {
   database,
@@ -111,7 +111,7 @@ consumers like [Cloudflare Hyperdrive](../../cloudflare/data/hyperdrive.md).
 5432), `pooledOrigin` goes through PSBouncer (port 6432):
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
   origin: role.origin, // direct — Hyperdrive pools at the edge

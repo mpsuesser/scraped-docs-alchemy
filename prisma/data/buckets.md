@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/buckets
 title: "Buckets"
 description: "Prisma Buckets provision S3-compatible object storage inside a project, and Bucket access keys mint the S3 credentials — access key, one-time secret, endpoint, and the provider-side bucket name."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A `Prisma.Bucket` is an Object Store bucket inside a Prisma
@@ -11,7 +11,7 @@ project. A `Prisma.BucketAccessKey` is an access key for one bucket and
 yields the S3 credentials your app connects with.
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 const bucket = yield* Prisma.Bucket("uploads", {
   project,

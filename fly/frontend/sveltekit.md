@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Fly with Fly.Website.SvelteKit — kit SSR on a Machine, prerendered assets baked into the image, and Kit's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to Fly. It builds the app with SvelteKit’s own Vite pipeline and an in-memory Node adapter. Client assets and prerendered pages bake into the Machine image and are served first; dynamic routes run in the kit handler on port 3000. Alchemy creates a `Fly.App` if you omit `app`, a `Fly.Service` on that App, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -25,7 +25,7 @@ Your project’s `vite.config.ts` loads natively — your Vite plugins and the k
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.SvelteKit("Website");
 ```

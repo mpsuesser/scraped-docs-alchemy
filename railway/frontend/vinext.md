@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Railway with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The built app runs in a Railway Service using vinext’s production Node server. Alchemy creates a Project when `project` is omitted. The container includes `dist/` and runtime dependencies; `site.url` is the Railway service domain.
@@ -32,7 +32,7 @@ Alchemy injects the target-specific data-cache adapter during deployment. No Alc
 ## Declare the Website
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.Vinext("Website", {
   rootDir: ".",

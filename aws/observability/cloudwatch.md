@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/observability/cloudwatch
 title: "CloudWatch"
 description: "Declare CloudWatch dashboards as structured widget documents and metric alarms that fire SNS topics — versioned next to the Lambda functions and queues they observe."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 CloudWatch is AWS's built-in metrics store: every Lambda function,
@@ -20,7 +20,7 @@ the PR, not a console click.
 serializes it to the document the CloudWatch API expects:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 const dashboard = yield* AWS.CloudWatch.Dashboard("ApiHealth", {
   DashboardBody: {

@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to Hetzner with Hetzner.Website.Astro — Node SSR as a systemd unit on a Server, static output as a file server, and Astro's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Astro` deploys an [Astro](https://astro.build/) project to a Hetzner Cloud Server as a systemd unit. Server-rendered pages run on a [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) (port 3000); static files are served first, then the Astro handler. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 Server in `fsn1`. The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Your `astro.config.*` loads natively — don’t declare an `adapter`.
@@ -25,7 +25,7 @@ Your `astro.config.*` file loads natively — integrations, Vite plugins, and an
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Astro("Website");
 ```

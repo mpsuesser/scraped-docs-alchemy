@@ -1,16 +1,16 @@
 ---
 url: https://alchemy.run/aws/frontend/react-router
 title: "React Router"
-description: "Deploy React Router v7 (framework mode) to AWS with AWS.Website.ReactRouter — SSR on a streaming Lambda Function URL, client assets on S3 + CloudFront, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy React Router v7 (framework mode) to AWS with AWS.Website.ReactRouter — SSR on a Lambda Web Function, client assets on S3 + CloudFront, and React Router's own Vite dev server under alchemy dev."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`AWS.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to AWS. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs on a Lambda Function URL with response streaming, and client assets are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the Lambda.
+`AWS.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to AWS. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/react-router` and `/react-router/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/react-router` and `/react-router/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -31,14 +31,14 @@ export default defineConfig({
 });
 ```
 
-`reactRouter()` owns routing, typegen, and both build environments. Alchemy drives the same two passes `react-router build` runs, forces the SSR bundle to be self-contained, and wraps its fetch handler as a streaming Lambda handler.
+`reactRouter()` owns routing, typegen, and both build environments. Alchemy drives the same two passes `react-router build` runs, forces the SSR bundle to be self-contained, and serves its fetch handler from a Node server.
 
 ## Declare the Website
 
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.ReactRouter("Website");
 ```
@@ -72,7 +72,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Requests matching a built client asset are served straight from S3; everything else — SSR routes, loaders, actions, resource routes — falls through to the Lambda.
+Requests matching a built client asset are served straight from S3; everything else — SSR routes, loaders, actions, resource routes — falls through to the server.
 
 ## How the two build outputs are deployed
 
@@ -81,10 +81,10 @@ Requests matching a built client asset are served straight from S3; everything e
 ```plaintext
 build/
 ├── client/    -> uploaded to S3, served through CloudFront
-└── server/    -> the Lambda deployment package
+└── server/    -> the Web Function deployment package
 ```
 
-`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits `build/server/lambda.mjs` beside it — that module is the deployed Lambda entry.
+`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits `build/server/serve-node.mjs` beside it — that module is the deployed server entry.
 
 If you set Vite’s `base`, set React Router’s `basename` to the same prefix: the client directory maps onto the site root one-for-one, so the paths the SSR document emits have to be the paths S3 was given.
 
@@ -94,14 +94,13 @@ The server function’s environment is configured under `env`:
 
 ```typescript
 export const Website = AWS.Website.ReactRouter("Website", {
-  memorySize: 2048,
   env: {
     API_BASE: "https://api.example.com",
   },
 });
 ```
 
-`env` values are set on the Lambda on deploy and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes. Sibling props tune the Lambda itself (`memorySize`, `timeout`, `architecture`, `runtime`).
+`env` values are set on the server on deploy and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes. Sibling props tune the server itself (`timeout`, `maxConcurrencyPerEnvironment`, `maxEnvironments`).
 
 An output from another resource only exists once that resource is yielded, so declare the site inside the Stack generator instead:
 
@@ -119,7 +118,7 @@ Effect.gen(function* () {
 
 ## Read the environment in a loader
 
-The React Router server runs in a plain Node Lambda, so loaders and actions read the environment from `process.env`:
+The React Router server is a plain Node server, so loaders and actions read the environment from `process.env`:
 
 ```typescript
 export function loader() {
@@ -131,7 +130,7 @@ Values prefixed `VITE_` are inlined into the client bundle at build time instead
 
 ## Read the environment in a resource route
 
-A route module with no default export is a resource route, served by the same Lambda:
+A route module with no default export is a resource route, served by the same server:
 
 ```typescript
 export function loader() {
@@ -169,6 +168,17 @@ See [Effect HTTP API](../apis/effect-http-api.md) for building that Lambda and b
 ## Build configuration
 
 The build runs through your project’s own `vite.config.ts` and `react-router.config.ts`. A custom `buildDirectory` just works — the integration observes the directory from the resolved Vite config, so there is nothing to mirror on the resource.
+
+## Run on a Lambda Function
+
+Web Functions run in a subset of Regions. Elsewhere, set `server: "function"`: the app builds with the `/react-router/aws` deploy target and runs on a Lambda Function behind a streaming Function URL, tuned with `memorySize`, `architecture`, and `runtime`:
+
+```typescript
+export const Website = AWS.Website.ReactRouter("Website", {
+  server: "function",
+  memorySize: 2048,
+});
+```
 
 ## Local dev
 

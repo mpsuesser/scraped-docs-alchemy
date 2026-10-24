@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vite
 title: "Vite"
 description: "Deploy a plain Vite app to AWS with AWS.Website.Vite — the vite build output on S3 behind CloudFront, SPA fallback at the edge, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `AWS.Website.Vite` deploys a client-only [Vite](https://vite.dev/) project to AWS. It runs your project’s own `vite build` — your `vite.config.*` loads natively, plugins included — and serves the output from a private S3 bucket through CloudFront. The site is assets-only: no Lambda is created, no CloudFormation to write, no build command to wire up.
@@ -36,7 +36,7 @@ A project with no config file at all works too: an `index.html` next to your `al
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Vite("Website");
 ```
@@ -216,7 +216,7 @@ Anything whose whole deployable output is a `vite build` deploys with this resou
 
 - [React SPA](vite-spa.md) — from a bare `index.html` to the `create-vite` template.
 - [Vue](vue.md) — Vue 3 SPAs with `vue-router` deep links.
-- [Foldkit](foldkit.md) — builds through the same Vite pipeline under its own `AWS.Website.Foldkit` resource.
+- [Foldkit](foldkit.md) — deploys SPA, SSR, and prerendered apps through `AWS.Website.Foldkit`.
 
 ## SSR frameworks
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/domains
 title: "Domains & DNS"
 description: "Manage Cloudflare zones, DNS records, DNSSEC, and zone settings as resources — and safely adopt the domains you already have."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Your domain is infrastructure too. Alchemy manages Cloudflare
@@ -22,7 +22,7 @@ so a deploy can never clobber DNS it doesn't own.
 A zone is one resource declaration:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 const zone = yield* Cloudflare.Zone.Zone("MyZone", {
   name: "example.com",

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vocs
 title: "Vocs"
 description: "Deploy Vocs documentation to Prisma Compute with Prisma.Website.Vocs — static assets and Waku RSC on Bun, with Vocs dev locally."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website.Vocs` builds a [Vocs](https://vocs.dev/) documentation site and runs it on **Bun in Prisma Compute**. The shared Node target serves client files and prerendered HTML first, then falls through to Vocs’ Waku RSC handler. The result is uploaded as `tar.gz`, not a Docker image. Extensionless pages such as `/about` retain their normal URLs.
@@ -41,7 +41,7 @@ build/
 ## Declare the Website
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Vocs("Website", {
   rootDir: "./docs",

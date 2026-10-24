@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/setup
 title: "Setup"
 description: "Install Alchemy and connect it to Hetzner Cloud — create a project, generate an API token, and store it in a profile."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Everything you need before deploying to Hetzner Cloud: the alchemy package, a Hetzner project, and an API token stored in a profile.
@@ -40,7 +40,7 @@ mkdir my-app && cd my-app && pnpm init
 ## Install
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/hetzner@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Connect alchemy to Hetzner

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Deploy a Cloudflare Worker with Drizzle queries, Hyperdrive connections, and reviewed, committed migrations on Neon or PlanetScale."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../sql.md) owns the portable client APIs. For Cloudflare’s SQLite database, use [Drizzle on D1](d1-drizzle.md).
@@ -11,7 +11,7 @@ This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../s
 ## Install the client and generator
 
 ```sh
-pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
 pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc @types/pg
 ```
 
@@ -71,7 +71,7 @@ git diff --cached
 git commit -m "Add database migration"
 ```
 
-Generate whenever the schema changes, review the schema, SQL, and snapshots together, and commit them before deployment. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/reference#schema) is a separate integration, not part of this workflow.
+Generate whenever the schema changes, review the schema, SQL, and snapshots together, and commit them before deployment. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/schema) is a separate integration, not part of this workflow.
 
 ## Configure the database
 
@@ -80,7 +80,7 @@ Use [Neon’s database configuration](../../neon/guides/drizzle.md#feed-migratio
 ## Add Hyperdrive
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { NeonDb } from "./Db.ts";
 
@@ -98,8 +98,8 @@ Hyperdrive pools the direct Neon origin; local development uses the pooled origi
 ## Open the connection with Drizzle.Postgres
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle/Postgres";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Hyperdrive } from "./Hyperdrive.ts";
@@ -129,8 +129,8 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import Api from "./src/Api.ts";
@@ -215,8 +215,8 @@ Review each generated change before committing and deploy only those committed f
 ## Use PlanetScale instead
 
 ```typescript
-import * as Neon from "alchemy/Neon";
-import * as Planetscale from "alchemy/Planetscale";
+import * as Neon from "@alchemy.run/neon";
+import * as Planetscale from "@alchemy.run/planetscale";
 
     providers: Layer.mergeAll(Cloudflare.providers(), Neon.providers()),
     providers: Layer.mergeAll(Cloudflare.providers(), Planetscale.providers()),
@@ -227,7 +227,7 @@ Use the [PlanetScale guide](../../planetscale/guides/drizzle.md) to export `Plan
 ## Connect a PlanetScale Postgres role
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { PlanetscaleDb } from "./Db.ts";
 
@@ -263,8 +263,8 @@ bun add @effect/sql-mysql2 mysql2
 ```
 
 ```typescript
-import * as Drizzle from "alchemy/Drizzle/Postgres";
-import * as Drizzle from "alchemy/Drizzle/MySQL";
+import * as Drizzle from "@alchemy.run/drizzle/Postgres";
+import * as Drizzle from "@alchemy.run/drizzle/MySQL";
 
 const db = yield* Drizzle.Postgres(hd.connectionString, { relations });
 const db = yield* Drizzle.MySQL(hd.connectionString, { relations });

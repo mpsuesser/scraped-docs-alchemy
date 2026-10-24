@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Railway with Railway.Website.Nuxt — nitro's node preset on a Service, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Railway. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server plus prerendered assets run on one `Railway.Service`. Omit `project` to create a `Railway.Project`. The URL is `https://{name}.up.railway.app` unless you set `domain`. There is no `nitro.preset` to edit and no build command to run.
@@ -38,7 +38,7 @@ Don’t set `nitro.preset` — the Node deploy target owns the preset (`"node"`)
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.Nuxt("Website");
 ```

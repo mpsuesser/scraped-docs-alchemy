@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 The `Counter` Durable Object you added in the previous part holds
@@ -24,7 +24,7 @@ the WebSocket handshake. Create `src/room.ts`:
 
 ```typescript
 // src/room.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class Room extends Cloudflare.DurableObject<Room>()(
@@ -59,7 +59,7 @@ what later:
 
 ```diff lang="typescript"
 // src/room.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class Room extends Cloudflare.DurableObject<Room>()(
@@ -294,6 +294,23 @@ Omit `catchTag` to propagate the typed failure, or handle it at your normal
 Effect boundary. These helpers are for application-owned attachments, not
 the internal serializer metadata of WebSocket RPC connections.
 
+## Address groups of sockets with tags
+
+To message a subset of the room, tag sockets when you accept them
+instead of tracking group membership yourself:
+
+```typescript
+const [response, socket] = yield* Cloudflare.upgrade({
+  tags: [`user:${userId}`, "role:admin"],
+});
+```
+
+`state.getWebSockets("role:admin")` then returns only the sockets
+with that tag, and `state.getTags(socket.ws)` reads a socket's tags.
+The runtime stores tags with the socket, so both work after
+hibernation without rebuilding any in-memory state. Cloudflare allows
+at most 10 tags per socket, each at most 256 characters.
+
 ## Extract a broadcast helper
 
 Before wiring this up, pull the broadcast loop into a reusable
@@ -349,7 +366,7 @@ to the matching DO instance:
 
 ```diff lang="typescript"
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 +import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -409,7 +426,7 @@ per run:
 
 ```typescript
 // test/integ.test.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Deferred from "effect/Deferred";

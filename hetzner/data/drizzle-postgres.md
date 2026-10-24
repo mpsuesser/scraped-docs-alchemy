@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/data/drizzle-postgres
 title: "Drizzle Postgres on Hetzner"
 description: "Run a Drizzle API on a Hetzner Server with external Neon Postgres and reviewed SQL migrations."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy's Hetzner provider has no managed Postgres resource; this guide runs the application on Hetzner and stores its data in **Neon Postgres**. Start with [Hetzner setup](../setup.md), the [Service tutorial](https://alchemy.run/hetzner/tutorial/part-2), [Neon setup](../../neon/setup.md), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
@@ -11,7 +11,7 @@ Alchemy's Hetzner provider has no managed Postgres resource; this guide runs the
 ## Install the database dependencies
 
 ```sh
-pnpm add drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
 pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
 ```
 
@@ -58,7 +58,7 @@ Commit the schema, SQL, and snapshots together; do not generate migration histor
 
 ```typescript
 // src/db.ts
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 export const Db = Neon.Project("Db", {
   region: "aws-eu-central-1",
@@ -71,7 +71,7 @@ The project's default branch hosts the database; see [Neon connections](../../ne
 
 ```diff lang="typescript"
  // alchemy.run.ts
-+import * as Neon from "alchemy/Neon";
++import * as Neon from "@alchemy.run/neon";
 +import * as Layer from "effect/Layer";
 
 -  providers: Hetzner.providers(),
@@ -133,7 +133,7 @@ Supply the Neon project's `connectionUri` as secret `DATABASE_URL` in the migrat
 
 ```diff lang="typescript"
  // src/api.ts
-+import * as Drizzle from "alchemy/Drizzle/Postgres";
++import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 +import * as Config from "effect/Config";
 
  Effect.gen(function* () {

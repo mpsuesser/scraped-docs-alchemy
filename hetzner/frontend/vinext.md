@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Hetzner with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Hetzner.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The built app runs on a Hetzner Cloud Server using vinext’s production Node server as a systemd service. Alchemy creates a server when `server` is omitted and uploads `dist/` with the runtime dependency installation.
@@ -32,7 +32,7 @@ Alchemy injects the target-specific data-cache adapter during deployment. No Alc
 ## Declare the Website
 
 ```typescript
-import * as Hetzner from "alchemy/Hetzner";
+import * as Hetzner from "@alchemy.run/hetzner";
 
 export const Website = Hetzner.Website.Vinext("Website", {
   rootDir: ".",

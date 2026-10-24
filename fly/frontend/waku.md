@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Fly with Fly.Website.Waku — RSC server on a Machine, SSG pages baked into the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Fly. It builds the project programmatically: the RSC server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and the client output — including SSG-prerendered pages — is baked into the image. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -39,7 +39,7 @@ Options set on the resource (`srcDir`, `distDir`, `basePath`) merge over the fil
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Waku("Website");
 ```

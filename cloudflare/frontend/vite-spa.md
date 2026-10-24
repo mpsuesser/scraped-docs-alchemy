@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`Cloudflare.Website.Vite`](vite.md): build the client assets, ship them to Cloudflare, and serve them through a Worker so your frontend and backend share one URL surface and one deploy. For the resource itself — what it does, its props, `memo` semantics, and dev mode — see the [Vite resource page](vite.md).
@@ -96,7 +96,7 @@ Yield `Cloudflare.Website.Vite("Website")` from your Stack:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Worker from "./src/worker.ts";
 
@@ -239,7 +239,7 @@ curl -s https://myapp-web-dev-you.workers.dev | head -5
 Or add an integration test alongside the existing ones:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
@@ -301,6 +301,7 @@ This page is the plain React SPA path. Other frameworks have their own landing p
 - [TanStack Start](tanstack-start.md) — full-stack React with server routes and runtime bindings
 - [React Router](react-router.md) — SPA or React Server Components
 - [Vue](vue.md) — Vue 3 SPA
+- [Foldkit](foldkit.md) — client-only, server-rendered, or prerendered Foldkit
 - [SolidStart](solidstart.md) — SSR Solid
 
 For frameworks whose build isn’t driven by Vite alone, deploy the built output with [`Cloudflare.Website.StaticSite`](static-site.md). The [Frontend overview](frontends.md) lays out which resource fits which framework.
@@ -314,7 +315,7 @@ The walkthrough below uses a TanStack Start route handler because a pure SPA onl
 Start with the simplest backend: an R2 bucket.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Bucket = Cloudflare.R2.Bucket("Bucket");
 ```
@@ -392,7 +393,7 @@ This is the most direct path — no extra workers, no extra code. Reach for it w
 When the work is shared across routes, deserves typed errors, or needs Effect-native primitives (retries, layers, structured concurrency), factor it into its own Worker:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -476,7 +477,7 @@ Effect-native workers serialize their results as wire envelopes: `Effect.fail` b
 
 ```typescript
 import { createFileRoute } from "@tanstack/react-router";
-import * as Cloudflare from "alchemy/Cloudflare/Bridge";
+import * as Cloudflare from "@alchemy.run/cloudflare/Bridge";
 import type Backend from "../backend.ts";
 import { env } from "../env.ts";
 

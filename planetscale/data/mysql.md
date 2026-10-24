@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/data/mysql
 title: "MySQL"
 description: "PlanetScale MySQL (Vitess) as Stack resources — databases, branches, and passwords, with SQL migrations per branch and a straight line into Cloudflare Hyperdrive."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 PlanetScale MySQL is Vitess-backed serverless MySQL with cheap,
@@ -19,7 +19,7 @@ here? [Set up credentials](../setup.md) first.
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -114,7 +114,7 @@ The password's `origin` attribute is the exact shape
 the branch is one resource:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
   origin: password.origin,

@@ -1,16 +1,16 @@
 ---
 url: https://alchemy.run/aws/frontend/solidstart
 title: "SolidStart"
-description: "Deploy a SolidStart app to AWS with AWS.Website.SolidStart — nitro's aws-lambda preset on a streaming Lambda Function URL, S3 assets behind CloudFront, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy a SolidStart app to AWS with AWS.Website.SolidStart — SSR on a Lambda Web Function, S3 assets behind CloudFront, and SolidStart's own Vite dev server under alchemy dev."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`AWS.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to AWS. It runs your project’s own `vite build` and appends nitro’s `aws-lambda` preset: the SSR server runs on a Lambda Function URL with response streaming, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the Lambda.
+`AWS.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to AWS. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/solidstart` and `/solidstart/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/solidstart` and `/solidstart/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -35,14 +35,14 @@ export default defineConfig({
 });
 ```
 
-Alchemy appends its own `nitroV2Plugin()` instance at build time, carrying the `aws-lambda` preset with response streaming enabled. Don’t register `nitroV2Plugin()` yourself — the appended instance would discard its options, so the build fails with an actionable error instead. Pass nitro options through the resource’s `nitro` prop; see [Prerendering](#prerendering) below.
+Alchemy appends its own `nitroV2Plugin()` instance at build time, carrying nitro’s `node` preset (`aws-lambda`, streaming enabled, with `server: "function"`). Don’t register `nitroV2Plugin()` yourself — the appended instance would discard its options, so the build fails with an actionable error instead. Pass nitro options through the resource’s `nitro` prop; see [Prerendering](#prerendering) below.
 
 ## Declare the Website
 
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.SolidStart("Website");
 ```
@@ -82,14 +82,13 @@ The server function’s environment is configured under `env`:
 
 ```typescript
 export const Website = AWS.Website.SolidStart("Website", {
-  memorySize: 2048,
   env: {
     API_BASE: "https://api.example.com",
   },
 });
 ```
 
-`env` values are set on the Lambda on deploy and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes. Sibling props tune the Lambda itself (`memorySize`, `timeout`, `architecture`, `runtime`).
+`env` values are set on the server on deploy and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes. Sibling props tune the server itself (`timeout`, `maxConcurrencyPerEnvironment`, `maxEnvironments`).
 
 An output from another resource only exists once that resource is yielded, so declare the site inside the Stack generator instead:
 
@@ -107,7 +106,7 @@ Effect.gen(function* () {
 
 ## Read the environment in server code
 
-The SolidStart server runs in a plain Node Lambda, so API routes, server functions, and SSR read the environment from `process.env`:
+The SolidStart server is a plain Node server, so API routes, server functions, and SSR read the environment from `process.env`:
 
 ```typescript
 export function GET() {
@@ -127,7 +126,18 @@ export const Website = AWS.Website.SolidStart("Website", {
 });
 ```
 
-`prerender` takes the routes to render (`routes`) and can crawl links from prerendered pages to prerender them too (`crawlLinks`). The `nitro` prop is the home for all nitro options (route rules, storage, …) — the integration owns the plugin instance, so they cannot live in `vite.config.ts`. Values must be JSON-serializable; `preset` is owned by the AWS deploy target, and a foreign preset is a hard error.
+`prerender` takes the routes to render (`routes`) and can crawl links from prerendered pages to prerender them too (`crawlLinks`). The `nitro` prop is the home for all nitro options (route rules, storage, …) — the integration owns the plugin instance, so they cannot live in `vite.config.ts`. Values must be JSON-serializable; `preset` is owned by the deploy target, and a foreign preset is a hard error.
+
+## Run on a Lambda Function
+
+Web Functions run in a subset of Regions. Elsewhere, set `server: "function"`: the app builds with the `/solidstart/aws` deploy target and runs on a Lambda Function behind a streaming Function URL, tuned with `memorySize`, `architecture`, and `runtime`:
+
+```typescript
+export const Website = AWS.Website.SolidStart("Website", {
+  server: "function",
+  memorySize: 2048,
+});
+```
 
 ## Local dev
 

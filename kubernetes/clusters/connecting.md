@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/clusters/connecting
 title: "Connecting to clusters"
 description: "Point Kubernetes resources at any cluster with Kubernetes.KubeConfig, a raw Kubernetes.Connection (bearer token, client certificate, or exec plugin), or a cluster resource such as Kubernetes.LocalCluster."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Every Kubernetes resource takes a `cluster` prop. That includes
@@ -34,7 +34,7 @@ even after you delete the code that declared it.
 `Kubernetes.KubeConfig` authenticates exactly like `kubectl`:
 
 ```typescript
-import * as Kubernetes from "alchemy/Kubernetes";
+import * as Kubernetes from "@alchemy.run/kubernetes";
 
 const cluster = Kubernetes.KubeConfig({ context: "prod-east" });
 

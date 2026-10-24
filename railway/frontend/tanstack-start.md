@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Railway with Railway.Website.TanStackStart — SSR on a container Service, client assets in the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Railway. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server plus client assets run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -38,7 +38,7 @@ Alchemy drives that config’s `builder.buildApp()` and forces the SSR bundle to
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.TanStackStart("Website");
 ```

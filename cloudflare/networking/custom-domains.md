@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/custom-domains
 title: "Custom domains & routes"
 description: "Serve Workers from your own domain — create or adopt a Zone, attach custom domains, route hostname patterns, manage DNS records, and control the workers.dev subdomain."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Every Worker gets a `workers.dev` URL by default, but production apps
@@ -17,7 +17,7 @@ All the snippets below run inside a Stack's `Effect.gen` body:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

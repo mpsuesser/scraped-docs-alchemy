@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
 description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **EventBridge** is AWS’s event router — producers publish events onto a bus, rules match them by pattern, and targets receive them. **EventBridge Scheduler** is its time-based sibling: fire an invocation on a `rate(...)`, `cron(...)`, or one-time `at(...)` expression. In Alchemy the surface is:
@@ -20,7 +20,7 @@ current_date: 2026-10-02T14:04:57.255Z
 An event bus is a one-line resource. Declare it in a shared module so producers and consumers can reference the same handle:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Events = AWS.EventBridge.EventBus("Events", {});
 ```
@@ -32,7 +32,7 @@ No name required — Alchemy generates one from the app, stage, and logical ID. 
 `EventBridge.PutEvents(bus)` returns a callable Effect and quietly attaches an `events:PutEvents` policy statement scoped to the bus ARN (or the default bus, if you pass nothing):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Events } from "./bus.ts";
@@ -69,7 +69,7 @@ Entries carry a `Source`, a `DetailType`, and a JSON-encoded `Detail` — the th
 `consumeBusEvents` is the consumer-side mirror of `SQS.consumeQueueMessages`: pass the bus, an event pattern, and a handler that receives matching events as a typed `Stream`:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
 import { Events } from "./bus.ts";

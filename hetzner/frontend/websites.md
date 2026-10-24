@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Hetzner with first-class Website resources."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy deploys frontends to Hetzner with a family of
@@ -52,7 +52,7 @@ Service. `domain` requires an existing Hetzner DNS
   Components) on Node, with SSG pages served extensionless.
 - [`Octane`](octane.md) — OctaneJS SSR. Alchemy wraps
   native Node output; no hosting adapter is needed in `octane.config.ts`.
-- [`Foldkit`](foldkit.md) — client-only Foldkit
+- [`Foldkit`](foldkit.md) — Foldkit SPA, SSR, and prerendered apps
   SPA; deep links fall back to `index.html`.
 - [`Vocs`](vocs.md) — prerendered Vocs docs;
   extensionless pages (`/about` → `about/index.html`).

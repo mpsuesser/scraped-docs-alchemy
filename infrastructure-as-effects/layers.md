@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/layers
 title: "Layers"
 description: "A Layer defines a service contract with swappable implementations. In Alchemy, a Layer can encapsulate Resources and Bindings, so shared services carry their own infrastructure and permissions."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 As your application grows, you'll need to start sharing components of
@@ -67,7 +67,7 @@ export const JobServiceKV = Layer.effect(
 Declare the storage — a real KV namespace, owned by the Layer:
 
 ```diff lang="typescript"
-+import * as Cloudflare from "alchemy/Cloudflare";
++import * as Cloudflare from "@alchemy.run/cloudflare";
  import * as Effect from "effect/Effect";
  import * as Layer from "effect/Layer";
 

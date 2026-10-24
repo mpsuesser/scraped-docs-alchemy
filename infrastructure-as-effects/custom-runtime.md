@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/custom-runtime
 title: "Custom Runtime"
 description: "Implement your own Runtime resource on the Platform type — a Provider that provisions the compute and bundles the runtime Effect."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Worker, Lambda, and Container cover the common cases. This guide is for bringing the [Runtime](runtime.md) model to a new compute target. A custom runtime is a [Provider](../infrastructure-as-code/provider.md) with two jobs: provision the compute infrastructure, and bundle + upload the runtime Effect.
@@ -111,7 +111,7 @@ export interface BaseRuntimeContext {
 - **`serve`** — receives the user’s `fetch` handler (and RPC shape); register it however your platform serves HTTP.
 - **`exports`** — resolves to whatever the bundled entrypoint needs to run — for hosts, a single `program` Effect.
 
-Server-style platforms don’t write this from scratch — `createHostRuntimeContext` in [`Server/Process.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/Server/Process.ts) is the shared implementation used by `AWS.ECS.Task` and `AWS.EC2.Instance`. It folds `run` (background loops) and `serve` (HTTP handlers) into one list of runners:
+Server-style platforms don’t write this from scratch — `createHostRuntimeContext` in [`Runtime/Process.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/Runtime/Process.ts) is the shared implementation used by `AWS.ECS.Task` and `AWS.EC2.Instance`. It folds `run` (background loops) and `serve` (HTTP handlers) into one list of runners:
 
 ```typescript
 run: (effect) => Effect.sync(() => {
@@ -269,8 +269,8 @@ Your provider decides what the contract data *means* — here IAM policies attac
 The finished runtime reads like any other Function — infrastructure props, a constructor Effect, a `{ fetch }` handler:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
-import { ServerHost } from "alchemy/Server";
+import * as AWS from "@alchemy.run/aws";
+import { ServerHost } from "alchemy/Runtime/Process";
 import * as Effect from "effect/Effect";
 
 export default class ApiTask extends AWS.ECS.Task<ApiTask>()(

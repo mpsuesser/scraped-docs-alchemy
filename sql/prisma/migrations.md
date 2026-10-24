@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/prisma/migrations
 title: "Migrations"
 description: "How Prisma.Contract and Prisma.Migrate run Prisma's contract emission, migration planning, and graph-ordered apply inside alchemy deploy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Prisma ORM v8 replaces `prisma migrate dev`/`deploy` with a
@@ -13,7 +13,7 @@ order. Alchemy runs both as resources in the deploy graph —
 `Prisma.Contract` plans, `Prisma.Migrate` applies:
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 const contract = yield* Prisma.Contract("contract");
 
@@ -105,7 +105,7 @@ git commit -m "Add Prisma migration"
 ```
 
 Resolve any placeholders and self-emit their packages before staging. If the
-application uses generated Effect outputs, run `pnpm exec alchemy prisma generate`
+application uses generated Effect outputs, run `pnpm exec alchemy provider prisma generate`
 before staging too; native `prisma contract emit` does not generate them. Review
 the source contract, operations, emitted artifacts, and snapshots together.
 

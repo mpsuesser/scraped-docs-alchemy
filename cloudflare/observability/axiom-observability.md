@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/axiom-observability
 title: "Ship Worker telemetry to Axiom"
 description: "Declare Axiom datasets, a least-privilege ingest token, and monitors in the same Stack as the Worker that emits the telemetry — or let Cloudflare push Workers Logs to Axiom natively."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Effect already emits OpenTelemetry — every span, `Metric`, and
@@ -34,8 +34,8 @@ provider layers in your Stack:
 
 ```typescript
 // alchemy.run.ts
-import * as Axiom from "alchemy/Axiom";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Axiom from "@alchemy.run/axiom";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Layer from "effect/Layer";
 
 providers: Layer.mergeAll(Cloudflare.providers(), Axiom.providers()),
@@ -54,7 +54,7 @@ Worker can import them:
 
 ```typescript
 // src/observability.ts
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 
 export const Traces = Axiom.Dataset("Traces", {
   name: "app-traces",
@@ -129,7 +129,7 @@ Worker produces is exported, flushed as each request completes:
 
 ```typescript
 // src/worker.ts
-import * as Axiom from "alchemy/Axiom";
+import * as Axiom from "@alchemy.run/axiom";
 import { Ingest, Logs, Metrics, Traces } from "./observability.ts";
 
 export default Cloudflare.Worker(

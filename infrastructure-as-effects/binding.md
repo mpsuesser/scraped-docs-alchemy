@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)
@@ -12,7 +12,7 @@ to a Worker, Lambda Function, Container, or Server — any
 constructor, you yield the resource and get back a typed client:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -124,7 +124,7 @@ satisfied. Cloudflare shows why that split matters. A Worker binds an
 R2 bucket with the same shape:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads");
 

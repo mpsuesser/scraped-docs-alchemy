@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/email/sending
 title: "Sending & managing email"
 description: "Send email with SES — verify identities, send from a Lambda with the SendEmail binding, manage contact lists, tenants, dedicated IP pools, account settings, and deliverability insights."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **SES sending** starts with a verified **identity** — a domain or
@@ -53,8 +53,8 @@ body:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as SES from "alchemy/AWS/SES";
+import * as AWS from "@alchemy.run/aws";
+import * as SES from "@alchemy.run/aws/SES";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -95,8 +95,8 @@ returns a callable. Provide its implementation with
 
 ```typescript
 // src/mailer.ts
-import * as AWS from "alchemy/AWS";
-import * as SES from "alchemy/AWS/SES";
+import * as AWS from "@alchemy.run/aws";
+import * as SES from "@alchemy.run/aws/SES";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 

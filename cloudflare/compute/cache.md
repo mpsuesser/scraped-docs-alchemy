@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cache
 title: "Workers Cache"
 description: "Serve responses from Cloudflare's edge cache before your Worker even runs — enable it with one yield, control it with standard headers, purge it by tag from inside a handler."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Workers Cache sits in front of a Worker: when it's enabled, Cloudflare
@@ -21,7 +21,7 @@ is no layer to provide:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";

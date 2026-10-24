@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS fullstack app to Cloudflare Workers with Cloudflare.Website.Octane — native Octane and Vite configuration, no hosting adapter or Wrangler file required."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.Website.Octane` builds and deploys an [OctaneJS](https://octanejs.dev/) fullstack app as a Cloudflare Worker. Alchemy preserves Octane’s native compiler and client build, builds the server for Workers, and generates the Worker entry. No hosting adapter, Wrangler file, or separate build command is required.
@@ -55,7 +55,7 @@ You can then uninstall `@octanejs/adapter-cloudflare` if nothing else in your pr
 Declare the site as a module-level const (rather than inline in the Stack) and derive the typed shape of its bindings from it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Octane("Website");
 

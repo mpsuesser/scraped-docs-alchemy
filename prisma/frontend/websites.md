@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Prisma Compute."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website` builds your frontend with its own framework and deploys
@@ -86,7 +86,7 @@ Each framework guide includes equivalent npm, pnpm, and yarn commands.
 
 ```typescript
 // alchemy.run.ts
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Vite("Website", {
   rootDir: "./app",

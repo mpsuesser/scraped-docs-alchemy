@@ -2,14 +2,14 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute Runtime of every Alchemy app — declare the Worker and its handler in one file, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In Alchemy, a Cloudflare Worker is a [Runtime](../../infrastructure-as-effects/runtime.md): a [Resource](../../infrastructure-as-code/resource.md) that carries the code it runs. The name and props describe the Worker to deploy. The Effect is what it does:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -30,7 +30,7 @@ export default Cloudflare.Worker(
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Worker from "./src/worker.ts";
 
@@ -57,7 +57,7 @@ Reach for a Worker whenever you need compute: HTTP APIs, frontends, queue consum
 Declare a Bucket next to the Worker and bind it. The [Binding](../../infrastructure-as-effects/binding.md) hands back a typed client, and the Layer you provide decides how the binding is implemented, here as a native `r2_bucket` binding on the Worker:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -94,7 +94,7 @@ Every building block binds the same way. See [KV](../data/kv.md), [D1](../data/d
 Workers call each other’s methods directly. No HTTP routes, no schema, no public URL. Declare the callee as a class whose type carries its RPC shape, and attach its implementation with `.make()`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export class Greeter extends Cloudflare.Worker<
@@ -115,7 +115,7 @@ export default Greeter.make(
 Bind it from another Worker with `bindWorker` and call `greet` through the typed stub:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Greeter } from "./Greeter.ts";
@@ -288,7 +288,7 @@ export const Worker = Cloudflare.Worker("Worker", {
 A Worker doesn’t have to be an Effect program. Point `main` at a plain module, a classic `async fetch` handler or a prebuilt bundle from another tool, and declare bindings with the `env` prop. `InferEnv` derives the handler’s env type from them:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Uploads = Cloudflare.R2.Bucket("Uploads");
 export const DB = Cloudflare.D1.Database("DB");

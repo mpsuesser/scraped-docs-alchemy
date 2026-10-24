@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/waku
 title: "Waku"
 description: "Deploy Waku to Prisma Compute with Prisma.Website.Waku — React Server Components and static pages on Bun, with Waku's native dev server locally."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website.Waku` builds a [Waku](https://waku.gg/) React Server Components app with the shared Node target. Its RSC server, client assets, and SSG pages run on **Bun in Prisma Compute** after a `tar.gz` upload. There is no Docker image or registry.
@@ -43,7 +43,7 @@ export const Website = Prisma.Website.Waku("Website", {
 ## Declare the Website
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Waku("Website");
 ```

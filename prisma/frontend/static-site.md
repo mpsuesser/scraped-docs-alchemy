@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/static-site
 title: "Static sites"
 description: "Deploy any static build to Prisma Compute with Prisma.Website.StaticSite — a shell command, output directory, and Bun static-file server."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website.StaticSite` runs a build command, packages its output,
@@ -21,7 +21,7 @@ to a global CDN or remove the runtime. For Vite apps, prefer
 
 ```typescript
 // alchemy.run.ts
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.StaticSite("Website", {
   command: "hugo --minify",
@@ -31,7 +31,7 @@ export const Website = Prisma.Website.StaticSite("Website", {
 
 Install the generator your command invokes. Unlike framework resources,
 `StaticSite` does not load a framework build integration from your app;
-it uses [`Command.Build`](https://alchemy.run/providers/command/reference#build) and the shared
+it uses [`Command.Build`](https://alchemy.run/providers/command/build) and the shared
 static-file server.
 
 The command is memoized from input content. Use `memo: { include: [...] }`

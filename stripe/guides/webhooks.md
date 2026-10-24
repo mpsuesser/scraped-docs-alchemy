@@ -2,8 +2,8 @@
 url: https://alchemy.run/stripe/guides/webhooks
 title: "React to Stripe events"
 description: "consumeEvents provisions the webhook endpoint and runs one Effect per delivery. When to use it, which events to listen for, and how to manage the endpoint yourself."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Stripe tells you what happened asynchronously. A payment succeeded, a
@@ -27,8 +27,8 @@ delivery is verified before your handler sees it.
 
 ```typescript
 // src/Api.ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Stripe from "alchemy/Stripe";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -60,7 +60,9 @@ export default class Api extends Cloudflare.Worker<Api>()(
     return {
       fetch: Effect.succeed(HttpServerResponse.text("ok")),
     };
-  }).pipe(Effect.provide(Stripe.ConsumeEventsLive)),
+  }).pipe(
+    Effect.provide(Stripe.ConsumeEventsLive),
+  ),
 ) {}
 ```
 
@@ -83,7 +85,7 @@ is the usual shape.
 
 ## Which events
 
-The classes exported from `alchemy/Stripe`:
+The classes exported from `@alchemy.run/stripe`:
 
 | Class | Event | You'll want it when |
 |---|---|---|

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/solidstart
 title: "SolidStart"
 description: "Deploy SolidStart to Cloudflare with Cloudflare.Website.Vite — plus the hand-rolled SolidJS SSR variant for full control over the server entry."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [SolidStart](https://start.solidjs.com/) builds through Vite: the `solidStart()` plugin in your `vite.config.ts` owns routing, SSR, and the server entry, and a single `vite build` produces the whole app. That makes it a pure-Vite project, so [`Cloudflare.Website.Vite`](vite.md) deploys it directly — no adapter config, no Wrangler file, no manual entrypoint.
@@ -31,7 +31,7 @@ Because SolidStart is fully expressed as a Vite plugin, Alchemy’s programmatic
 Declare the site as a module-level const (rather than inline in the Stack) and derive the typed shape of its bindings from it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Vite("Website");
 

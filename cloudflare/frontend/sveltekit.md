@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Cloudflare Workers with Cloudflare.Website.SvelteKit — a wrangler-free in-memory adapter, real bindings on platform.env, and full-HMR local dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app as a Cloudflare Worker. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Cloudflare adapter, then re-bundles the server output for workerd. Client assets and prerendered pages deploy as Worker static assets; dynamic routes are served by the generated Worker. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it), no `@sveltejs/adapter-cloudflare` to install, and no Wrangler file.
@@ -25,7 +25,7 @@ Your project’s `vite.config.ts` loads natively — your Vite plugins and the k
 Declare the site as a module-level const (rather than inline in the Stack) and derive the typed shape of its bindings from it:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.SvelteKit("Website");
 

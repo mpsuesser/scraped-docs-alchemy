@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Prisma Compute with Prisma.Website.Vite — static files served on Bun and Vite's native dev server locally."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Prisma.Website.Vite` runs [Vite](https://vite.dev/) ’s build and serves its output with a generated static-file server on **Bun in Prisma Compute**. The Node-target output is uploaded as `tar.gz`, not a Docker image. There is no framework SSR handler, but the site still has a Compute runtime.
@@ -35,7 +35,7 @@ export default defineConfig({
 ## Declare the Website
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Vite("Website");
 ```

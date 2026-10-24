@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on Cloudflare — a TanStack Start UI that drives an Effect RPC backend over Drizzle and Neon Postgres, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 This guide ties four pieces into one deployable app:
@@ -122,9 +122,9 @@ Worker reaches Postgres through Cloudflare's connection pooler:
 ```typescript
 // src/backend/database.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDatabase = Effect.gen(function* () {
@@ -187,8 +187,8 @@ we raise inside the `flatMap` stays a normal, typed failure the client can catch
 
 ```typescript
 // src/backend/api.ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle/Postgres";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle/Postgres";
 import { eq } from "drizzle-orm";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -280,9 +280,9 @@ resource into an SSR Worker (see [Frontend frameworks](frontends.md)):
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import Backend from "./src/backend/api.ts";

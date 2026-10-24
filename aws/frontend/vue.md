@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to AWS with AWS.Website.Vite — S3 + CloudFront, deep links that work by default, and Vue's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [Vue](https://vuejs.org/) is pure Vite — the whole app builds from `@vitejs/plugin-vue` in your `vite.config.ts`, so [`AWS.Website.Vite`](vite.md) deploys it with a single declaration. The build output goes to a private S3 bucket behind a CloudFront distribution; there is no server function, no build command to wire up, and no CloudFormation to write.
@@ -47,7 +47,7 @@ Alchemy runs your project’s own `vite build` programmatically against this con
 Declare the site as a module-level const (rather than inline in the Stack) — every prop is optional, so the minimal declaration is just a name:
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Vite("Vue");
 ```

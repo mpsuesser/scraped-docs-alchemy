@@ -2,8 +2,8 @@
 url: https://alchemy.run/planetscale/guides/drizzle
 title: "Drizzle ORM with PlanetScale"
 description: "Configure PlanetScale Postgres or MySQL branches, committed Drizzle migrations, and role or password connections."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Use the portable [Postgres](../../sql/drizzle/postgres.md) or [MySQL](../../sql/drizzle/mysql.md) client with PlanetScale. This page owns database configuration; [Add Drizzle ORM](../../cloudflare/data/drizzle.md) owns Worker deployment.
@@ -34,13 +34,13 @@ git diff --cached
 git commit -m "Add database migration"
 ```
 
-Generate when the schema changes, then review and commit the schema, SQL, and snapshots together before deploying. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/reference#schema) is not required for this workflow.
+Generate when the schema changes, then review and commit the schema, SQL, and snapshots together before deploying. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/schema) is not required for this workflow.
 
 ## Apply them on the branch
 
 ```typescript
 // src/Db.ts
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 import * as Effect from "effect/Effect";
 
 export const PlanetscaleDb = Effect.gen(function* () {
@@ -66,7 +66,7 @@ Register `Planetscale.providers()` in your Stack; the branch applies committed m
 ## Connect via `origin` / `pooledOrigin`
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Hyperdrive = Effect.gen(function* () {
   const { role } = yield* PlanetscaleDb;
@@ -94,7 +94,7 @@ For Vitess, use `mysql-core` columns and run the same generate, review, and comm
 
 ```typescript
 // src/Db.ts
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 import * as Effect from "effect/Effect";
 
 export const PlanetscaleDb = Effect.gen(function* () {

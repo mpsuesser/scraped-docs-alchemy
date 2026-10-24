@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/auth-providers
 title: "Auth Providers"
 description: "An Auth Provider produces the credentials for a cloud's API calls — resolved lazily as Effects, so tokens and role sessions can refresh instead of pinning one static key."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Resources never take API keys as props. Each cloud registers an
@@ -102,7 +102,7 @@ environment services are `Context.Service`s whose **service value is
 itself an Effect**:
 
 ```typescript
-// alchemy/Cloudflare/CloudflareEnvironment
+// @alchemy.run/cloudflare/CloudflareEnvironment
 export class CloudflareEnvironment extends Context.Service<
   CloudflareEnvironment,
   Effect.Effect<CloudflareResolvedCredentials>
@@ -116,7 +116,7 @@ environment holds its credentials as an Effect too, so expiring SSO,
 console-login, and assumed-role sessions re-resolve on each access:
 
 ```typescript
-// alchemy/AWS/Environment
+// @alchemy.run/aws/Environment
 export interface AWSEnvironmentShape {
   accountId: AccountID;
   region: RegionID;
@@ -147,7 +147,7 @@ Inside `reconcile`/`read`/`delete`, a handler yields the environment
 twice — once to get the Effect out of the service, once to run it:
 
 ```typescript
-// Cloudflare (packages/alchemy/src/Cloudflare/Calls/App.ts)
+// Cloudflare (packages/cloudflare/src/Calls/App.ts)
 const { accountId } = yield* yield* CloudflareEnvironment;
 
 // AWS — AWSEnvironment.current does the double yield for you
@@ -181,7 +181,7 @@ to its credential service with a `fromProfile`/`fromAuthProvider`
 Layer:
 
 ```typescript
-// alchemy/Cloudflare/CloudflareEnvironment
+// @alchemy.run/cloudflare/CloudflareEnvironment
 export const fromProfile = () =>
   Layer.effect(
     CloudflareEnvironment,
@@ -226,7 +226,7 @@ Cloudflare's OAuth method shows why `read` is an Effect and not a
 stored value. Every resolve checks expiry and refreshes proactively:
 
 ```typescript
-// alchemy/Cloudflare/Auth/AuthProvider — inside read (method: "oauth")
+// @alchemy.run/cloudflare/Auth/AuthProvider — inside read (method: "oauth")
 const fresh =
   creds.expires > Date.now() + 10_000
     ? creds

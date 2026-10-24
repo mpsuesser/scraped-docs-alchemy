@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/cron
 title: "Scheduled jobs with Cron Triggers"
 description: "Run Worker code on a schedule — declare a cron expression with an Effect handler, deploy it, and prove the trigger fires with a bounded polling test."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Cron Triggers invoke a Worker on a schedule — nightly cleanups,
@@ -24,7 +24,7 @@ Call `cron` in the Worker's Construction phase and provide
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -86,7 +86,7 @@ as outputs:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Worker from "./src/worker.ts";
 
@@ -122,7 +122,7 @@ perfect:
 
 ```typescript
 // src/cron-counter.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default class CronCounter extends Cloudflare.DurableObject<CronCounter>()(
@@ -159,7 +159,7 @@ Cloudflare supports — so the test doesn't wait long:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -209,7 +209,7 @@ reset shows up:
 
 ```typescript
 // test/cron.test.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Vitest";
 import { expect } from "@effect/vitest";
 import * as Effect from "effect/Effect";

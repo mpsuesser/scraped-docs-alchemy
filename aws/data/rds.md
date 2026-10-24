@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/rds
 title: "RDS & Aurora"
 description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with pg, or skip connections entirely with the Data API."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Aurora is AWS's managed Postgres/MySQL. Bringing it up by hand
@@ -132,7 +132,7 @@ Wrap it in an Effect service so the rest of your code depends on
 
 ```typescript
 // src/database.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Context from "effect/Context";
 import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
@@ -221,7 +221,7 @@ HTTP:
 
 ```typescript
 // src/api.ts
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -262,7 +262,7 @@ Yield the function in your Stack as usual:
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import Api from "./src/api.ts";
 

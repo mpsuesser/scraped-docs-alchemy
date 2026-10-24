@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Fly with Fly.Website.Vocs — prerendered HTML on a Node static-file server, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Fly.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to Fly. Vocs prerenders static HTML; the node target drops server modules and Alchemy hosts a tiny static-file server on a Fly [Service](https://alchemy.run/fly/compute/services) — one [App](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. Extensionless pages work (`/about` → `about/index.html`). Your `vocs.config.*` loads natively — there is no adapter to install.
@@ -48,7 +48,7 @@ export const Website = Fly.Website.Vocs("Website", {
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Fly from "alchemy/Fly";
+import * as Fly from "@alchemy.run/fly";
 
 export const Website = Fly.Website.Vocs("Website", {
   rootDir: "./docs",

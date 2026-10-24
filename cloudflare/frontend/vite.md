@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite
 title: "Vite"
 description: "Deploy any pure-Vite app to Cloudflare Workers with a single resource."
-access_date: 2026-08-10T20:20:42.449Z
-current_date: 2026-08-10T20:20:42.449Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Cloudflare.Website.Vite` deploys any app that is pure Vite — a project whose entire build is `vite build` with plugins from your `vite.config.ts`. That covers a plain `index.html`, a React or Vue SPA, and full-stack SSR frameworks like TanStack Start or React Router. This page explains the resource itself; each supported framework has [its own landing page](#frameworks) that flows from here.
@@ -162,6 +162,7 @@ Each supported framework has its own landing page building on this resource:
 - [TanStack Start](tanstack-start.md) — full-stack React and Solid with server routes and typed bindings.
 - [React Router](react-router.md) — including React Server Components via `viteEnvironments`.
 - [Vue](vue.md) — Vue 3 SPAs.
+- [Foldkit](foldkit.md) — Foldkit apps via `Website.Foldkit`; client-only, server-rendered, or prerendered, with asset routing derived from the build.
 - [SolidStart](solidstart.md) — SolidStart and hand-rolled SolidJS SSR.
 - [Octane](octane.md#octane-spas-use-vite-instead) — client-only OctaneJS SPAs (the `octane()` compiler plugin composes with the injected Cloudflare plugin).
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Railway with Railway.Website.SolidStart — nitro's node preset on a container Service, prerendered pages in the image, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 `Railway.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Railway. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server plus client assets (prerendered pages included) run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -43,7 +43,7 @@ Alchemy appends its own `nitroV2Plugin()` instance at build time, carrying nitro
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as Railway from "alchemy/Railway";
+import * as Railway from "@alchemy.run/railway";
 
 export const Website = Railway.Website.SolidStart("Website");
 ```

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/artifacts
 title: "Store Git Repos with Artifacts"
 description: "Use Cloudflare Artifacts to create Git repos at runtime and hand out clone tokens, all from a tiny Worker."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **Cloudflare Artifacts** is a Git server you can drive from a
@@ -19,7 +19,7 @@ binding marker. Repos are created at runtime through the binding.
 
 ```typescript
 // src/Repos.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Repos = Cloudflare.Artifacts.Namespace("Repos");
 ```
@@ -32,7 +32,7 @@ Bind the namespace in the Worker's Construction phase, then call
 
 ```typescript
 // src/Worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -104,7 +104,7 @@ Deploy the Stack once and hit both routes over HTTP:
 
 ```typescript
 // test/integ.test.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "alchemy/Test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";

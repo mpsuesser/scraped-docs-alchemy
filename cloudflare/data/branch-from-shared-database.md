@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/branch-from-shared-database
 title: "Branch from a shared database"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, cheap branches, no extra clusters."
-access_date: 2026-08-21T19:05:43.655Z
-current_date: 2026-08-21T19:05:43.655Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In the [Hyperdrive](hyperdrive.md) tutorial you provisioned a `Neon.Project` and a `Neon.Branch`, then [Drizzle](drizzle.md) layered automatic migrations on top. Both work fine with a single stage — but the moment you start deploying PR previews (`pr-147`, `pr-148`, …) the default flow becomes painful:
@@ -18,9 +18,9 @@ The fix is to share the **project** across stages — long-lived, owned by `stag
 Recap of `src/Db.ts` from the Drizzle tutorial — every stage unconditionally creates its own `Neon.Project`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {
@@ -57,9 +57,9 @@ The branching decision needs to know which stage is being deployed. Pull it off 
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {
@@ -115,9 +115,9 @@ Branches are copy-on-write and free, so each PR stage gets a fully isolated data
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle";
-import * as Neon from "alchemy/Neon";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle";
+import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
 export const NeonDb = Effect.gen(function* () {

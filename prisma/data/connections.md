@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/connections
 title: "Connections"
 description: "Prisma Connections materialize database credentials — a conventional databaseUrl, direct and pooled connection strings, parsed origins for Hyperdrive, and the Connect runtime binding."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 A `Prisma.Connection` is a credential (an API key) for one
@@ -13,7 +13,7 @@ connections stay unambiguous — and every secret output is `Redacted`
 so nothing prints in logs or plan output.
 
 ```typescript
-import * as Prisma from "alchemy/Prisma";
+import * as Prisma from "@alchemy.run/prisma";
 
 const connection = yield* Prisma.Connection("api", {
   database: postgres,

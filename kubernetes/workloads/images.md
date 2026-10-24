@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/workloads/images
 title: "Container images"
 description: "Choose where a Deployment or Job's container image comes from and where built images are pushed. Sources are a registry reference, your own Dockerfile, or a bundled Effect program."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Every [Deployment](deployments.md) and
@@ -168,7 +168,7 @@ publish `acme/api:v1.4.0` for other systems too. Build it with
 `image`:
 
 ```typescript
-import * as Docker from "alchemy/Docker";
+import * as Docker from "@alchemy.run/docker";
 import * as Config from "effect/Config";
 
 const image = yield* Docker.Image("ApiImage", {

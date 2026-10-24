@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/production-auth
 title: "Production Auth"
 description: "Configure trusted origins, SMTP, OAuth callbacks, and verification before launching Managed Better Auth."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Prepare external email and OAuth services before taking Managed Better Auth to
@@ -20,7 +20,7 @@ requires deliberate, resource-scoped adoption and review of its users and settin
 ## Set the application name
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const auth = yield* Neon.Auth("Auth", {
   branch,

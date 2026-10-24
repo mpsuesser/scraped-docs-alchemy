@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-2
 title: "Part 2: Add a Worker"
 description: "Create a Cloudflare Worker, bind the R2 Bucket, and implement GET/PUT routes."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In [Part 1](part-1.md) you deployed an R2 Bucket. Now you’ll create a Cloudflare Worker that reads and writes objects in that bucket over HTTP.
@@ -13,7 +13,7 @@ In [Part 1](part-1.md) you deployed an R2 Bucket. Now you’ll create a Cloudfla
 Create `src/worker.ts`. A Worker is a special kind of Resource — it has both an infrastructure definition and a runtime implementation expressed as an Effect.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -39,7 +39,7 @@ Now let’s bind the R2 Bucket from Part 1 to our new Worker. The problem is tha
 A common pattern in Alchemy is to give each resource its own file. Create `src/bucket.ts`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Bucket = Cloudflare.R2.Bucket("Bucket");
 ```
@@ -48,7 +48,7 @@ Update `alchemy.run.ts` to import it instead of declaring it inline:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Bucket } from "./src/bucket.ts";
 
@@ -72,7 +72,7 @@ export default Alchemy.Stack(
 Now the Worker can import `Bucket` and bind it in the Construction phase:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Bucket } from "./bucket.ts";
@@ -99,7 +99,7 @@ export default Cloudflare.Worker(
 The previous step showed a type error — `Cloudflare.R2.ReadWriteBucket(Bucket)` requires the `Cloudflare.R2.ReadWriteBucketBinding` service. Fix it by piping the outer Effect through `Cloudflare.R2.ReadWriteBucketBinding`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { Bucket } from "./bucket.ts";
@@ -126,7 +126,7 @@ export default Cloudflare.Worker(
 Let’s replace the placeholder response with a PUT route that stores objects in the bucket. Add `HttpServerRequest` to access the incoming request:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -163,7 +163,7 @@ TypeScript flags a type error. The `bucket.put` call can fail with `R2Error`, bu
 Pipe the fetch Effect through `Effect.catchTag` to convert `R2Error` into a 500 response:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -206,7 +206,7 @@ export default Cloudflare.Worker(
 Complete the fetch handler by reading objects from the bucket when the request isn’t a PUT:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -261,7 +261,7 @@ Add the Worker to `alchemy.run.ts` and expose its URL as a stack output:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Bucket } from "./src/bucket.ts";
 import Worker from "./src/worker.ts";

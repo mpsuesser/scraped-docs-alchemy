@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/events
 title: "Webhooks & events"
 description: "Provision GitHub repository webhooks as resources, or subscribe a Cloudflare Worker to repository events with typed payloads and verified deliveries."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 GitHub tells the world what happened to a repository through
@@ -21,7 +21,7 @@ on the first deploy, updated in place on subsequent deploys, deleted
 when the stack is destroyed:
 
 ```typescript
-import * as GitHub from "alchemy/GitHub";
+import * as GitHub from "@alchemy.run/github";
 
 yield* GitHub.Webhook("ci-webhook", {
   owner: "my-org",
@@ -73,8 +73,8 @@ hands your handler a typed payload:
 
 ```typescript
 // src/worker.ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as GitHub from "alchemy/GitHub";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
 
 export default Cloudflare.Worker(
@@ -99,7 +99,9 @@ export default Cloudflare.Worker(
     );
 
     // ...your own fetch handler is untouched
-  }).pipe(Effect.provide(Cloudflare.Workers.GitHubRepositoryEventSourceLive)),
+  }).pipe(
+    Effect.provide(GitHub.RepositoryEventSourceLive),
+  ),
 );
 ```
 
@@ -114,9 +116,8 @@ see [React to GitHub events from a Worker](../cloudflare/messaging/github-events
 
 ## Cloudflare-only today
 
-`Cloudflare.Workers.GitHubRepositoryEventSourceLive` is currently
-the only implementation of the `RepositoryEventSource` contract —
-there is no AWS Lambda event source yet. On other hosts you can
+`GitHub.RepositoryEventSourceLive` runs on any host that is a
+`WebhookHost`, and today only Cloudflare Workers are. On other hosts you can
 still provision a `GitHub.Webhook` directly with any delivery URL,
 but routing and signature verification are yours to implement.
 

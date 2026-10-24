@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/turnstile
 title: "Turnstile CAPTCHA"
 description: "Manage Cloudflare Turnstile widgets as resources — deploy a widget, embed its sitekey in HTML, and verify tokens server-side with the redacted secret."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Turnstile is Cloudflare's CAPTCHA alternative. A Turnstile widget is
@@ -17,7 +17,7 @@ widget produces.
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

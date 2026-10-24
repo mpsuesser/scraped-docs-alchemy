@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with an AWS S3 Bucket, and deploy it."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with an AWS S3 Bucket, and deploy it — all in under five minutes.
@@ -23,10 +23,10 @@ mkdir my-app && cd my-app && pnpm init
 
 ## Install dependencies
 
-Install `alchemy@latest` and `effect`:
+Install `alchemy@latest`, `@alchemy.run/aws`, and `effect`:
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/aws@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## Create the Stack
@@ -37,7 +37,7 @@ Create an `alchemy.run.ts` file:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -70,7 +70,7 @@ Add an S3 Bucket:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(

@@ -2,17 +2,20 @@
 url: https://alchemy.run/planetscale/setup
 title: "Setup"
 description: "Connect alchemy to PlanetScale — account, credentials, and profiles."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-Sign up at [planetscale.com](https://planetscale.com) and create a
-[service token](https://planetscale.com/docs/concepts/service-tokens).
-Register the provider next to your cloud's:
+Sign up at [planetscale.com](https://planetscale.com/) and create a [service token](https://planetscale.com/docs/concepts/service-tokens). Install `@alchemy.run/planetscale`:
+
+```sh
+pnpm add @alchemy.run/planetscale@latest
+```
+
+Then register the provider next to your cloud’s:
 
 ```typescript
-// alchemy.run.ts
-import * as Planetscale from "alchemy/Planetscale";
+import * as Planetscale from "@alchemy.run/planetscale";
 
 providers: Layer.mergeAll(Cloudflare.providers(), Planetscale.providers()),
 ```
@@ -20,20 +23,15 @@ providers: Layer.mergeAll(Cloudflare.providers(), Planetscale.providers()),
 Run `alchemy profile edit --add Planetscale` and pick between two local options:
 
 - **OAuth.** Sign in through a browser. Alchemy refreshes the token automatically.
-- **Stored service token.** Enter the token interactively. Alchemy saves it under
-  `~/.alchemy/credentials/<profile>/planetscale-stored.json`.
+- **Stored service token.** Enter the token interactively. Alchemy saves it under `~/.alchemy/credentials/<profile>/planetscale-stored.json`.
 
-When `CI=true`, profiles are bypassed. Set `PLANETSCALE_API_TOKEN_ID`,
-`PLANETSCALE_API_TOKEN`, and `PLANETSCALE_ORGANIZATION`; Alchemy reads them
-directly and persists nothing.
+When `CI=true`, profiles are bypassed. Set `PLANETSCALE_API_TOKEN_ID`, `PLANETSCALE_API_TOKEN`, and `PLANETSCALE_ORGANIZATION`; Alchemy reads them directly and persists nothing.
 
-See [Profiles](../environments/profiles.md) for how credentials are stored
-and switched.
+See [Profiles](../environments/profiles.md) for how credentials are stored and switched.
 
 ## Programmatic credentials
 
-Skip profiles entirely by building the `Credentials` layer from a token
-you already have in hand — useful in tests:
+Skip profiles entirely by building the `Credentials` layer from a token you already have in hand — useful in tests:
 
 ```typescript
 Effect.provide(
@@ -49,9 +47,7 @@ Effect.provide(
 
 ## API base URL
 
-Requests go to `https://api.planetscale.com/v1` by default. Set
-`PLANETSCALE_API_BASE_URL` to point profile-resolved credentials at a
-different endpoint; `fromToken` takes an `apiBaseUrl` option instead.
+Requests go to `https://api.planetscale.com/v1` by default. Set `PLANETSCALE_API_BASE_URL` to point profile-resolved credentials at a different endpoint; `fromToken` takes an `apiBaseUrl` option instead.
 
 ## Next steps
 

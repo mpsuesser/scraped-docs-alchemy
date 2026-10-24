@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/dynamodb
 title: "DynamoDB"
 description: "Add a DynamoDB Table, bind GetItem and PutItem to your Lambda, and serve a typed key/value HTTP API backed by DynamoDB."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 **DynamoDB** is AWS's serverless key/value store — structured
@@ -30,9 +30,9 @@ constructor, mirroring how you added the bucket:
 
 ```diff lang="typescript"
 // src/api.ts
-import * as AWS from "alchemy/AWS";
-+import * as DynamoDB from "alchemy/AWS/DynamoDB";
-import * as S3 from "alchemy/AWS/S3";
+import * as AWS from "@alchemy.run/aws";
++import * as DynamoDB from "@alchemy.run/aws/DynamoDB";
+import * as S3 from "@alchemy.run/aws/S3";
 import { Stack } from "alchemy/Stack";
 import * as Effect from "effect/Effect";
 // ...

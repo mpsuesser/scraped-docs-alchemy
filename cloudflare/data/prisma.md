@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/prisma
 title: "Prisma ORM with Postgres"
 description: "Deploy Prisma ORM v8 on Cloudflare Workers with Neon Postgres, Hyperdrive, controlled migrations, and Effect-native queries."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [Contracts](../../sql/prisma/contracts.md) · [Query API](../../sql/prisma/postgres.md) · [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-prisma)
@@ -15,7 +15,7 @@ Requires Prisma ORM **8.0.0-rc** and **PostgreSQL 17+**. Pin the ORM and CLI ver
 ## Install the dependencies
 
 ```sh
-bun add alchemy effect @prisma/orm-postgres arktype
+bun add alchemy @alchemy.run/cloudflare @alchemy.run/neon @alchemy.run/prisma effect @prisma/orm-postgres arktype
 bun add -d prisma
 ```
 
@@ -34,7 +34,7 @@ Import the bootstrap before the contract builder:
 
 ```typescript
 import "./validation.ts";
-import { defineContract } from "alchemy/Prisma/ORM";
+import { defineContract } from "@alchemy.run/prisma/ORM";
 ```
 
 If your package uses `"sideEffects": false`, preserve this module:
@@ -49,8 +49,8 @@ PSL-first projects skip this step.
 
 ```typescript
 // src/db.ts
-import * as Neon from "alchemy/Neon";
-import * as Prisma from "alchemy/Prisma";
+import * as Neon from "@alchemy.run/neon";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 
 export const Db = Effect.gen(function* () {
@@ -73,7 +73,7 @@ export const Db = Effect.gen(function* () {
 
 ```typescript
 // src/db.ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Hyperdrive = Effect.gen(function* () {
   const branch = yield* Db;
@@ -90,8 +90,8 @@ Caching is disabled so reads immediately reflect writes. [Hyperdrive guide](hype
 
 ```typescript
 // src/api.ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as PrismaPostgres from "alchemy/Prisma/ORM/Postgres";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as PrismaPostgres from "@alchemy.run/prisma/ORM/Postgres";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { contract } from "./prisma/contract.ts";
@@ -132,9 +132,9 @@ const db = yield* makeDatabase(conn.connectionString);
 ```typescript
 // alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Neon from "alchemy/Neon";
-import * as Prisma from "alchemy/Prisma";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Neon from "@alchemy.run/neon";
+import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import Api from "./src/api.ts";

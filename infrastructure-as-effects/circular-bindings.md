@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/circular-bindings
 title: "Circular Bindings"
 description: "How to model two services that reference each other (Worker A ↔ Worker B, Lambda ↔ Lambda) using tagged classes and Layers."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Real systems have cycles. A web Worker calls an internal Worker for auth; the internal Worker calls back into the web Worker for billing. Two Lambdas trigger each other through a queue.
@@ -30,7 +30,7 @@ The fix is to import only the **Tag** (cheap, side-effect free) across the cycle
 Start `src/A.ts` with just the class — no runtime yet. The class extends `Cloudflare.Worker<A, Shape>()(...)`, which produces a typed identifier you can `yield*` from anywhere. The second type parameter declares the shape A’s runtime will expose — here, a `work` method.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export class A extends Cloudflare.Worker<A, { work: () => Effect.Effect<string> }>()("A") {}
@@ -43,7 +43,7 @@ export class A extends Cloudflare.Worker<A, { work: () => Effect.Effect<string> 
 Do the same for `B`. Both files only declare identity and shape at this point — no runtime.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export class B extends Cloudflare.Worker<B, { work: () => Effect.Effect<string> }>()("B") {}
@@ -56,7 +56,7 @@ Now `A` and `B` can freely `import` each other — neither side triggers any run
 Attach A’s implementation with `A.make(...)`. Inside the Construction phase, `yield* Cloudflare.Workers.bindWorker(B)` produces a typed stub whose methods dispatch to B’s deployed Worker at runtime. A also exposes its own `work` RPC method so B can call back into it.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { B } from "./B.ts";
@@ -85,7 +85,7 @@ The `import { B }` line pulls in B’s Tag only. `bindWorker(B)` returns a [type
 Mirror the same pattern in `B.ts`. B’s runtime imports A’s Tag and binds it.
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { A } from "./A.ts";
@@ -114,7 +114,7 @@ The Stack pulls in both Tags (via `import { A }` / `import { B }`) and both Laye
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import ALive, { A } from "./src/A.ts";

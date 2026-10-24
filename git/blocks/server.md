@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/blocks/server
 title: "HTTP routes"
 description: "Compose Git route layers beside your application's Effect HTTP API, with your middleware and server."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Your application owns its `HttpApi`, middleware, groups, and server. Git supplies
@@ -15,7 +15,7 @@ implementations.
 Build groups against the API that actually serves them:
 
 ```typescript
-import * as Git from "alchemy/Git";
+import * as Git from "@alchemy.run/git";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as HttpApi from "effect/http-api/HttpApi";

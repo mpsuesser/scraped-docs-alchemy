@@ -1,16 +1,16 @@
 ---
 url: https://alchemy.run/aws/frontend/octane
 title: "Octane"
-description: "Deploy an OctaneJS app to AWS with AWS.Website.Octane — SSR on a streaming Lambda Function URL, assets on S3 + CloudFront, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy an OctaneJS app to AWS with AWS.Website.Octane — SSR on a Lambda Web Function, assets on S3 + CloudFront, and Octane's own Vite dev server under alchemy dev."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-`AWS.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to AWS. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the AWS deploy target’s finishing pass wraps its fetch handler as a streaming Lambda handler. The server deploys on a Lambda Function URL; `dist/client` is served from a private S3 bucket through CloudFront. No CloudFormation, no build command to run.
+`AWS.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to AWS. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the deploy target’s finishing pass wraps its fetch handler in a Node server. The server deploys on a [Lambda Web Function](../compute/web-functions.md); `dist/client` is served from a private S3 bucket through CloudFront. No CloudFormation, no build command to run.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads the package’s `/octane` and `/octane/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads the package’s `/octane` and `/octane/node` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -30,14 +30,14 @@ export default defineConfig({
 });
 ```
 
-`AWS.Website.Octane` selects hosting and automatically wraps Octane’s default native Node output as a streaming Lambda handler. The legacy AWS marker adapter remains optional for existing projects.
+`AWS.Website.Octane` selects hosting and automatically wraps Octane’s default native Node output in a Node server. The legacy AWS marker adapter remains optional for existing projects.
 
 ## Declare the Website
 
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Octane("Website");
 ```
@@ -76,11 +76,11 @@ export const Website = AWS.Website.Octane("Website", {
 });
 ```
 
-The values are set on the Lambda at deploy time and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes.
+The values are set on the server at deploy time and injected into the dev server’s process environment under `alchemy dev`, so server code reads the same values in both modes.
 
 ## Read the environment in server code
 
-Octane’s server runs in a plain Node Lambda, so middleware and `ServerRoute` handlers read the environment from `process.env`:
+Octane’s server is a plain Node server, so middleware and `ServerRoute` handlers read the environment from `process.env`:
 
 ```typescript
 new ServerRoute({
@@ -94,7 +94,18 @@ new ServerRoute({
 
 ## Asset routing
 
-Octane’s intended setup is asset-first with SSR on miss: exact files in `dist/client` serve from S3 via the CloudFront edge router without invoking the server, and every miss streams from Octane SSR on the Lambda. That is the default — there is nothing to configure.
+Octane’s intended setup is asset-first with SSR on miss: exact files in `dist/client` serve from S3 via the CloudFront edge router without invoking the server, and every miss streams from Octane SSR on the server. That is the default — there is nothing to configure.
+
+## Run on a Lambda Function
+
+Web Functions run in a subset of Regions. Elsewhere, set `server: "function"`: the app builds with the `/octane/aws` deploy target and runs on a Lambda Function behind a streaming Function URL, tuned with `memorySize`, `architecture`, and `runtime`:
+
+```typescript
+export const Website = AWS.Website.Octane("Website", {
+  server: "function",
+  memorySize: 2048,
+});
+```
 
 ## Local dev
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/setup
 title: "Setup"
 description: "Connect Alchemy to AWS with SSO, console login, stored access keys, or CI environment credentials."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 ## Prerequisites
@@ -20,7 +20,7 @@ mkdir my-app && cd my-app && pnpm init
 ## Install
 
 ```sh
-pnpm add alchemy@latest effect @effect/platform-bun @effect/platform-node
+pnpm add alchemy@latest @alchemy.run/aws@latest effect @effect/platform-bun @effect/platform-node
 ```
 
 ## How Alchemy gets AWS credentials

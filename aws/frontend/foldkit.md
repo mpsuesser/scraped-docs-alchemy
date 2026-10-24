@@ -1,18 +1,16 @@
 ---
 url: https://alchemy.run/aws/frontend/foldkit
 title: "Foldkit"
-description: "Deploy a Foldkit app to AWS with AWS.Website.Foldkit — the client build on S3 + CloudFront, SPA deep links by default, and Foldkit's own Vite dev server under alchemy dev."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to AWS with native local development."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
-[Foldkit](https://foldkit.dev/) is an Elm-architecture frontend framework built on Effect. Its apps are client-only Vite projects — the Foldkit Vite plugin only adds HMR and devtools wiring — so `AWS.Website.Foldkit` deploys one with a single declaration: the client build lands in a private S3 bucket and serves through CloudFront, routed at the edge. There is no server function, no build command, and no CloudFormation to write.
-
-`Foldkit` is [`AWS.Website.Vite`](vite.md) with Foldkit’s defaults applied: client-side routing is assumed, so deep links fall back to the app shell without you configuring anything.
+`AWS.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to AWS. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
 
 ## Install
 
-The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/vite` and `/vite/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
+The build integration is not bundled with alchemy. Install `@alchemy.run/frontend-frameworks`; the resource loads its `/foldkit` and `/foldkit/aws` exports from your project at deploy time. It is only used at build time, so a dev dependency is enough:
 
 ```sh
 pnpm add -D @alchemy.run/frontend-frameworks@latest
@@ -36,12 +34,72 @@ export default defineConfig({
 
 Alchemy runs Vite programmatically on the project root, so the Foldkit plugin and the rest of your setup are preserved as-is.
 
+## Server rendering and prerendering
+
+Configure rendering in the application’s `foldkit(...)` plugin. This example uses Foldkit 0.167.0, `@foldkit/vite-plugin` 0.27.0 and compatible Effect dependencies:
+
+```typescript
+import { foldkit } from "@foldkit/vite-plugin";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    foldkit({
+      ssr: {
+        serverEntry: "/src/entry.server.ts",
+        clientEntry: "/src/entry.ts",
+        build: true,
+      },
+    }),
+  ],
+});
+```
+
+The server entry exports `renderPage` and `renderDocument`. Import stylesheets from the client entry and use `Runtime.hydrate` to start the browser application. Remove the source `index.html` for this build: Foldkit generates the complete HTML document, including the client script, stylesheets and module preload links.
+
+```typescript
+import { Server } from "foldkit/experimental";
+
+export const renderDocument = Server.renderDocument;
+```
+
+Keep your application’s `renderPage` export alongside the document renderer. Foldkit currently exposes its server rendering API through `foldkit/experimental`; see its [server rendering guide](https://foldkit.dev/core/server-rendering) for the application and hydration contract.
+
+For static site generation (SSG), change `build` to `{ prerender: true }` and export the URLs to generate from the server entry:
+
+```typescript
+export const prerenderPaths = ["/", "/about"];
+```
+
+SSG renders those URLs during the build. SSR renders a page when its request arrives. A hybrid application prerenders some URLs and renders others on request. The same `renderPage` and `renderDocument` exports serve both delivery policies.
+
+AWS chooses its deployment resources before building. Keep the default for a browser-only SPA; select `output: "server"` for request-time rendering:
+
+```typescript
+export const Website = AWS.Website.Foldkit("Website", {
+  output: "server",
+});
+```
+
+CloudFront serves assets and prerendered pages from S3. Requests that match no file, and methods other than GET or HEAD, reach the server: a Lambda Web Function by default, or a Lambda Function with `server: "function"`. The application owns its response status and headers through `renderPage`.
+
+For static-only SSG, deploy the prerendered client output without a server:
+
+```typescript
+export const Website = AWS.Website.Foldkit("Website", {
+  output: "static",
+  errorPage: "404.html",
+});
+```
+
+Supply `public/404.html` for this example. URLs that were not generated return 404; browser interaction still works through hydration. `output: "server"` retains the handler even when all known pages were prerendered. A server build with no `output` choice fails rather than discarding its handler. `spa` and `errorPage` apply only to assets-only deployments.
+
 ## Declare the Website
 
 Declare the site as a module-level const (rather than inline in the Stack):
 
 ```typescript
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 
 export const Website = AWS.Website.Foldkit("Website");
 ```
@@ -83,7 +141,7 @@ bun alchemy deploy
 
 ## Deep links
 
-A Foldkit app that uses URL routing (`Runtime.makeApplication` with `route`, `onUrlRequest`, and `onUrlChange`) resolves routes on the client, so a deep link like `/counter/42` arrives at the edge as a request for a file that does not exist.
+A browser-only Foldkit app that uses URL routing (`Runtime.makeApplication` with `routing`, `onUrlRequest`, and `onUrlChange`) resolves routes on the client, so a deep link like `/counter/42` arrives at the edge as a request for a file that does not exist.
 
 `Foldkit` sets `spa` by default, which answers those misses with `index.html` and a `200` — the Foldkit runtime resolves the route once the app boots.
 
@@ -98,44 +156,61 @@ export const Website = AWS.Website.Foldkit("Website", {
 
 ## Add environment variables
 
-A Foldkit app has no server, so anything it needs is baked into the bundle at build time. Vite inlines `VITE_` -prefixed variables from the environment the build runs in — a `.env` file in the project root, or the shell that runs `alchemy deploy`:
+Set server environment variables through `env` when deploying a server build:
+
+```typescript
+export const Website = AWS.Website.Foldkit("Website", {
+  output: "server",
+  env: { API_BASE: "https://api.example.com" },
+});
+```
+
+Server code reads these values from `process.env`. Alchemy applies them to the native dev server under `alchemy dev` and to the server on deploy.
+
+An Output from another resource can be passed inside the Stack generator:
+
+```typescript
+Effect.gen(function* () {
+  const api = yield* Api;
+  const site = yield* AWS.Website.Foldkit("Website", {
+    output: "server",
+    env: { API_BASE: api.url },
+  });
+  return { url: site.url };
+});
+```
+
+## Read the environment in client code
+
+Vite inlines `VITE_*` values as `import.meta.env.VITE_*` during the build. Set browser configuration in the app’s `.env` file or the deployment environment:
 
 ```sh
 VITE_API_URL=https://api.example.com
 ```
 
-Type it for your Foldkit code with Vite’s standard `ImportMetaEnv` augmentation:
-
 ```typescript
-/// <reference types="vite/client" />
-
-interface ImportMetaEnv {
-  readonly VITE_API_URL: string;
-}
+const apiUrl = import.meta.env.VITE_API_URL;
 ```
 
-Client code reads it as `import.meta.env.VITE_API_URL`, e.g. from a `Command` that fetches your API.
+Values forwarded through `env` are also available to the build. A `VITE_*` key becomes public browser configuration; keep credentials in unprefixed server variables. Values serialized into Foldkit Flags also reach the browser.
 
-A value produced by another resource in the Stack (a Function URL, a table name) is not known when this build runs, and the resource takes no `env` prop. Either serve it from an [API](../apis/effect-http-api.md) the app fetches at runtime, or deploy with [`AWS.Website.StaticSite`](static-site.md) instead — it runs the build as a command and passes `environment` to it, so an Output can be inlined at build time.
-
-## Deploy-time overrides
+## Build configuration
 
 Vite configuration — the Foldkit plugin included — lives in your project’s own `vite.config.*`. The `vite` bag is for deploy-time overrides merged *over* that file, for values decided by the deployment (config files can’t consume alchemy `Output` s):
 
 ```typescript
 export const Website = AWS.Website.Foldkit("Docs", {
   vite: {
-    base: "/docs/",
     outDir: "build",
   },
 });
 ```
 
-`base` is the public path the site deploys under (it also applies to the dev server under `alchemy dev`); `outDir` is the build output directory, relative to `rootDir`. Leave the bag unset and the resolved values from your `vite.config.*` are used — Vite’s own `outDir` default is `dist`. `config` selects an alternate config file, relative to `rootDir`.
+`outDir` is relative to `rootDir`. For server builds, Alchemy places client and server outputs under `client/` and `server/` in this directory. Without an override, the app’s resolved output directories are used. `config` selects an alternate Vite configuration file relative to `rootDir`.
 
 ## Local dev
 
-`alchemy dev` runs the app’s own Vite dev server, so Foldkit’s HMR with state preservation and its devtools wiring work unchanged. `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.
+`alchemy dev` runs the app’s own Vite dev server, so Foldkit’s state-preserving live reload and its devtools wiring work unchanged. `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.
 
 Pin the dev server’s address when several apps run in one Stack:
 

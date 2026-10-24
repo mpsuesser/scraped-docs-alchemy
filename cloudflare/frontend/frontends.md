@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/cloudflare/frontend/frontends
 title: "Frontend frameworks"
-description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, SvelteKit, Waku, or any static build to Cloudflare Workers with first-class Website resources."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+description: "Deploy Vite, Foldkit, Astro, Next.js, vinext, Nuxt, SvelteKit, Waku, or any static build to Cloudflare Workers with first-class Website resources."
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Alchemy deploys frontends to Cloudflare with a family of
@@ -17,6 +17,9 @@ natively; Alchemy layers its Cloudflare integration on top.
 - [`Vite`](vite.md) — any pure-Vite app: SPAs and
   Vite-plugin frameworks like TanStack Start, React Router, Vue, and
   SolidStart; your `vite.config.ts` loads natively.
+- [`Foldkit`](foldkit.md) — Foldkit apps; one
+  `vite build` emits the client bundle and, for a server-rendered or
+  prerendered app, the fetch handler that becomes the Worker.
 - [`Astro`](astro.md) — Astro sites, server-rendered
   or fully static, with an auto-provisioned session KV namespace;
   your `astro.config.*` loads natively.
@@ -83,6 +86,11 @@ and a single `vite build` produces the whole app — TanStack Start,
 React Router, Vue, SolidStart, or a plain SPA. See
 [what "pure Vite" means](vite.md#what-pure-vite-means).
 
+Use `Foldkit` for a Foldkit app. It is `Vite` with Foldkit's
+defaults: one `vite build`, and asset routing derived from what that
+build wrote down, because the same project can ship client-only,
+prerendered, server-rendered, or hybrid.
+
 Use `StaticSite` when the build is an arbitrary shell command that
 emits a directory of files — Zola, Hugo, or any other generator
 without a dedicated resource.
@@ -99,6 +107,7 @@ without a dedicated resource.
   [TanStack Start](tanstack-start.md),
   [React Router](react-router.md),
   [Vue](vue.md),
+  [Foldkit](foldkit.md),
   [SolidStart](solidstart.md),
   [Astro](astro.md),
   [Next.js](nextjs.md),

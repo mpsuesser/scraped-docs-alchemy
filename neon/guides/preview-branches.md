@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/preview-branches
 title: "Preview branches per PR"
 description: "Keep one long-lived Neon project in a staging stage and fork a copy-on-write branch per PR stage — isolated preview databases in seconds, destroyed with the stage."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Provisioning a whole `Neon.Project` per PR preview is slow and
@@ -20,7 +20,7 @@ The project is a normal resource, created once by the stage that
 owns it:
 
 ```typescript
-import * as Neon from "alchemy/Neon";
+import * as Neon from "@alchemy.run/neon";
 
 const project = yield* Neon.Project("app-db", {
   region: "aws-us-east-1",

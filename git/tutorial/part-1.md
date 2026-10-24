@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/tutorial/part-1
 title: "Part 1: Push your first repository"
 description: "Deploy a Git host, push a commit, and clone it back. Add storage and hashing one layer at a time."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 Start with a Git remote you can push to. This part deploys a Worker backed by Durable Objects and R2, then sends a real commit through it and clones it back.
@@ -16,7 +16,7 @@ You need Bun or Node.js 22+, Git, and a Cloudflare account with Workers, Durable
 mkdir git-tutorial
 cd git-tutorial
 pnpm init
-pnpm add alchemy@latest effect
+pnpm add alchemy@latest @alchemy.run/cloudflare@latest @alchemy.run/git@latest effect
 mkdir src
 ```
 
@@ -27,7 +27,7 @@ Run the remaining commands from this project directory. Keep the same directory,
 Create `src/git.ts`:
 
 ```typescript
-import * as Git from "alchemy/Git";
+import * as Git from "@alchemy.run/git";
 import * as Layer from "effect/Layer";
 
 export const GitLive = Git.ApiLive.pipe(
@@ -71,8 +71,8 @@ Git objects are identified by hashes of their contents. `Git.HasherInline` verif
 ## Store packs and large objects
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Git from "alchemy/Git";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Git from "@alchemy.run/git";
 import * as Layer from "effect/Layer";
 
 const GitObjects = Cloudflare.R2.Bucket("GitObjects", { forceDestroy: true });
@@ -97,8 +97,8 @@ The R2 layer supplies the blob-storage operations used by the Worker and the rep
 Create `src/host.ts`:
 
 ```typescript
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Git from "alchemy/Git";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Git from "@alchemy.run/git";
 import * as Http from "alchemy/Http";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -113,11 +113,11 @@ export default class GitHost extends Cloudflare.Worker<GitHost>()(
       GitLive.pipe(Layer.provide(Http.Platform)),
     );
     return { fetch };
-  }),
+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
 ) {}
 ```
 
-`HttpRouter.toHttpEffect` turns the route layer into the Worker’s `fetch` handler. `Http.Platform` provides its HTTP platform dependencies. `GIT_WORKER_OPTIONS` sets the Worker compatibility flags and CPU limit used by Git.
+`HttpRouter.toHttpEffect` turns the route layer into the Worker’s `fetch` handler. `Http.Platform` provides its HTTP platform dependencies. `GIT_WORKER_OPTIONS` sets the Worker compatibility flags and CPU limit used by Git. `Cloudflare.R2.ReadWriteBucketBinding` binds the bucket to the Worker so `BlobStoreR2` can read and write it.
 
 ## Declare the stack
 
@@ -125,7 +125,7 @@ Create `alchemy.run.ts`:
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import GitHost from "./src/host.ts";
 

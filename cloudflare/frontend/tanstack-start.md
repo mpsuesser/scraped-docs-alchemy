@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Cloudflare with Cloudflare.Website.Vite — SSR, typed Worker bindings, and HMR dev with real cloud resources."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-10-24T00:47:37.929Z
+current_date: 2026-10-24T00:47:37.929Z
 ---
 
 [TanStack Start](https://tanstack.com/start) is pure Vite — `tanstackStart()` and `viteReact()` are ordinary plugins in `vite.config.ts`, so [`Cloudflare.Website.Vite`](vite.md) builds the client assets and the SSR server bundle in a single `vite build` pass, no adapter or Wrangler config required. Support is verified: the [examples/cloudflare-website-tanstack-start](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-website-tanstack-start) example is checked in, and a live test deploys it in dev mode with real Alchemy-managed R2 bindings.
@@ -36,7 +36,7 @@ Declare the site as a module-level const (rather than inline in the Stack) and d
 
 ```typescript
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Backend, { Bucket } from "./src/backend.ts";
 
