@@ -2,23 +2,15 @@
 url: https://alchemy.run/github/events
 title: "Webhooks & events"
 description: "Provision GitHub repository webhooks as resources, or subscribe a Cloudflare Worker to repository events with typed payloads and verified deliveries."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-10-29T15:27:14.773Z
+current_date: 2026-10-29T15:27:14.773Z
 ---
 
-GitHub tells the world what happened to a repository through
-webhooks — `POST`s to a URL on every push, pull request, release,
-and so on. Alchemy gives you two levels of abstraction: the
-`Webhook` resource manages the webhook itself and points it at any
-URL, and `consumeRepositoryEvents` subscribes a Cloudflare Worker to
-a repository with the webhook, routing, and signature verification
-handled for you.
+GitHub tells the world what happened to a repository through webhooks — `POST` s to a URL on every push, pull request, release, and so on. Alchemy gives you two levels of abstraction: the `Webhook` resource manages the webhook itself and points it at any URL, and `consumeRepositoryEvents` subscribes a Cloudflare Worker to a repository with the webhook, routing, and signature verification handled for you.
 
 ## The Webhook resource
 
-`GitHub.Webhook` manages a repository webhook's lifecycle — created
-on the first deploy, updated in place on subsequent deploys, deleted
-when the stack is destroyed:
+`GitHub.Webhook` manages a repository webhook’s lifecycle — created on the first deploy, updated in place on subsequent deploys, deleted when the stack is destroyed:
 
 ```typescript
 import * as GitHub from "@alchemy.run/github";
@@ -32,21 +24,13 @@ yield* GitHub.Webhook("ci-webhook", {
 });
 ```
 
-`events` defaults to `["push"]`; pass `["*"]` to receive every event
-GitHub emits. The `secret` (a `Redacted` string, e.g. from
-`Config.Redacted` — see [Secrets & env](../cloudflare/security/secrets-env.md))
-makes GitHub sign each delivery with `HMAC-SHA256` in the
-`X-Hub-Signature-256` header so your receiver can verify the payload
-came from GitHub.
+`events` defaults to `["push"]`; pass `["*"]` to receive every event GitHub emits. The `secret` (a `Redacted` string, e.g. from `Config.Redacted` — see [Secrets & env](../cloudflare/security/secrets-env.md)) makes GitHub sign each delivery with `HMAC-SHA256` in the `X-Hub-Signature-256` header so your receiver can verify the payload came from GitHub.
 
-Credentials come from `GitHub.providers()` — env, stored PAT, or the
-`gh` CLI (see [setup](setup.md)). The token needs `repo` scope
-(admin access to the repository) to manage webhooks.
+Credentials come from `GitHub.providers()` — env, stored PAT, or the `gh` CLI (see [setup](setup.md)). The token needs `repo` scope (admin access to the repository) to manage webhooks.
 
 ## Point it at another resource
 
-`url` accepts an `Output<string>`, so the webhook can target a
-resource provisioned in the same stack:
+`url` accepts an `Output<string>`, so the webhook can target a resource provisioned in the same stack:
 
 ```typescript
 const worker = yield* Cloudflare.Worker("Api", { ... });
@@ -59,20 +43,13 @@ yield* GitHub.Webhook("repo-webhook", {
 });
 ```
 
-At this level the receiving end is yours to build: parsing the
-payload, routing the delivery path, and verifying signatures. Most
-of the time you don't want that — read on.
+At this level the receiving end is yours to build: parsing the payload, routing the delivery path, and verifying signatures. Most of the time you don’t want that — read on.
 
 ## Consume events from a Worker
 
-`GitHub.consumeRepositoryEvents` subscribes a Cloudflare Worker to a
-repository and replaces all the plumbing: it provisions the webhook
-pointing at the Worker, binds the signing secret onto it, claims the
-delivery path in `fetch`, verifies each delivery's signature, and
-hands your handler a typed payload:
+`GitHub.consumeRepositoryEvents` subscribes a Cloudflare Worker to a repository and replaces all the plumbing: it provisions the webhook pointing at the Worker, binds the signing secret onto it, claims the delivery path in `fetch`, verifies each delivery’s signature, and hands your handler a typed payload:
 
 ```typescript
-// src/worker.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as GitHub from "@alchemy.run/github";
 import * as Effect from "effect/Effect";
@@ -91,9 +68,9 @@ export default Cloudflare.Worker(
       (event) => {
         switch (event.name) {
           case "push":
-            return Effect.log(`push to ${event.payload.ref}`);
+            return Effect.log(\`push to ${event.payload.ref}\`);
           case "pull_request":
-            return Effect.log(`PR: ${event.payload.pull_request.title}`);
+            return Effect.log(\`PR: ${event.payload.pull_request.title}\`);
         }
       },
     );
@@ -105,28 +82,18 @@ export default Cloudflare.Worker(
 );
 ```
 
-`event` is Octokit's `EmitterWebhookEvent`, narrowed to the events
-you selected — a `switch` on `event.name` narrows `event.payload`
-exhaustively. The stack provides both clouds' providers:
-`Layer.mergeAll(Cloudflare.providers(), GitHub.providers())`.
+`event` is Octokit’s `EmitterWebhookEvent`, narrowed to the events you selected — a `switch` on `event.name` narrows `event.payload` exhaustively. The stack provides both clouds’ providers: `Layer.mergeAll(Cloudflare.providers(), GitHub.providers())`.
 
-For the full walkthrough — runtime layer, secret verification,
-deploy, and a release-blogging agent built on this event source —
-see [React to GitHub events from a Worker](../cloudflare/messaging/github-events.md).
+For the full walkthrough — runtime layer, secret verification, deploy, and a release-blogging agent built on this event source — see [React to GitHub events from a Worker](../cloudflare/messaging/github-events.md).
 
 ## Cloudflare-only today
 
-`GitHub.RepositoryEventSourceLive` runs on any host that is a
-`WebhookHost`, and today only Cloudflare Workers are. On other hosts you can
-still provision a `GitHub.Webhook` directly with any delivery URL,
-but routing and signature verification are yours to implement.
+`GitHub.RepositoryEventSourceLive` runs on any host that is a `WebhookHost`, and today only Cloudflare Workers are. On other hosts you can still provision a `GitHub.Webhook` directly with any delivery URL, but routing and signature verification are yours to implement.
 
 ## Where next
 
-- [React to GitHub events from a Worker](../cloudflare/messaging/github-events.md)
-  — the goal-oriented guide.
-- [Repositories](repository.md) — create and converge the repos
-  these webhooks attach to.
+- [React to GitHub events from a Worker](../cloudflare/messaging/github-events.md) — the goal-oriented guide.
+- [Repositories](repository.md) — create and converge the repos these webhooks attach to.
 - [GitHub setup](setup.md) — credentials and token scopes.
 
 Reference:
