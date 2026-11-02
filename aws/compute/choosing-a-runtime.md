@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/compute/choosing-a-runtime
 title: "Choosing a runtime"
 description: "Lambda vs ECS vs EKS vs EC2 for Alchemy apps — cold starts, cost shape, packaging, and how much of each Alchemy currently covers."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T03:51:18.106Z
+current_date: 2026-11-02T03:51:18.106Z
 ---
 
 Every Alchemy app on AWS needs somewhere for its code to run.
@@ -141,10 +141,7 @@ the `hyperpod` prop.
 
 Full-control VMs for workloads that need an OS, a GPU, custom
 daemons, or just predictable dedicated capacity. The
-[`Instance`](https://alchemy.run/providers/aws/ec2#instance) resource can act as a
-low-level compute primitive or run a bundled long-lived Effect
-program directly on the machine (including serving HTTP), and
-Alchemy ships the complete networking toolkit around it:
+[`Instance`](https://alchthe complete networking toolkit around it:
 [`Vpc`](https://alchemy.run/providers/aws/ec2#vpc),
 [`Subnet`](https://alchemy.run/providers/aws/ec2#subnet),
 [`SecurityGroup`](https://alchemy.run/providers/aws/ec2#securitygroup), NAT and
@@ -170,6 +167,15 @@ You own patching, scaling, and availability.
    runner.
 5. Reach for **EC2** when you need the machine itself — kernel
    access, GPUs, custom networking, or software that expects a
+   host.
+
+## Where next
+
+- [Lambda](lambda.md) — deploy a function with a public URL.
+- [AWS overview](../../aws.md) — resources and recipes.
+- [Providers reference](https://alchemy.run/providers) — generated docs for every
+  ECS, EKS, and EC2 resource.
+a
    host.
 
 ## Where next
