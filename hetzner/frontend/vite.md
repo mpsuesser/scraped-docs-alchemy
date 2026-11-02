@@ -2,11 +2,11 @@
 url: https://alchemy.run/hetzner/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Hetzner with Hetzner.Website.Vite — static assets as a systemd unit on a Server, http://{ipv4}:3000, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Hetzner.Website.Vite` deploys a [Vite](https://vite.dev/) project to a Hetzner Cloud Server. It runs `vite build` and serves the output from a systemd [`Service`](https://alchemy.run/hetzner/compute/services) on port 3000. Omit `server` and Alchemy creates a `cpx12` / `ubuntu-24.04` [`Server`](https://alchemy.run/hetzner/compute/servers) in `fsn1`. Live `url` is `http://{ipv4}:3000`. Your `vite.config.*` loads natively — plugins included. There is no TLS on the Service and no framework server module.
+`Hetzner.Website.Vite` deploys a [Vite](https://vite.dev/) project to a Hetzner Cloud Server. It runs `vite build` and serves the output from a systemd [`Service`](../compute/services.md) on port 3000. Omit `server` and Alchemy creates a `cpx12` / `ubuntu-24.04` [`Server`](../compute/servers.md) in `fsn1`. Live `url` is `http://{ipv4}:3000`. Your `vite.config.*` loads natively — plugins included. There is no TLS on the Service and no framework server module.
 
 React, Vue, and Solid client SPAs belong here, as do multi-page apps that emit one HTML file per route. SSR frameworks that wrap Vite deploy through their own composites — [`Astro`](astro.md), [`Nextjs`](nextjs.md), [`Nuxt`](nuxt.md), [`ReactRouter`](react-router.md), [`SolidStart`](solidstart.md), [`SvelteKit`](sveltekit.md), [`TanStackStart`](tanstack-start.md), [`Waku`](waku.md), [`Octane`](octane.md).
 
@@ -134,7 +134,7 @@ export const Website = Hetzner.Website.Vite("Website", {
 
 ## Custom domain
 
-`domain` is a hostname string. It requires `zone` — an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns). Alchemy creates an A [`RecordSet`](https://alchemy.run/hetzner/networking/dns) pointing at the Server’s public IPv4. `url` becomes `http://{domain}:3000`. Passing `domain` without `zone` fails. The Service does not terminate TLS:
+`domain` is a hostname string. It requires `zone` — an existing [`Hetzner.Zone`](../networking/dns.md). Alchemy creates an A [`RecordSet`](../networking/dns.md) pointing at the Server’s public IPv4. `url` becomes `http://{domain}:3000`. Passing `domain` without `zone` fails. The Service does not terminate TLS:
 
 ```typescript
 export const Dns = Hetzner.Zone("dns", { name: "example.com" });
@@ -149,4 +149,4 @@ export const Website = Hetzner.Website.Vite("Website", {
 
 - [`Hetzner.Website.Vite` API](https://alchemy.run/providers/hetzner/website#vite)
 - [Astro](astro.md), [Next.js](nextjs.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), [Octane](octane.md) — SSR frameworks
-- [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)
+- [Servers](../compute/servers.md), [Services](../compute/services.md), [DNS](../networking/dns.md)

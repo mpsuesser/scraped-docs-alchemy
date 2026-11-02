@@ -2,13 +2,21 @@
 url: https://alchemy.run/cloudflare/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Worker."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 In [Part 2](part-2.md) you deployed a Worker with R2 Bucket
 bindings. Now you'll write integration tests that deploy the stack,
 hit the live Worker over HTTP, and verify it works.
+
+## Install the test harness
+
+`Test.make` ships in `@alchemy.run/test`. Add it as a dev dependency:
+
+```sh
+bun add -d @alchemy.run/test
+```
 
 ## Create the test file
 
@@ -20,7 +28,7 @@ with `Test.make({...})` — the same `Cloudflare.providers()` /
 ```typescript
 // test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import Stack from "../alchemy.run.ts";
@@ -43,7 +51,7 @@ tests run:
 ```diff lang="typescript"
 // test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import Stack from "../alchemy.run.ts";
@@ -68,7 +76,7 @@ returned from your Stack in Part 2:
 ```diff lang="typescript"
 // test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import Stack from "../alchemy.run.ts";
@@ -111,7 +119,7 @@ actually handles requests:
 ```diff lang="typescript"
 // test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 +import * as HttpBody from "effect/http/HttpBody";
@@ -198,7 +206,7 @@ Add `afterAll` with `destroy`, using `skipIf` to only tear down when
 
 ```diff lang="typescript"
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as HttpBody from "effect/http/HttpBody";

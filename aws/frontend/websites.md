@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SvelteKit, TanStack Start, Waku, Octane, or any static build to AWS with first-class Website resources."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Alchemy deploys frontends to AWS with a family of `AWS.Website`
@@ -31,7 +31,7 @@ integration on top.
   apps on a streaming Lambda; your `vite.config.ts` loads natively.
 - [`Nuxt`](nuxt.md) — Nuxt apps built through nitro's
   `node` preset; your `nuxt.config.ts` loads natively.
-- [`ReactRouter`](react-router.md) — React Router v7 in
+- [`ReactRouter`](react-router.md) — React Router v8 in
   framework mode, built through your own `vite build`.
 - [`SvelteKit`](sveltekit.md) — SvelteKit apps with a
   wrangler-free in-memory AWS adapter; your `vite.config.ts` loads
@@ -50,7 +50,8 @@ integration on top.
   sites (or a site plus an API), routed at the edge.
 
 Every resource shares the same surface: `domain` (ACM certificate +
-Route 53 records), server configuration (`timeout`, `env`,
+Route 53 records, or records on another
+[DNS host](../../infrastructure-as-code/dns-adapters.md)), server configuration (`timeout`, `env`,
 `maxConcurrencyPerEnvironment`, `maxEnvironments`), `assets`, `edge`
 customizations, and `invalidation`.
 All builds are memoized by content-hashing the input files — an

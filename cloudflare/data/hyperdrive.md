@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/hyperdrive
 title: "Hyperdrive"
 description: "Cloudflare Hyperdrive pools connections to your external Postgres or MySQL database at the edge — provision a database (Neon or PlanetScale), front it with Hyperdrive, and bind the connection into your Worker."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Hyperdrive is a Cloudflare-managed connection pooler that sits between Workers and an external Postgres or MySQL database. The Worker sees a familiar connection string, but the connection itself is already pooled at the edge — no per-request TCP handshakes, no cold-start connection storms.
@@ -109,25 +109,23 @@ The pooled endpoint is also the right target when Hyperdrive isn’t in the pict
 
 ## Install the client library
 
-The Worker uses a Node-compatible driver to talk to Hyperdrive over the binding. Pick the one that matches your engine:
+The Worker queries Hyperdrive with Effect SQL. Install the driver that matches your engine:
 
-[`pg`](https://node-postgres.com/) — node-postgres:
+[`@effect/sql-pg`](https://github.com/Effect-TS/effect-smol/tree/main/packages/sql/pg) — Effect’s native Postgres driver:
 
 ```sh
-pnpm add pg
-pnpm add -D @types/pg
+pnpm add @alchemy.run/sql@latest @effect/sql-pg
 ```
 
 ## Bind Hyperdrive to your Worker
 
-`Cloudflare.Hyperdrive.Connect(...)` returns a typed accessor for the runtime binding — connection string, host, port, user, password, database — plus a `raw` escape hatch for libraries that want the underlying `Hyperdrive` object:
+`Cloudflare.Hyperdrive.Connect(...)` returns a typed accessor for the runtime binding — connection string, host, port, user, password, database — plus a `raw` escape hatch for libraries that want the underlying `Hyperdrive` object. Pass its `connectionString` to Effect SQL:
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as SQL from "@alchemy.run/sql/Postgres";
 import * as Effect from "effect/Effect";
-import * as Redacted from "effect/Redacted";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
-import { Client } from "pg";
 import { Hyperdrive } from "./Db.ts";
 
 export default class Api extends Cloudflare.Worker<Api>()(
@@ -135,27 +133,17 @@ export default class Api extends Cloudflare.Worker<Api>()(
   {
     main: import.meta.url,
     compatibility: {
-      // node-postgres needs Node.js APIs to run inside a Worker.
+      // The driver opens its socket through Node's \`net\` and \`tls\` APIs.
       flags: ["nodejs_compat"],
     },
   },
   Effect.gen(function* () {
     const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
+    const sql = yield* SQL.Postgres({ url: hd.connectionString });
 
     return {
       fetch: Effect.gen(function* () {
-        const connectionString = Redacted.value(yield* hd.connectionString);
-        const rows = yield* Effect.promise(async () => {
-          // One client per request — Hyperdrive does the pooling.
-          const client = new Client({ connectionString });
-          await client.connect();
-          try {
-            const r = await client.query("SELECT now() as now");
-            return r.rows;
-          } finally {
-            await client.end().catch(() => {});
-          }
-        });
+        const rows = yield* sql\`SELECT now() AS now\`;
         return yield* HttpServerResponse.json({ ok: true, rows });
       }),
     };
@@ -164,10 +152,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Two things to notice (regardless of engine):
-
-- The `nodejs_compat` flag is required because the driver uses Node’s `net` and `crypto` APIs.
-- The fetch handler opens a fresh connection per request and ends it on the way out. This is intentional — Hyperdrive does the pooling on Cloudflare’s side, so the Worker doesn’t need its own. [Effect SQL](#use-effect-sql) and [Drizzle](drizzle.md) manage a client per execution scope rather than retaining sockets across requests.
+`SQL.Postgres` and `SQL.MySQL` open a pool lazily inside each request’s [scope](../../sql/effect-sql/lifecycle.md) and close it when the request ends. Hyperdrive does the pooling on Cloudflare’s side, so the Worker never retains sockets across requests. The [Postgres](../../sql/effect-sql/postgres.md) and [MySQL](../../sql/effect-sql/mysql.md) client guides cover queries, typed errors, and transactions; [Drizzle](drizzle.md) adds typed schemas on the same connection.
 
 ## Wire the resources into the stack
 
@@ -203,35 +188,6 @@ Watch the deploy plan: alchemy creates the database, then the branch, then the c
 
 You’re now talking to your database from the edge through Hyperdrive.
 
-## Use Effect SQL
-
-```typescript
-import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as SQL from "@alchemy.run/sql/Postgres";
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/http/HttpServerResponse";
-import { Hyperdrive } from "./Db.ts";
-
-export default class Api extends Cloudflare.Worker<Api>()(
-  "Api",
-  { main: import.meta.url, compatibility: { flags: ["nodejs_compat"] } },
-  Effect.gen(function* () {
-    const connection = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
-    const sql = yield* SQL.Postgres({ url: connection.connectionString });
-    return {
-      fetch: Effect.gen(function* () {
-        const rows = yield* sql\`SELECT NOW() AS now\`;
-        return yield* HttpServerResponse.json({ ok: true, rows });
-      }),
-    };
-  }).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding)),
-) {}
-```
-
-Install `@effect/sql-pg` and `pg` for this Postgres variant. The binding and stack stay the same; Effect SQL opens and closes a pool for each execution scope.
-
-For a MySQL origin, install `@effect/sql-mysql2` and `mysql2`, import `@alchemy.run/sql/MySQL`, and construct `SQL.MySQL({ url: connection.connectionString })`. The [Postgres](../../sql/effect-sql/postgres.md) and [MySQL](../../sql/effect-sql/mysql.md) client guides cover queries, typed errors, and transactions.
-
 ## Workers defaults
 
 `SQL.MySQL` and `Drizzle.MySQL` disable prepared statements and mysql2’s eval-based row parsers when running in workerd. Hyperdrive’s MySQL proxy uses the text protocol, and Workers prohibit runtime JavaScript compilation.
@@ -251,7 +207,7 @@ These are detected defaults, not required boilerplate. Explicit configuration wi
 Guides that build on Hyperdrive:
 
 - [Private database (Workers VPC)](hyperdrive-private-database.md) — reach a database with no public endpoint, such as Aurora in an AWS VPC, through a Cloudflare Tunnel.
-- [Add Drizzle ORM](drizzle.md) — swap the raw driver for typed schemas and alchemy-managed migrations.
+- [Add Drizzle ORM](drizzle.md) — add typed schemas and alchemy-managed migrations.
 - [Shared database across stages](shared-database.md) — point PR-preview stages at one long-lived database.
 - [Branch from a shared database](branch-from-shared-database.md) — copy-on-write branches per preview stage.
 

@@ -2,11 +2,11 @@
 url: https://alchemy.run/fly/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Fly with Fly.Website.TanStackStart — SSR on a Machine, client assets baked into the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Fly.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Fly. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
+`Fly.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Fly. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
 
 ## Install
 
@@ -183,5 +183,5 @@ const site = yield* Fly.Website.TanStackStart("Web", {
 ## Where next
 
 - [TanStack Start API reference](https://alchemy.run/providers/fly/website#tanstackstart)
-- [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
-- [IPs & certificates](https://alchemy.run/fly/networking)
+- [Apps](../compute/apps.md) and [Services](../compute/services.md)
+- [IPs & certificates](../networking.md)

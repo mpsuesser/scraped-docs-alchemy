@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/blocks/repositories
 title: "Repository"
 description: "One Durable Object per repository, behind the Git.RepoStore service. Provide it, call it from your own routes, compose operations through Git.Engine, or implement its shape over another store."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 The examples use `Authentication` from
@@ -133,7 +133,7 @@ yield* Effect.log("branch removed");
 Run this inside `Effect.scoped`. `checkRefChanges` is your application function;
 it can use your request user and database. The prepared operation pins the ref
 value and can commit only once before the scope closes. Use the same policy from
-push and merge handlers. [Engine operations](https://alchemy.run/git/blocks/engine) describes the APIs.
+push and merge handlers. [Engine operations](engine.md) describes the APIs.
 
 `RepoStore` remains the lower storage contract for implementing another backend.
 Its raw RPC methods are infrastructure primitives, not an authorization boundary.

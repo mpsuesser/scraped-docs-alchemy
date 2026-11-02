@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 The `Counter` Durable Object you added in the previous part holds
@@ -427,7 +427,7 @@ per run:
 ```typescript
 // test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Deferred from "effect/Deferred";
 import * as Effect from "effect/Effect";

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Prisma Compute."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website` builds your frontend with its own framework and deploys
@@ -185,14 +185,23 @@ const site = yield* Prisma.Website.Astro("Web", {
 ```
 
 `domain` creates a [`Prisma.CustomDomain`](https://alchemy.run/providers/prisma/reference/compute#customdomain)
-and changes `site.url` to `https://app.example.com`. Prisma requires the
-app to be attached to the project's **current default branch**.
+and changes `site.url` to `https://app.example.com`.
 
 Domain provisioning is asynchronous. `site.domain` is the created
 CustomDomain resource. Configure its `dnsRecords` with your DNS provider
 and inspect `status`, `foundryStatus`, and `failureReason` before
 sending production traffic.
-Alchemy does not automatically create DNS records. Changing an existing
+
+To publish `dnsRecords` automatically, pass the DNS host as `dns`:
+
+```typescript
+const site = yield* Prisma.Website.Astro("Web", {
+  domain: { name: "app.example.com", dns: Cloudflare.DNS.Adapter() },
+});
+```
+
+`AWS.Route53.Adapter()` and `Hetzner.DNS.Adapter()` work the same way. See
+[DNS Adapters](../../infrastructure-as-code/dns-adapters.md). Changing an existing
 domain's hostname or app is rejected; add a second domain, verify DNS
 and TLS, cut traffic over, then remove the old one. See
 [Compute custom domains](../compute/apps.md#custom-domains).

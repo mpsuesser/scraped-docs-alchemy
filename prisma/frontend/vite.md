@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Prisma Compute with Prisma.Website.Vite — static files served on Bun and Vite's native dev server locally."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website.Vite` runs [Vite](https://vite.dev/) ’s build and serves its output with a generated static-file server on **Bun in Prisma Compute**. The Node-target output is uploaded as `tar.gz`, not a Docker image. There is no framework SSR handler, but the site still has a Compute runtime.
@@ -115,7 +115,7 @@ export const Website = Prisma.Website.Vite("Website", {
 });
 ```
 
-This creates `Prisma.CustomDomain` and makes `site.url` the HTTPS hostname. The app must be on the project’s current default branch. Configure the returned DNS records yourself and verify provisioning status before cutover; see [Custom domains](websites.md#custom-domains).
+This creates `Prisma.CustomDomain` and makes `site.url` the HTTPS hostname. Configure the returned DNS records yourself and verify provisioning status before cutover; see [Custom domains](websites.md#custom-domains).
 
 ## Where next
 

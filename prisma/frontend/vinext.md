@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Prisma Compute with the shared Website API, native local development, and traced runtime dependencies."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website.Vinext` builds with the Vinext Vite API, then hosts vinext’s production Node server on **Bun in Prisma Compute**. Alchemy packages `dist/`, public assets, and locally installed runtime dependencies into a `tar.gz` artifact. There is no Dockerfile, registry, Wrangler configuration, or OpenNext build.
@@ -101,7 +101,7 @@ const site = yield* Prisma.Website.Vinext("Web", {
 });
 ```
 
-The app must use the project’s default branch. Configure the returned DNS records and verify domain status before routing traffic; see [Custom domains](websites.md#custom-domains).
+Configure the returned DNS records and verify domain status before routing traffic; see [Custom domains](websites.md#custom-domains).
 
 ## Packaging
 

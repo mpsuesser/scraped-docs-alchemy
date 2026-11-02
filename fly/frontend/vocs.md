@@ -2,11 +2,11 @@
 url: https://alchemy.run/fly/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Fly with Fly.Website.Vocs — prerendered HTML on a Node static-file server, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Fly.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to Fly. Vocs prerenders static HTML; the node target drops server modules and Alchemy hosts a tiny static-file server on a Fly [Service](https://alchemy.run/fly/compute/services) — one [App](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. Extensionless pages work (`/about` → `about/index.html`). Your `vocs.config.*` loads natively — there is no adapter to install.
+`Fly.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to Fly. Vocs prerenders static HTML; the node target drops server modules and Alchemy hosts a tiny static-file server on a Fly [Service](../compute/services.md) — one [App](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. Extensionless pages work (`/about` → `about/index.html`). Your `vocs.config.*` loads natively — there is no adapter to install.
 
 ## Install
 
@@ -127,6 +127,6 @@ export const Website = Fly.Website.Vocs("Website", {
 ## Where next
 
 - [`Vocs` reference](https://alchemy.run/providers/fly/website#vocs) — every prop and attribute
-- [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services) — the Machine the site runs on
-- [IPs & certificates](https://alchemy.run/fly/networking) — fly.dev IPv4 and ACME
+- [Apps](../compute/apps.md) and [Services](../compute/services.md) — the Machine the site runs on
+- [IPs & certificates](../networking.md) — fly.dev IPv4 and ACME
 - [Fly](../../fly.md) — the Fly provider hub

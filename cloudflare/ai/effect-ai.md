@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/effect-ai
 title: "Effect AI"
 description: "Wire Effect's LanguageModel and Chat services into a Cloudflare Worker — read API keys with effect/Config, provide the model layer to your handler, plug in persistence."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Effect's [`@effect/ai`](https://effect.website/docs/ai/introduction)
@@ -257,7 +257,7 @@ model })` — is the same.
 - [`@effect/ai-amazon-bedrock`](https://www.npmjs.com/package/@effect/ai-amazon-bedrock)
 - `Cloudflare.Workers.AI` (the native Workers AI binding, via Alchemy itself)
 - `Cloudflare.AI.Gateway` (Workers AI behind an AI Gateway, via Alchemy itself)
-- [`AWS.Bedrock.LanguageModel`](https://alchemy.run/aws/ai/bedrock) (Amazon Bedrock over the
+- [`AWS.Bedrock.LanguageModel`](../../aws/ai/bedrock.md) (Amazon Bedrock over the
   Converse API with IAM-scoped bindings, via Alchemy itself)
 
 ## Where to go next

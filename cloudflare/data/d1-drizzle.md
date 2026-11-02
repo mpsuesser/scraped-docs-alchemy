@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/d1-drizzle
 title: "Drizzle on D1"
 description: "Deploy committed SQLite migrations to D1 and query the database from a Worker with Drizzle."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 D1 uses a native Worker binding, so it needs neither a connection string nor Hyperdrive. For external Postgres/MySQL, use [Worker + Drizzle](drizzle.md).
@@ -11,8 +11,8 @@ D1 uses a native Worker binding, so it needs neither a connection string nor Hyp
 ## Install
 
 ```sh
-pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-d1
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5 @effect/sql-d1
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 These versions match Alchemy's current Effect-compatible Drizzle integration.

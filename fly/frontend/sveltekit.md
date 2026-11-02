@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Fly with Fly.Website.SvelteKit — kit SSR on a Machine, prerendered assets baked into the image, and Kit's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Fly.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to Fly. It builds the app with SvelteKit’s own Vite pipeline and an in-memory Node adapter. Client assets and prerendered pages bake into the Machine image and are served first; dynamic routes run in the kit handler on port 3000. Alchemy creates a `Fly.App` if you omit `app`, a `Fly.Service` on that App, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -127,10 +127,10 @@ const site = yield* Fly.Website.SvelteKit("Web", {
 });
 ```
 
-Alchemy requests an ACME [`Fly.Certificate`](https://alchemy.run/fly/networking) on the App. Point DNS at the App first — v1 does not create records. `url` becomes `https://app.example.com`.
+Alchemy requests an ACME [`Fly.Certificate`](../networking.md) on the App. Point DNS at the App first — v1 does not create records. `url` becomes `https://app.example.com`.
 
 ## Where next
 
 - [`SvelteKit` API](https://alchemy.run/providers/fly/website#sveltekit)
-- [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
-- [IPs & certificates](https://alchemy.run/fly/networking)
+- [Apps](../compute/apps.md) and [Services](../compute/services.md)
+- [IPs & certificates](../networking.md)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/dev
 title: "dev"
 description: "Run your stack in development mode with hot reloading — resources deploy to the cloud while Workers run in the local dev runtime."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 ```sh
@@ -37,6 +37,15 @@ stage — including one you also deploy.
 
 Tear the default local-dev stage down with
 `alchemy destroy --stage dev_$USER`.
+
+## Environment variables
+
+| Variable                   | Description                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `ALCHEMY_WORKERD_PATH`     | Path to the `workerd` binary every local Workers runtime runs, instead of the one from npm (e.g. on NixOS)        |
+| `ALCHEMY_WORKERD_V8_FLAGS` | Extra V8 flags for every local Workers runtime, separated by whitespace (e.g. `--max-old-space-size=4096`)        |
+
+A Worker's `dev.workerd` option sets the same things for that Worker alone, and wins over these.
 
 ## Examples
 

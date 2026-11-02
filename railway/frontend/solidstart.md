@@ -2,11 +2,11 @@
 url: https://alchemy.run/railway/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Railway with Railway.Website.SolidStart — nitro's node preset on a container Service, prerendered pages in the image, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Railway.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Railway. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server plus client assets (prerendered pages included) run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
+`Railway.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Railway. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server plus client assets (prerendered pages included) run on one [`Railway.Service`](../compute/services.md). Alchemy creates a [`Railway.Project`](../compute/projects.md) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
 
 ## Install
 
@@ -157,10 +157,10 @@ const site = yield* Railway.Website.SolidStart("Web", {
 });
 ```
 
-`domain` attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) (`targetPort` 3000). `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`.
+`domain` attaches a [`Railway.CustomDomain`](../networking.md) (`targetPort` 3000). `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`.
 
 ## Where next
 
 - [SolidStart API reference](https://alchemy.run/providers/railway/website#solidstart)
-- [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
-- [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md) and [Services](../compute/services.md)
+- [Custom domains](../networking.md)

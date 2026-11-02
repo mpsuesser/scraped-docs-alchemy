@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/apis/effect-rpc
 title: "Effect RPC on Cloud Run"
 description: "Build a typed RPC API with Effect's Rpc module, deploy it to Cloud Run, and call its procedures from a typed client."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Effect RPC gives you procedures instead of URLs, and a typed client
@@ -62,14 +62,14 @@ export class JobRpcs extends RpcGroup.make(getJob, createJob) {}
 
 ## Implement it on Cloud Run
 
-`RpcServer.toHttpEffect` turns the group into a `fetch` handler:
+`GCP.Run.ServeRpc` turns the group into a `fetch` handler. It serves
+NDJSON, so streaming procedures work, and builds the server once per
+instance:
 
 ```typescript
 // src/JobService.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
-import { RpcSerialization, RpcServer } from "effect/rpc";
 import { Job, JobNotFound, PutJobFailed } from "./Job.ts";
 import { JobRpcs } from "./JobRpcs.ts";
 
@@ -105,9 +105,7 @@ export default class JobService extends GCP.Function<JobService>()(
     });
 
     return {
-      fetch: yield* RpcServer.toHttpEffect(JobRpcs).pipe(
-        Effect.provide(Layer.mergeAll(handlersLayer, RpcSerialization.layerJson)),
-      ),
+      fetch: GCP.Run.ServeRpc(JobRpcs, handlersLayer),
     };
   }).pipe(Effect.provide(GCP.Firestore.ReadWriteDatabaseHttp)),
 ) {}
@@ -163,7 +161,7 @@ Effect.runPromise(
     Effect.provide(
       RpcClient.layerProtocolHttp({ url: process.env.JOB_RPC_URL! }).pipe(
         Layer.provide(FetchHttpClient.layer),
-        Layer.provide(RpcSerialization.layerJson),
+        Layer.provide(RpcSerialization.layerNdjson),
       ),
     ),
   ),
@@ -173,6 +171,68 @@ Effect.runPromise(
 ```sh
 JOB_RPC_URL=https://<service>.run.app bun scripts/client.ts
 ```
+
+## Call it from another service
+
+Keep the RPC service private (drop `invokerIamDisabled`) and call it
+from another Cloud Run service. `GCP.Run.InvokeService` with
+`schema` grants `roles/run.invoker`, signs each call with an ID token,
+and returns the typed client:
+
+```typescript
+// src/Gateway.ts
+import * as GCP from "@alchemy.run/gcp";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import JobService from "./JobService.ts";
+import { JobRpcs } from "./JobRpcs.ts";
+
+export default class Gateway extends GCP.Run.Service<Gateway>()(
+  "Gateway",
+  { main: import.meta.url, invokerIamDisabled: true },
+  Effect.gen(function* () {
+    const jobs = yield* GCP.Run.InvokeService(JobService, { schema: JobRpcs });
+    return {
+      fetch: Effect.gen(function* () {
+        const jobId = yield* jobs.createJob({ content: "Ship the docs" });
+        return yield* HttpServerResponse.json(yield* jobs.getJob({ jobId }));
+      }).pipe(Effect.orDie),
+    };
+  }).pipe(Effect.provide(GCP.Run.InvokeServiceHttp)),
+) {}
+```
+
+The client speaks NDJSON, the serialization `GCP.Run.ServeRpc` serves.
+
+## Run it as a sidecar
+
+The same group can run next to the caller in one instance. Declare it
+as a `GCP.Run.Container` and bind it with `GCP.Run.bindContainer`:
+
+```typescript
+// src/JobSidecar.ts
+import * as GCP from "@alchemy.run/gcp";
+import * as Effect from "effect/Effect";
+import { JobRpcs } from "./JobRpcs.ts";
+import { handlersLayer } from "./handlers.ts";
+
+export default class JobSidecar extends GCP.Run.Container<JobSidecar>()(
+  "JobSidecar",
+  { main: import.meta.url, port: 3000, startupProbe: { tcpSocket: {} } },
+  Effect.gen(function* () {
+    return { fetch: GCP.Run.ServeRpc(JobRpcs, handlersLayer) };
+  }),
+) {}
+```
+
+```typescript
+// inside the calling service's Effect
+const jobs = yield* GCP.Run.bindContainer(JobSidecar, { schema: JobRpcs });
+const job = yield* jobs.getJob({ jobId });
+```
+
+Calls go over `localhost` and never leave the instance. Streaming
+procedures return a `Stream` on both clients.
 
 ## Choosing an API style
 

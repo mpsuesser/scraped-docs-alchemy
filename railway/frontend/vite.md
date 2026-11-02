@@ -2,11 +2,11 @@
 url: https://alchemy.run/railway/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Railway with Railway.Website.Vite — static assets on a container Service, a *.up.railway.app URL (or your domain), and Vite's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Railway.Website.Vite` deploys a [Vite](https://vite.dev/) project to Railway. It runs `vite build` and serves the output from a generated Node static-file server on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Omit `project` and Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects). Live `url` is `https://{name}.up.railway.app`. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
+`Railway.Website.Vite` deploys a [Vite](https://vite.dev/) project to Railway. It runs `vite build` and serves the output from a generated Node static-file server on one [`Railway.Service`](../compute/services.md). Omit `project` and Alchemy creates a [`Railway.Project`](../compute/projects.md). Live `url` is `https://{name}.up.railway.app`. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
 
 React, Vue, and Solid client SPAs belong here, as do multi-page apps that emit one HTML file per route. SSR frameworks that wrap Vite deploy through their own composites — [`Astro`](astro.md), [`Nextjs`](nextjs.md), [`Nuxt`](nuxt.md), [`ReactRouter`](react-router.md), [`SolidStart`](solidstart.md), [`SvelteKit`](sveltekit.md), [`TanStackStart`](tanstack-start.md), [`Waku`](waku.md), [`Octane`](octane.md).
 
@@ -132,7 +132,7 @@ export const Website = Railway.Website.Vite("Website", {
 
 ## Custom domain
 
-`domain` is a hostname string. Alchemy attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) (`targetPort` 3000) and `url` becomes `https://{domain}`:
+`domain` is a hostname string. Alchemy attaches a [`Railway.CustomDomain`](../networking.md) (`targetPort` 3000) and `url` becomes `https://{domain}`:
 
 ```typescript
 export const Website = Railway.Website.Vite("Website", {
@@ -144,4 +144,4 @@ export const Website = Railway.Website.Vite("Website", {
 
 - [`Railway.Website.Vite` API](https://alchemy.run/providers/railway/website#vite)
 - [Astro](astro.md), [Next.js](nextjs.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), [Octane](octane.md) — SSR frameworks
-- [Projects](https://alchemy.run/railway/compute/projects), [Services](https://alchemy.run/railway/compute/services), [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md), [Services](../compute/services.md), [Custom domains](../networking.md)

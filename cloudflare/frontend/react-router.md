@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
-description: "Deploy React Router v7 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy React Router v8 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-[React Router](https://reactrouter.com/) v7 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
+[React Router](https://reactrouter.com/) v8 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
 
 ## Project layout
 
@@ -25,7 +25,7 @@ React Router’s RSC mode is wired directly on `@vitejs/plugin-rsc`, so the per-
 
 ## Install the dependencies
 
-React Server Components need React Router 7.16+ and the RSC Vite plugin:
+React Server Components need React Router 8+ and the RSC Vite plugin:
 
 ```sh
 pnpm add react react-dom react-router

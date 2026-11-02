@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/recipes
 title: "Overview"
 description: "Requirements pick lines. One table from what you need to the line that changes, the stack shape for one cloud or two, and complete files to copy."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 The examples use `Authentication` from [Getting Started](getting-started.md): the application’s request middleware.
@@ -30,7 +30,7 @@ const GitLive = Git.ApiLive.pipe(
 | Bytes somewhere that is neither R2 nor S3 | your own `BlobStore` | [Bring your own store](recipes/your-own-store.md) |
 | Registry reads near users everywhere, SQL over the index | `RegistryD1(RepoIndex)` | [Registry](blocks/registry.md) |
 | Your own users and credentials | your `HttpRouter` middleware | [Tutorial Part 4](tutorial/part-4.md) |
-| Branch rules | application handlers + `Git.Engine` | [Tutorial Part 6](https://alchemy.run/git/tutorial/part-6) |
+| Branch rules | application handlers + `Git.Engine` | [Tutorial Part 6](tutorial/part-6.md) |
 | Your web app and git on one domain | a front-door Worker | [Application example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-git-service) |
 
 Every row is independent. Bytes in S3 with the loader hasher and a D1 registry is three changed lines, and the type checker confirms the graph is whole. [Scaling](recipes/scaling.md) is the why behind the first four rows.

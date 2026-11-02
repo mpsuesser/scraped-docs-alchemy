@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
 title: "Resource Lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Every [Resource](resource.md) goes through the same lifecycle: **plan → reconcile → (replace) → delete**. The plan classifies each resource as create, update, replace, delete, or no-op, but the provider implements a single `reconcile` function that converges the cloud’s actual state to what’s declared — whether that’s the first provisioning, a routine update, or an adoption takeover. For the CLI flags that drive these operations, see the [CLI reference](../cli.md).
@@ -54,7 +54,7 @@ Some property changes can’t be applied in place — for example, changing a Dy
 
 Because new and old coexist briefly, dependents get a clean cutover without downtime.
 
-Changing a **logical ID** also plans a replacement — if you merely renamed the resource, declare it with `renamedFrom` instead; see [Renaming Resources](https://alchemy.run/infrastructure-as-code/renaming).
+Changing a **logical ID** also plans a replacement — if you merely renamed the resource, declare it with `renamedFrom` instead; see [Renaming Resources](renaming.md).
 
 ## Delete
 
@@ -145,7 +145,7 @@ Every lifecycle operation on this page is implemented per resource type by a [Pr
 
 ## Where next
 
-- [Renaming Resources](https://alchemy.run/infrastructure-as-code/renaming) — migrate state across a logical ID change instead of replacing. Next page.
+- [Renaming Resources](renaming.md) — migrate state across a logical ID change instead of replacing. Next page.
 - [Providers](provider.md) — the object that implements `reconcile`, `delete`, `diff`, and `read` for a resource type.
 - [CLI](../cli.md) — the commands and flags that drive the lifecycle.
 - [State Store](../state-store.md) — where the persisted state behind the plan lives.

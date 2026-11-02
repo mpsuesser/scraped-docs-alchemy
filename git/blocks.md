@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/blocks
 title: "Overview"
 description: "One layer graph, provided once, builds the Worker and every Durable Object behind it. Each line is a decision with implementations you choose or write."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 The examples use `Authentication` from [Getting Started](getting-started.md): the application’s request middleware.
@@ -47,7 +47,7 @@ BlobStore: clone bundles       BlobStore: packs, spilled pushes
 | [Registry](blocks/registry.md) | how `owner/name` resolves, and listings | `RegistryDurableObject`, `RegistryD1` |
 | [Blob Store](blocks/blob-store.md) | where packs, bundles, and large pushes go | `BlobStoreR2`, `BlobStoreS3` |
 | [Hasher](blocks/hasher.md) | what verifies a push, and on which compute | `HasherInline`, `HasherWorkerLoader`, `HasherLambda` |
-| [Engine](https://alchemy.run/git/blocks/engine) | repository operations and scoped prepare/commit | `EngineLive` |
+| [Engine](blocks/engine.md) | repository operations and scoped prepare/commit | `EngineLive` |
 | [Auth](blocks/auth.md) | application middleware and policy functions | native Effect HTTP middleware |
 
 ## Replacing a block

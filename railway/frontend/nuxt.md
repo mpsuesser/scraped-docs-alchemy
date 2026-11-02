@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Railway with Railway.Website.Nuxt — nitro's node preset on a Service, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Railway.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Railway. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server plus prerendered assets run on one `Railway.Service`. Omit `project` to create a `Railway.Project`. The URL is `https://{name}.up.railway.app` unless you set `domain`. There is no `nitro.preset` to edit and no build command to run.
@@ -119,7 +119,7 @@ bun alchemy dev
 
 ## Custom domain
 
-`domain` is a hostname string. The site attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking#custom-domains) (`targetPort` 3000) and `url` becomes `https://{domain}` instead of the generated `*.up.railway.app`:
+`domain` is a hostname string. The site attaches a [`Railway.CustomDomain`](../networking.md#custom-domains) (`targetPort` 3000) and `url` becomes `https://{domain}` instead of the generated `*.up.railway.app`:
 
 ```typescript
 export const Website = Railway.Website.Nuxt("Website", {
@@ -132,6 +132,6 @@ Point DNS at Railway’s verification records on the CustomDomain.
 ## Where next
 
 - [`Railway.Website.Nuxt` reference](https://alchemy.run/providers/railway/website#nuxt) — every prop and attribute.
-- [Services](https://alchemy.run/railway/compute/services) and [Projects](https://alchemy.run/railway/compute/projects) — the Service and Project the site creates.
-- [Custom domains](https://alchemy.run/railway/networking#custom-domains) — hostnames on a Service.
+- [Services](../compute/services.md) and [Projects](../compute/projects.md) — the Service and Project the site creates.
+- [Custom domains](../networking.md#custom-domains) — hostnames on a Service.
 - [Setup](../setup.md) — workspace, API token, and alchemy login.

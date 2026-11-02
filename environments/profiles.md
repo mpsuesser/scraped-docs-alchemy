@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/profiles
 title: "Profiles"
 description: "Use profiles to select cloud accounts and credentials for each environment."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A **profile** is a named bundle of provider authentication settings.
@@ -28,7 +28,7 @@ Alchemy selects a profile in this order:
    then the process environment, with `.env` as a fallback when no file is specified
 3. The built-in `default` profile
 
-Stacks that explicitly declare [secret providers](https://alchemy.run/environments/secret-providers)
+Stacks that explicitly declare [secret providers](secret-providers.md)
 pin `ALCHEMY_PROFILE` to `--profile` or the process environment, so a secrets
 provider cannot redirect credential selection. Stacks that omit `secrets`
 retain the existing selection above, including injected configuration.
@@ -189,8 +189,8 @@ directly from environment variables and nothing is read from or written to
 | Fly | `FLY_API_TOKEN` | `FLY_API_HOSTNAME` overrides the Machines API root |
 | Hetzner | `HCLOUD_TOKEN` | `HCLOUD_ENDPOINT` overrides the API base URL |
 | Railway | `RAILWAY_API_TOKEN` (account or workspace token) | `RAILWAY_API_URL` overrides the GraphQL host |
-| Doppler | `DOPPLER_TOKEN`, or `DOPPLER_IDENTITY_ID` to log in with the platform's OIDC token | `DOPPLER_OIDC_TOKEN`, `DOPPLER_OIDC_AUDIENCE` — see [Doppler](https://alchemy.run/environments/doppler) |
-| Infisical | `INFISICAL_TOKEN`, or `INFISICAL_IDENTITY_ID` to log in with the platform's OIDC token | `INFISICAL_OIDC_TOKEN`, `INFISICAL_OIDC_AUDIENCE`, `INFISICAL_API_URL` — see [Infisical](https://alchemy.run/environments/infisical) |
+| Doppler | `DOPPLER_TOKEN`, or `DOPPLER_IDENTITY_ID` to log in with the platform's OIDC token | `DOPPLER_OIDC_TOKEN`, `DOPPLER_OIDC_AUDIENCE` — see [Doppler](doppler.md) |
+| Infisical | `INFISICAL_TOKEN`, or `INFISICAL_IDENTITY_ID` to log in with the platform's OIDC token | `INFISICAL_OIDC_TOKEN`, `INFISICAL_OIDC_AUDIENCE`, `INFISICAL_API_URL` — see [Infisical](infisical.md) |
 
 These variables are a CI credential source, not a profile authentication
 method. They are never persisted into `profiles.json` or the credentials

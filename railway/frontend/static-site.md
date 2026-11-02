@@ -2,13 +2,13 @@
 url: https://alchemy.run/railway/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Railway with Railway.Website.StaticSite — a build command, a container Service."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Railway.Website.StaticSite` runs a build command, content-hashes
 the output directory, and deploys a Node static-file server on one
-[Railway Service](https://alchemy.run/railway/compute/services). Use it when the site
+[Railway Service](../compute/services.md). Use it when the site
 has its own build step — Hugo, Zola, Eleventy, or any custom
 pipeline.
 
@@ -59,7 +59,7 @@ export default Alchemy.Stack(
 );
 ```
 
-One `StaticSite` expands into a [Project](https://alchemy.run/railway/compute/projects)
+One `StaticSite` expands into a [Project](../compute/projects.md)
 (created if you omit `project`) and a Service from a container
 image. The Service listens on port 3000 with healthcheck `/health`.
 `site.url` is the generated `https://{name}.up.railway.app` (or
@@ -175,7 +175,7 @@ export const Website = Railway.Website.StaticSite("Website", {
 });
 ```
 
-See [Custom domains](https://alchemy.run/railway/networking) for DNS verification.
+See [Custom domains](../networking.md) for DNS verification.
 
 ## When to use a framework resource instead
 

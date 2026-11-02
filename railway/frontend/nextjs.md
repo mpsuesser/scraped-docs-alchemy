@@ -2,13 +2,13 @@
 url: https://alchemy.run/railway/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Railway with Railway.Website.Nextjs — next build plus a Node next({ dev: false }) container, and next dev under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Railway.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Railway as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
 
-- one [`Railway.Project`](https://alchemy.run/railway/compute/projects) (created if `project` is omitted) and a [`Railway.Service`](https://alchemy.run/railway/compute/services) from a container image
+- one [`Railway.Project`](../compute/projects.md) (created if `project` is omitted) and a [`Railway.Service`](../compute/services.md) from a container image
 - `.next` and `public/` baked into `/app`; `next`, `react`, and `react-dom` installed with `bun install`
 - `url` is `https://{name}.up.railway.app`
 
@@ -112,9 +112,9 @@ const site = yield* Railway.Website.Nextjs("Web", {
 });
 ```
 
-Alchemy attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) on the Service. `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`. Railway issues a certificate once DNS is verified.
+Alchemy attaches a [`Railway.CustomDomain`](../networking.md) on the Service. `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`. Railway issues a certificate once DNS is verified.
 
 ## Where next
 
 - [`Railway.Website.Nextjs` reference](https://alchemy.run/providers/railway/website#nextjs) — every prop and attribute
-- [Projects](https://alchemy.run/railway/compute/projects), [Services](https://alchemy.run/railway/compute/services), [Networking](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md), [Services](../compute/services.md), [Networking](../networking.md)

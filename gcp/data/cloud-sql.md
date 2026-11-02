@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/data/cloud-sql
 title: "Cloud SQL"
 description: "Run Postgres on Cloud SQL, connect Cloud Run to it over the Cloud SQL socket with GCP.SQL.Connect, and query it with Drizzle."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Cloud SQL runs Postgres or MySQL for you. A Cloud Run service reaches it through the Cloud SQL socket, with no public IP and no VPC to set up. This page builds a Postgres todo API with Drizzle.
@@ -26,20 +26,16 @@ export const database = Effect.gen(function* () {
     edition: "ENTERPRISE",
     tier: "db-f1-micro",
     availabilityType: "ZONAL",
-    backupEnabled: false,
+    backup: { enabled: false },
     dataApiAccess: true,
   });
 ```
 
 `db-f1-micro` with no backups is the cheapest Postgres Cloud SQL runs. Creating an instance takes 5 to 15 minutes.
 
-## Add a database and a user
+## Add a user
 
 ```typescript
-const db = yield* GCP.SQL.Database("App", {
-  instance: instance.instanceName,
-});
-
 const password = yield* Alchemy.Random("AppPasswordValue", { bytes: 24 });
 const user = yield* GCP.SQL.User("AppUser", {
   instance: instance.instanceName,
@@ -56,23 +52,32 @@ The service reads the password from a secret in the instance’s region:
 
 ```typescript
 const passwordSecret = yield* GCP.SecretManager.LocationsSecret("AppPassword", {
-    location: instance.region,
-  });
+  location: instance.region,
+});
+```
 
-  const schema = yield* Drizzle.Schema("Schema", {
+The example’s `StorePassword` Action writes the password into the secret at deploy time. Copy [`src/password.ts`](https://github.com/alchemy-run/alchemy/blob/main/examples/gcp-cloud-sql-drizzle/src/password.ts) into your project and yield it from your stack.
+
+## Apply migrations at deploy time
+
+```typescript
+const schema = yield* Drizzle.Schema("Schema", {
     schema: "./src/schema.ts",
     out: "./migrations",
+  });
+
+  const db = yield* GCP.SQL.Database("App", {
+    instance: instance.instanceName,
+    migrations: schema,
+    migrationsUser: user.userName,
+    migrationsPassword: password.text,
   });
 
   return { instance, db, user, password, passwordSecret, schema };
 });
 ```
 
-`Drizzle.Schema` regenerates `./migrations` whenever `src/schema.ts` changes.
-
-## Apply migrations at deploy time
-
-The example’s `migrate` Action writes the password into the secret and applies the migrations through the Cloud SQL Data API, so your machine never needs a network path to the database. Copy [`src/migrate.ts`](https://github.com/alchemy-run/alchemy/blob/main/examples/gcp-cloud-sql-drizzle/src/migrate.ts) into your project.
+`Drizzle.Schema` regenerates `./migrations` whenever `src/schema.ts` changes. Each deploy applies the pending ones as `migrationsUser` through the Cloud SQL Data API, so your machine never needs a network path to the database. Set `migrationsTransport: "connector"` to connect through the Cloud SQL connector instead.
 
 ## Connect from Cloud Run
 
@@ -84,17 +89,16 @@ import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 import { database } from "./database.ts";
-import { migrate } from "./migrate.ts";
 import { todos } from "./schema.ts";
 
 export default class Api extends GCP.Function<Api>()(
   "Api",
   Effect.gen(function* () {
-    const schemaVersion = yield* migrate;
+    const { schema } = yield* database;
     return {
       main: import.meta.url,
       invokerIamDisabled: true,
-      env: { SCHEMA_VERSION: schemaVersion },
+      env: { SCHEMA_VERSION: schema.snapshotHash },
     };
   }),
   Effect.gen(function* () {
@@ -116,7 +120,7 @@ export default class Api extends GCP.Function<Api>()(
 ) {}
 ```
 
-Reading `migrate` in the props makes the service deploy after the schema exists, and roll out a new revision when it changes.
+Binding the database makes the service deploy after its migrations are applied, and `SCHEMA_VERSION` rolls out a new revision when the schema changes.
 
 `Connect` grants `roles/cloudsql.client` on this instance only, and `secretAccessor` on the password secret.
 

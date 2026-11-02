@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/workers
 title: "Workers"
 description: "Cloudflare Workers are the compute Runtime of every Alchemy app — declare the Worker and its handler in one file, bind resources with full type safety, and call other Workers over schemaless RPC."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 In Alchemy, a Cloudflare Worker is a [Runtime](../../infrastructure-as-effects/runtime.md): a [Resource](../../infrastructure-as-code/resource.md) that carries the code it runs. The name and props describe the Worker to deploy. The Effect is what it does:
@@ -138,6 +138,35 @@ export default Cloudflare.Worker(
 `bindWorker(Greeter)` registers a service binding on `Api`, so each call travels over Cloudflare’s in-account service-binding fabric and never the public internet. `greeter.greet("world")` is type-checked against `Greeter` ’s declared shape end to end.
 
 Importing the `Greeter` class pulls in no runtime code. Alchemy marks `.make()` as pure, so the bundler drops the implementation from every Worker that only binds it. For external clients across a trust boundary, where payloads need schema validation before they touch your code, reach for [Effect RPC](../apis/effect-rpc.md) instead.
+
+## Call a Worker in another stack
+
+When `Greeter` is deployed by another stack, reference it with `Worker.ref`. Pass the `Greeter` class rather than its logical id so the reference keeps its RPC shape:
+
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Greeter } from "./Greeter.ts";
+
+export default Cloudflare.Worker(
+  "Api",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const greeter = yield* Cloudflare.Workers.bindWorker(
+      Cloudflare.Worker.ref(Greeter, { stack: "Greeter" }),
+    );
+
+    return {
+      fetch: Effect.gen(function* () {
+        return HttpServerResponse.text(yield* greeter.greet("world"));
+      }),
+    };
+  }),
+);
+```
+
+`Worker.ref(Greeter, ...)` only reads `Greeter` ’s logical id. This stack does not deploy `Greeter`; it binds to the one the `Greeter` stack owns.
 
 ## Call the Worker’s own RPC methods
 
@@ -434,7 +463,7 @@ Compatibility flags and the compatibility date go on `compatibility`. `nodejs_co
 }
 ```
 
-Workers Observability is on by default, with logs and invocation logs enabled. Pass `observability` to tune sampling, persist logs, or turn on traces. Effect-native Workers should provide [`Cloudflare.Telemetry()`](https://alchemy.run/infrastructure-as-effects/telemetry) instead of setting `traces` by hand, since the Layer enables traces on the Worker and mirrors `Effect.withSpan` into the Cloudflare waterfall:
+Workers Observability is on by default, with logs and invocation logs enabled. Pass `observability` to tune sampling, persist logs, or turn on traces. Effect-native Workers should provide [`Cloudflare.Telemetry()`](../../infrastructure-as-effects/telemetry.md) instead of setting `traces` by hand, since the Layer enables traces on the Worker and mirrors `Effect.withSpan` into the Cloudflare waterfall:
 
 ```typescript
 observability: {
@@ -490,15 +519,13 @@ fetch: Effect.gen(function* () {
 }),
 ```
 
-For ad-hoc background work, `WorkerExecutionContext.waitUntil` forks an Effect with the caller’s full context and keeps the invocation alive until it settles:
+For ad-hoc background work, `Cloudflare.waitUntil` forks an Effect with the caller’s full context and keeps the invocation alive until it settles:
 
 ```typescript
 Effect.gen(function* () {
-  const exec = yield* Cloudflare.WorkerExecutionContext;
-
   return {
     fetch: Effect.gen(function* () {
-      yield* exec.waitUntil(writeAuditLog(event));
+      yield* Cloudflare.waitUntil(writeAuditLog(event));
       return HttpServerResponse.text("accepted", { status: 202 });
     }),
   };
@@ -519,6 +546,8 @@ yield* Cloudflare.Worker("Api", {
 ```
 
 Set `preview.of` to deploy this Worker as a [Preview](previews.md) of another stage’s Worker (branch and pull-request testing, isolated Durable Objects). Set `version.parent` to upload a canary version of another stage’s Worker. Ramping, rollback, smoke testing with version overrides, and pinning users to a version are covered in [Gradual deployments](gradual-deployments.md).
+
+Durable Objects that are busy during a deploy keep running their current code for up to 5 minutes. `codeUpdateStrategy` changes how long they wait, or switches them right away. See [Code updates](code-updates.md).
 
 The `version_metadata` binding tells a running Worker which version it is, so responses and logs can say exactly which deploy produced them:
 
@@ -546,6 +575,7 @@ Async Workers declare it on `env` as `CF_VERSION_METADATA: Cloudflare.Workers.Ve
 Guides that build on Workers:
 
 - [Gradual deployments](gradual-deployments.md) — previews, canaries, and ramped rollouts across versions.
+- [Code updates](code-updates.md) — what a deploy does to running Workers and Durable Objects.
 - [Python Workers](python-workers.md) — point `main` at a `.py` file.
 - [Workers Cache](cache.md) — serve responses from the edge before the Worker runs.
 - [Rate limiting](rate-limiting.md) — throttle requests with a binding.

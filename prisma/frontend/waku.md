@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/waku
 title: "Waku"
 description: "Deploy Waku to Prisma Compute with Prisma.Website.Waku — React Server Components and static pages on Bun, with Waku's native dev server locally."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website.Waku` builds a [Waku](https://waku.gg/) React Server Components app with the shared Node target. Its RSC server, client assets, and SSG pages run on **Bun in Prisma Compute** after a `tar.gz` upload. There is no Docker image or registry.
@@ -111,7 +111,7 @@ const site = yield* Prisma.Website.Waku("Web", {
 });
 ```
 
-`domain` creates `Prisma.CustomDomain` and makes `site.url` the HTTPS hostname. The app must be on the project’s current default branch. Configure returned DNS records yourself and verify status before cutover; see [Custom domains](websites.md#custom-domains).
+`domain` creates `Prisma.CustomDomain` and makes `site.url` the HTTPS hostname. Configure returned DNS records yourself and verify status before cutover; see [Custom domains](websites.md#custom-domains).
 
 ## Where next
 

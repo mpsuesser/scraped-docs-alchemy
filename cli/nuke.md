@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/nuke
 title: "nuke"
 description: "Enumerate and delete every live resource across the stack's providers."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 ```sh
@@ -78,7 +78,7 @@ Deletion runs in passes: each pass attempts every remaining resource, failures a
 
 `--concurrency` bounds how many providers are scanned/deleted in parallel (default 16; `0` = unbounded, which is usually *slower* because it triggers provider-side rate limiting and retry backoff). Resources within a provider always delete concurrently.
 
-`--timeout` is a per-provider timeout in seconds for each `list`/`delete` call (default 120), so one slow or hanging provider can't stall the whole run. Scan failures are swallowed — the provider contributes 0 resources — and logged to `.alchemy/log/out`.
+`--timeout` is a per-provider timeout in seconds for each `list`/`delete` call (default 120), so one slow or hanging provider can't stall the whole run. Scan failures are swallowed — the provider contributes 0 resources — and logged to the run log in `.alchemy/log`.
 
 ## Flags
 
@@ -100,11 +100,11 @@ Deletion runs in passes: each pass attempts every remaining resource, failures a
 
 ## Debugging
 
-`DEBUG=1` routes provider logs to the console at Debug level and disables the TUI so the log stream isn't clobbered by the progress renderer.
+`--log-level debug` prints provider debug logs to the console and switches the live progress view to plain lines so it doesn't repaint over them. Every run also records Debug logs in the project's `.alchemy/log` run log, whatever the console level.
 
 ## Where next
 
-- [AWS local development](https://alchemy.run/aws/local-development) — the floci emulator `--local` clears
+- [AWS local development](../aws/local-development.md) — the floci emulator `--local` clears
 - [destroy](destroy.md) — the stack-scoped, state-driven teardown you usually want
 - [Inspecting State](inspecting-state.md) — clear the stale state entries nuke leaves behind
 - [State Store](../state-store.md) — why nuke bypasses it entirely

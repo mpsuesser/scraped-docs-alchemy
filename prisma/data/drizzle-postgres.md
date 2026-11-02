@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/drizzle-postgres
 title: "Drizzle Postgres on Prisma Compute"
 description: "Use Alchemy's Prisma hosting provider to run a Drizzle API against Prisma Postgres."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Prisma here means Alchemy’s Prisma hosting and database provider, not Prisma ORM. Complete [Prisma setup](../setup.md), start from the [prisma-compute-effect example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-compute-effect), and add a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
@@ -11,8 +11,8 @@ Prisma here means Alchemy’s Prisma hosting and database provider, not Prisma O
 ## Install the database dependencies
 
 ```sh
-pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5 @effect/sql-pg
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 The Drizzle versions match the repository’s Effect integration.
@@ -122,7 +122,7 @@ const db = yield* Prisma.Connect(Connection);
 const database = yield* Drizzle.Postgres(db.databaseUrl);
 ```
 
-`databaseUrl` prefers pooled Postgres and then direct Postgres; use a connection that actually has one of those URLs, since Drizzle’s `pg` driver cannot use an Accelerate-only fallback.
+`databaseUrl` prefers pooled Postgres and then direct Postgres; use a connection that actually has one of those URLs, since Drizzle’s Postgres driver cannot use an Accelerate-only fallback.
 
 ## Query from Compute
 

@@ -2,11 +2,11 @@
 url: https://alchemy.run/hetzner/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Hetzner with Hetzner.Website.TanStackStart — SSR as a systemd unit on port 3000, client assets baked into the unit, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Hetzner.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to a Hetzner Cloud Server. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
+`Hetzner.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to a Hetzner Cloud Server. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a systemd [`Hetzner.Service`](../compute/services.md) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
 
 ## Install
 
@@ -43,7 +43,7 @@ import * as Hetzner from "@alchemy.run/hetzner";
 export const Website = Hetzner.Website.TanStackStart("Website");
 ```
 
-Pass `server` to host the site on an existing [`Hetzner.Server`](https://alchemy.run/hetzner/compute/servers) — several sites and APIs can share one box. `rootDir` is the project root — the directory holding `package.json` and `vite.config.*`. It defaults to `"."`, so set it only when the app does not sit next to `alchemy.run.ts`:
+Pass `server` to host the site on an existing [`Hetzner.Server`](../compute/servers.md) — several sites and APIs can share one box. `rootDir` is the project root — the directory holding `package.json` and `vite.config.*`. It defaults to `"."`, so set it only when the app does not sit next to `alchemy.run.ts`:
 
 ```typescript
 export const Website = Hetzner.Website.TanStackStart("Website", {
@@ -180,10 +180,10 @@ const site = yield* Hetzner.Website.TanStackStart("Web", {
 });
 ```
 
-`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — the Website does not create one. It adds an A record pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
+`domain` requires an existing [`Hetzner.Zone`](../networking/dns.md) — the Website does not create one. It adds an A record pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
 
 ## Where next
 
 - [TanStack Start API reference](https://alchemy.run/providers/hetzner/website#tanstackstart)
-- [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
-- [DNS](https://alchemy.run/hetzner/networking/dns)
+- [Servers](../compute/servers.md) and [Services](../compute/services.md)
+- [DNS](../networking/dns.md)

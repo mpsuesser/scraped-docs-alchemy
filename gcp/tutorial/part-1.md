@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with a Cloud Storage Bucket, and deploy it to Google Cloud."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 In this part you install Alchemy, create a Stack with a Cloud Storage Bucket, and deploy it to your Google Cloud project.
@@ -66,7 +66,7 @@ Point Alchemy at your project once:
 bun alchemy profile edit --add GCP
 ```
 
-Choose **Service account JSON**, pick the key file, and pick a default region. The choice is saved to your `default` [profile](../../environments/profiles.md).
+Choose **gcloud login**, pick a gcloud configuration and sign in with your Google account. (**Service account JSON** works too, with a key file.) The choice is saved to your `default` [profile](../../environments/profiles.md).
 
 ## Add a Bucket
 

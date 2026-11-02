@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/references
 title: "References"
 description: "Read an already-deployed Resource or Stack at plan time — Resource.ref by Logical ID with optional stack/stage props, or import a Stack tag and depend on its outputs."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A reference reads something **already deployed** — a different
@@ -67,11 +67,24 @@ const b = yield* Backend.stage.prod;     // pinned to "prod"
 const c = yield* Backend.stage["pr-42"]; // any stage name
 ```
 
+Declare the stages as a third type parameter and a misspelled
+stage becomes a type error:
+
+```typescript
+export class Backend extends Alchemy.Stack<
+  Backend,
+  { url: string },
+  "prod" | `pr-${number}`
+>()("Backend") {}
+
+const d = yield* Backend.stage[`pr-${pr}`];
+```
+
 Every successful `apply` persists what the Stack's effect returned
 as a per-stage output record; `yield* Backend` reads it back as a
 proxy of typed Outputs, so `(yield* Backend).url` is
 `Output<string>`. Full two-package walkthrough:
-[Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack).
+[Multiple Stacks](../project-structure/monorepo-multi-stack.md).
 
 ## Escape hatches
 
@@ -118,7 +131,7 @@ attributes participate in this plan.
 
 - [Resource Lifecycle](resource-lifecycle.md) — how
   the referenced state got persisted in the first place. Next page.
-- [Multiple Stacks](https://alchemy.run/project-structure/monorepo-multi-stack) — typed Stack
+- [Multiple Stacks](../project-structure/monorepo-multi-stack.md) — typed Stack
   handles wiring a monorepo.
 - [Shared database across stages](../cloudflare/data/shared-database.md) —
   the owner/borrower pattern end to end.

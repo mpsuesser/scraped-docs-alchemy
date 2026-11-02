@@ -2,15 +2,15 @@
 url: https://alchemy.run/hetzner/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Hetzner with first-class Website resources."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Alchemy deploys frontends to Hetzner with a family of
 `Hetzner.Website` resources. Each one builds your project
 programmatically and deploys it as a systemd
-[Service](https://alchemy.run/hetzner/compute/services) on a
-[Server](https://alchemy.run/hetzner/compute/servers) — Node on port 3000, no
+[Service](../compute/services.md) on a
+[Server](../compute/servers.md) — Node on port 3000, no
 Dockerfile, no unit file, no adapter in the framework config.
 Your framework's own config file (`vite.config.ts`,
 `astro.config.*`, `nuxt.config.ts`, ...) loads natively; Alchemy
@@ -22,7 +22,7 @@ plus an API) on one VM.
 
 The live URL is **`http://{ipv4}:3000`**. There is no TLS on the
 Service. `domain` requires an existing Hetzner DNS
-[`Zone`](https://alchemy.run/hetzner/networking/dns) and creates an A record;
+[`Zone`](../networking/dns.md) and creates an A record;
 `url` becomes `http://{domain}:3000`.
 
 - [`Vite`](vite.md) — client-only Vite apps
@@ -40,7 +40,7 @@ Service. `domain` requires an existing Hetzner DNS
   Node server; your `nuxt.config.ts` loads natively. Do not set
   `nitro.preset`.
 - [`ReactRouter`](react-router.md) — React Router
-  v7 in framework mode, built through your own `vite build`.
+  v8 in framework mode, built through your own `vite build`.
 - [`SolidStart`](solidstart.md) — SolidStart 2.x
   SSR; Alchemy appends nitro's `node` preset to your `vite build`.
 - [`SvelteKit`](sveltekit.md) — SvelteKit SSR plus
@@ -139,7 +139,7 @@ Server or Service is created. Wrap the site in
 
 `domain` requires `zone` — an existing Hetzner DNS Zone. v1
 does not create a Zone. Alchemy adds an A
-[`RecordSet`](https://alchemy.run/hetzner/networking/dns) pointing at the Server's
+[`RecordSet`](../networking/dns.md) pointing at the Server's
 public IPv4. Passing `domain` without `zone` fails.
 
 ```typescript
@@ -171,10 +171,10 @@ not terminate TLS.
   [Octane](octane.md),
   [Foldkit](foldkit.md),
   [Vocs](vocs.md).
-- [Servers](https://alchemy.run/hetzner/compute/servers) and
-  [Services](https://alchemy.run/hetzner/compute/services) — the VM and systemd
+- [Servers](../compute/servers.md) and
+  [Services](../compute/services.md) — the VM and systemd
   unit these resources deploy.
-- [Zones & records](https://alchemy.run/hetzner/networking/dns) — the Zone
+- [Zones & records](../networking/dns.md) — the Zone
   `domain` attaches to.
 - [`Vite` reference](https://alchemy.run/providers/hetzner/website#vite),
   [`Astro` reference](https://alchemy.run/providers/hetzner/website#astro),

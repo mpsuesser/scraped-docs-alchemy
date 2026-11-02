@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
@@ -297,7 +297,7 @@ Add a test that POSTs a shell command and expects the captured stdout in the res
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as HttpBody from "effect/http/HttpBody";

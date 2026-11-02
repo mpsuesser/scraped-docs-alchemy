@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/stages
 title: "Stages"
 description: "Stages are isolated instances of a Stack — live_sam, dev_sam, staging, prod, pr-42 — each with their own state and physical names."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A **stage** is an isolated instance of a [Stack](../infrastructure-as-code/stack.md).
@@ -21,7 +21,9 @@ separate local-dev sandbox without any config — so a bare `alchemy
 dev` cannot replace resources you deployed. Existing default `alchemy
 dev` stacks keep the `dev_$USER` name. **`Test.make`** uses
 **`test_$USER`** the same way, so two people running the suite
-against one account don't collide.
+against one account don't collide. Running from several git
+worktrees at once? Give each its own stages — see
+[Worktrees](worktrees.md).
 
 ```sh
 $ whoami

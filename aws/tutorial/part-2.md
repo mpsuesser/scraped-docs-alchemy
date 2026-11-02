@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -52,7 +52,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 
 ## Expose a public URL
 
-`fetch` exists, but no one can call it yet. Set `functionUrl: true` on the props to ask AWS for a public **Function URL** — no API Gateway, no auth, just a public HTTPS endpoint:
+Every Lambda Function gets a public **Function URL** by default: `functionUrl` defaults to `true`, which creates an unauthenticated HTTPS endpoint (`authType: "NONE"`) and lets anyone invoke it. Spell it out so the access level is visible in the code:
 
 ```typescript
 export default class Api extends AWS.Lambda.Function<Api>()(
@@ -67,7 +67,9 @@ export default class Api extends AWS.Lambda.Function<Api>()(
 ) {}
 ```
 
-The resolved `Api` resource will now expose a `functionUrl` field carrying that endpoint — we’ll surface it from the Stack in a moment.
+The resolved `Api` resource exposes a `functionUrl` field carrying that endpoint — we’ll surface it from the Stack in a moment.
+
+`functionUrl` takes three access choices. `false` creates no URL, `true` creates a public one, and `{ authType: "AWS_IAM" }` requires SigV4-signed requests.
 
 ## Move the Bucket into the function
 

@@ -2,11 +2,11 @@
 url: https://alchemy.run/hetzner/frontend/vocs
 title: "Vocs"
 description: "Deploy a Vocs docs site to Hetzner with Hetzner.Website.Vocs — prerendered HTML on a systemd unit, extensionless routes, and Vocs' own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Hetzner.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to a Hetzner Cloud [Server](https://alchemy.run/hetzner/compute/servers) as a systemd [Service](https://alchemy.run/hetzner/compute/services) on port 3000. Vocs prerenders static HTML; unmatched paths serve extensionless pages (`/about` → `about/index.html`). The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Your `vocs.config.*` loads natively — there is no adapter to install.
+`Hetzner.Website.Vocs` deploys a [Vocs](https://vocs.dev/) documentation project to a Hetzner Cloud [Server](../compute/servers.md) as a systemd [Service](../compute/services.md) on port 3000. Vocs prerenders static HTML; unmatched paths serve extensionless pages (`/about` → `about/index.html`). The live URL is `http://{ipv4}:3000` — there is no TLS on the Service. Your `vocs.config.*` loads natively — there is no adapter to install.
 
 ## Install
 
@@ -128,7 +128,7 @@ export const Website = Hetzner.Website.Vocs("Website", {
 
 ## Custom domain
 
-`domain` requires an existing Hetzner DNS [Zone](https://alchemy.run/hetzner/networking/dns) (`zone`). Alchemy creates an A [RecordSet](https://alchemy.run/hetzner/networking/dns) pointing at the Server’s public IPv4; `url` becomes `http://{domain}:3000`. v1 does not provision a Zone — omitting `zone` when `domain` is set fails:
+`domain` requires an existing Hetzner DNS [Zone](../networking/dns.md) (`zone`). Alchemy creates an A [RecordSet](../networking/dns.md) pointing at the Server’s public IPv4; `url` becomes `http://{domain}:3000`. v1 does not provision a Zone — omitting `zone` when `domain` is set fails:
 
 ```typescript
 export const Dns = Hetzner.Zone("dns", {
@@ -147,6 +147,6 @@ There is no TLS on the Service.
 ## Where next
 
 - [`Vocs` reference](https://alchemy.run/providers/hetzner/website#vocs) — every prop and attribute
-- [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services) — the VM and systemd unit
-- [Zones & records](https://alchemy.run/hetzner/networking/dns) — the Zone `domain` requires
+- [Servers](../compute/servers.md) and [Services](../compute/services.md) — the VM and systemd unit
+- [Zones & records](../networking/dns.md) — the Zone `domain` requires
 - [Hetzner](../../hetzner.md) — the Hetzner provider hub

@@ -2,11 +2,11 @@
 url: https://alchemy.run/railway/frontend/astro
 title: "Astro"
 description: "Deploy an Astro app to Railway with Railway.Website.Astro — Node SSR on a Service container, static output as a file server, and Astro's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Railway.Website.Astro` deploys an [Astro](https://astro.build/) project to Railway as a container. Server-rendered pages run on a [`Railway.Service`](https://alchemy.run/railway/compute/services) (port 3000); static files are served first, then the Astro handler. Omit `project` and Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects). Your `astro.config.*` loads natively — don’t declare an `adapter`.
+`Railway.Website.Astro` deploys an [Astro](https://astro.build/) project to Railway as a container. Server-rendered pages run on a [`Railway.Service`](../compute/services.md) (port 3000); static files are served first, then the Astro handler. Omit `project` and Alchemy creates a [`Railway.Project`](../compute/projects.md). Your `astro.config.*` loads natively — don’t declare an `adapter`.
 
 ## Install
 
@@ -140,7 +140,7 @@ Two options are managed for you regardless of the config file:
 
 ## Custom domain
 
-`domain` is a hostname string. The site attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking#custom-domains) (`targetPort` 3000) and `url` becomes `https://{domain}` instead of the generated `*.up.railway.app`:
+`domain` is a hostname string. The site attaches a [`Railway.CustomDomain`](../networking.md#custom-domains) (`targetPort` 3000) and `url` becomes `https://{domain}` instead of the generated `*.up.railway.app`:
 
 ```typescript
 export const Website = Railway.Website.Astro("Website", {
@@ -153,6 +153,6 @@ Railway issues a Let’s Encrypt certificate once DNS is verified.
 ## Where next
 
 - [`Railway.Website.Astro` reference](https://alchemy.run/providers/railway/website#astro) — every prop and attribute.
-- [Services](https://alchemy.run/railway/compute/services) and [Projects](https://alchemy.run/railway/compute/projects) — the Service and Project the site creates.
-- [Custom domains](https://alchemy.run/railway/networking#custom-domains) — hostnames on a Service.
+- [Services](../compute/services.md) and [Projects](../compute/projects.md) — the Service and Project the site creates.
+- [Custom domains](../networking.md#custom-domains) — hostnames on a Service.
 - [Setup](../setup.md) — workspace, API token, and alchemy login.

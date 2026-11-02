@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/events
 title: "Webhooks & events"
 description: "Provision GitHub repository webhooks as resources, or subscribe a Cloudflare Worker to repository events with typed payloads and verified deliveries."
-access_date: 2026-10-29T15:57:18.789Z
-current_date: 2026-10-29T15:57:18.789Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 GitHub tells the world what happened to a repository through
@@ -105,7 +105,7 @@ export default Cloudflare.Worker(
 );
 ```
 
-`event` is Octokit's `EmitterWebhookEvent`, narrowed to the events
+`event` is a typed webhook delivery, narrowed to the events
 you selected — a `switch` on `event.name` narrows `event.payload`
 exhaustively. The stack provides both clouds' providers:
 `Layer.mergeAll(Cloudflare.providers(), GitHub.providers())`.

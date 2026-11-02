@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/data/ingest
 title: "Datasets & ingest"
 description: "Axiom datasets per OTel signal with OTLP endpoints as outputs, least-privilege ingest tokens, and per-stage naming with Stack.useSync."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A `Dataset` is Axiom's top-level container — it stores your events,
@@ -54,7 +54,7 @@ event store — for anything that isn't OTLP.
 
 Each dataset exposes Axiom's OTLP/HTTP endpoints as output
 attributes, and alchemy runtimes have
-[telemetry built in](https://alchemy.run/infrastructure-as-effects/telemetry) — wiring
+[telemetry built in](../../infrastructure-as-effects/telemetry.md) — wiring
 an exporter is providing the `Axiom.Telemetry` binding layer on the
 Function/Worker:
 
@@ -176,7 +176,7 @@ tearing down a preview stage deletes its data with it. See
   zero-exporter Cloudflare push path.
 - [Alerting](../guides/alerting.md) — monitors and notifiers over
   the data you just ingested.
-- [Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) — the built-in
+- [Telemetry](../../infrastructure-as-effects/telemetry.md) — the built-in
   OTel exporters and how they flush per request.
 - Reference: [Dataset](https://alchemy.run/providers/axiom/reference/dataset#dataset) ·
   [ApiToken](https://alchemy.run/providers/axiom/reference/api-token#apitoken)

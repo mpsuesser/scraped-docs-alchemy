@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/setup
 title: "Setup"
 description: "Create a Fly org, generate an API token, and store it in a profile."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Everything you need before deploying to Fly.io: the alchemy package, a Fly organization, and an API token stored in a profile.
@@ -12,7 +12,7 @@ Everything you need before deploying to Fly.io: the alchemy package, a Fly organ
 
 - [Bun](https://bun.sh/) or Node.js 22+
 - A [Fly.io](https://fly.io/) account
-- [Docker](https://docs.docker.com/get-docker/) for [Services](https://alchemy.run/fly/compute/services) (Alchemy builds and pushes an image). Raw [Machines](https://alchemy.run/fly/compute/machines) with a public image do not need it. Neither do [Sprites](https://alchemy.run/fly/compute/sprites).
+- [Docker](https://docs.docker.com/get-docker/) for [Services](compute/services.md) (Alchemy builds and pushes an image). Raw [Machines](compute/machines.md) with a public image do not need it. Neither do [Sprites](compute/sprites.md).
 
 ## Create a Fly organization
 
@@ -75,6 +75,6 @@ Fly has no object-storage state backend of its own, so pick one of:
 
 ## Next steps
 
-- [Tutorial part 1](https://alchemy.run/fly/tutorial/part-1) — deploy your first Service.
-- [Sprites](https://alchemy.run/fly/compute/sprites) — an Effect program that hibernates. No Docker.
+- [Tutorial part 1](tutorial/part-1.md) — deploy your first Service.
+- [Sprites](compute/sprites.md) — an Effect program that hibernates. No Docker.
 - [Fly overview](../fly.md) — the map of resources and guides.

@@ -2,14 +2,14 @@
 url: https://alchemy.run/railway/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Railway with first-class Website resources."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Alchemy deploys frontends to Railway with a family of
 `Railway.Website` resources. Each one builds your project
 programmatically and deploys it as a
-[Service](https://alchemy.run/railway/compute/services) from a container image — Node
+[Service](../compute/services.md) from a container image — Node
 on port 3000, health check `/health` — with no `railway.toml` and
 no adapter to put in the framework config. Your framework's own
 config file (`vite.config.ts`, `astro.config.*`, `nuxt.config.ts`,
@@ -17,7 +17,7 @@ config file (`vite.config.ts`, `astro.config.*`, `nuxt.config.ts`,
 on top.
 
 Omit `project` and Alchemy creates a
-[`Railway.Project`](https://alchemy.run/railway/compute/projects). Pass `project` to
+[`Railway.Project`](../compute/projects.md). Pass `project` to
 put the site next to other Services in an existing Project.
 
 The live path generates a Dockerfile and uploads it; Railway
@@ -26,7 +26,7 @@ builds the image. No GHCR. No Docker daemon on your machine.
 
 The live URL is the generated `https://{name}.up.railway.app`,
 or `https://{domain}` when you pass `domain` (a
-[`CustomDomain`](https://alchemy.run/railway/networking#custom-domains) on port
+[`CustomDomain`](../networking.md#custom-domains) on port
 3000).
 
 - [`Vite`](vite.md) — client-only Vite apps
@@ -44,7 +44,7 @@ or `https://{domain}` when you pass `domain` (a
   Node server; your `nuxt.config.ts` loads natively. Do not set
   `nitro.preset`.
 - [`ReactRouter`](react-router.md) — React Router
-  v7 in framework mode, built through your own `vite build`.
+  v8 in framework mode, built through your own `vite build`.
 - [`SolidStart`](solidstart.md) — SolidStart 2.x
   SSR; Alchemy appends nitro's `node` preset to your `vite build`.
 - [`SvelteKit`](sveltekit.md) — SvelteKit SSR plus
@@ -169,9 +169,9 @@ const site = yield* Railway.Website.Astro("Web", {
   [Octane](octane.md),
   [Foldkit](foldkit.md),
   [Vocs](vocs.md).
-- [Services](https://alchemy.run/railway/compute/services) — the container these
+- [Services](../compute/services.md) — the container these
   resources deploy.
-- [Custom domains](https://alchemy.run/railway/networking#custom-domains) — hostname
+- [Custom domains](../networking.md#custom-domains) — hostname
   on a Service.
 - [Postgres](../data/postgres.md) — Postgres in the same
   Project.

@@ -2,13 +2,13 @@
 url: https://alchemy.run/hetzner/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Hetzner with Hetzner.Website.Nextjs — next build plus a Node next({ dev: false }) systemd unit, and next dev under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Hetzner.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to a Hetzner Cloud Server. It runs a real `next build`, then a long-running `next({ dev: false })` systemd unit on port 3000:
 
-- one [`Hetzner.Server`](https://alchemy.run/hetzner/compute/servers) (default `cpx12` / `ubuntu-24.04` / `fsn1` when `server` is omitted) and a [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) as a systemd unit
+- one [`Hetzner.Server`](../compute/servers.md) (default `cpx12` / `ubuntu-24.04` / `fsn1` when `server` is omitted) and a [`Hetzner.Service`](../compute/services.md) as a systemd unit
 - live URL `http://{ipv4}:3000`
 - `.next` and `public/` packed into the unit archive; `next`, `react`, and `react-dom` installed with `bun install`
 
@@ -113,9 +113,9 @@ const site = yield* Hetzner.Website.Nextjs("Web", {
 });
 ```
 
-`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — v1 does not create one, and passing `domain` without `zone` fails. Alchemy creates an A RecordSet pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
+`domain` requires an existing [`Hetzner.Zone`](../networking/dns.md) — v1 does not create one, and passing `domain` without `zone` fails. Alchemy creates an A RecordSet pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
 
 ## Where next
 
 - [`Hetzner.Website.Nextjs` reference](https://alchemy.run/providers/hetzner/website#nextjs) — every prop and attribute
-- [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)
+- [Servers](../compute/servers.md), [Services](../compute/services.md), [DNS](../networking/dns.md)

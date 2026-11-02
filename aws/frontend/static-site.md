@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/static-site
 title: "Static sites"
 description: "Ship a static site to S3 + CloudFront with AWS.Website.StaticSite — build-step support, Router composition, and cache invalidation on deploy."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `AWS.Website.StaticSite` deploys a directory of files as a website: it uploads
@@ -118,7 +118,9 @@ distribution:
 
 ```typescript
 const router = yield* AWS.Website.Router("WebsiteRouter", {
-  // hosted zone inferred from the hostname; pass hostedZoneId to pin it
+  // hosted zone inferred from the hostname; pass hostedZoneId to pin it, or
+  // dns: Cloudflare.DNS.Adapter() for a domain on Cloudflare DNS
+  // (see /infrastructure-as-code/dns-adapters)
   domain: { name: "example.com" },
 });
 

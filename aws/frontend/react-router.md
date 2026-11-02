@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/aws/frontend/react-router
 title: "React Router"
-description: "Deploy React Router v7 (framework mode) to AWS with AWS.Website.ReactRouter — SSR on a Lambda Web Function, client assets on S3 + CloudFront, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy React Router v8 (framework mode) to AWS with AWS.Website.ReactRouter — SSR on a Lambda Web Function, client assets on S3 + CloudFront, and React Router's own Vite dev server under alchemy dev."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`AWS.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to AWS. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server.
+`AWS.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v8 app in framework mode to AWS. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server.
 
 ## Install
 

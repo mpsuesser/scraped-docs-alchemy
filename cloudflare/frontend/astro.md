@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/cloudflare/frontend/astro
 title: "Astro"
-description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy an Astro site to Cloudflare Workers with Cloudflare.Website.Astro — SSR in the Worker, prerendered pages as static assets, sessions backed by an auto-provisioned KV namespace, and route caching on Workers Cache."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Cloudflare.Website.Astro` deploys an [Astro](https://astro.build/) project as a Cloudflare Worker. It runs Astro’s programmatic build with a wrangler-free Cloudflare adapter: server-rendered pages execute in the Worker, prerendered pages and client assets deploy as static assets. Your `astro.config.*` loads natively — there is no adapter to install into it and no Wrangler file to write.
@@ -82,33 +82,33 @@ export const Website = Cloudflare.Website.Astro("Website", {
 
 ## Read bindings in server code
 
-Astro code reads bindings via `Astro.locals.runtime.env` (or `import { env } from "cloudflare:workers"`). Type the locals once by augmenting `App.Locals` with the inferred env type:
-
-```typescript
-import type { WebsiteEnv } from "../alchemy.run.ts";
-
-declare global {
-  namespace App {
-    interface Locals {
-      runtime: { env: WebsiteEnv };
-    }
-  }
-}
-
-export {};
-```
-
-Every server-rendered page and endpoint now gets fully typed bindings:
+Server code reads bindings from `env` in `cloudflare:workers`:
 
 ```astro
 ---
-const cached = await Astro.locals.runtime.env.CACHE.get("greeting");
+import { env } from "cloudflare:workers";
+
+const cached = await env.CACHE.get("greeting");
 ---
 
 <h1>{cached ?? "hello"}</h1>
 ```
 
-`Astro.locals.runtime.env.CACHE` is typed as a KV namespace and `.API_KEY` as a string — renaming a binding in `alchemy.run.ts` is a type error in your pages.
+`Astro.locals.runtime.env` was removed in Astro 6 and throws if you read it.
+
+Type `env` once with the `WebsiteEnv` type from `alchemy.run.ts`:
+
+```typescript
+import type { WebsiteEnv } from "../alchemy.run.ts";
+
+declare module "cloudflare:workers" {
+  namespace Cloudflare {
+    interface Env extends WebsiteEnv {}
+  }
+}
+```
+
+`env.CACHE` is now a KV namespace and `env.API_KEY` a string. Renaming a binding in `alchemy.run.ts` is a type error in your pages.
 
 ## Sessions
 
@@ -134,18 +134,64 @@ export const Website = Cloudflare.Website.Astro("Website", {
 });
 ```
 
+## Route caching
+
+Astro’s route cache runs on Workers Cache. Set the cache provider to `cacheCloudflare()` and give each route a rule in `routeRules`:
+
+```typescript
+import { defineConfig } from "astro/config";
+import { cacheCloudflare } from "@alchemy.run/frontend-frameworks/astro/cache";
+
+export default defineConfig({
+  cache: { provider: cacheCloudflare() },
+  routeRules: {
+    "/insights": { maxAge: 600, swr: 86400 },
+  },
+});
+```
+
+Alchemy sees the provider and turns on Workers Cache for the Worker. The edge then serves `/insights` for 10 minutes without running the Worker. A route with no rule is never cached.
+
+Import `cacheCloudflare` from `@alchemy.run/frontend-frameworks`, not `@astrojs/cloudflare/cache`. The upstream package needs Wrangler.
+
+Set a rule from a page with `Astro.cache.set()`:
+
+```astro
+---
+Astro.cache.set({ maxAge: 300, tags: ["blog"] });
+---
+```
+
+Each response is tagged with its path. Purge a path or a tag with `Astro.cache.invalidate()`:
+
+```typescript
+import type { APIRoute } from "astro";
+
+export const POST: APIRoute = async ({ cache }) => {
+  await cache.invalidate({ tags: ["blog"] });
+  return new Response("purged");
+};
+```
+
 ## Fully static sites
 
-With `astro: { output: "static" }` every page is prerendered at build time and the deploy is assets-only — no server bundle is uploaded, and Cloudflare’s asset layer answers every request:
+Set `output: "static"` in `astro.config.*` and every page is prerendered at build time. The deploy is assets-only: no server bundle is uploaded, and Cloudflare’s asset layer answers every request.
+
+```typescript
+import { defineConfig } from "astro/config";
+
+export default defineConfig({ output: "static" });
+```
+
+Serve the built `404.html` for unmatched routes:
 
 ```typescript
 export const Website = Cloudflare.Website.Astro("Website", {
-  astro: { output: "static" },
   assets: { notFoundHandling: "404-page" },
 });
 ```
 
-`notFoundHandling: "404-page"` serves the built `404.html` for unmatched routes. Session provisioning is skipped for declared-static sites, since no Worker code runs at request time.
+No Worker code runs at request time, so a static site gets no session namespace.
 
 ## Astro configuration
 
@@ -191,7 +237,16 @@ export const Website = Cloudflare.Website.Astro("Website", {
 });
 ```
 
-Two options are managed for you regardless of the config file:
+Alchemy injects its wrangler-free Cloudflare adapter. Declaring an `adapter` in `astro.config.*` fails the build with an error that tells you to remove it.
 
-- `adapter` — Alchemy injects its wrangler-free Cloudflare adapter. Declaring an adapter in `astro.config.*` fails the build with an actionable error.
-- `output` — Alchemy defaults it to `"server"` (superseding a file-level `output`), so pages render on demand in the Worker. Opt into a fully prerendered site with `astro: { output: "static" }` on the resource.
+`output` comes from the `astro` prop, then the config file, then defaults to `"server"`. Astro’s own default is `"static"`, which would prerender every page at build time, where the Worker’s bindings don’t exist.
+
+## Prerendering runtime
+
+Prerendered pages render in workerd at build time, the same runtime as the deployed Worker. Pages that need Node APIs while prerendering can use Astro’s Node prerenderer instead:
+
+```typescript
+export const Website = Cloudflare.Website.Astro("Website", {
+  prerenderEnvironment: "node",
+});
+```

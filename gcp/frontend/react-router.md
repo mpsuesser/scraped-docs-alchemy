@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/gcp/frontend/react-router
 title: "React Router"
-description: "Deploy a React Router v7 app in framework mode to Cloud Run with GCP.Website.ReactRouter."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy a React Router v8 app in framework mode to Cloud Run with GCP.Website.ReactRouter."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`GCP.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Cloud Run. Alchemy runs your own `vite build` and serves the app from a Node server.
+`GCP.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v8 app in framework mode to Cloud Run. Alchemy runs your own `vite build` and serves the app from a Node server.
 
 ## Install
 

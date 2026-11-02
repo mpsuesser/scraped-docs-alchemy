@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/custom-domains
 title: "Custom domains"
 description: "Register a Function hostname, configure DNS and CAA, verify HTTPS, and retire the domain safely."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A Neon custom domain maps one hostname to one Function on one branch. Alchemy
@@ -71,6 +71,20 @@ At your DNS provider, configure:
 After reviewing their ownership, remove conflicting A, AAAA, or CNAME records for
 that hostname. A proxy can prevent Neon validation even when the browser appears
 to reach an edge server. Wait for the applicable DNS TTL before judging propagation.
+
+If the domain's DNS is in Cloudflare, Route 53, or Hetzner DNS, the Website can
+publish the CNAME for you. Pass the DNS host as `dns`, and keep Cloudflare records
+DNS-only (the default):
+
+```typescript
+const site = yield* Neon.Website.Vite("Web", {
+  branch,
+  rootDir: "./web",
+  domain: { name: "app.example.com", dns: Cloudflare.DNS.Adapter() },
+});
+```
+
+See [DNS Adapters](../../infrastructure-as-code/dns-adapters.md).
 
 ## Check certificate-authority restrictions
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/compute/apps
 title: "Apps"
 description: "Prisma Compute apps as Stack resources — framework builds or Effect-native services, env wiring, custom domains, and a local dev command."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Compute` deploys an application onto Prisma's managed
@@ -117,8 +117,7 @@ export default Prisma.Compute(
 
 ## Custom domains
 
-Custom domains can only attach to an app on the project's current
-default branch. Creating the resource starts DNS and certificate
+Creating the resource starts DNS and certificate
 provisioning; use `domain.dnsRecords` to configure DNS and inspect
 `domain.status` before directing production traffic:
 

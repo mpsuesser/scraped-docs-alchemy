@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/durable-objects
 title: "Durable Objects"
 description: "Durable Objects are globally-unique stateful instances with transactional storage — define one as an Effect, persist state per key, expose typed RPC methods, and stream values back to the caller."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A Durable Object (DO) is a globally-unique stateful instance addressed by name: every request for `"user-123"` — from any Worker, anywhere in the world — lands on the *same* instance, with its own transactional SQLite-backed storage. That combination of identity + storage + single-threaded execution makes DOs the right tool for per-entity state: counters, chat rooms, game sessions, WebSocket hubs, rate limiters, collaborative documents.
@@ -166,7 +166,7 @@ Add a test that hits `/counter/foo` twice (expecting `1` then `2`) and `/counter
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as HttpClient from "effect/http/HttpClient";
@@ -286,7 +286,7 @@ Add the test:
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as Stream from "effect/Stream";
@@ -545,6 +545,7 @@ An object runs one container at a time. See [Several images in one Durable Objec
 Guides that build on Durable Objects:
 
 - [Accept WebSockets](hibernatable-websockets.md) — WebSocket connections that survive hibernation.
+- [Code updates](code-updates.md) — when running objects pick up new code after a deploy, and how to test it.
 - [Bind to another Worker’s Durable Object](cross-worker-durable-object.md) — one Worker hosts the DO, others get a typed stub; also covers moving the host to a different Worker with the data intact.
 - [Run a Container](run-a-container.md) — a long-lived container managed by a DO.
 - [Workflows](workflows.md) — durable multi-step orchestration.

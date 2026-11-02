@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/setup
 title: "Setup"
 description: "Install Alchemy and connect it to Hetzner Cloud — create a project, generate an API token, and store it in a profile."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Everything you need before deploying to Hetzner Cloud: the alchemy package, a Hetzner project, and an API token stored in a profile.
@@ -80,5 +80,5 @@ State for a Hetzner stack includes each Server’s deploy SSH key (stored redact
 
 ## Next steps
 
-- [Tutorial part 1](https://alchemy.run/hetzner/tutorial/part-1) — deploy your first Server.
+- [Tutorial part 1](tutorial/part-1.md) — deploy your first Server.
 - [Hetzner overview](../hetzner.md) — the map of resources and guides.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/queues
 title: "Queues"
 description: "Cloudflare Queues give you reliable, at-least-once message delivery between Workers — a WriteQueue producer binding on one side and an Effect-style consumeQueueMessages handler with automatic ack/retry on the other."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A Cloudflare Queue decouples work from the request that triggered it: a Worker *produces* messages onto the queue, Cloudflare buffers them, and a consumer Worker receives them in batches with **at-least-once** delivery — failed batches are retried and eventually dead-lettered.
@@ -119,6 +119,75 @@ import * as Duration from "effect/Duration";
 ```
 
 `maxWaitTime` is rounded up to whole milliseconds and `retryDelay` to whole seconds when forwarded to Cloudflare.
+
+## Consume the dead-letter queue
+
+A message that fails `maxRetries` times moves to the `deadLetterQueue`. Cloudflare does not drain or alert on that queue. Without a consumer, the message waits there until the queue’s retention period expires, and nothing reports the failure.
+
+Create the dead-letter queue as its own resource and pass it to the source queue’s consumer. Then consume it too:
+
+```typescript
+export const DeadLetters = Cloudflare.Queues.Queue("DeadLetters");
+
+Effect.gen(function* () {
+  const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
+  const queueResource = yield* Queue;
+  const deadLetters = yield* DeadLetters;
+
+  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
+    queueResource,
+    { maxRetries: 3, deadLetterQueue: deadLetters },
+    (stream) =>
+      Stream.runForEach(stream, (msg) =>
+        bucket.put(\`/queue/${msg.body.id}\`, JSON.stringify(msg.body)).pipe(Effect.asVoid),
+      ),
+  );
+
+  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
+    deadLetters,
+    (stream) =>
+      Stream.runForEach(stream, (msg) =>
+        Effect.logError(\`dead-lettered ${msg.body.id} after ${msg.attempts} attempts\`),
+      ),
+  );
+});
+```
+
+One Worker can consume both queues. Replace the log with whatever should happen to a failed message: persist it for replay, page someone, or send it back to the source queue after a fix.
+
+### Dead-letter to a queue in another stack
+
+If another stack owns the dead-letter queue, pass a reference to it:
+
+```typescript
+yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
+  queueResource,
+  {
+    maxRetries: 3,
+    deadLetterQueue: yield* Cloudflare.Queues.Queue.ref("DeadLetters", {
+      stack: "shared",
+      stage: "production",
+    }),
+  },
+  (stream) => Stream.runForEach(stream, (msg) => Effect.log(msg.body.id)),
+);
+```
+
+Deploy the `shared` stack first, because a reference reads its persisted state. That stack’s Worker should consume the dead-letter queue.
+
+### Dead-letter to a queue by name
+
+For a queue Alchemy doesn’t manage, pass its name:
+
+```typescript
+yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
+  queueResource,
+  { maxRetries: 3, deadLetterQueue: "orders-dead-letters" },
+  (stream) => Stream.runForEach(stream, (msg) => Effect.log(msg.body.id)),
+);
+```
+
+A name adds no deploy dependency on that queue, and nothing in this stack consumes it. Make sure something else does.
 
 ## Provide the runtime layer
 

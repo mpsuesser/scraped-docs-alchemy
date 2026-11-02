@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/octane
 title: "Octane"
 description: "Deploy OctaneJS to Prisma Compute with Prisma.Website.Octane — the Node target on Bun, SSR plus client assets, and native Vite dev locally."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website.Octane` runs your [OctaneJS](https://octanejs.dev/) project’s Vite build. Octane builds the client and SSR bundles; the shared Node target wraps the fetch handler as an HTTP program. Both outputs are uploaded as `tar.gz` and run on **Bun in Prisma Compute**, not a Docker Node container.
@@ -117,7 +117,7 @@ const site = yield* Prisma.Website.Octane("Web", {
 });
 ```
 
-`Prisma.CustomDomain` requires the project’s current default branch. Configure its returned DNS records yourself and verify status before cutover; see [Custom domains](websites.md#custom-domains).
+Configure the returned DNS records yourself and verify status before cutover; see [Custom domains](websites.md#custom-domains).
 
 ## Where next
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/aws
 title: "aws"
 description: "AWS provider commands — bootstrap the per-account assets bucket that Lambda deployments rely on."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 ```sh
@@ -38,7 +38,7 @@ Re-running is a no-op:
 
 Bootstrap requires an AWS CLI profile that is either **SSO** (`sso_account_id`) or **console login** (`login_session` from `aws login`). It fails with a clear error if the profile is neither.
 
-Logs are written to `.alchemy/log/bootstrap.txt`.
+Logs are written to the run log under `~/.alchemy/logs` (see [Log output](../cli.md#log-output)).
 
 ## provider aws teardown
 

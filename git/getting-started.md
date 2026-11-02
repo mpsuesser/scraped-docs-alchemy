@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/getting-started
 title: "Getting Started"
 description: "A complete quickstart for a Git host protected by a shared credential. Deploy it to Cloudflare, push a repository, and clone it back."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 For a step-by-step explanation, start with [Push your first repository](tutorial/part-1.md). This page provides a complete host protected by one shared credential.
@@ -152,7 +152,7 @@ The tutorial introduces one behavior per part. Each part includes a deploy and c
 2. [Control access](tutorial/part-2.md) — require a shared credential and verify anonymous requests fail.
 3. [Publish a repository](tutorial/part-3.md) — allow anonymous clones while keeping writes protected.
 4. [Give users their own credentials](tutorial/part-4.md) — use accounts and individual API keys.
-5. [Add your application’s API](https://alchemy.run/git/tutorial/part-5) — serve `/me` beside Git with the same authenticated user.
-6. [Protect a branch](https://alchemy.run/git/tutorial/part-6) — reject deletion of `main` with a policy in your HTTP handler.
+5. [Add your application’s API](tutorial/part-5.md) — serve `/me` beside Git with the same authenticated user.
+6. [Protect a branch](tutorial/part-6.md) — reject deletion of `main` with a policy in your HTTP handler.
 
 [Building blocks](blocks.md) is the reference for each line of `GitLive`, and [Recipes](recipes.md) covers S3 bytes, Lambda hashing, and how the host scales.

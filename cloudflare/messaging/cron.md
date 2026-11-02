@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/cron
 title: "Scheduled jobs with Cron Triggers"
 description: "Run Worker code on a schedule — declare a cron expression with an Effect handler, deploy it, and prove the trigger fires with a bounded polling test."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Cron Triggers invoke a Worker on a schedule — nightly cleanups,
@@ -210,7 +210,7 @@ reset shows up:
 ```typescript
 // test/cron.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Vitest";
+import * as Test from "@alchemy.run/test/Vitest";
 import { expect } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";

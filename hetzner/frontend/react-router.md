@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/hetzner/frontend/react-router
 title: "React Router"
-description: "Deploy React Router v7 (framework mode) to Hetzner with Hetzner.Website.ReactRouter — SSR as a systemd unit on port 3000, client assets baked into the unit, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy React Router v8 (framework mode) to Hetzner with Hetzner.Website.ReactRouter — SSR as a systemd unit on port 3000, client assets baked into the unit, and React Router's own Vite dev server under alchemy dev."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Hetzner.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to a Hetzner Cloud Server. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
+`Hetzner.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v8 app in framework mode to a Hetzner Cloud Server. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a systemd [`Hetzner.Service`](../compute/services.md) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
 
 ## Install
 
@@ -44,7 +44,7 @@ import * as Hetzner from "@alchemy.run/hetzner";
 export const Website = Hetzner.Website.ReactRouter("Website");
 ```
 
-Pass `server` to host the site on an existing [`Hetzner.Server`](https://alchemy.run/hetzner/compute/servers) — several sites and APIs can share one box. `rootDir` is the project root — the directory holding `package.json`, `vite.config.*`, and `react-router.config.ts`. It defaults to `"."`, so set it only when the app does not sit next to `alchemy.run.ts`:
+Pass `server` to host the site on an existing [`Hetzner.Server`](../compute/servers.md) — several sites and APIs can share one box. `rootDir` is the project root — the directory holding `package.json`, `vite.config.*`, and `react-router.config.ts`. It defaults to `"."`, so set it only when the app does not sit next to `alchemy.run.ts`:
 
 ```typescript
 export const Website = Hetzner.Website.ReactRouter("Website", {
@@ -89,7 +89,7 @@ build/
 └── server/    -> wrapped as a Node HTTP server on port 3000
 ```
 
-`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits a Node serve entry — that process is the [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services).
+`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits a Node serve entry — that process is the [`Hetzner.Service`](../compute/services.md).
 
 If you set Vite’s `base`, set React Router’s `basename` to the same prefix: the client directory maps onto the site root one-for-one, so the paths the SSR document emits have to be the paths the unit was given.
 
@@ -175,10 +175,10 @@ const site = yield* Hetzner.Website.ReactRouter("Web", {
 });
 ```
 
-`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — the Website does not create one. It adds an A record pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
+`domain` requires an existing [`Hetzner.Zone`](../networking/dns.md) — the Website does not create one. It adds an A record pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
 
 ## Where next
 
 - [React Router API reference](https://alchemy.run/providers/hetzner/website#reactrouter)
-- [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
-- [DNS](https://alchemy.run/hetzner/networking/dns)
+- [Servers](../compute/servers.md) and [Services](../compute/services.md)
+- [DNS](../networking/dns.md)

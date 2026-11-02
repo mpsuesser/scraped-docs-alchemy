@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/aws/data/rds
 title: "RDS & Aurora"
-description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with pg, or skip connections entirely with the Data API."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Stand up an Aurora cluster in one call with the Aurora helper, connect from Lambda over the Connect binding with Effect SQL, or skip connections entirely with the Data API."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Aurora is AWS's managed Postgres/MySQL. Bringing it up by hand
@@ -16,7 +16,7 @@ the defaults.
 
 At runtime there are two ways in: the **`Connect` binding**,
 which resolves host, port, and credentials from Secrets Manager
-so you can use a normal Postgres driver like `pg`, and the
+so you can query it with [Effect SQL](../../sql/effect-sql/postgres.md), and the
 **Data API** (`AWS.RDSData.*`), which executes SQL over an HTTPS
 endpoint with no database connection at all.
 
@@ -117,7 +117,7 @@ const db = yield* AWS.RDS.Aurora("Database", {
   instances set `instanceClass: "db.r6g.large"` instead of the
   default `db.serverless`.
 
-## Connect from Lambda with pg
+## Connect from Lambda with Effect SQL
 
 The [`Connect`](https://alchemy.run/providers/aws/rds#connect) binding resolves
 connection settings — host, port, database, username, password —
@@ -133,17 +133,12 @@ Wrap it in an Effect service so the rest of your code depends on
 ```typescript
 // src/database.ts
 import * as AWS from "@alchemy.run/aws";
+import * as SQL from "@alchemy.run/sql/Postgres";
 import * as Context from "effect/Context";
-import * as Data from "effect/Data";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import { Client } from "pg";
+import type { SqlError } from "effect/sql/SqlError";
 import { Network } from "./network.ts";
-
-export class SqlError extends Data.TaggedError("SqlError")<{
-  readonly message: string;
-  readonly cause?: unknown;
-}> {}
 
 export class Database extends Context.Service<
   Database,
@@ -169,39 +164,12 @@ export const DatabaseAurora = Layer.effect(
       database: "app",
     });
 
+    const sql = yield* SQL.Postgres({
+      url: connect.pipe(Effect.map((connection) => connection.url)),
+    });
+
     return Database.of({
-      query: (statement) =>
-        connect.pipe(
-          Effect.catch((cause) =>
-            Effect.fail(
-              new SqlError({ message: "Failed to resolve connection", cause }),
-            ),
-          ),
-          Effect.flatMap((connection) =>
-            Effect.tryPromise({
-              try: async () => {
-                const client = new Client({
-                  host: connection.host,
-                  port: connection.port,
-                  database: connection.database,
-                  user: connection.username,
-                  password: connection.password,
-                  ssl: connection.ssl
-                    ? { rejectUnauthorized: false }
-                    : undefined,
-                });
-                await client.connect();
-                try {
-                  return (await client.query(statement)).rows;
-                } finally {
-                  await client.end();
-                }
-              },
-              catch: (cause) =>
-                new SqlError({ message: `Failed to execute: ${statement}`, cause }),
-            }),
-          ),
-        ),
+      query: (statement) => sql.unsafe(statement),
     });
   }),
 );
@@ -210,7 +178,8 @@ export const DatabaseAurora = Layer.effect(
 `yield* AWS.RDS.Connect(db.cluster, ...)` runs in the function's
 Construction phase and returns an inner Effect; each `yield*` of that
 inner Effect at runtime resolves fresh `ConnectionInfo` from the
-secret. `Network` here is the same network from the prerequisite
+secret. `SQL.Postgres` resolves its `url` on the first query of each
+invocation and closes the pool when the invocation settles. `Network` here is the same network from the prerequisite
 section, wrapped in its own layer (see the
 [`examples/aws-rds`](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-rds)
 for the full three-file layout).

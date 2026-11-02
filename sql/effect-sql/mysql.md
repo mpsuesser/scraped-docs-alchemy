@@ -2,16 +2,16 @@
 url: https://alchemy.run/sql/effect-sql/mysql
 title: "MySQL"
 description: "SQL.MySQL turns a connection string into an @effect/sql-mysql2 client — portable tagged-template queries with typed errors and one pool per execution."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `SQL.MySQL` provides tagged-template queries over a MySQL connection. Queries are Effects with typed `SqlError` failures, interruption, and tracing.
 
-Install `@alchemy.run/sql` and the optional MySQL driver:
+Install `@alchemy.run/sql` and the Effect MySQL client:
 
 ```sh
-pnpm add @alchemy.run/sql@latest @effect/sql-mysql2 mysql2
+pnpm add @alchemy.run/sql@latest @effect/sql-mysql2
 ```
 
 ## Connect
@@ -46,7 +46,7 @@ const workersDefaults = {
 };
 ```
 
-These defaults avoid Hyperdrive’s unsupported prepared-statement protocol and Workers’ prohibition on eval-based row parsers. Direct connections from Node or Bun retain prepared statements and mysql2’s normal parsers by default. See [Hyperdrive](../../cloudflare/data/hyperdrive.md#use-effect-sql) for Worker connection setup.
+These defaults avoid Hyperdrive’s unsupported prepared-statement protocol and Workers’ prohibition on eval-based row parsers. Direct connections from Node or Bun retain prepared statements and mysql2’s normal parsers by default. See [Hyperdrive](../../cloudflare/data/hyperdrive.md#bind-hyperdrive-to-your-worker) for Worker connection setup.
 
 ## Override driver options
 

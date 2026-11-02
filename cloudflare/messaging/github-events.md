@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/messaging/github-events
 title: "React to GitHub events from a Worker"
 description: "Subscribe a Cloudflare Worker to GitHub repository webhooks with typed payloads — alchemy provisions the webhook and verifies delivery signatures."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A push lands on `main`, a pull request opens, a release tag appears —
@@ -172,7 +172,7 @@ plumbing:
 
 ## Typed payloads
 
-`event` is Octokit's `EmitterWebhookEvent` — a discriminated union of
+`event` is a discriminated union of
 `{ id, name, payload }` keyed on `name`, narrowed to the events you
 selected. A `switch` on `event.name` narrows `payload` exhaustively:
 

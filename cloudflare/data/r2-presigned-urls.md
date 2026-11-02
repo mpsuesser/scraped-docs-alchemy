@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/r2-presigned-urls
 title: "R2 presigned URLs"
 description: "Mint presigned R2 URLs so browsers upload and download objects directly, with the same code in alchemy dev and in production, from Effect-native or async Workers."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A presigned URL lets a browser upload or download one object in an
@@ -201,5 +201,5 @@ deployed. Use presigned `PUT` URLs.
 ## Where next
 
 - [R2](r2.md)
-- [Local development](https://alchemy.run/cloudflare/local-development)
+- [Local development](../local-development.md)
 - [R2 API reference](https://alchemy.run/providers/cloudflare/r2)

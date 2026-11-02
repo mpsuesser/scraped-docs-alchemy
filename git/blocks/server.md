@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/blocks/server
 title: "HTTP routes"
 description: "Compose Git route layers beside your application's Effect HTTP API, with your middleware and server."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Your application owns its `HttpApi`, middleware, groups, and server. Git supplies
@@ -54,7 +54,7 @@ while constructing groups, and read the request user inside each handler.
 
 `receivePack` is your application's implementation. It decodes the request,
 authorizes changes, prepares the push, validates content, and commits through
-`Git.Engine`. See [Engine operations](https://alchemy.run/git/blocks/engine) and the [complete
+`Git.Engine`. See [Engine operations](engine.md) and the [complete
 example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-git-service/src/api).
 
 Use `addHttpApi(Git.Api)` if you want all six Git groups, then implement each group

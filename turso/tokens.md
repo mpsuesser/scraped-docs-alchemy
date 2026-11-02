@@ -1,0 +1,72 @@
+---
+url: https://alchemy.run/turso/tokens
+title: "Tokens"
+description: "Create tokens for apps that run outside your Stack."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
+---
+
+Turso has two kinds of tokens. A database token lets an app run SQL. An API token lets an app create and delete databases.
+
+Workers that use [Connect](connections.md) or [ManageDatabases](database-per-tenant.md) get their tokens for you. Create one yourself when an app outside your Stack needs access.
+
+## A token for one database
+
+```typescript
+const token = yield* Turso.DatabaseToken("Token", { database: db.name });
+```
+
+Give `db.url` and `token.token` to your app. `token.token` is `Redacted`, so it doesn't show up in logs.
+
+## A read-only token that expires
+
+```typescript
+const token = yield* Turso.DatabaseToken("Reader", {
+  database: db.name,
+  authorization: "read-only",
+  expiration: "2w",
+});
+```
+
+When the token is about to expire, the next deploy makes a new one.
+
+## A token for a whole group
+
+```typescript
+const token = yield* Turso.GroupToken("Token", { group: group.name });
+```
+
+A group token works for every database in the group, even ones created later.
+
+## You can't cancel one database token
+
+Changing a token makes a new one, but the old one keeps working until it expires. Destroying it doesn't stop it either.
+
+So give tokens you share an `expiration`. To cancel every token for a database at once, run `turso db tokens invalidate <database>`.
+
+## An API token
+
+```typescript
+const token = yield* Turso.ApiToken("Ci", {});
+```
+
+This token can change anything in your organization. Destroying it cancels it.
+
+## Limit it to one group
+
+```typescript
+const token = yield* Turso.ApiToken("Provisioner", {
+  group: group.name,
+  scopes: ["read", "db:create", "db:delete", "db:mint-token"],
+});
+```
+
+This token only works on databases in `group`. `read-only` and `full-access` are shortcuts for common sets of scopes.
+
+Changing `group` or `scopes` creates a new token and cancels the old one.
+
+## Where next
+
+- [Database reference](https://alchemy.run/providers/turso/reference/database#databasetoken)
+- [Group reference](https://alchemy.run/providers/turso/reference/group#grouptoken)
+- [API Token reference](https://alchemy.run/providers/turso/reference/api-token)

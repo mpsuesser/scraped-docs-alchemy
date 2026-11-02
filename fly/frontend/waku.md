@@ -2,11 +2,11 @@
 url: https://alchemy.run/fly/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Fly with Fly.Website.Waku — RSC server on a Machine, SSG pages baked into the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Fly.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Fly. It builds the project programmatically: the RSC server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and the client output — including SSG-prerendered pages — is baked into the image. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
+`Fly.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Fly. It builds the project programmatically: the RSC server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and the client output — including SSG-prerendered pages — is baked into the image. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
 
 ## Install
 
@@ -128,5 +128,5 @@ const site = yield* Fly.Website.Waku("Web", {
 ## Where next
 
 - [Waku API reference](https://alchemy.run/providers/fly/website#waku)
-- [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
-- [IPs & certificates](https://alchemy.run/fly/networking)
+- [Apps](../compute/apps.md) and [Services](../compute/services.md)
+- [IPs & certificates](../networking.md)

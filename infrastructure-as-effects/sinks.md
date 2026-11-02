@@ -2,15 +2,15 @@
 url: https://alchemy.run/infrastructure-as-effects/sinks
 title: "Sinks"
 description: "A Sink is the write-side dual of an Event Source — a Binding that exposes a resource as an Effect Sink, batching writes into the batch API with least-privilege IAM."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A **Sink** is the dual of an [Event Source](event-sources.md):
 a [Binding](binding.md) for *writing* that
 exposes a resource as an Effect
 [`Sink`](https://effect.website/docs/sink/introduction/). Where an
-Event Source hands you records as a `Stream`, a Sink accepts a
+Event Source hands you records, a Sink accepts a
 `Stream` and drains it into the resource's batch API
 (`SendMessageBatch`, `PublishBatch`, `PutRecords`) — emitting the
 minimal IAM to go with it.
@@ -137,10 +137,9 @@ yield* Stream.fromIterable(messages).pipe(
 ## Source → transform → sink
 
 Where the model pays off is when you compose a Sink with an
-[Event Source](event-sources.md). Because
-every step is just `Stream` / `Sink`, the whole
-pipe-and-transform pipeline is one expression inside the
-constructor:
+[Event Source](event-sources.md). Lift the
+batch into a `Stream` and the whole pipe-and-transform pipeline is one
+expression inside the constructor:
 
 ```typescript
 export default class OrderRelay extends AWS.Lambda.Function<OrderRelay>()(
@@ -149,19 +148,20 @@ export default class OrderRelay extends AWS.Lambda.Function<OrderRelay>()(
   Effect.gen(function* () {
     const sink = yield* AWS.SQS.QueueSink(OutboundQueue);
 
-    yield* AWS.DynamoDB.consumeTableChanges<Order>(
+    yield* AWS.DynamoDB.consumeTableChanges(
       OrdersTable,
       {
         streamViewType: "NEW_AND_OLD_IMAGES",
         startingPosition: "LATEST",
       },
-      (records) =>
-        records.pipe(
+      Effect.fn(function* (event: AWS.DynamoDB.StreamEvent<Order>) {
+        yield* Stream.fromIterable(event.Records).pipe(
           Stream.filterMap((r) => Option.fromNullable(r.dynamodb.NewImage)),
           Stream.filter((order) => order.status === "PAID"),
           Stream.map((order) => JSON.stringify({ orderId: order.id })),
           Stream.run(sink),
-        ),
+        );
+      }),
     );
   }).pipe(
     Effect.provide(

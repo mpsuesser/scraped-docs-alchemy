@@ -2,11 +2,11 @@
 url: https://alchemy.run/fly/frontend/vite
 title: "Vite"
 description: "Deploy a Vite SPA to Fly with Fly.Website.Vite — static assets on a Node Machine, fly.dev (or your domain) over HTTPS, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Fly.Website.Vite` deploys a [Vite](https://vite.dev/) project to Fly. It runs `vite build` and serves the output from a tiny Node static-file server on a Machine: one [`Fly.App`](https://alchemy.run/fly/compute/apps) (created if `app` is omitted), one [`Fly.Service`](https://alchemy.run/fly/compute/services) on port 3000, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
+`Fly.Website.Vite` deploys a [Vite](https://vite.dev/) project to Fly. It runs `vite build` and serves the output from a tiny Node static-file server on a Machine: one [`Fly.App`](../compute/apps.md) (created if `app` is omitted), one [`Fly.Service`](../compute/services.md) on port 3000, and a shared IPv4 so `https://{app}.fly.dev` answers. Your `vite.config.*` loads natively — plugins included. There is no framework server module.
 
 React, Vue, and Solid client SPAs belong here, as do multi-page apps that emit one HTML file per route. SSR frameworks that wrap Vite deploy through their own composites — [`Astro`](astro.md), [`Nextjs`](nextjs.md), [`Nuxt`](nuxt.md), [`ReactRouter`](react-router.md), [`SolidStart`](solidstart.md), [`SvelteKit`](sveltekit.md), [`TanStackStart`](tanstack-start.md), [`Waku`](waku.md), [`Octane`](octane.md).
 
@@ -130,7 +130,7 @@ export const Website = Fly.Website.Vite("Website", {
 
 ## Custom domain
 
-`domain` is a hostname string. Alchemy requests ACME ([`Fly.Certificate`](https://alchemy.run/fly/networking)) on the App and `url` becomes `https://{domain}`. v1 expects the hostname’s DNS to already point at the App:
+`domain` is a hostname string. Alchemy requests ACME ([`Fly.Certificate`](../networking.md)) on the App and `url` becomes `https://{domain}`. v1 expects the hostname’s DNS to already point at the App:
 
 ```typescript
 export const Website = Fly.Website.Vite("Website", {
@@ -142,4 +142,4 @@ export const Website = Fly.Website.Vite("Website", {
 
 - [`Fly.Website.Vite` API](https://alchemy.run/providers/fly/website#vite)
 - [Astro](astro.md), [Next.js](nextjs.md), [Nuxt](nuxt.md), [SvelteKit](sveltekit.md), [Waku](waku.md), [Octane](octane.md) — SSR frameworks
-- [Services](https://alchemy.run/fly/compute/services), [IPs & certificates](https://alchemy.run/fly/networking)
+- [Services](../compute/services.md), [IPs & certificates](../networking.md)

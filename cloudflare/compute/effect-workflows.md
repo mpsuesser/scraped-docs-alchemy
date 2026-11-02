@@ -2,15 +2,15 @@
 url: https://alchemy.run/cloudflare/compute/effect-workflows
 title: "Effect workflows"
 description: "Run Effect workflows on Cloudflare, on Durable Objects or Cloudflare Workflows. Declare a workflow with effect/workflow, implement it with Workflows.layer, start runs with Workflows.RunWorkflow, and let them sleep, wait for signals and undo steps durably."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 An Effect workflow is a durable process written with `effect/workflow`: a
 series of steps whose results are stored, so a run that's interrupted
 resumes after its last finished step, and a run can wait hours or days for
 a timer or a signal. On Cloudflare they run on Durable Objects
-(`Cloudflare.Workflows.DurableObjectEngine`) or on Cloudflare Workflows
+(`Cloudflare.Workflows.layerDurableObjectEngine()`) or on Cloudflare Workflows
 (`Cloudflare.Workflows.NativeEngine`), with the same workflow code.
 
 Reach for Effect workflows when you want the same workflow code to run
@@ -69,7 +69,7 @@ and `error` schemas, because its result is stored as JSON.
 
 ## Run it on Durable Objects
 
-`Cloudflare.Workflows.DurableObjectEngine` is the engine. Provide it under
+`Cloudflare.Workflows.layerDurableObjectEngine()` is the engine. Provide it under
 the workflow Layers, and provide both to the Worker:
 
 ```typescript
@@ -85,13 +85,18 @@ export default class AppWorker extends Cloudflare.Worker<AppWorker>()(
   Effect.gen(function* () {
     return {};
   }).pipe(
-    Effect.provide(GreetLive.pipe(Layer.provideMerge(Cloudflare.Workflows.DurableObjectEngine))),
+    Effect.provide(GreetLive.pipe(Layer.provideMerge(Cloudflare.Workflows.layerDurableObjectEngine()))),
   ),
 ) {}
 ```
 
 Each workflow gets its own Durable Object class on the Worker, named after
 it (`GreetWorkflow`), and deploying the Worker deploys them.
+
+Pass `{ jurisdiction: "eu" }` to `layerDurableObjectEngine` to create and
+store every run's Durable Object only inside that jurisdiction. Runs that
+already exist stay where they were, and `alchemy dev` runs it unrestricted,
+since local workerd doesn't emulate jurisdictions.
 
 ## Start a run
 
@@ -119,7 +124,7 @@ export default class AppWorker extends Cloudflare.Worker<AppWorker>()(
       }),
     };
   }).pipe(
-    Effect.provide(GreetLive.pipe(Layer.provideMerge(Cloudflare.Workflows.DurableObjectEngine))),
+    Effect.provide(GreetLive.pipe(Layer.provideMerge(Cloudflare.Workflows.layerDurableObjectEngine()))),
   ),
 ) {}
 ```
@@ -246,7 +251,7 @@ Provide the binding's implementation with the engine:
 ```typescript
 Effect.provide(
   CheckoutLive.pipe(
-    Layer.provideMerge(Cloudflare.Workflows.DurableObjectEngine),
+    Layer.provideMerge(Cloudflare.Workflows.layerDurableObjectEngine()),
     Layer.provide(Cloudflare.R2.WriteBucketBinding),
   ),
 )

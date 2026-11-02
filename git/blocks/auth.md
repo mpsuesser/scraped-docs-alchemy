@@ -2,8 +2,8 @@
 url: https://alchemy.run/git/blocks/auth
 title: "Authentication and authorization"
 description: "Use native Effect HTTP middleware and ordinary application effects to authorize Git operations."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Your application owns users, credentials, and authorization. Git's binary protocol
@@ -30,7 +30,7 @@ uses Better Auth sessions and API keys this way.
 
 `handleRaw` skips automatic payload decoding; it still runs API middleware.
 Your custom push handler can yield the same user and database services as a JSON
-handler. [Engine operations](https://alchemy.run/git/blocks/engine) shows the decode/prepare/commit flow.
+handler. [Engine operations](engine.md) shows the decode/prepare/commit flow.
 
 ## Authorize proposed changes
 

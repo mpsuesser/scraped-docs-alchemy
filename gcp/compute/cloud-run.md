@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/compute/cloud-run
 title: "Cloud Run"
 description: "Run an Effect HTTP service on Cloud Run with GCP.Function — public or private URLs, environment, scaling, and bindings that grant IAM."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `GCP.Function` runs an Effect program as a Cloud Run service. You
@@ -178,6 +178,54 @@ Set CPU, memory, timeout, and concurrency on the revision template:
 
 Every template change rolls out a new revision.
 
+## Check health
+
+Cloud Run's default startup probe passes as soon as the port accepts a
+connection. Give it an HTTP probe so a revision only takes traffic once
+the program can serve:
+
+```typescript
+{
+  main: import.meta.url,
+  template: {
+    containers: [
+      {
+        startupProbe: { httpGet: { path: "/health" }, periodSeconds: 2, failureThreshold: 30 },
+        livenessProbe: { httpGet: { path: "/health" }, periodSeconds: 10 },
+      },
+    ],
+  },
+}
+```
+
+A failing liveness probe restarts the container. Probes can also use
+`tcpSocket` or `grpc`. Remove `startupProbe` to go back to the default.
+
+## Add a sidecar
+
+Containers after the first run next to `main` and reach it on
+`localhost`. Only the first container takes requests:
+
+```typescript
+{
+  main: import.meta.url,
+  template: {
+    containers: [
+      { dependsOn: ["cache"] },
+      {
+        name: "cache",
+        image: "docker.io/library/redis:7-alpine",
+        startupProbe: { tcpSocket: { port: 6379 } },
+      },
+    ],
+  },
+}
+```
+
+`dependsOn` starts `main` after `cache` passes its startup probe.
+[Sidecars](sidecars.md) covers start order, running your own
+program as a sidecar, and binding it for a typed client.
+
 ## Receive events
 
 Event sources make Google call your service. Each one creates the
@@ -208,6 +256,9 @@ const hello = yield* GCP.Run.Service("Hello", {
   },
 });
 ```
+
+An image service can list sidecars too; see
+[Sidecars](sidecars.md).
 
 ## Destroy
 

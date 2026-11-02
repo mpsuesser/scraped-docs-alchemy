@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/data/connections
 title: "Connections"
 description: "Every Neon project and branch exposes direct and pooled connection URIs plus pre-parsed origin outputs — feed the direct origin to Hyperdrive and the pooled one to everything else."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Every Neon project and branch exposes its connection details as
@@ -92,7 +92,7 @@ Guides:
   provision Neon, front it with Hyperdrive, bind it into a Worker.
 - [Branching](branching.md) — copy-on-write branches, each with
   its own connection outputs.
-- [Roles](https://alchemy.run/neon/data/roles) — connect as your own Postgres role instead
+- [Roles](roles.md) — connect as your own Postgres role instead
   of the owner.
 
 Reference:

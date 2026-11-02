@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Deploy a Cloudflare Worker with Drizzle queries, Hyperdrive connections, and reviewed, committed migrations on Neon or PlanetScale."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../sql.md) owns the portable client APIs. For Cloudflare’s SQLite database, use [Drizzle on D1](d1-drizzle.md).
@@ -11,8 +11,8 @@ This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../s
 ## Install the client and generator
 
 ```sh
-pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc @types/pg
+pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5 @effect/sql-pg
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 Keep the exact Drizzle prerelease pins together for the Effect integration; `drizzle-kit` is a development dependency.
@@ -125,7 +125,7 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-`nodejs_compat` enables the Node APIs used by `pg`, and `ConnectBinding` supplies the Worker’s Hyperdrive binding. Queries yield directly as Effects and acquire their pool only within the request’s [scope](../../sql/effect-sql/lifecycle.md).
+`nodejs_compat` enables the Node socket and TLS APIs `@effect/sql-pg` uses, and `ConnectBinding` supplies the Worker’s Hyperdrive binding. Queries yield directly as Effects and acquire their pool only within the request’s [scope](../../sql/effect-sql/lifecycle.md).
 
 ```typescript
 import * as Alchemy from "alchemy";
@@ -259,7 +259,7 @@ Select the MySQL resource variant in the [PlanetScale guide](../../planetscale/g
 ## Select the MySQL client
 
 ```sh
-bun add @effect/sql-mysql2 mysql2
+bun add @effect/sql-mysql2
 ```
 
 ```typescript

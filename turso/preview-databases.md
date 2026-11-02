@@ -1,0 +1,55 @@
+---
+url: https://alchemy.run/turso/preview-databases
+title: "Preview databases"
+description: "Give every pull request its own copy of your staging database."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
+---
+
+Give every pull request a copy of your staging database. Each preview gets real data to test with, and is deleted when you're done.
+
+## Read the stage
+
+```typescript
+import * as Alchemy from "alchemy";
+
+const { stage } = yield* Alchemy.Stack;
+const preview = stage.startsWith("pr-");
+```
+
+## Reuse staging's group
+
+```typescript
+const group = preview
+  ? yield* Turso.Group.ref("Group", { stage: "staging" })
+  : yield* Turso.Group("Group", { location: "aws-us-east-1" });
+```
+
+`Turso.Group.ref` uses the group from the `staging` stage. Previews never create or delete it.
+
+## Copy staging's database
+
+```typescript
+const source = preview ? yield* Turso.Database.ref("Db", { stage: "staging" }) : undefined;
+
+const db = yield* Turso.Database("Db", {
+  group: group.name,
+  seed: source ? { type: "database", name: source.name } : undefined,
+  migrations: "./migrations",
+});
+```
+
+Each preview gets its own copy of staging's database, then runs any new migrations from the pull request.
+
+## Tear it down
+
+```sh
+alchemy destroy --stage pr-42
+```
+
+This deletes the preview's database. Staging's group and database stay.
+
+## Where next
+
+- [Databases](databases.md#copy-another-database)
+- [Migrations](migrations.md)

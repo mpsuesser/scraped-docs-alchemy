@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/setup
 title: "Setup"
 description: "Connect alchemy to Google Cloud — project, service-account key, the APIs to enable, and Docker."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 ## Install
@@ -15,7 +15,7 @@ pnpm add alchemy@latest @alchemy.run/gcp@latest effect @effect/platform-bun @eff
 ## What you need
 
 - **A GCP project** and its id.
-- **A service-account key** with enough IAM to create what you deploy. A working starting point is Cloud Run Admin, Storage Admin, Pub/Sub Admin, Service Account Admin (Alchemy creates an `alch-*` service account for each runtime), and Project IAM Admin (it grants roles to that account). Add the admin role for anything else you declare — Firestore, BigQuery, Secret Manager.
+- **Credentials** with enough IAM to create what you deploy: your own Google account through `gcloud`, or a service-account key. A working starting point is Cloud Run Admin, Storage Admin, Pub/Sub Admin, Service Account Admin (Alchemy creates an `alch-*` service account for each runtime), and Project IAM Admin (it grants roles to that account). Add the admin role for anything else you declare — Firestore, BigQuery, Secret Manager.
 - **Docker running locally.** `GCP.Function`, `GCP.Run.Service`, `GCP.Run.Job`, and `GCP.Run.WorkerPool` bundle your code and build a container image before pushing it to Artifact Registry.
 - **The APIs enabled** on the project for whatever you use: `run.googleapis.com`, `artifactregistry.googleapis.com`, `iam.googleapis.com`, `cloudresourcemanager.googleapis.com`, plus the service-specific ones (`firestore.googleapis.com`, `secretmanager.googleapis.com`, `pubsub.googleapis.com`, `bigquery.googleapis.com`, `redis.googleapis.com`).
 
@@ -26,9 +26,37 @@ gcloud services enable run.googleapis.com artifactregistry.googleapis.com \
 
 ## Credentials
 
-Run `alchemy profile edit --add GCP`, choose **Service account JSON**, and point at the key file. Alchemy stores it under `~/.alchemy/credentials/<profile>/`.
+Run `alchemy profile edit --add GCP` and choose **gcloud login**, then pick a gcloud configuration. Alchemy signs in to it with `gcloud auth login` if it has no login yet, and deploys as its account into its project and `compute/region`. It never activates the configuration, so each Alchemy profile can use a different Google account while your gcloud stays as it is.
 
-In CI (`CI=true`), Alchemy skips profiles and reads the environment:
+```sh
+alchemy profile edit --add GCP
+# when the login expires or is revoked:
+alchemy profile refresh --provider GCP
+```
+
+The profile names the configuration and nothing else, so no token is copied into it:
+
+```jsonc
+// ~/.alchemy/profiles/<name>/gcp.json
+{ "method": "gcloud", "configuration": "work" }
+```
+
+To set it up without prompts, create the configuration with gcloud first:
+
+```sh
+gcloud config configurations create work --no-activate
+gcloud auth login --configuration=work
+gcloud config set project my-project --configuration=work
+alchemy profile edit --add GCP --method gcloud --set configuration=work
+```
+
+A `project` or `region` in the profile overrides the configuration’s.
+
+This needs the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install). Creating projects without an organization or folder also needs it: Google only lets user accounts do that.
+
+To deploy as a service account instead, choose **Service account JSON** and point at the key file. Alchemy stores the path in the profile.
+
+Environment variables need no profile. When a token or key file is set, Alchemy uses it instead of the profile, and in CI (`CI=true`) the environment is the only source:
 
 - `GOOGLE_PROJECT_ID` — project id (`GOOGLE_CLOUD_PROJECT` is accepted as an alias).
 - `GOOGLE_APPLICATION_CREDENTIALS` — path to the key file.

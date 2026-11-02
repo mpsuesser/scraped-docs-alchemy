@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/axiom-observability
 title: "Ship Worker telemetry to Axiom"
 description: "Declare Axiom datasets, a least-privilege ingest token, and monitors in the same Stack as the Worker that emits the telemetry — or let Cloudflare push Workers Logs to Axiom natively."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Effect already emits OpenTelemetry — every span, `Metric`, and
@@ -17,7 +17,7 @@ reviewable diff, not a dashboard click.
 This guide wires a Worker's telemetry into Axiom two ways:
 
 1. **From the Worker** — the `Axiom.Telemetry` binding layer; the
-   [built-in telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) exports
+   [built-in telemetry](../../infrastructure-as-effects/telemetry.md) exports
    your Effect spans, logs, and metrics directly.
 2. **From Cloudflare** — an `ObservabilityDestination` that pushes
    Workers Logs telemetry to Axiom.
@@ -260,9 +260,9 @@ Two adjacent Cloudflare-native options, in brief:
 - [Axiom overview](../../axiom.md) — dashboards, annotations, views, and the
   full resource list.
 - [Axiom setup](../../axiom/setup.md) — credentials and profiles.
-- [Telemetry](https://alchemy.run/infrastructure-as-effects/telemetry) — how the
+- [Telemetry](../../infrastructure-as-effects/telemetry.md) — how the
   built-in exporters work across every runtime.
-- [Tutorial Part 6](https://alchemy.run/cloudflare/tutorial/part-6) — the step-by-step
+- [Tutorial Part 6](../tutorial/part-6.md) — the step-by-step
   version of this setup.
 - [Observability](../../testing/observability.md) — OTel across clouds and
   the receiving end as resources.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/drizzle-dsql
 title: "Drizzle + Aurora DSQL"
 description: "Drizzle on Lambda with Aurora DSQL, a non-admin database role, verified TLS, and an explicit DSQL migration boundary."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-dsql-drizzle) · [AWS setup](../setup.md) · [Aurora PostgreSQL instead](drizzle-aurora.md)
@@ -17,7 +17,7 @@ pnpm install
 cd examples/aws-dsql-drizzle
 ```
 
-Use a DSQL-supported region such as `us-west-2`. Deployment needs `dsql:DbConnectAdmin` and access to the cluster on port 5432. The example includes Effect 4, Effect-native Drizzle, `@effect/sql-pg`, and `pg`; it is not an RDS Data API integration.
+Use a DSQL-supported region such as `us-west-2`. Deployment needs `dsql:DbConnectAdmin` and access to the cluster on port 5432. The example includes Effect 4, Effect-native Drizzle, and `@effect/sql-pg`; it is not an RDS Data API integration.
 
 :::caution
 These resources are billable. Deletion protection is disabled; destroy deletes the database data.
@@ -86,7 +86,7 @@ const db = yield* Drizzle.Postgres(
 
 Provide `AWS.DSQL.ConnectHttp` on the Lambda Effect. It grants cluster-scoped `dsql:DbConnect`, not `dsql:DbConnectAdmin`, and signs a fresh IAM token locally when the connection effect runs. The binding does not create the database role or SQL grants.
 
-`Drizzle.Postgres` resolves the redacted URL on the first query and scopes its pool to the invocation, rather than retaining a pool with an old token across warm invocations. The [complete handler](https://github.com/alchemy-run/alchemy/blob/main/examples/aws-dsql-drizzle/src/Api.ts) uses `build: { install: ["pg"] }` to package the CommonJS driver intact. [Connection lifecycle](../../sql/effect-sql/lifecycle.md).
+`Drizzle.Postgres` resolves the redacted URL on the first query and scopes its pool to the invocation, rather than retaining a pool with an old token across warm invocations. See the [complete handler](https://github.com/alchemy-run/alchemy/blob/main/examples/aws-dsql-drizzle/src/Api.ts). [Connection lifecycle](../../sql/effect-sql/lifecycle.md).
 
 ## Query with Drizzle
 
@@ -131,7 +131,7 @@ Initial setup does not alter existing tables. The Action's `version` input is no
 ### Configure SQL generation
 
 ```sh
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 ```typescript

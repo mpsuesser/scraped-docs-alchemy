@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated deployments, PR previews, and remote state — with Cloudflare credentials managed as code."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -478,7 +478,7 @@ You now know how to:
   `Cloudflare.ApiToken.AccountApiToken`, push them to GitHub with
   `GitHub.Secret`, and deploy from Actions
 
-In [Part 6](https://alchemy.run/cloudflare/tutorial/part-6), you'll ship the Worker's
+In [Part 6](part-6.md), you'll ship the Worker's
 traces and logs to Axiom — with the datasets and ingest token
 declared in the same Stack as the Worker they observe.
 

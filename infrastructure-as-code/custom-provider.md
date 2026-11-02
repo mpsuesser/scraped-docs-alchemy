@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/custom-provider
 title: "Custom Provider"
 description: "Add support for a new cloud or third-party API by declaring a Resource type and implementing its lifecycle as an Effect Layer."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Providers are Effect `Layer` s — adding support for a new cloud or third-party API is “declare a type, implement a Layer”. See [Providers](provider.md) for the operation contract.
@@ -439,12 +439,12 @@ providers: Layer.mergeAll(Cloudflare.providers(), Stripe.providers()),
 
 Full `test.provider` reference and patterns: [Testing Providers](../testing/testing-providers.md).
 
-Alchemy’s test harness (`alchemy/Test/Vitest` or `alchemy/Test/Bun`) configures providers + state once at the top of the file, then exposes `test.provider(name, (stack) => ...)` for provider-level tests. Each `test.provider` body receives a fresh in-memory scratch stack with `.deploy(effect)` and `.destroy()` helpers.
+Alchemy’s test harness (`@alchemy.run/test/Vitest` or `@alchemy.run/test/Bun`) configures providers + state once at the top of the file, then exposes `test.provider(name, (stack) => ...)` for provider-level tests. Each `test.provider` body receives a fresh in-memory scratch stack with `.deploy(effect)` and `.destroy()` helpers.
 
 Create `test/Product.test.ts`:
 
 ```typescript
-import * as Test from "alchemy/Test/Vitest";
+import * as Test from "@alchemy.run/test/Vitest";
 import { expect } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import Stripe from "stripe";
@@ -508,7 +508,7 @@ If you’d rather start from a real provider:
 
 ## Where next
 
-- [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — give your resource a second, dev-mode implementation that emulates it locally (`ProviderLayer.dual`, `LocalProvider.make`).
+- [Local Providers](local-provider.md) — give your resource a second, dev-mode implementation that emulates it locally (`ProviderLayer.dual`, `LocalProvider.make`).
 - [Custom Auth Provider](../environments/custom-auth-provider.md) — build the `StripeCredentials` service and login flow this guide consumes.
 - [Auth Providers](../environments/auth-providers.md) — how credentials resolve: lazy Effects, Profiles, auto-refresh.
 - [Actions](action.md) — deploy-time work that isn’t a resource.

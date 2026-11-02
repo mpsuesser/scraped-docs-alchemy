@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)
@@ -210,8 +210,13 @@ Binding that runs an Effect or `Stream` in the background, whenever
 something happens on the resource:
 
 ```typescript
-yield* AWS.SQS.consumeQueueMessages(Inbound, (records) =>
-  Stream.runForEach(records, (record) => Effect.log(record.body)),
+yield* AWS.SQS.consumeQueueMessages(
+  Inbound,
+  Effect.fn(function* (event) {
+    for (const record of event.Records) {
+      yield* Effect.log(record.body);
+    }
+  }),
 );
 ```
 

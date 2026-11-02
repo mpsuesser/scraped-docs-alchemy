@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/databases
 title: "Databases"
 description: "Compare database engines, connection paths, and deployment guides across Alchemy's SQL providers."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Choose the database independently from the application runtime where supported. For example, a Cloudflare Worker or Hetzner application can both use Neon Postgres.
@@ -23,7 +23,7 @@ Choose the database independently from the application runtime where supported. 
 | Prisma Postgres | Postgres | Database connection URL | [Prisma Postgres](../prisma/data/postgres.md) |
 | Railway Postgres | Postgres | Private service URL or public TCP proxy | [Railway Postgres](../railway/data/postgres.md) |
 | Railway MySQL | MySQL | Private service URL or public TCP proxy | [Railway MySQL](../railway/data/mysql.md) |
-| Turso | SQLite (libSQL) | libSQL URL and token | [Turso databases](https://alchemy.run/turso/databases) · [Connections](https://alchemy.run/turso/connections) |
+| Turso | SQLite (libSQL) | libSQL URL and token | [Turso databases](../turso/databases.md) · [Connections](../turso/connections.md) |
 
 [Hyperdrive](../cloudflare/data/hyperdrive.md) pools connections to a database; it is not a database itself. The [Hetzner guide](../hetzner/data/drizzle-postgres.md) hosts the application on Hetzner and the database on Neon.
 
@@ -34,7 +34,7 @@ Choose the database independently from the application runtime where supported. 
 | Postgres | [Drizzle.Postgres](drizzle/postgres.md) · [Prisma ORM](prisma/postgres.md) | [SQL.Postgres](effect-sql/postgres.md) |
 | MySQL | [Drizzle.MySQL](drizzle/mysql.md) | [SQL.MySQL](effect-sql/mysql.md) |
 | D1 | [Drizzle.D1](drizzle/d1.md) | [SQL.D1](effect-sql/d1.md) |
-| libSQL (Turso) | [Drizzle.LibSQL](https://alchemy.run/sql/drizzle/libsql) | [SQL.LibSQL](https://alchemy.run/sql/effect-sql/libsql) |
+| libSQL (Turso) | [Drizzle.LibSQL](drizzle/libsql.md) | [SQL.LibSQL](effect-sql/libsql.md) |
 | Durable Objects | [Drizzle.DurableObject](drizzle/migrations.md#durable-object-migrations) | [Instance SQL](effect-sql/migrations.md#durable-object-migrations) |
 
 Prisma ORM v8 requires PostgreSQL 17+. Aurora DSQL has its [own authentication and SQL constraints](../aws/data/drizzle-dsql.md); Postgres wire compatibility does not establish Prisma support or support for every PostgreSQL feature.

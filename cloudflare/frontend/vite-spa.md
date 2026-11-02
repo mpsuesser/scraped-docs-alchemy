@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`Cloudflare.Website.Vite`](vite.md): build the client assets, ship them to Cloudflare, and serve them through a Worker so your frontend and backend share one URL surface and one deploy. For the resource itself — what it does, its props, `memo` semantics, and dev mode — see the [Vite resource page](vite.md).
@@ -240,7 +240,7 @@ Or add an integration test alongside the existing ones:
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as HttpClient from "effect/http/HttpClient";

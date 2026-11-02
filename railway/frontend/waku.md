@@ -2,11 +2,11 @@
 url: https://alchemy.run/railway/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Railway with Railway.Website.Waku — RSC server on a container Service, SSG pages in the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Railway.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Railway. It builds the project programmatically: the RSC server plus SSG pages run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
+`Railway.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Railway. It builds the project programmatically: the RSC server plus SSG pages run on one [`Railway.Service`](../compute/services.md). Alchemy creates a [`Railway.Project`](../compute/projects.md) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
 
 ## Install
 
@@ -121,10 +121,10 @@ const site = yield* Railway.Website.Waku("Web", {
 });
 ```
 
-`domain` attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) (`targetPort` 3000). `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`.
+`domain` attaches a [`Railway.CustomDomain`](../networking.md) (`targetPort` 3000). `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`.
 
 ## Where next
 
 - [Waku API reference](https://alchemy.run/providers/railway/website#waku)
-- [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
-- [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md) and [Services](../compute/services.md)
+- [Custom domains](../networking.md)

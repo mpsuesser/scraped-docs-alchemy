@@ -2,16 +2,16 @@
 url: https://alchemy.run/sql/effect-sql/postgres
 title: "Postgres"
 description: "SQL.Postgres turns a connection string into an @effect/sql-pg client — tagged-template queries with typed errors, one pool per execution."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `SQL.Postgres` provides tagged-template queries over a Postgres connection. Queries are Effects with typed `SqlError` failures, interruption, and tracing.
 
-Install `@alchemy.run/sql` and the optional Postgres driver:
+Install `@alchemy.run/sql` and the Effect Postgres driver:
 
 ```sh
-pnpm add @alchemy.run/sql@latest @effect/sql-pg pg
+pnpm add @alchemy.run/sql@latest @effect/sql-pg
 ```
 
 ## Connect
@@ -100,7 +100,7 @@ The layer provides `SqlClient.SqlClient` and `@effect/sql-pg` ’s `PgClient` fr
 
 ## Provider setup
 
-Choose a database and deployment guide in [SQL databases](../databases.md); the client above only needs a connection URL. [Hyperdrive](../../cloudflare/data/hyperdrive.md#use-effect-sql) and [Fly Managed Postgres](../../fly/data/postgres.md) cover runtime-specific bindings.
+Choose a database and deployment guide in [SQL databases](../databases.md); the client above only needs a connection URL. [Hyperdrive](../../cloudflare/data/hyperdrive.md#bind-hyperdrive-to-your-worker) and [Fly Managed Postgres](../../fly/data/postgres.md) cover runtime-specific bindings.
 
 ## Where next
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing
 title: "Testing"
 description: "How Alchemy tests work — real clouds by default, local emulators on demand, one Stack deploy per suite, isolated stages, deploy → assert → destroy."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Alchemy tests run against real clouds by default — no mocks. A suite deploys a real Stack once, runs assertions against live resources, and tears it back down: deploy → assert → destroy. The same suite can also run entirely on your machine — see [Local mode](#local-mode-dev-true) below.
@@ -35,6 +35,24 @@ For the full walkthrough, see [Testing a Stack](testing/testing-a-stack.md).
 
 For every option, hook, and variant, see the [Test harness](testing/test-harness.md) reference.
 
+## Pick a runner
+
+`Test.make` ships in `@alchemy.run/test` and runs on three test runners with the same API:
+
+```sh
+bun add -d @alchemy.run/test@latest
+```
+
+Import it from the adapter for your runner:
+
+```typescript
+import * as Test from "@alchemy.run/test/Alchemy"; // alchemy-test
+import * as Test from "@alchemy.run/test/Bun";     // bun test
+import * as Test from "@alchemy.run/test/Vitest";  // Vitest
+```
+
+`alchemy-test` runs every file in one bun process with tests in flight concurrently, built for slow tests against real clouds. Install and run each one as shown in [Test harness → Runners](testing/test-harness.md#runners).
+
 ## Stage isolation
 
 Tests default to `test_$USER` (e.g. `test_sam`), matching how `alchemy deploy` uses `live_$USER` and `alchemy dev` uses `dev_$USER` — so they never touch your live or local-dev deployments, and two people running the same suite don’t collide. A unique stage per PR lets CI suites run in parallel against the same account:
@@ -43,7 +61,14 @@ Tests default to `test_$USER` (e.g. `test_sam`), matching how `alchemy deploy` u
 Test.make({ providers, stage: "ci-pr-42" });
 ```
 
-The per-call form is covered in [Test harness → stage](testing/test-harness.md#stage).
+Or set it for the whole run from the command line:
+
+```sh
+bunx alchemy-test --stage ci-pr-42
+ALCHEMY_TEST_STAGE=ci-pr-42 bun test
+```
+
+Running several git worktrees at once? See [Worktrees](environments/worktrees.md). The per-call form is covered in [Test harness → stage](testing/test-harness.md#stage).
 
 ## Local mode (dev: true)
 

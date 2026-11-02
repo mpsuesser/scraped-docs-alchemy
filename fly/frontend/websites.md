@@ -2,14 +2,14 @@
 url: https://alchemy.run/fly/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, vinext, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Fly with first-class Website resources."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Alchemy deploys frontends to Fly with a family of `Fly.Website`
 resources. Each one builds your project programmatically and
-deploys it as a Node [Service](https://alchemy.run/fly/compute/services) on a Fly
-[App](https://alchemy.run/fly/compute/apps) — a Machine listening on port 3000, plus
+deploys it as a Node [Service](../compute/services.md) on a Fly
+[App](../compute/apps.md) — a Machine listening on port 3000, plus
 a shared IPv4 so `https://{app}.fly.dev` answers — with no
 `fly.toml` and no adapter to put in the framework config. Your
 framework's own config file (`vite.config.ts`, `astro.config.*`,
@@ -30,7 +30,7 @@ container integration on top.
 - [`Nuxt`](nuxt.md) — Nuxt apps through nitro's Node
   server; your `nuxt.config.ts` loads natively. Do not set
   `nitro.preset`.
-- [`ReactRouter`](react-router.md) — React Router v7 in
+- [`ReactRouter`](react-router.md) — React Router v8 in
   framework mode, built through your own `vite build`.
 - [`SolidStart`](solidstart.md) — SolidStart 2.x SSR;
   Alchemy appends nitro's `node` preset to your `vite build`.
@@ -52,8 +52,8 @@ container integration on top.
 
 Each resource creates a `Fly.App` when you omit `app`, a
 `Fly.Service` on port 3000, and a `shared_v4`
-[`IpAssignment`](https://alchemy.run/fly/networking) so `{app}.fly.dev` answers.
-`domain` requests ACME via [`Certificate`](https://alchemy.run/fly/networking#use-your-own-hostname)
+[`IpAssignment`](../networking.md) so `{app}.fly.dev` answers.
+`domain` requests ACME via [`Certificate`](../networking.md#use-your-own-hostname)
 (existing DNS only for v1); `url` becomes `https://{domain}`.
 The return is `{ url, app, service, ip, certificate }` —
 everything except `url` is `undefined` under `alchemy dev`.
@@ -121,7 +121,7 @@ const site = yield* Fly.Website.Vite("Web", {
 Server code reads `process.env`. Pair a site with
 [Postgres](../data/postgres.md) the same way you would any other
 Service: put the connection string in `env`, or bind
-`ConnectPostgres` on a sibling [Service](https://alchemy.run/fly/compute/services).
+`ConnectPostgres` on a sibling [Service](../compute/services.md).
 
 ## Local development
 
@@ -138,9 +138,21 @@ const site = yield* Fly.Website.Astro("Web", {
 });
 ```
 
-`domain` is a hostname string. Alchemy requests ACME on the App;
-point existing DNS at the App first (v1 does not create records).
-`url` becomes `https://app.example.com`.
+A hostname string makes Alchemy request ACME on the App; you point DNS
+at the App yourself. `url` becomes `https://app.example.com`.
+
+To have Alchemy publish the records, pass the DNS host as `dns`. The site
+then publishes the ACME challenge `CNAME` and the `A`/`AAAA` records at the
+App through that host:
+
+```typescript
+const site = yield* Fly.Website.Astro("Web", {
+  domain: { name: "app.example.com", dns: Cloudflare.DNS.Adapter() },
+});
+```
+
+`AWS.Route53.Adapter()` and `Hetzner.DNS.Adapter()` work the same way. See
+[DNS Adapters](../../infrastructure-as-code/dns-adapters.md).
 
 ## Where next
 
@@ -160,7 +172,7 @@ point existing DNS at the App first (v1 does not create records).
   [Octane](octane.md),
   [Foldkit](foldkit.md),
   [Vocs](vocs.md).
-- [Services](https://alchemy.run/fly/compute/services) — the Node process these
+- [Services](../compute/services.md) — the Node process these
   resources deploy.
 - [Postgres](../data/postgres.md) — managed Postgres next to a
   site.

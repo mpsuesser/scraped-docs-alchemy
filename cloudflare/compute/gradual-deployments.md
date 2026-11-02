@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/gradual-deployments
 title: "Gradual deployments"
 description: "Roll out Worker deploys incrementally — upload preview versions, canary a percentage of live traffic, ramp to 100%, pin users to a version during the rollout, and verify which version served each request."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Every deploy of a Worker uploads an immutable
@@ -353,6 +353,13 @@ instances roll, so keep the Worker-to-container protocol compatible
 across both images until the rollout completes. See
 [Rollouts](containers.md#rollouts) in the Containers
 guide.
+
+## Durable Objects roll out by object
+
+Each Durable Object runs one version. Raising the traffic moves more
+objects onto the new version, and each one waits to go idle before it
+switches. See
+[Gradual deployments assign objects to versions](code-updates.md#gradual-deployments-assign-objects-to-versions).
 
 ## Where next
 

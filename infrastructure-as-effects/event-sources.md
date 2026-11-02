@@ -2,20 +2,19 @@
 url: https://alchemy.run/infrastructure-as-effects/event-sources
 title: "Event Sources"
 description: "An event source is a binding that runs your Function when something happens on a resource — one call wires the event-source mapping, the permissions, and a typed handler."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 An **Event Source** is a [Binding](binding.md)
 that runs your Function when something happens on a resource. A message
 lands on a queue, an object lands in a bucket, a row changes in a table.
-You name the resource and a handler, and the messages arrive as an
-Effect `Stream`:
+You name the resource and a handler, and the handler runs once per
+batch:
 
 ```typescript
 import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
-import * as Stream from "effect/Stream";
 
 export const Orders = AWS.SQS.Queue("Orders");
 
@@ -23,11 +22,13 @@ export default AWS.Lambda.Function(
   "OrderProcessor",
   { main: import.meta.url },
   Effect.gen(function* () {
-    yield* AWS.SQS.consumeQueueMessages(Orders, (records) =>
-      records.pipe(
-        Stream.map((record) => record.body),
-        Stream.runForEach((body) => Effect.log(`order: ${body}`)),
-      ),
+    yield* AWS.SQS.consumeQueueMessages(
+      Orders,
+      Effect.fn(function* (event) {
+        for (const record of event.Records) {
+          yield* Effect.log(`order: ${record.body}`);
+        }
+      }),
     );
   }).pipe(Effect.provide(AWS.Lambda.QueueEventSource)),
 );
@@ -61,18 +62,49 @@ export const handler = async (event) => {
 `consumeQueueMessages` does all three. At deploy time it attaches that
 statement to the Function's role, scoped to the queue's ARN, and
 creates the event source mapping that points the queue at this
-Function. At runtime it registers the listener that turns each
-invocation's batch into `records`.
+Function. At runtime it registers the listener that hands each
+invocation's batch to your handler, inside a `process Orders` consumer
+span.
 
 `consumeQueueMessages` is the contract and `AWS.Lambda.QueueEventSource`
 is the Layer that satisfies it, the same split every binding has
 ([a contract and a Layer](binding.md#a-contract-and-a-layer)).
 
-## It's a real Effect Stream
+## Report the messages that failed
 
-`records` is the same `Stream` from any Effect program, so every
-combinator composes. Map table changes to JSON and run them straight
-into a queue:
+The handler takes the batch Lambda delivers and returns Lambda's batch
+response. Name the messages that failed in `batchItemFailures`, and
+only those are retried:
+
+```typescript
+yield* AWS.SQS.consumeQueueMessages(
+  Orders,
+  Effect.fn(function* (event) {
+    const failed = yield* Effect.filter(
+      event.Records,
+      (record) =>
+        processOrder(record.body).pipe(
+          Effect.as(false),
+          Effect.catchCause(() => Effect.succeed(true)),
+        ),
+      { concurrency: "unbounded" },
+    );
+    return {
+      batchItemFailures: failed.map((record) => ({ itemIdentifier: record.messageId })),
+    };
+  }),
+);
+```
+
+Return nothing when every message succeeded. If the handler fails,
+the whole batch is retried. Kinesis and DynamoDB Streams take the same
+response, naming the first record that failed so Lambda checkpoints
+before it.
+
+## Compose with a Stream
+
+The batch is plain data, so any Effect works on it. Map table changes
+to JSON and run them straight into a queue:
 
 ```typescript
 const sink = yield* AWS.SQS.QueueSink(Outbound);
@@ -80,8 +112,8 @@ const sink = yield* AWS.SQS.QueueSink(Outbound);
 yield* AWS.DynamoDB.consumeTableChanges(
   Jobs,
   { streamViewType: "NEW_AND_OLD_IMAGES", startingPosition: "TRIM_HORIZON" },
-  (stream) =>
-    stream.pipe(
+  Effect.fn(function* (event) {
+    yield* Stream.fromIterable(event.Records).pipe(
       Stream.map((record) =>
         JSON.stringify({
           eventName: record.eventName,
@@ -89,12 +121,12 @@ yield* AWS.DynamoDB.consumeTableChanges(
         }),
       ),
       Stream.run(sink),
-    ),
+    );
+  }),
 );
 ```
 
-`Stream.throttle` or `Stream.groupedWithin` drop in anywhere along the
-chain. That `sink` is a [Sink](sinks.md), the
+That `sink` is a [Sink](sinks.md), the
 write-side dual of an event source. Its permissions are generated the
 same way.
 
@@ -144,7 +176,11 @@ invocation's batch:
 yield* AWS.SQS.consumeQueueMessages(
   Orders,
   { batchSize: 10, maximumBatchingWindow: "5 seconds" },
-  (records) => Stream.runForEach(records, (record) => Effect.log(record.body)),
+  Effect.fn(function* (event) {
+    for (const record of event.Records) {
+      yield* Effect.log(record.body);
+    }
+  }),
 );
 ```
 
@@ -161,7 +197,11 @@ yield* AWS.DynamoDB.consumeTableChanges(
     bisectBatchOnFunctionError: true,
     maximumRetryAttempts: 3,
   },
-  (stream) => Stream.runForEach(stream, (record) => Effect.log(record.eventName)),
+  Effect.fn(function* (event) {
+    for (const record of event.Records) {
+      yield* Effect.log(record.eventName);
+    }
+  }),
 );
 ```
 
@@ -170,17 +210,23 @@ your handler succeeds, retried `maxRetries` times when it fails, then
 dead-lettered:
 
 ```typescript
+const deadLetters = yield* Cloudflare.Queues.Queue("OrdersDeadLetters");
+
 yield* Cloudflare.Queues.consumeQueueMessages<{ text: string }>(
   Orders,
-  { maxRetries: 3, retryDelay: "1 second", deadLetterQueue: "orders-dlq" },
+  { maxRetries: 3, retryDelay: "1 second", deadLetterQueue: deadLetters },
   (stream) => Stream.runForEach(stream, (msg) => Effect.log(msg.body.text)),
 );
 ```
 
+Nothing reads the dead-letter queue unless you consume it, so a failed
+message expires there silently. Subscribe to it the same way
+([example](../cloudflare/messaging/queues.md#consume-the-dead-letter-queue)).
+
 Call `msg.ack()` or `msg.retry()` inside the handler to decide per
 message.
 
-## Not every source is a Stream
+## Sources that deliver one event at a time
 
 A source that delivers one event at a time hands your handler the event
 directly. A cron trigger passes one `controller` per fire:
@@ -215,10 +261,12 @@ The shape never changes. Only the `consume*` callable, the record type,
 and the Layer you provide differ:
 
 ```typescript
-// AWS: handlers receive a Stream per batch
+// AWS: handlers receive each batch and return Lambda's batch response
 yield* AWS.SQS.consumeQueueMessages(queue, fn);
 yield* AWS.Kinesis.consumeStreamRecords(stream, props, fn);
 yield* AWS.DynamoDB.consumeTableChanges(table, props, fn);
+
+// AWS: handlers receive a Stream of notifications
 yield* AWS.S3.consumeBucketEvents(bucket, fn);
 yield* AWS.SNS.consumeTopicNotifications(topic, fn);
 yield* AWS.EventBridge.consumeBusEvents(bus, pattern, fn);

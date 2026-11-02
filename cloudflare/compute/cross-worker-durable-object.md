@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A Durable Object is *hosted* by exactly one Worker, but any number of **other** Workers can bind to the same DO. This is how you share state across Workers: one Worker hosts the DO, every other Worker addresses it by `scriptName` and gets a typed RPC stub.
@@ -180,7 +180,7 @@ Hit `urlA/foo` to increment, then `urlB/foo` to read — both Workers route to t
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Vitest";
+import * as Test from "@alchemy.run/test/Vitest";
 import { expect } from "@effect/vitest";
 import * as Effect from "effect/Effect";
 import * as HttpClient from "effect/http/HttpClient";

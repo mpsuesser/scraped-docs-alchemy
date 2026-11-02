@@ -2,11 +2,11 @@
 url: https://alchemy.run/hetzner/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Hetzner with Hetzner.Website.Waku — RSC server as a systemd unit on port 3000, SSG pages baked into the unit, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Hetzner.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to a Hetzner Cloud Server. It builds the project programmatically: the RSC server runs as a systemd [`Hetzner.Service`](https://alchemy.run/hetzner/compute/services) on port 3000, and the client output — including SSG-prerendered pages — is baked into the unit. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
+`Hetzner.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to a Hetzner Cloud Server. It builds the project programmatically: the RSC server runs as a systemd [`Hetzner.Service`](../compute/services.md) on port 3000, and the client output — including SSG-prerendered pages — is baked into the unit. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
 
 ## Install
 
@@ -44,7 +44,7 @@ import * as Hetzner from "@alchemy.run/hetzner";
 export const Website = Hetzner.Website.Waku("Website");
 ```
 
-Pass `server` to host the site on an existing [`Hetzner.Server`](https://alchemy.run/hetzner/compute/servers) — several sites and APIs can share one box. `rootDir` defaults to `"."`.
+Pass `server` to host the site on an existing [`Hetzner.Server`](../compute/servers.md) — several sites and APIs can share one box. `rootDir` defaults to `"."`.
 
 ## Add it to the Stack
 
@@ -125,10 +125,10 @@ const site = yield* Hetzner.Website.Waku("Web", {
 });
 ```
 
-`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — the Website does not create one. It adds an A record pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
+`domain` requires an existing [`Hetzner.Zone`](../networking/dns.md) — the Website does not create one. It adds an A record pointing at the Server’s public IPv4. `url` becomes `http://app.example.com:3000`. There is no TLS on the Service.
 
 ## Where next
 
 - [Waku API reference](https://alchemy.run/providers/hetzner/website#waku)
-- [Servers](https://alchemy.run/hetzner/compute/servers) and [Services](https://alchemy.run/hetzner/compute/services)
-- [DNS](https://alchemy.run/hetzner/networking/dns)
+- [Servers](../compute/servers.md) and [Services](../compute/services.md)
+- [DNS](../networking/dns.md)

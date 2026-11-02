@@ -2,8 +2,8 @@
 url: https://alchemy.run/git
 title: "Git"
 description: "A pluggable, embeddable, self-hostable git server on Cloudflare Workers, Durable Objects, and R2. Smart HTTP for any client, a typed REST plane with pull requests, and a GitHub-compatible API."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `@alchemy.run/git` is a pluggable, embeddable, self-hostable git server. It speaks git’s smart HTTP to any client, serves a typed REST plane with pull requests, and answers the GitHub REST v3 API for `gh` and Octokit. It runs on Cloudflare Workers, Durable Objects, and R2, embeds in your own `HttpApi`, and each part of it is an Effect Layer you can replace:
@@ -69,8 +69,8 @@ The engine holds no users, no credentials, and no policy. Who may call a route i
 2. [Control access](git/tutorial/part-2.md) — require a shared credential and verify anonymous requests fail.
 3. [Publish a repository](git/tutorial/part-3.md) — allow anonymous clones while keeping writes protected.
 4. [Give users their own credentials](git/tutorial/part-4.md) — use accounts and individual API keys.
-5. [Add your application’s API](https://alchemy.run/git/tutorial/part-5) — serve `/me` beside Git with the same authenticated user.
-6. [Protect a branch](https://alchemy.run/git/tutorial/part-6) — reject deletion of `main` with an application policy.
+5. [Add your application’s API](git/tutorial/part-5.md) — serve `/me` beside Git with the same authenticated user.
+6. [Protect a branch](git/tutorial/part-6.md) — reject deletion of `main` with an application policy.
 
 ## Use it
 

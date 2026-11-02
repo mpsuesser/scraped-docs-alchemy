@@ -2,17 +2,17 @@
 url: https://alchemy.run/railway/data/drizzle-mysql
 title: "Drizzle MySQL on Railway"
 description: "Connect an Effect-native Railway Service to MySQL and deploy committed Drizzle migrations."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-Run Drizzle in a Railway container beside [Railway MySQL](mysql.md). Start with [Railway setup](../setup.md), the [Service tutorial](https://alchemy.run/railway/tutorial/part-2), and a `src/schema.ts` exporting a MySQL `Users` table from the [MySQL client guide](../../sql/drizzle/mysql.md).
+Run Drizzle in a Railway container beside [Railway MySQL](mysql.md). Start with [Railway setup](../setup.md), the [Service tutorial](../tutorial/part-2.md), and a `src/schema.ts` exporting a MySQL `Users` table from the [MySQL client guide](../../sql/drizzle/mysql.md).
 
 ## Install the database dependencies
 
 ```sh
-pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-mysql2 mysql2
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5 @effect/sql-mysql2
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 The Drizzle versions match the repository's Effect integration.

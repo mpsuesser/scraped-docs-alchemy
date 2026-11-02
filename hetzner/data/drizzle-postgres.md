@@ -2,17 +2,17 @@
 url: https://alchemy.run/hetzner/data/drizzle-postgres
 title: "Drizzle Postgres on Hetzner"
 description: "Run a Drizzle API on a Hetzner Server with external Neon Postgres and reviewed SQL migrations."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-Alchemy's Hetzner provider has no managed Postgres resource; this guide runs the application on Hetzner and stores its data in **Neon Postgres**. Start with [Hetzner setup](../setup.md), the [Service tutorial](https://alchemy.run/hetzner/tutorial/part-2), [Neon setup](../../neon/setup.md), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
+Alchemy's Hetzner provider has no managed Postgres resource; this guide runs the application on Hetzner and stores its data in **Neon Postgres**. Start with [Hetzner setup](../setup.md), the [Service tutorial](../tutorial/part-2.md), [Neon setup](../../neon/setup.md), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
 
 ## Install the database dependencies
 
 ```sh
-pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5 @effect/sql-pg
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 The Drizzle versions match the repository's Effect integration.
@@ -98,20 +98,6 @@ Effect.gen(function* () {
 ```
 
 The URL is server-side configuration, not browser configuration; protect the state backend and never expose it as a public Stack output.
-
-## Install the driver on the Server
-
-```diff lang="typescript"
- return {
-   server,
-   main: import.meta.url,
-   port: 3000,
-+  build: { install: ["pg"] },
-   env: { DATABASE_URL: database.pooledConnectionUri },
- };
-```
-
-Hetzner's Service packaging installs `pg` beside the bundle, preserving its CommonJS exports.
 
 ## Provision before the first migration
 

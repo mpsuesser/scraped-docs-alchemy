@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Fly with native local development."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Fly.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Fly. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
@@ -191,4 +191,4 @@ const site = yield* Fly.Website.Foldkit("Web", {
 - [`Foldkit` reference](https://alchemy.run/providers/fly/website#foldkit) — every prop and attribute
 - [Vite](vite.md) — the same static-file Service for any Vite app
 - [Websites](websites.md) — the rest of the Fly frontend family
-- [Apps](https://alchemy.run/fly/compute/apps), [Services](https://alchemy.run/fly/compute/services), [IPs & certificates](https://alchemy.run/fly/networking)
+- [Apps](../compute/apps.md), [Services](../compute/services.md), [IPs & certificates](../networking.md)

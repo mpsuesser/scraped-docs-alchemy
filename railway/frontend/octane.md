@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Railway with Railway.Website.Octane — SSR plus client assets on one Service, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Railway.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to Railway. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server plus client assets run on one `Railway.Service` from a container image. The live URL is the generated `https://{name}.up.railway.app`. No Dockerfile, no build command to run.
@@ -136,10 +136,10 @@ const site = yield* Railway.Website.Octane("Web", {
 });
 ```
 
-Alchemy attaches a `Railway.CustomDomain` (`targetPort` 3000) and `url` becomes `https://{domain}`. Point DNS at Railway’s verification records — see [custom domains](https://alchemy.run/railway/networking).
+Alchemy attaches a `Railway.CustomDomain` (`targetPort` 3000) and `url` becomes `https://{domain}`. Point DNS at Railway’s verification records — see [custom domains](../networking.md).
 
 ## Where next
 
 - [`Railway.Website.Octane` reference](https://alchemy.run/providers/railway/website#octane)
-- [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
-- [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md) and [Services](../compute/services.md)
+- [Custom domains](../networking.md)

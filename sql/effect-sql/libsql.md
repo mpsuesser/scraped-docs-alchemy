@@ -1,0 +1,111 @@
+---
+url: https://alchemy.run/sql/effect-sql/libsql
+title: "libSQL"
+description: "Run SQL on a libSQL database, such as Turso, with Effect SQL."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
+---
+
+`SQL.LibSQL` runs SQL on a libSQL database, such as [Turso](../../turso.md). Queries are Effects, and failures are `SqlError` s.
+
+Install `@alchemy.run/sql` and the driver:
+
+```sh
+pnpm add @alchemy.run/sql@latest @effect/sql-libsql
+```
+
+## Connect
+
+Connect a Turso database with `Turso.Connect` and pass it to `SQL.LibSQL`:
+
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as SQL from "@alchemy.run/sql/SQLite";
+import * as Turso from "@alchemy.run/turso";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Db } from "./db.ts";
+
+export default class Api extends Cloudflare.Worker<Api>()(
+  "Api",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const conn = yield* Turso.Connect(Db);
+    const sql = yield* SQL.LibSQL(conn);
+
+    return {
+      fetch: Effect.gen(function* () {
+        const users = yield* sql\`SELECT * FROM users\`;
+        return yield* HttpServerResponse.json({ users });
+      }),
+    };
+  }).pipe(Effect.provide(Turso.ConnectHttp)),
+) {}
+```
+
+The connection opens on the first query and closes when the request ends. See [Connection lifecycle](lifecycle.md).
+
+## Connect to any libSQL server
+
+```typescript
+const sql = yield* SQL.LibSQL({
+  url: "libsql://my-db.example.com",
+  authToken: Redacted.make(token),
+});
+```
+
+`url` and `authToken` can be plain values or Effects.
+
+## Queries
+
+Values you put in `${}` are sent safely as parameters:
+
+```typescript
+const user = yield* sql\`SELECT * FROM users WHERE id = ${id}\`;
+
+yield* sql\`INSERT INTO users ${sql.insert({ name, email })}\`;
+```
+
+Set the row type with `sql<{ id: number; name: string }>\` …\`\`.
+
+## Transactions
+
+```typescript
+yield* sql.withTransaction(
+  Effect.gen(function* () {
+    yield* sql\`UPDATE accounts SET balance = balance - ${amount} WHERE id = ${from}\`;
+    yield* sql\`UPDATE accounts SET balance = balance + ${amount} WHERE id = ${to}\`;
+  }),
+);
+```
+
+If any statement fails, none of the changes are kept.
+
+## Errors
+
+```typescript
+const users = yield* sql\`SELECT * FROM users\`.pipe(
+  Effect.catchTag("SqlError", () => Effect.succeed([])),
+);
+```
+
+## Provide as a service
+
+Write code against the generic `SqlClient`, then give it the database with `SQL.LibSQLLayer`:
+
+```typescript
+import * as SqlClient from "effect/sql/SqlClient";
+
+const makeUsers = Effect.gen(function* () {
+  const sql = yield* SqlClient.SqlClient;
+  return {
+    find: (id: number) => sql<User>\`SELECT * FROM users WHERE id = ${id}\`,
+  };
+});
+
+const users = yield* makeUsers.pipe(Effect.provide(SQL.LibSQLLayer(conn)));
+```
+
+## Where next
+
+[Turso connections](../../turso/connections.md) shows how to connect a database. [Drizzle: libSQL](../drizzle/libsql.md) adds typed schemas. [Migrations](../../turso/migrations.md) runs SQL on deploy.

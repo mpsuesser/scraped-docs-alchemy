@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Prisma Compute with native local development."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Prisma Compute. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
@@ -165,7 +165,7 @@ const site = yield* Prisma.Website.Foldkit("Web", {
 });
 ```
 
-This creates `Prisma.CustomDomain`; the app must be on the project’s current default branch. Configure the returned DNS records yourself and verify status before cutover. See [Custom domains](websites.md#custom-domains).
+This creates `Prisma.CustomDomain`. Configure the returned DNS records yourself and verify status before cutover. See [Custom domains](websites.md#custom-domains).
 
 ## Where next
 

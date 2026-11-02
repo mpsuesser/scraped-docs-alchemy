@@ -2,17 +2,17 @@
 url: https://alchemy.run/fly/data/drizzle-postgres
 title: "Drizzle Postgres on Fly"
 description: "Connect a Fly Service to Managed Postgres and deploy reviewed Drizzle migrations."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the same organization's private network. Start with [Fly setup](../setup.md), the [Service tutorial](https://alchemy.run/fly/tutorial/part-1), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
+Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the same organization's private network. Start with [Fly setup](../setup.md), the [Service tutorial](../tutorial/part-1.md), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
 
 ## Install the database dependencies
 
 ```sh
-pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add @alchemy.run/drizzle drizzle-orm@1.0.0-rc.5 @effect/sql-pg
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 The Drizzle versions match the repository's Effect integration.
@@ -64,19 +64,6 @@ export const Db = Fly.Postgres("Db", { region: "iad" });
 ```
 
 This provisions a billed Managed Postgres cluster, not an unmanaged Postgres Machine.
-
-## Keep the driver outside the bundle
-
-```diff lang="typescript"
- // src/api.ts — the Service from the tutorial
- {
-   main: import.meta.url,
-   region: "iad",
-+  build: { install: ["pg"] },
- }
-```
-
-`pg` must be installed in the Service image because bundling its CommonJS exports breaks the driver's interop.
 
 ## Bind the cluster
 

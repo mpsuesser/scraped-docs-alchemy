@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
@@ -142,6 +142,17 @@ export class Echo extends Cloudflare.Container<Echo>()("Echo", {
 Arbitrary images expose no RPC methods — the DO talks to them purely over their TCP port via `getTcpPort`. To build, tag, and push that image as part of the same Stack, see [Build & push images](../../docker/build-and-push.md) in the Docker hub.
 
 When `image` already references Cloudflare’s managed registry — for example a digest reference pushed by CI, like `registry.cloudflare.com/<accountId>/app@sha256:...` — alchemy deploys the reference as-is and skips the docker pull and push entirely.
+
+alchemy pulls an `image` as `linux/amd64` on every deploy and every `alchemy dev` start, so a mutable tag like `:latest` picks up a newly pushed image. An image that is only in your local Docker, built on your machine or loaded with `docker load`, has no registry to pull from, so alchemy uses the local copy:
+
+```typescript
+// docker build --platform linux/amd64 -t local-only/app:dev .
+export class App extends Cloudflare.Container<App>()("App", {
+  image: "local-only/app:dev",
+}) {}
+```
+
+Build it for `linux/amd64`, the platform Cloudflare runs. When an image can be neither pulled nor found locally, the error names the image and the `docker login` or `docker build` command that fixes it. The tag is the image’s identity, so give each build its own tag to redeploy it.
 
 ## Cached builds by default
 

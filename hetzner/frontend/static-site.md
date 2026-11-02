@@ -2,15 +2,15 @@
 url: https://alchemy.run/hetzner/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Hetzner with Hetzner.Website.StaticSite — a build command, a systemd unit on a Server, and http://{ipv4}:3000 (or your hostname) on deploy."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Hetzner.Website.StaticSite` runs a build command, packs the output
 directory into the unit archive, and deploys a tiny static-file
 server (`GET` assets, `/health`, optional SPA / 404-page) as a
-[Service](https://alchemy.run/hetzner/compute/services) on a
-[Server](https://alchemy.run/hetzner/compute/servers). Use it when the site has its own
+[Service](../compute/services.md) on a
+[Server](../compute/servers.md). Use it when the site has its own
 build step — Hugo, Zola, Eleventy, or any custom pipeline.
 
 For Vite-based projects, prefer
@@ -169,7 +169,7 @@ export const Website = Hetzner.Website.StaticSite("Website", {
 ## Custom domain
 
 `domain` requires `zone` — a
-[`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) you pass in. The site
+[`Hetzner.Zone`](../networking/dns.md) you pass in. The site
 does not create one. Alchemy creates an A `RecordSet` pointing at
 the Server's public IPv4, and `url` becomes `http://{domain}:3000`.
 The Service still has no TLS:

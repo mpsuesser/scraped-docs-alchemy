@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to Railway with Railway.Website.SvelteKit — kit SSR plus prerendered assets on one Service, and Kit's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Railway.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to Railway. It builds the app with SvelteKit’s own Vite pipeline and an in-memory Node adapter. Client assets and prerendered pages bake into a container image; dynamic routes run in the kit handler on port 3000. Alchemy creates a `Railway.Project` if you omit `project`, then a `Railway.Service` from that image. `url` is the generated `*.up.railway.app` hostname. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -127,10 +127,10 @@ const site = yield* Railway.Website.SvelteKit("Web", {
 });
 ```
 
-Alchemy attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) (`targetPort` 3000). `url` becomes `https://app.example.com`. Point DNS at Railway’s verification records.
+Alchemy attaches a [`Railway.CustomDomain`](../networking.md) (`targetPort` 3000). `url` becomes `https://app.example.com`. Point DNS at Railway’s verification records.
 
 ## Where next
 
 - [`SvelteKit` API](https://alchemy.run/providers/railway/website#sveltekit)
-- [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
-- [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md) and [Services](../compute/services.md)
+- [Custom domains](../networking.md)

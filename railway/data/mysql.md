@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/mysql
 title: "MySQL"
 description: "Official MySQL in a Project. Bind Railway.ConnectMySQL and query with Drizzle or SQL."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A [`Railway.MySQL`](https://alchemy.run/providers/railway/reference/mysql#mysql) is MySQL as a Service:
@@ -12,7 +12,7 @@ the official `mysql:9` image, a Volume at `/var/lib/mysql`, `MYSQL_*`
 The IaC helper is `Railway.mysql`.
 
 Private hostname is `{name}.railway.internal`. From a
-[Service](https://alchemy.run/railway/compute/services), yield
+[Service](../compute/services.md), yield
 [`ConnectMySQL`](https://alchemy.run/providers/railway/reference/mysql#connectmysql). From a laptop, use
 `publicConnectionUri`.
 
@@ -67,7 +67,7 @@ export default class Api extends Railway.Service<Api>()(
 To store Railway's `${{Db.MYSQL_URL}}` template instead of a
 resolved URI, pass [`Railway.ref`](https://alchemy.run/providers/railway/reference/project#ref)
 (`Railway.ref(Db, "MYSQL_URL")`) as a
-[Variable](https://alchemy.run/railway/data/variables) `value`.
+[Variable](variables.md) `value`.
 
 ## Public TCP
 
@@ -84,8 +84,8 @@ const db = yield* Railway.MySQL("Db", {
 ## Where next
 
 [Postgres](postgres.md) is the same shape for Postgres.
-[Mongo](https://alchemy.run/railway/data/mongo) is MongoDB.
-[TcpProxy](https://alchemy.run/railway/networking#tcp-proxies) is the public TCP
+[Mongo](mongo.md) is MongoDB.
+[TcpProxy](../networking.md#tcp-proxies) is the public TCP
 resource.
 The [`MySQL` reference](https://alchemy.run/providers/railway/reference/mysql#mysql) lists every prop.
 The [`ConnectMySQL` reference](https://alchemy.run/providers/railway/reference/mysql#connectmysql) is

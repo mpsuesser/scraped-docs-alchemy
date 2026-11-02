@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/resource
 title: "Resources"
 description: "Resources are named cloud entities with input properties and output attributes."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A **Resource** represents a cloud entity managed by Alchemy — a bucket, database, queue, function, DNS record, or anything else that has a lifecycle of reconcile and delete.
@@ -119,7 +119,7 @@ The logical ID is how alchemy tracks the resource in state across deploys:
 
 - **Stable across deploys** — keep the same ID and alchemy keeps updating the same underlying cloud resource.
 - **Stable across renames** — change the variable name, change the TypeScript class, move the file; as long as the logical ID stays the same, alchemy still recognizes it.
-- **Rename = replace** — change the logical ID and alchemy treats it as a new resource (and deletes the old one on the next deploy) — unless you declare the rename with [`renamedFrom`](https://alchemy.run/infrastructure-as-code/renaming).
+- **Rename = replace** — change the logical ID and alchemy treats it as a new resource (and deletes the old one on the next deploy) — unless you declare the rename with [`renamedFrom`](renaming.md).
 
 Logical IDs only need to be unique **within a stack**.
 
@@ -134,7 +134,7 @@ const bucket = yield* Cloudflare.R2.Bucket("Assets").pipe(
 );
 ```
 
-The instance ID and physical name are preserved; nothing is created or deleted in the cloud. See [Renaming Resources](https://alchemy.run/infrastructure-as-code/renaming).
+The instance ID and physical name are preserved; nothing is created or deleted in the cloud. See [Renaming Resources](renaming.md).
 
 ## Physical name
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/setup
 title: "Setup"
 description: "Prepare Neon credentials, service access, regions, and external dependencies before deploying with Alchemy."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Alchemy manages Neon resources using a management API key. Account plans, model access, third-party OAuth applications, and DNS remain separate setup steps. Complete the required sections below, then follow only the feature guides your application needs.
@@ -91,7 +91,7 @@ These are optional feature prerequisites, not requirements to use Postgres. The 
 
 ## Prepare Function and Website builds
 
-Use Node.js 24 for the Function runtime and the package manager/toolchain required by your application. Repository examples also use Bun and pnpm. Website packaging requires the framework dependencies plus `@alchemy.run/frontend-frameworks` and `@vercel/nft`; follow the guide for your [frontend framework](https://alchemy.run/neon/frontend/vite).
+Use Node.js 24 for the Function runtime and the package manager/toolchain required by your application. Repository examples also use Bun and pnpm. Website packaging requires the framework dependencies plus `@alchemy.run/frontend-frameworks` and `@vercel/nft`; follow the guide for your [frontend framework](frontend/vite.md).
 
 Production artifacts target Linux ARM64/glibc and export a Fetch handler. Native addons built for macOS or a different Node ABI are not deployable substitutes. Local framework development is useful but does not prove the production artifact runs on Neon. Verify the deployed URL, including an update, before routing users to it.
 

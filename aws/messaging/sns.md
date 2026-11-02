@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/messaging/sns
 title: "SNS"
 description: "Create an SNS Topic, publish to it from a Lambda with the Publish binding, fan messages out to SQS queues, and consume notifications as a typed Stream."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 **SNS** is AWS's pub/sub layer: publishers send a message to a
@@ -136,8 +136,7 @@ Effect.provide(
 
 ## Consume notifications on a Lambda
 
-`SNS.consumeTopicNotifications(topic, ...)` is the consumer-side
-mirror of `SQS.consumeQueueMessages`: a typed `Stream` of SNS
+`SNS.consumeTopicNotifications(topic, ...)` hands your handler a typed `Stream` of SNS
 notifications you compose with any operator. Behind the scenes
 it creates the SNS subscription (protocol `lambda`, endpoint =
 this function) and the `lambda:InvokeFunction` permission for
@@ -154,7 +153,7 @@ import { Orders } from "./topic.ts";
 
 export default class Worker extends AWS.Lambda.Function<Worker>()(
   "OrdersWorker",
-  { main: import.meta.url },
+  { main: import.meta.url, functionUrl: false },
   Effect.gen(function* () {
     const topic = yield* Orders;
 

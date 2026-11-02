@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/testing-a-stack
 title: "Testing a Stack"
 description: "Deploy your real Stack once per suite, drive it over HTTP, tear it down."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
@@ -17,7 +17,7 @@ import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Drizzle from "@alchemy.run/drizzle";
 import * as Neon from "@alchemy.run/neon";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -33,7 +33,7 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-Bun vs Vitest is a two-line import swap — see [Bun vs Vitest](test-harness.md#bun-vs-vitest).
+Switching to `alchemy-test` or Vitest is a two-line import swap — see [Runners](test-harness.md#runners).
 
 ## Deploy once with beforeAll
 
@@ -67,7 +67,9 @@ const stack = beforeAll(deploy(Stack), { timeout: 600_000 });
 Run the suite with your runner:
 
 ```sh
-bun test test/integ.test.ts
+bun test test/integ.test.ts            # @alchemy.run/test/Bun
+bunx alchemy-test test/integ.test.ts   # @alchemy.run/test/Alchemy
+npx vitest run test/integ.test.ts      # @alchemy.run/test/Vitest
 ```
 
 The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test_$USER` [stage](../environments/stages.md) so they never clobber your `live_$USER` / `dev_$USER` deployments.
@@ -138,6 +140,8 @@ const response = yield* HttpClient.get(`${url}/health`).pipe(
   Effect.retry({ schedule: Schedule.exponential("500 millis"), times: 10 }),
 );
 ```
+
+A Cloudflare Durable Object that stayed busy through a redeploy can answer with the old code for up to 5 minutes. Deploy test stages with `codeUpdateStrategy: { mode: "immediate" }`, or address a new object in each test. See [Tests can see the old code](../cloudflare/compute/code-updates.md#tests-can-see-the-old-code).
 
 ## Poll async effects
 

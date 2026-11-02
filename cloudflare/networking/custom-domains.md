@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/networking/custom-domains
 title: "Custom domains & routes"
 description: "Serve Workers from your own domain — create or adopt a Zone, attach custom domains, route hostname patterns, manage DNS records, and control the workers.dev subdomain."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Every Worker gets a `workers.dev` URL by default, but production apps
@@ -118,6 +118,34 @@ of this Worker are served at `<preview-name>.api.example.com`. That is
 a parent setting — enable it on the production Worker, not on the
 Preview Worker. Use a dedicated hostname (`previews.example.com`) if
 production already has subdomains, so the wildcard does not collide.
+
+## Serve a hostname whose DNS is elsewhere
+
+A native custom domain needs the hostname in a Cloudflare zone of the
+account. When the hostname's DNS lives in Route 53 or Hetzner DNS, pass
+that host as `domain.dns`. The Worker then serves the hostname through
+[Cloudflare for SaaS](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/advanced-settings/worker-as-origin/)
+on a Cloudflare zone you own:
+
+```typescript
+const worker = yield* Cloudflare.Worker("Api", {
+  main: "./src/api.ts",
+  domain: {
+    name: "app.example.com",
+    zoneId: saasZone.zoneId, // a Cloudflare zone with Cloudflare for SaaS enabled
+    cnameTarget: fallback.origin, // the zone's FallbackOrigin hostname
+    dns: AWS.Route53.Adapter(),
+  },
+});
+```
+
+Alchemy creates a custom hostname on the SaaS zone, publishes its
+ownership and certificate `TXT` records and a `CNAME` to `cnameTarget` in
+Route 53, and routes `app.example.com/*` on the SaaS zone to the Worker.
+Declare the zone's `Cloudflare.CustomHostname.FallbackOrigin` once; several
+Workers can share it. `redirects` and `previews` need a native custom
+domain. See [DNS Adapters](../../infrastructure-as-code/dns-adapters.md) for the
+full setup.
 
 ## Route a hostname pattern to a Worker
 

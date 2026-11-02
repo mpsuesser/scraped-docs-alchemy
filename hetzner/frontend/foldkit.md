@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Hetzner with native local development."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Hetzner.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Hetzner. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
@@ -178,7 +178,7 @@ export const Website = Hetzner.Website.Foldkit("Website", {
 
 ## Custom domain
 
-`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — v1 does not create one. Alchemy adds an A record pointing at the Server’s public IPv4. `url` becomes `http://{domain}:3000`. There is no TLS on the Service.
+`domain` requires an existing [`Hetzner.Zone`](../networking/dns.md) — v1 does not create one. Alchemy adds an A record pointing at the Server’s public IPv4. `url` becomes `http://{domain}:3000`. There is no TLS on the Service.
 
 ```typescript
 const site = yield* Hetzner.Website.Foldkit("Web", {
@@ -192,4 +192,4 @@ const site = yield* Hetzner.Website.Foldkit("Web", {
 - [`Foldkit` reference](https://alchemy.run/providers/hetzner/website#foldkit) — every prop and attribute
 - [Vite](vite.md) — the same static-file unit, with `assets.notFoundHandling`
 - [Websites](websites.md) — the rest of the Hetzner frontend family
-- [Servers](https://alchemy.run/hetzner/compute/servers), [Services](https://alchemy.run/hetzner/compute/services), [DNS](https://alchemy.run/hetzner/networking/dns)
+- [Servers](../compute/servers.md), [Services](../compute/services.md), [DNS](../networking/dns.md)

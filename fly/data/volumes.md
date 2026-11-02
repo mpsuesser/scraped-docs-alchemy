@@ -1,0 +1,105 @@
+---
+url: https://alchemy.run/fly/data/volumes
+title: "Volumes"
+description: "A disk in one region, attached to one Machine."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
+---
+
+A Fly Volume is a disk in one [region](../compute/regions.md),
+attached to one Machine.
+Minimum size is 1 GB. Machines can be replaced. The Volume keeps
+the data.
+
+There is no standalone Volume resource. Create disks with
+[`MountVolume`](https://alchemy.run/providers/fly/reference/volume#mountvolume) or Machine `mounts`.
+
+Fly cannot share one Volume across two Machines. `count: 3` creates
+three Volumes in one name-group, one per replica.
+
+## Mount into a Service
+
+Inside a [Service](../compute/services.md)'s constructor, bind a disk to a
+path and use it as a plain directory at runtime. App and region come
+from the parent Service:
+
+```typescript
+export default class Api extends Fly.Service<Api>()(
+  "Api",
+  { main: import.meta.url, region: "iad", count: 3, port: 3000 },
+  Effect.gen(function* () {
+    const disk = yield* Fly.MountVolume({ path: "/data", sizeGb: 1 });
+    const fs = yield* FileSystem.FileSystem;
+
+    return {
+      fetch: Effect.gen(function* () {
+        const text = yield* fs.readFileString(`${disk.path}/hello.txt`);
+        // ...
+      }),
+    };
+  }).pipe(Effect.provide(Fly.MountVolumeLive)),
+) {}
+```
+
+At deploy time the binding writes `{ path, sizeGb }` into the
+Service. Reconcile creates one Volume per replica and writes
+`config.mounts`. At runtime you get `disk.path`.
+
+`sizeGb` can **grow in place** via `extendVolume` — shrinking is
+not supported (Fly cannot shrink a Volume). Encryption and
+filesystem type are create-only.
+
+If a replica Machine is replaced, its Volume re-attaches on the next
+deploy — the data rides along.
+
+## Attach from a Machine
+
+For a raw Machine, pass `mounts` on the resource. App and region are
+the Machine's:
+
+```typescript
+const box = yield* Fly.Machine("Box", {
+  app: Site,
+  region: "iad",
+  image: "postgres:16",
+  mounts: [{ path: "/data", sizeGb: 10 }],
+});
+```
+
+Resolved attrs expose `mounts` (replica 0) and `replicas[i].mounts`
+(every replica's `volumeId` / `sizeGb` / group `name`).
+
+## Snapshots
+
+Scheduled snapshots default on (`autoBackupEnabled`). Snapshot
+retention updates in place. An on-demand snapshot is
+[`VolumeSnapshot`](https://alchemy.run/providers/fly/reference/volume#volumesnapshot) — create is
+fire-and-forget; destroy is a no-op (snapshots follow Volume
+retention). Point it at a Volume id from the parent Machine or
+Service:
+
+```typescript
+export const Nightly = Fly.VolumeSnapshot("Nightly", {
+  app: Site,
+  volumeId: box.mounts[0].volumeId,
+});
+```
+
+Restore into a new disk with `snapshotId` on the mount (create-only):
+
+```typescript
+const restored = yield* Fly.Machine("Restored", {
+  app: Site,
+  region: "iad",
+  image: "nginx:alpine",
+  mounts: [{ path: "/data", sizeGb: 1, snapshotId: Nightly.snapshotId }],
+});
+```
+
+## Where next
+
+- [Tutorial part 3](../tutorial/part-3.md) — mount a disk into a
+  Service step by step.
+- [Services](../compute/services.md) — `count` and `MountVolume`.
+- [`MountVolume` reference](https://alchemy.run/providers/fly/reference/volume#mountvolume) and
+  [`VolumeSnapshot` reference](https://alchemy.run/providers/fly/reference/volume#volumesnapshot).

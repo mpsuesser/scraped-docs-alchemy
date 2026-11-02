@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/postgres
 title: "Postgres"
 description: "Provider-neutral Postgres schemas, Effect-native Drizzle queries, and connections for Workers, Lambda, and servers."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Drizzle.Postgres` provides typed, Effect-native queries for any compatible Postgres connection, whether your application runs on Workers, Lambda, or a server. Choose a database in [SQL databases](../databases.md) and supply its connection through your runtime’s binding or configuration.
@@ -11,8 +11,8 @@ current_date: 2026-10-24T00:47:37.929Z
 Install the optional dependencies:
 
 ```sh
-pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5-ab785fc @effect/sql-pg pg
-pnpm add -D drizzle-kit@1.0.0-rc.5-ab785fc
+pnpm add @alchemy.run/drizzle@latest drizzle-orm@1.0.0-rc.5 @effect/sql-pg
+pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 ## Define the schema

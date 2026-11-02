@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/workers-tracing
 title: "Native Workers tracing"
 description: "Mirror Effect spans into Cloudflare Workers Observability with Cloudflare.Telemetry() — the same Layer shape as Axiom.Telemetry, with Cloudflare owning sampling and export."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Cloudflare Workers can emit OpenTelemetry traces natively: fetch, KV, R2,
@@ -94,12 +94,16 @@ yield* Effect.annotateCurrentSpan("input", { nested }); // Effect-local
 
 ### Outcome
 
-Cloudflare has no outcome setter yet, so completion is recorded as the
-`effect.exit` attribute: `success`, `failure`, or `interrupted`.
+Completion is recorded as the `effect.exit` attribute: `success`,
+`failure`, or `interrupted`. A failure also sets the span status to
+`error`, with the first error's message, so OpenTelemetry destinations
+mark the span as failed. Success and interruption leave the status
+`unset`. The Workers Observability dashboard doesn't show span status
+yet, so filter on `effect.exit` there.
 
 ```typescript
 yield* Effect.fail(new Error("boom")).pipe(
-  Effect.withSpan("failing"), // effect.exit = "failure"
+  Effect.withSpan("failing"), // effect.exit = "failure", status = error
   Effect.ignore,
 );
 const fiber = yield* Effect.forkChild(

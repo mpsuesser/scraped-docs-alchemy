@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Hetzner with Hetzner.Website.Nuxt — nitro's node preset as a systemd unit on port 3000, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Hetzner.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to a Hetzner Cloud Server. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs as a systemd unit on port 3000, and client assets plus prerendered pages are baked into the unit. Omit `server` to get a `cpx12` / `ubuntu-24.04` VM in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. There is no `nitro.preset` to edit and no build command to run.
@@ -131,7 +131,7 @@ bun alchemy dev
 
 ## Custom domain
 
-`domain` requires an existing [`Hetzner.Zone`](https://alchemy.run/hetzner/networking/dns) — the Website does not create a zone. It adds an A RecordSet pointing at the Server’s public IPv4, and `url` becomes `http://{domain}:3000`. There is no TLS on the Service:
+`domain` requires an existing [`Hetzner.Zone`](../networking/dns.md) — the Website does not create a zone. It adds an A RecordSet pointing at the Server’s public IPv4, and `url` becomes `http://{domain}:3000`. There is no TLS on the Service:
 
 ```typescript
 export const Dns = Hetzner.Zone("Dns", {
@@ -149,6 +149,6 @@ Passing `domain` without `zone` fails.
 ## Where next
 
 - [`Hetzner.Website.Nuxt` reference](https://alchemy.run/providers/hetzner/website#nuxt) — every prop and attribute.
-- [Services](https://alchemy.run/hetzner/compute/services) and [Servers](https://alchemy.run/hetzner/compute/servers) — the unit and VM the site creates.
-- [Zones & records](https://alchemy.run/hetzner/networking/dns) — the Zone `domain` requires.
+- [Services](../compute/services.md) and [Servers](../compute/servers.md) — the unit and VM the site creates.
+- [Zones & records](../networking/dns.md) — the Zone `domain` requires.
 - [Setup](../setup.md) — project, API token, and alchemy login.

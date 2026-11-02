@@ -2,13 +2,21 @@
 url: https://alchemy.run/gcp/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against the live Cloud Run service."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 In [Part 2](part-2.md) you deployed a Cloud Run service
 bound to a Bucket. Now you write tests that deploy the Stack, call the
 live service, and check it works.
+
+## Install the test harness
+
+`Test.make` ships in `@alchemy.run/test`. Add it as a dev dependency:
+
+```sh
+bun add -d @alchemy.run/test
+```
 
 ## Create the test file
 
@@ -18,7 +26,7 @@ live service, and check it works.
 // test/integ.test.ts
 import * as Alchemy from "alchemy";
 import * as GCP from "@alchemy.run/gcp";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import Stack from "../alchemy.run.ts";
@@ -29,10 +37,10 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 });
 ```
 
-:::note[Using Vitest?]
-`alchemy/Test/Vitest` has the same API. Take `expect` from
-`@effect/vitest` instead. See
-[Test harness → Bun vs Vitest](../../testing/test-harness.md#bun-vs-vitest).
+:::note[Using Vitest or alchemy-test?]
+`@alchemy.run/test/Vitest` and `@alchemy.run/test/Alchemy` have the same API.
+Take `expect` from `@effect/vitest` or `@alchemy.run/test` instead. See
+[Test harness → Runners](../../testing/test-harness.md#runners).
 :::
 
 ## Deploy before the tests
@@ -90,7 +98,7 @@ Replace the first test with a round trip through the Bucket:
 // test/integ.test.ts
 import * as Alchemy from "alchemy";
 import * as GCP from "@alchemy.run/gcp";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 +import * as HttpBody from "effect/http/HttpBody";

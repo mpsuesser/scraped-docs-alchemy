@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/data/postgres
 title: "Postgres"
 description: "A billed Managed Postgres cluster. Bind Fly.ConnectPostgres and query with Drizzle or SQL."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A [`Fly.Postgres`](https://alchemy.run/providers/fly/reference/postgres#postgres) is a Managed Postgres
@@ -12,13 +12,13 @@ A [`Fly.Postgres`](https://alchemy.run/providers/fly/reference/postgres#postgres
 Create the cluster, pass `migrations` the same way you would on
 Neon or PlanetScale, then bind
 [`ConnectPostgres`](https://alchemy.run/providers/fly/reference/postgres#connectpostgres) on a
-[Service](https://alchemy.run/fly/compute/services). Pass
+[Service](../compute/services.md). Pass
 `conn.connectionString` to `Drizzle.Postgres` or `SQL.Postgres`.
 
 ## Create a cluster
 
 `region` is required. The cluster is regional. An
-[App](https://alchemy.run/fly/compute/apps) is global. Alchemy generates a unique name
+[App](../compute/apps.md) is global. Alchemy generates a unique name
 unless you pass one.
 
 ```typescript
@@ -27,7 +27,7 @@ const db = yield* Fly.Postgres("Db", {
 });
 ```
 
-Alchemy defaults compute to [`iad`](https://alchemy.run/fly/compute/regions). Pass
+Alchemy defaults compute to [`iad`](../compute/regions.md). Pass
 another code to put the cluster somewhere else.
 
 :::caution[Billed]
@@ -146,12 +146,12 @@ Flipping `postgis` later is ignored.
 
 ## Where next
 
-[Regions](https://alchemy.run/fly/compute/regions) lists codes. Default is `iad`.
-[Services](https://alchemy.run/fly/compute/services) is the always-on Machine that
+[Regions](../compute/regions.md) lists codes. Default is `iad`.
+[Services](../compute/services.md) is the always-on Machine that
 binds the cluster.
 [Drizzle on Postgres](../../sql/drizzle/postgres.md) is the schema-to-query
 flow.
-[Secrets](https://alchemy.run/fly/data/secrets) covers `Config.Redacted` for values
+[Secrets](secrets.md) covers `Config.Redacted` for values
 from `.env`.
 The [`Postgres` reference](https://alchemy.run/providers/fly/reference/postgres#postgres) lists every
 prop.

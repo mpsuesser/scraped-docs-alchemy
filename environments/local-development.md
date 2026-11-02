@@ -2,16 +2,16 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `alchemy dev` runs your stack on your machine. Your compute runs locally (Workers in workerd, Lambda and ECS in Docker containers), the services around it are emulated, and code changes hot reload in milliseconds. `Alchemy.remote()` runs any resource against the real cloud when you need it.
 
 This page covers the concepts shared by every cloud. For what each cloud emulates and how, see the dedicated guides:
 
-- **[Cloudflare local development](https://alchemy.run/cloudflare/local-development)** — Workers in workerd; simulators for KV, R2, D1, Queues, Hyperdrive, Workflows, Containers, and the Worker binding surface (browser rendering, images, email, cron, Stream, …).
-- **[AWS local development](https://alchemy.run/aws/local-development)** — Lambda and ECS in Docker containers with close to 40 emulated services (S3, DynamoDB, SQS, SNS, EventBridge, API Gateway, …), no AWS account required.
+- **[Cloudflare local development](../cloudflare/local-development.md)** — Workers in workerd; simulators for KV, R2, D1, Queues, Hyperdrive, Workflows, Containers, and the Worker binding surface (browser rendering, images, email, cron, Stream, …).
+- **[AWS local development](../aws/local-development.md)** — Lambda and ECS in Docker containers with close to 40 emulated services (S3, DynamoDB, SQS, SNS, EventBridge, API Gateway, …), no AWS account required.
 
 ## How it works
 
@@ -120,26 +120,7 @@ A dev stage is worth destroying. Resources with no local emulator, and anything 
 
 ### One dev stage per worktree
 
-Every checkout on your machine shares `dev_$USER`, so two worktrees running `alchemy dev` fight over one stage. Give each worktree its own stage, named after its directory:
-
-```json
-{
-  "scripts": {
-    "dev": "alchemy dev --stage dev_$(basename $(git rev-parse --show-toplevel))",
-    "dev:destroy": "alchemy destroy --stage dev_$(basename $(git rev-parse --show-toplevel))"
-  }
-}
-```
-
-Run `dev:destroy` before you delete the worktree, or its cloud resources outlive it.
-
-You can also set `ALCHEMY_STAGE` in the worktree’s `.env`. Every command reads it, `alchemy deploy` included, so dev and deploy then share one stage and switching between them replaces it ([local ⇄ live](#switching-is-a-replacement)).
-
-Tests have their own stage, `test_$USER`. Set `ALCHEMY_TEST_STAGE` to isolate them per worktree too:
-
-```sh
-ALCHEMY_TEST_STAGE=test_$(basename $(git rev-parse --show-toplevel)) pnpm test
-```
+Every checkout on your machine shares `dev_$USER`, so two worktrees running `alchemy dev` fight over one stage. See [Worktrees](worktrees.md) to give each worktree its own dev, deploy, and test stages.
 
 ## Testing in dev mode
 
@@ -162,10 +143,10 @@ See [Test harness → dev](../testing/test-harness.md#dev) for the option itself
 
 ## Where next
 
-- [Cloudflare local development](https://alchemy.run/cloudflare/local-development) — what runs in workerd and which bindings are simulated.
-- [AWS local development](https://alchemy.run/aws/local-development) — the emulated AWS surface, Lambda/ECS containers, and zero-credential dev.
+- [Cloudflare local development](../cloudflare/local-development.md) — what runs in workerd and which bindings are simulated.
+- [AWS local development](../aws/local-development.md) — the emulated AWS surface, Lambda/ECS containers, and zero-credential dev.
 - [CI](ci.md) — deploy the same stack from GitHub Actions with PR previews.
 - [Stages](stages.md) — how `live_$USER`, `dev_$USER`, `pr-42`, and `prod` stay isolated.
 - [Dev servers](../command/dev-servers.md) — run any framework dev server as a `Command.Dev` resource in the dev loop.
 - [Testing](../testing.md) — run the same test suite against the local emulators with `Test.make({ dev: true })`.
-- [Local Providers](https://alchemy.run/infrastructure-as-code/local-provider) — build the local implementation of a resource.
+- [Local Providers](../infrastructure-as-code/local-provider.md) — build the local implementation of a resource.

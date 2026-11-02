@@ -2,13 +2,13 @@
 url: https://alchemy.run/fly/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Fly with Fly.Website.Nextjs — next build plus a Node next({ dev: false }) Machine, and next dev under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Fly.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Fly as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
 
-- one [`Fly.App`](https://alchemy.run/fly/compute/apps) (created if `app` is omitted) and a [`Fly.Service`](https://alchemy.run/fly/compute/services) running Node on a Machine
+- one [`Fly.App`](../compute/apps.md) (created if `app` is omitted) and a [`Fly.Service`](../compute/services.md) running Node on a Machine
 - a shared IPv4 so `https://{app}.fly.dev` answers
 - `.next` and `public/` baked into the image; `next`, `react`, and `react-dom` installed unbundled
 
@@ -110,9 +110,9 @@ const site = yield* Fly.Website.Nextjs("Web", {
 });
 ```
 
-Alchemy requests an ACME [`Fly.Certificate`](https://alchemy.run/fly/networking) on the App and `url` becomes `https://app.example.com`. Point DNS at the App first — v1 does not create DNS records.
+Alchemy requests an ACME [`Fly.Certificate`](../networking.md) on the App and `url` becomes `https://app.example.com`. Point DNS at the App first — v1 does not create DNS records.
 
 ## Where next
 
 - [`Fly.Website.Nextjs` reference](https://alchemy.run/providers/fly/website#nextjs) — every prop and attribute
-- [Apps](https://alchemy.run/fly/compute/apps), [Services](https://alchemy.run/fly/compute/services), [IPs & certificates](https://alchemy.run/fly/networking)
+- [Apps](../compute/apps.md), [Services](../compute/services.md), [IPs & certificates](../networking.md)

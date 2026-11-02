@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/fly/frontend/react-router
 title: "React Router"
-description: "Deploy React Router v7 (framework mode) to Fly with Fly.Website.ReactRouter — SSR on a Machine, client assets baked into the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy React Router v8 (framework mode) to Fly with Fly.Website.ReactRouter — SSR on a Machine, client assets baked into the image, and React Router's own Vite dev server under alchemy dev."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Fly.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Fly. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a Node [`Fly.Service`](https://alchemy.run/fly/compute/services) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](https://alchemy.run/fly/compute/apps) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
+`Fly.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v8 app in framework mode to Fly. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
 
 ## Install
 
@@ -89,7 +89,7 @@ build/
 └── server/    -> wrapped as a Node HTTP server on port 3000
 ```
 
-`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits a Node serve entry — that process is the [`Fly.Service`](https://alchemy.run/fly/compute/services).
+`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits a Node serve entry — that process is the [`Fly.Service`](../compute/services.md).
 
 If you set Vite’s `base`, set React Router’s `basename` to the same prefix: the client directory maps onto the site root one-for-one, so the paths the SSR document emits have to be the paths the image was given.
 
@@ -178,5 +178,5 @@ const site = yield* Fly.Website.ReactRouter("Web", {
 ## Where next
 
 - [React Router API reference](https://alchemy.run/providers/fly/website#reactrouter)
-- [Apps](https://alchemy.run/fly/compute/apps) and [Services](https://alchemy.run/fly/compute/services)
-- [IPs & certificates](https://alchemy.run/fly/networking)
+- [Apps](../compute/apps.md) and [Services](../compute/services.md)
+- [IPs & certificates](../networking.md)

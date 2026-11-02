@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/setup
 title: "Setup"
 description: "Connect Alchemy to AWS with SSO, console login, stored access keys, or CI environment credentials."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 ## Prerequisites
@@ -74,7 +74,9 @@ See [Profiles](../environments/profiles.md) for switching between profiles with 
 
 ## State storage
 
-For AWS stacks, pass `AWS.state()` as the Stack’s `state` option. Deploy state is stored in an account-regional S3 bucket (`alchemy-state-{accountId}-{region}-an`), created lazily on the first deploy — the same configuration works locally and in CI with no extra setup. For purely local iteration, `Alchemy.localState()` writes state under `.alchemy/` next to your code instead.
+For AWS stacks, pass `AWS.state()` as the Stack’s `state` option. Deploy state is stored in a DynamoDB table (`alchemy-state`), created lazily on the first deploy. In CI, provision it once with `alchemy state bootstrap --backend aws`. For purely local iteration, `Alchemy.localState()` writes state under `.alchemy/` next to your code instead.
+
+State from earlier versions lives in an S3 bucket; move it with `alchemy state migrate`. See [Migrating from the S3 store](../state-store.md#migrating-from-the-s3-store).
 
 ## Next steps
 

@@ -2,12 +2,12 @@
 url: https://alchemy.run/fly/frontend/static-site
 title: "Static sites"
 description: "Deploy a static site to Fly with Fly.Website.StaticSite — a build command, a Node static-file server on a Machine, and https://{app}.fly.dev (or your hostname) on deploy."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Fly.Website.StaticSite` runs a build command, content-hashes the
-output directory, and deploys a [Service](https://alchemy.run/fly/compute/services)
+output directory, and deploys a [Service](../compute/services.md)
 that serves those files (plus `GET /health`) from a tiny Node
 static-file server. Use it when the site has its own build step —
 Hugo, Zola, Eleventy, or any custom pipeline.
@@ -57,7 +57,7 @@ export default Alchemy.Stack(
 );
 ```
 
-One `StaticSite` expands into a [Fly App](https://alchemy.run/fly/compute/apps)
+One `StaticSite` expands into a [Fly App](../compute/apps.md)
 (created if you omit `app`), a Service running Node on a Machine
 (port 3000), and a shared IPv4 so `https://{app}.fly.dev` answers.
 Built files are packed at `/app/dist`. `site.url` is that fly.dev
@@ -166,7 +166,7 @@ export const Website = Fly.Website.StaticSite("Website", {
 });
 ```
 
-See [IPs & certificates](https://alchemy.run/fly/networking) for A/AAAA records and
+See [IPs & certificates](../networking.md) for A/AAAA records and
 the ACME challenge.
 
 ## When to use a framework resource instead

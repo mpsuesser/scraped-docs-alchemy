@@ -2,13 +2,21 @@
 url: https://alchemy.run/aws/tutorial/part-3
 title: "Part 3: Testing"
 description: "Write integration tests that deploy your stack and make HTTP requests against your live Lambda Function URL."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 In [Part 2](part-2.md) you deployed a Lambda with S3
 bindings. Now you'll write integration tests that deploy the stack,
 hit the live Function URL over HTTP, and verify it works.
+
+## Install the test harness
+
+`Test.make` ships in `@alchemy.run/test`. Add it as a dev dependency:
+
+```sh
+bun add -d @alchemy.run/test
+```
 
 ## Create the test file
 
@@ -20,7 +28,7 @@ you used in your `Stack`:
 ```typescript
 // test/integ.test.ts
 import * as AWS from "@alchemy.run/aws";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import Stack from "../alchemy.run.ts";
@@ -35,10 +43,11 @@ const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
 `bun:test` directly — `Test.make` only provides the Effect-aware test
 runner pieces.
 
-:::note[Using Vitest?]
-`alchemy/Test/Vitest` exposes the exact same API — swap the import
-and take `expect` from `@effect/vitest` instead. See
-[Test harness → Bun vs Vitest](../../testing/test-harness.md#bun-vs-vitest).
+:::note[Using Vitest or alchemy-test?]
+`@alchemy.run/test/Vitest` and `@alchemy.run/test/Alchemy` expose the exact same
+API — swap the import and take `expect` from `@effect/vitest` or
+`@alchemy.run/test` instead. See
+[Test harness → Runners](../../testing/test-harness.md#runners).
 :::
 
 ## Deploy the stack before tests
@@ -106,7 +115,7 @@ function actually handles requests:
 ```diff lang="typescript"
 // test/integ.test.ts
 import * as AWS from "@alchemy.run/aws";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 +import * as HttpBody from "effect/http/HttpBody";

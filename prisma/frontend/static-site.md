@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/static-site
 title: "Static sites"
 description: "Deploy any static build to Prisma Compute with Prisma.Website.StaticSite — a shell command, output directory, and Bun static-file server."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Prisma.Website.StaticSite` runs a build command, packages its output,
@@ -156,7 +156,7 @@ export const Website = Prisma.Website.StaticSite("Website", {
 ```
 
 `domain` creates `Prisma.CustomDomain` and changes `site.url` to the
-HTTPS hostname. The app must be on the project's current default branch.
+HTTPS hostname.
 Configure its returned DNS records yourself and check status before
 cutover; see [Custom domains](websites.md#custom-domains).
 

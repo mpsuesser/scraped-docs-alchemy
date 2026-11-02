@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/postgres
 title: "Postgres"
 description: "Official SSL Postgres in a Project. Bind Railway.ConnectPostgres and query with Drizzle or SQL."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 A [`Railway.Postgres`](https://alchemy.run/providers/railway/reference/postgres#postgres) is Postgres as a
@@ -13,7 +13,7 @@ Service: the official
 and an optional TCP proxy for the public URL.
 
 Private hostname is `{name}.railway.internal`. From a
-[Service](https://alchemy.run/railway/compute/services), yield
+[Service](../compute/services.md), yield
 [`ConnectPostgres`](https://alchemy.run/providers/railway/reference/postgres#connectpostgres). From a
 laptop, use `publicConnectionUri`.
 
@@ -47,7 +47,6 @@ export default class Api extends Railway.Service<Api>()(
   {
     project: Site,
     main: import.meta.url,
-    build: { install: ["pg"] },
   },
   Effect.gen(function* () {
     const conn = yield* Railway.ConnectPostgres(Db);
@@ -69,10 +68,7 @@ packed into the Service env — not `Config.Redacted`.
 To store Railway's `${{Db.DATABASE_URL}}` template instead of a
 resolved URI, pass [`Railway.ref`](https://alchemy.run/providers/railway/reference/project#ref)
 (`Railway.ref(Db, "DATABASE_URL")`) as a
-[Variable](https://alchemy.run/railway/data/variables) `value`.
-
-`build.install: ["pg"]` is required. Rolldown's CJS interop breaks
-`pg.Client` if you bundle it.
+[Variable](variables.md) `value`.
 
 ## Public TCP
 
@@ -88,7 +84,7 @@ const db = yield* Railway.Postgres("Db", {
 });
 ```
 
-Attach a standalone [`TcpProxy`](https://alchemy.run/railway/networking#tcp-proxies)
+Attach a standalone [`TcpProxy`](../networking.md#tcp-proxies)
 when you need public TCP on a Redis service, or on Postgres created
 with `public: false`.
 
@@ -134,14 +130,14 @@ export const Db = Railway.Postgres("Db", { project: Site });
 
 ## Where next
 
-[Regions](https://alchemy.run/railway/compute/regions) lists codes.
-[Services](https://alchemy.run/railway/compute/services) is the container that binds
+[Regions](../compute/regions.md) lists codes.
+[Services](../compute/services.md) is the container that binds
 the cluster.
-[MySQL](mysql.md) and [Mongo](https://alchemy.run/railway/data/mongo) are the
+[MySQL](mysql.md) and [Mongo](mongo.md) are the
 same shape for those engines.
 [Drizzle on Postgres](../../sql/drizzle/postgres.md) is the schema-to-query
 flow.
-[Variables](https://alchemy.run/railway/data/variables) covers `Config.Redacted` and
+[Variables](variables.md) covers `Config.Redacted` and
 `Railway.ref`.
 The [`Postgres` reference](https://alchemy.run/providers/railway/reference/postgres#postgres) lists every
 prop.

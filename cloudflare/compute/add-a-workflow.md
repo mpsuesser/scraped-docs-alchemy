@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 This guide builds a Workflow end to end: a durable multi-step job
@@ -414,7 +414,7 @@ Add a test that POSTs to `/workflow/start/:roomId`, then polls
 ```diff lang="typescript"
 // test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";
@@ -483,7 +483,7 @@ const { test, beforeAll, deploy } = Test.make({
 `stack.url` now points at `http://localhost:<port>`, and the
 start/poll assertions run unchanged against the local workflow. See
 [Test harness → dev](../../testing/test-harness.md#dev) for the option's
-full semantics, and [Local development](https://alchemy.run/cloudflare/local-development)
+full semantics, and [Local development](../local-development.md)
 for what else runs locally.
 
 Your app now spans a Worker, a Vite frontend, Durable Objects,

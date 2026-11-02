@@ -1,0 +1,75 @@
+---
+url: https://alchemy.run/turso/migrations
+title: "Migrations"
+description: "Run SQL migrations and seed files on every deploy."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
+---
+
+Point `migrations` at a folder of `.sql` files. Each deploy runs the new ones, in order.
+
+## Apply a folder
+
+```typescript
+const db = yield* Turso.Database("Db", {
+  group: group.name,
+  migrations: "./migrations",
+});
+```
+
+```sql
+-- migrations/0001_users.sql
+CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+```
+
+If any statement in a file fails, none of that file's changes are kept and the deploy fails.
+
+Alchemy keeps track of which files ran in the `__alchemy_migrations` table.
+
+## Make migrations with Drizzle
+
+```typescript
+const schema = yield* Drizzle.Schema("Schema", {
+  schema: "./src/schema.ts",
+  out: "./migrations",
+  dialect: "sqlite",
+});
+
+const db = yield* Turso.Database("Db", {
+  group: group.name,
+  migrations: schema,
+});
+```
+
+`Drizzle.Schema` writes a migration when `src/schema.ts` changes. Add `Drizzle.providers()` to your Stack and commit the `./migrations` folder.
+
+Rather run `drizzle-kit generate` yourself? Pass the folder instead: `migrations: "./migrations"`.
+
+Already used drizzle-kit on this database? Alchemy picks up its history on the first deploy.
+
+## Use a different tracking table
+
+```typescript
+migrations: { dir: "./migrations", table: "schema_migrations" },
+```
+
+## Seed with SQL files
+
+```typescript
+const db = yield* Turso.Database("Db", {
+  group: group.name,
+  migrations: "./migrations",
+  importFiles: ["./seed/users.sql"],
+});
+```
+
+`importFiles` run after migrations. A file runs again only if you change it.
+
+## Don't edit old migrations
+
+Changing or deleting a file that already ran makes the deploy fail. Add a new file instead.
+
+## Where next
+
+- [SQL migrations](../sql/effect-sql/migrations.md) — how migrations work for every database
+- [Database per tenant](database-per-tenant.md#update-existing-tenants) — updating many databases

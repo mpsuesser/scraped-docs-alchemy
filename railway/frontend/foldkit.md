@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Railway with native local development."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 `Railway.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Railway. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
@@ -178,7 +178,7 @@ export const Website = Railway.Website.Foldkit("Website", {
 
 ## Custom domain
 
-Pass a hostname to attach a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) (`targetPort` 3000). `url` becomes `https://{domain}`.
+Pass a hostname to attach a [`Railway.CustomDomain`](../networking.md) (`targetPort` 3000). `url` becomes `https://{domain}`.
 
 ```typescript
 const site = yield* Railway.Website.Foldkit("Web", {
@@ -191,4 +191,4 @@ const site = yield* Railway.Website.Foldkit("Web", {
 - [`Foldkit` reference](https://alchemy.run/providers/railway/website#foldkit) — every prop and attribute
 - [Vite](vite.md) — the same static-file Service for any Vite app
 - [Websites](websites.md) — the rest of the Railway frontend family
-- [Projects](https://alchemy.run/railway/compute/projects), [Services](https://alchemy.run/railway/compute/services), [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md), [Services](../compute/services.md), [Custom domains](../networking.md)

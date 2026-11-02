@@ -1,12 +1,12 @@
 ---
 url: https://alchemy.run/railway/frontend/react-router
 title: "React Router"
-description: "Deploy React Router v7 (framework mode) to Railway with Railway.Website.ReactRouter — SSR on a container Service, client assets in the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Deploy React Router v8 (framework mode) to Railway with Railway.Website.ReactRouter — SSR on a container Service, client assets in the image, and React Router's own Vite dev server under alchemy dev."
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
-`Railway.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v7 app in framework mode to Railway. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server plus client assets run on one [`Railway.Service`](https://alchemy.run/railway/compute/services). Alchemy creates a [`Railway.Project`](https://alchemy.run/railway/compute/projects) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
+`Railway.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v8 app in framework mode to Railway. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server plus client assets run on one [`Railway.Service`](../compute/services.md). Alchemy creates a [`Railway.Project`](../compute/projects.md) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
 
 ## Install
 
@@ -89,7 +89,7 @@ build/
 └── server/    -> wrapped as a Node HTTP server on port 3000
 ```
 
-`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits a Node serve entry — that process is the [`Railway.Service`](https://alchemy.run/railway/compute/services).
+`build/client` holds the hashed browser bundles plus everything you put in `public/`. `build/server/index.js` is a `ServerBuild` manifest, not a request handler, so Alchemy wraps it with `createRequestHandler` during the build and emits a Node serve entry — that process is the [`Railway.Service`](../compute/services.md).
 
 If you set Vite’s `base`, set React Router’s `basename` to the same prefix: the client directory maps onto the site root one-for-one, so the paths the SSR document emits have to be the paths the image was given.
 
@@ -173,10 +173,10 @@ const site = yield* Railway.Website.ReactRouter("Web", {
 });
 ```
 
-`domain` attaches a [`Railway.CustomDomain`](https://alchemy.run/railway/networking) (`targetPort` 3000). `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`.
+`domain` attaches a [`Railway.CustomDomain`](../networking.md) (`targetPort` 3000). `url` becomes `https://app.example.com` instead of the generated `*.up.railway.app`.
 
 ## Where next
 
 - [React Router API reference](https://alchemy.run/providers/railway/website#reactrouter)
-- [Projects](https://alchemy.run/railway/compute/projects) and [Services](https://alchemy.run/railway/compute/services)
-- [Custom domains](https://alchemy.run/railway/networking)
+- [Projects](../compute/projects.md) and [Services](../compute/services.md)
+- [Custom domains](../networking.md)

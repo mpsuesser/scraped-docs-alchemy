@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-http-api
 title: "Effect HTTP API on Lambda"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-02T21:06:06.110Z
+current_date: 2026-11-02T21:06:06.110Z
 ---
 
 Effect HTTP defines real REST endpoints — URLs, path params, query strings, typed bodies — behind an RPC-like typed interface, which makes it the natural fit when your consumers aren’t Effect (or aren’t TypeScript at all) and want a plain HTTP client. This page is the Lambda wiring; the concept lives at [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the RPC styles.
@@ -333,7 +333,7 @@ Because `JobApi` is just a value, the same spec drives a fully typed client — 
 
 ```typescript
 import * as AWS from "@alchemy.run/aws";
-import * as Test from "alchemy/Test/Bun";
+import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
 import * as Effect from "effect/Effect";
 import * as Schedule from "effect/Schedule";
