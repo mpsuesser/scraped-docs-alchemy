@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/setup
 title: "Setup"
 description: "Connect alchemy to Google Cloud — project, service-account key, the APIs to enable, and Docker."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Install
@@ -14,6 +14,7 @@ pnpm add alchemy@latest @alchemy.run/gcp@latest effect @effect/platform-bun @eff
 
 ## What you need
 
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/).
 - **A GCP project** and its id.
 - **Credentials** with enough IAM to create what you deploy: your own Google account through `gcloud`, or a service-account key. A working starting point is Cloud Run Admin, Storage Admin, Pub/Sub Admin, Service Account Admin (Alchemy creates an `alch-*` service account for each runtime), and Project IAM Admin (it grants roles to that account). Add the admin role for anything else you declare — Firestore, BigQuery, Secret Manager.
 - **Docker running locally.** `GCP.Function`, `GCP.Run.Service`, `GCP.Run.Job`, and `GCP.Run.WorkerPool` bundle your code and build a container image before pushing it to Artifact Registry.

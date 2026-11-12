@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/tutorial
 title: "Build an upload journal"
 description: "Sign in, upload private files, process real storage events, and view Postgres-backed status with Neon and Alchemy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Build a small upload application using Neon Postgres, private Object Storage, Functions, managed Better Auth, and a Vite frontend. A real storage event checks the uploaded metadata and records the result in Postgres. The browser never marks an upload ready itself.
@@ -12,7 +12,7 @@ The complete source is in [`examples/neon`](https://github.com/alchemy-run/alche
 
 ## Prerequisites
 
-Complete [Setup](setup.md) before deploying. Use Node.js 24, Bun, pnpm, and a Neon account with Object Storage and Functions available. Configure the Alchemy `testing` profile for Neon or supply `NEON_API_KEY` to the deployment process only. This tutorial selects `aws-us-east-2`, where the combined backend is available. Resources can incur normal Neon usage charges; no AI gateway, model call, credits, or plan purchase is required.
+Complete [Setup](setup.md) before deploying. Use [Node.js](https://nodejs.org/) 24, Bun, pnpm, and a Neon account with Object Storage and Functions available. Configure the Alchemy `testing` profile for Neon or supply `NEON_API_KEY` to the deployment process only. This tutorial selects `aws-us-east-2`, where the combined backend is available. Resources can incur normal Neon usage charges; no AI gateway, model call, credits, or plan purchase is required.
 
 Install the repository’s workspace dependencies before running the example. Keep the local `.alchemy` state directory: it records which resources a later destroy command owns.
 

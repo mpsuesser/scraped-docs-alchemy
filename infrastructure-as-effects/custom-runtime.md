@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-effects/custom-runtime
 title: "Custom Runtime"
 description: "Implement your own Runtime resource on the Platform type — a Provider that provisions the compute and bundles the runtime Effect."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Worker, Lambda, and Container cover the common cases. This guide is for bringing the [Runtime](runtime.md) model to a new compute target. A custom runtime is a [Provider](../infrastructure-as-code/provider.md) with two jobs: provision the compute infrastructure, and bundle + upload the runtime Effect.
+Worker, Lambda, and Container cover the common cases. A new compute target can use the [Runtime](runtime.md) model too. A custom runtime is a [Provider](../infrastructure-as-code/provider.md) with two jobs: provision the compute infrastructure, and bundle + upload the runtime Effect.
 
 The running reference is `AWS.ECS.Task` ([`AWS/ECS/Task.ts`](https://github.com/alchemy-run/alchemy/blob/main/packages/alchemy/src/AWS/ECS/Task.ts)) — it bundles an inline Effect program, builds a Docker image, and registers a Fargate task definition. Every built-in runtime — `Cloudflare.Worker`, `AWS.Lambda.Function`, `AWS.EC2.Instance` — follows the same two-part shape.
 
@@ -289,10 +289,10 @@ export default class ApiTask extends AWS.ECS.Task<ApiTask>()(
 ) {}
 ```
 
-Everything on this page sits behind that surface: `Platform` runs the constructor Effect and collects `host.run` + `fetch` into `exports.program`, and the provider bundles that program into an image and reconciles the task definition around it.
+All of this sits behind that surface: `Platform` runs the constructor Effect and collects `host.run` + `fetch` into `exports.program`, and the provider bundles that program into an image and reconciles the task definition around it.
 
 ## Where next
 
-- [Runtime](runtime.md) — the model this guide implements a new target for.
+- [Runtime](runtime.md) — the model a custom runtime implements.
 - [Custom Provider](../infrastructure-as-code/custom-provider.md) — the lifecycle contract (`reconcile`, `delete`, `diff`, `read`) in depth.
 - [Phases](phases.md) — the Construction/Runtime split your bundle must honor.

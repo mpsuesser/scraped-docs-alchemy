@@ -2,18 +2,15 @@
 url: https://alchemy.run/neon/data/connections
 title: "Connections"
 description: "Every Neon project and branch exposes direct and pooled connection URIs plus pre-parsed origin outputs — feed the direct origin to Hyperdrive and the pooled one to everything else."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Every Neon project and branch exposes its connection details as
-outputs: raw URIs and pre-parsed origins, each in a direct and a
-pooled flavor. Which one to use depends on who is connecting.
+Every Neon project and branch exposes its connection details as outputs: raw URIs and pre-parsed origins, each in a direct and a pooled flavor. Which one to use depends on who is connecting.
 
 ## The four connection outputs
 
-Both `Neon.Project` and `Neon.Branch` expose the same four
-attributes:
+Both `Neon.Project` and `Neon.Branch` expose the same four attributes:
 
 ```typescript
 import * as Neon from "@alchemy.run/neon";
@@ -27,19 +24,37 @@ branch.origin; //              parsed direct connection components
 branch.pooledOrigin; //        parsed pooled connection components
 ```
 
-On a project, they target the default branch's primary database; on
-a branch, the branch's own primary database.
+On a project, they target the default branch’s primary database; on a branch, the branch’s own primary database.
 
-The direct URI connects straight to the branch's compute endpoint.
-The pooled URI routes through Neon's pgbouncer-based pooler, which
-lets many short-lived clients share a small number of Postgres
-connections.
+The direct URI connects straight to the branch’s compute endpoint. The pooled URI routes through Neon’s pgbouncer-based pooler, which lets many short-lived clients share a small number of Postgres connections.
+
+mainbranch
+
+poolerpgbouncer · ep-…-pooler host
+
+URI
+
+pooled
+
+for
+
+Workers, Lambdas, short clients
+
+compute endpointPostgres · ep-… host
+
+URI
+
+direct
+
+for
+
+migrations, long sessions
+
+Both URIs reach the same branch. The pooled one shares a few Postgres connections among many short-lived clients. The direct one is a real session, for work that needs one.
 
 ## The origin shape
 
-`origin` and `pooledOrigin` are the same connections parsed into
-the structured shape Postgres consumers like `Cloudflare.Hyperdrive`
-accept:
+`origin` and `pooledOrigin` are the same connections parsed into the structured shape Postgres consumers like `Cloudflare.Hyperdrive` accept:
 
 ```typescript
 type PostgresOrigin = {
@@ -52,16 +67,11 @@ type PostgresOrigin = {
 };
 ```
 
-The `password` is a `Redacted` value, so it never prints in logs or
-plan output. (`"mysql"` is in the union because the same shape is
-shared with MySQL providers like PlanetScale — Neon origins are
-always `postgres`/`postgresql`.)
+The `password` is a `Redacted` value, so it never prints in logs or plan output. (`"mysql"` is in the union because the same shape is shared with MySQL providers like PlanetScale — Neon origins are always `postgres` / `postgresql`.)
 
 ## Direct behind Hyperdrive, pooled for everyone else
 
-Hyperdrive is itself a connection pooler, so point it at the
-**direct** origin — stacking it on top of Neon's pooler means two
-poolers fighting over the same connections:
+Hyperdrive is itself a connection pooler, so point it at the **direct** origin — stacking it on top of Neon’s pooler means two poolers fighting over the same connections:
 
 ```typescript
 const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
@@ -70,15 +80,9 @@ const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
 });
 ```
 
-The `dev` override matters because `bun alchemy dev` doesn't create
-a Hyperdrive config at all — the local Worker connects to the
-database directly. With Hyperdrive out of the path, nothing pools
-those connections, so `pooledOrigin` sends local dev through Neon's
-pooler instead.
+The `dev` override matters because `alchemy dev` doesn’t create a Hyperdrive config at all — the local Worker connects to the database directly. With Hyperdrive out of the path, nothing pools those connections, so `pooledOrigin` sends local dev through Neon’s pooler instead.
 
-The same rule applies to anything else that connects without
-Hyperdrive in front — CI jobs, containers, `psql` on your laptop.
-Hand those clients the pooled URI:
+The same rule applies to anything else that connects without Hyperdrive in front — CI jobs, containers, `psql` on your laptop. Hand those clients the pooled URI:
 
 ```typescript
 return { databaseUrl: branch.pooledConnectionUri };
@@ -88,12 +92,9 @@ return { databaseUrl: branch.pooledConnectionUri };
 
 Guides:
 
-- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — the full walkthrough:
-  provision Neon, front it with Hyperdrive, bind it into a Worker.
-- [Branching](branching.md) — copy-on-write branches, each with
-  its own connection outputs.
-- [Roles](roles.md) — connect as your own Postgres role instead
-  of the owner.
+- [Hyperdrive](../../cloudflare/data/hyperdrive.md) — the full walkthrough: provision Neon, front it with Hyperdrive, bind it into a Worker.
+- [Branching](branching.md) — copy-on-write branches, each with its own connection outputs.
+- [Roles](roles.md) — connect as your own Postgres role instead of the owner.
 
 Reference:
 

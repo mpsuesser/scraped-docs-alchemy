@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/setup
 title: "Setup"
 description: "Install Alchemy, create a Cloudflare account, and connect the two — OAuth or API token, saved to a local profile. No environment variables required."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Everything you need before deploying to Cloudflare: the alchemy and `@alchemy.run/cloudflare` packages, a Cloudflare account, and stored credentials.
@@ -16,7 +16,7 @@ Install `alchemy@latest`, `@alchemy.run/cloudflare` and `effect` in your project
 pnpm add alchemy@latest @alchemy.run/cloudflare@latest effect @effect/platform-bun @effect/platform-node
 ```
 
-Alchemy runs on [Bun](https://bun.sh/) or Node.js 22+.
+Alchemy runs on [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/).
 
 ## Create a Cloudflare account
 

@@ -2,13 +2,13 @@
 url: https://alchemy.run/getting-started
 title: "Getting started"
 description: "Install Alchemy and create your first Stack in under two minutes."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 24.11.1+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A [Cloudflare](https://dash.cloudflare.com/sign-up) account
 
 ## Create a project

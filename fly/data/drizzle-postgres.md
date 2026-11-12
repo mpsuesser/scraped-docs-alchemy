@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/data/drizzle-postgres
 title: "Drizzle Postgres on Fly"
 description: "Connect a Fly Service to Managed Postgres and deploy reviewed Drizzle migrations."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Run Drizzle in a `Fly.Service`, with [Fly Managed Postgres](postgres.md) on the same organization's private network. Start with [Fly setup](../setup.md), the [Service tutorial](../tutorial/part-1.md), and a `src/schema.ts` exporting `Users` from the [Postgres client guide](../../sql/drizzle/postgres.md).
@@ -130,11 +130,11 @@ Queries run inside the request scope, rather than during infrastructure construc
 pnpm alchemy deploy
 ```
 
-For subsequent schema changes, generate, review, and commit first, then apply the committed migrations before deploying compatible application code. `alchemy deploy` does not replace `drizzle-kit migrate` in this guide.
+For subsequent schema changes, generate, review, and commit first, then apply the committed migrations before deploying compatible application code. While Drizzle owns migrations, `alchemy deploy` does not replace `drizzle-kit migrate`.
 
 ## Choose one migration owner
 
-`Fly.Postgres` also supports a `migrations` directory, but this guide deliberately leaves it unset and keeps Drizzle as the migration owner. Switching an existing database to Alchemy's migration history is a separate [migration adoption decision](../../sql/drizzle/migrations.md#existing-migration-history), not a command substitution.
+`Fly.Postgres` also supports a `migrations` directory, but leave it unset and keep Drizzle as the migration owner. Switching an existing database to Alchemy's migration history is a separate [migration adoption decision](../../sql/drizzle/migrations.md#existing-migration-history), not a command substitution.
 
 ## Continue
 

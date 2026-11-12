@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vite
 title: "Vite"
 description: "Deploy a plain Vite app to AWS with AWS.Website.Vite — the vite build output on S3 behind CloudFront, SPA fallback at the edge, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Vite` deploys a client-only [Vite](https://vite.dev/) project to AWS. It runs your project’s own `vite build` — your `vite.config.*` loads natively, plugins included — and serves the output from a private S3 bucket through CloudFront. The site is assets-only: no Lambda is created, no CloudFormation to write, no build command to wire up.
@@ -65,7 +65,7 @@ export default Alchemy.Stack(
 Deploying uploads the build output to S3, writes the file manifest to a CloudFront KeyValueStore, and creates the distribution that serves it at the edge.
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 See [examples/aws-website-vite](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-website-vite) for the checked-in example.
@@ -169,7 +169,7 @@ export const Website = AWS.Website.Vite("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Vite’s own dev server (native HMR) instead of deploying; `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

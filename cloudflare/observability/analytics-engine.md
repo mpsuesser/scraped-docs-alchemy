@@ -2,20 +2,15 @@
 url: https://alchemy.run/cloudflare/observability/analytics-engine
 title: "Analytics Engine"
 description: "Write time-series data points from a Worker with Workers Analytics Engine — declare a dataset, bind it with WriteDataset, and query it later over Cloudflare's SQL API."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Workers Analytics Engine is Cloudflare's write-heavy time-series
-store: Workers write unlimited-cardinality data points (events,
-metrics, usage counters) at request time, and you query them later
-with SQL. In alchemy a dataset is a one-line declaration and the
-Worker writes to it through a typed binding.
+Workers Analytics Engine is Cloudflare’s write-heavy time-series store: Workers write unlimited-cardinality data points (events, metrics, usage counters) at request time, and you query them later with SQL. In alchemy a dataset is a one-line declaration and the Worker writes to it through a typed binding.
 
 ## Declare a dataset
 
 ```typescript
-// src/dataset.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Events = Cloudflare.AnalyticsEngine.Dataset("Events", {
@@ -23,19 +18,13 @@ export const Events = Cloudflare.AnalyticsEngine.Dataset("Events", {
 });
 ```
 
-A dataset is pure configuration — there is no create/delete API call
-behind it. Cloudflare materializes the dataset the first time a
-Worker writes to it, so declaring one costs nothing. `dataset` is the
-name you'll reference in SQL queries; omit it and the logical ID
-(`"Events"`) is used.
+A dataset is pure configuration — there is no create/delete API call behind it. Cloudflare materializes the dataset the first time a Worker writes to it, so declaring one costs nothing. `dataset` is the name you’ll reference in SQL queries; omit it and the logical ID (`"Events"`) is used.
 
 ## Write data points from a Worker
 
-Bind the dataset with `WriteDataset` in the Worker's Construction phase and
-provide `WriteDatasetBinding` as a layer:
+Bind the dataset with `WriteDataset` in the Worker’s Construction phase and provide `WriteDatasetBinding` as a layer:
 
 ```typescript
-// src/worker.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -75,18 +64,22 @@ export default Cloudflare.Worker(
 );
 ```
 
-A data point has three optional field groups — `indexes` (the
-sampling key, typically a customer or tenant ID), `blobs` (string
-dimensions to group by), and `doubles` (numeric values to aggregate).
-Writes are fire-and-forget at the edge; a failure surfaces as a typed
-`DatasetError` that Effect keeps in the type system until you handle
-it. The client also exposes `raw` if you need the underlying native
-binding object directly.
+usage · Analytics Engine datasetSELECT blob1, SUM(double1) … GROUP BY blob1
+
+| timestamp | index1 | blob1 | double1 |
+| --- | --- | --- | --- |
+| 09:12:04 | account-1 | signup | 1 |
+| 09:12:09 | account-2 | api\_call | 1 |
+| 09:13:30 | account-1 | signup | 1 |
+| 09:14:02 | account-1 | api\_call | 1 |
+
+Each writeDataPoint is a row. Indexes pick how rows are sampled, blobs are what you group by, and doubles are what you add up.
+
+A data point has three optional field groups — `indexes` (the sampling key, typically a customer or tenant ID), `blobs` (string dimensions to group by), and `doubles` (numeric values to aggregate). Writes are fire-and-forget at the edge; a failure surfaces as a typed `DatasetError` that Effect keeps in the type system until you handle it. The client also exposes `raw` if you need the underlying native binding object directly.
 
 ## Deploy it
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -106,18 +99,14 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
-Deploying the Worker attaches the `analytics_engine` binding; hit
-`/signup` and the data point lands in `app_events`.
+Deploying the Worker attaches the `analytics_engine` binding; hit `/signup` and the data point lands in `app_events`.
 
 ## Querying your data
 
-The binding is write-only — that mirrors the platform, where Workers
-can only write to Analytics Engine. Reads go through Cloudflare's
-[SQL API](https://developers.cloudflare.com/analytics/analytics-engine/sql-api/),
-an HTTP endpoint you query with an API token:
+The binding is write-only — that mirrors the platform, where Workers can only write to Analytics Engine. Reads go through Cloudflare’s [SQL API](https://developers.cloudflare.com/analytics/analytics-engine/sql-api/), an HTTP endpoint you query with an API token:
 
 ```sql
 SELECT blob1 AS event, SUM(_sample_interval * double1) AS count
@@ -126,13 +115,10 @@ WHERE timestamp > NOW() - INTERVAL '1' DAY
 GROUP BY event
 ```
 
-Alchemy doesn't ship a query binding yet, so run queries from
-dashboards, cron jobs, or your backend via plain HTTP.
+Alchemy doesn’t ship a query binding yet, so run queries from dashboards, cron jobs, or your backend via plain HTTP.
 
 ## Where next
 
-- [Workers](../compute/workers.md) — the two-phase Worker model the
-  binding lives inside.
-- [Axiom](../../axiom.md) — full observability (logs, traces, dashboards)
-  when you outgrow roll-your-own analytics.
+- [Workers](../compute/workers.md) — the two-phase Worker model the binding lives inside.
+- [Axiom](../../axiom.md) — full observability (logs, traces, dashboards) when you outgrow roll-your-own analytics.
 - [WriteDataset API reference](https://alchemy.run/providers/cloudflare/analyticsengine#writedataset)

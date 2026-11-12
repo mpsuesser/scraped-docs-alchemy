@@ -1,60 +1,72 @@
 ---
 url: https://alchemy.run/docker/setup
 title: "Setup"
-description: "Point alchemy at a Docker daemon — the active CLI context and the DOCKER_BIN override."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "Install @alchemy.run/docker, register its providers, and point Alchemy at a Docker or Podman engine."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
-
-Install `@alchemy.run/docker`:
-
-```sh
-pnpm add @alchemy.run/docker@latest
-```
-
-Register the provider in your stack:
-
-```typescript
-import * as Docker from "@alchemy.run/docker";
-
-providers: Docker.providers(),
-state: Alchemy.localState(),
-```
-
-That’s the whole registration. When Docker runs alongside a cloud provider, merge the layers: `providers: Layer.merge(Cloudflare.providers(), Docker.providers())`.
 
 ## Prerequisites
 
-A Docker daemon reachable from the `docker` CLI is the only requirement. The provider shells out through the **active Docker CLI context**, so whatever `docker ps` talks to — Docker Desktop, a remote Docker host, an SSH context, a CI runner’s daemon — is what alchemy provisions against. There is no login step and no stored token: this provider has no credentials of its own.
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
+- A Docker engine the `docker` CLI can reach: [Docker Desktop](https://docs.docker.com/desktop/), [Docker Engine](https://docs.docker.com/engine/install/) on Linux, a remote host, or [Podman](https://podman.io/)
 
-## Binary override
+Check that the CLI reaches an engine:
 
 ```sh
-DOCKER_BIN=/opt/homebrew/bin/docker bun alchemy deploy
+docker version
 ```
 
-The provider resolves the Docker binary from the `DOCKER_BIN` environment variable, falling back to `docker` on the `PATH`.
+## Install
 
-## Registry credentials
-
-Registry auth is a per-resource prop, not global configuration. [`Image`](https://alchemy.run/providers/docker/reference/image#image) and [`RemoteImage`](https://alchemy.run/providers/docker/reference/image#remoteimage) accept a `registry` with `{ server, username, password }`, where `password` is a `Redacted` value:
+```sh
+pnpm add alchemy@latest @alchemy.run/docker@latest effect
+```
 
 ```typescript
-const image = yield* Docker.Image("app", {
-  name: "my-app",
-  build: { context: "./app" },
-  registry: {
-    server: "ghcr.io",
-    username: "octocat",
-    password: Config.Redacted("GITHUB_TOKEN"),
+import * as Alchemy from "alchemy";
+import * as Docker from "@alchemy.run/docker";
+import * as Effect from "effect/Effect";
+
+export default Alchemy.Stack(
+  "MyApp",
+  {
+    providers: Docker.providers(),
+    state: Alchemy.localState(),
   },
-});
+  Effect.gen(function* () {
+    const web = yield* Docker.Container("web", {
+      image: "nginx:alpine",
+      ports: [{ external: 8080, internal: 80 }],
+      start: true,
+    });
+    return { ports: web.ports };
+  }),
+);
 ```
 
-Push deliberately skips `docker login`: the credentials are written into an isolated `DOCKER_CONFIG` that only the push command reads, so your global docker config, buildx builders, and `docker context` setup stay intact.
+There’s nothing to sign in to. Alchemy runs the `docker` CLI, and the CLI’s current context decides which engine it talks to. When Docker runs next to a cloud provider, merge the two: `providers: Layer.merge(Cloudflare.providers(), Docker.providers())`.
 
-## Next steps
+```sh
+pnpm alchemy deploy
+```
 
-- [Docker overview](../docker.md) — resources and compositions.
-- [Run local services](local-services.md) — Postgres with a network, volume, and healthcheck.
-- [Build and push an image](build-and-push.md) — Dockerfile builds and registry push.
+## Use Podman or another binary
+
+Pass the CLI to run:
+
+```typescript
+providers: Docker.providers({ bin: "podman" }),
+```
+
+The `DOCKER_BIN` environment variable overrides `bin` on one machine, without changing the code:
+
+```sh
+DOCKER_BIN=/opt/homebrew/bin/docker pnpm alchemy deploy
+```
+
+## In CI
+
+A CI runner needs the `docker` CLI and an engine, and nothing else: no profile, no token. GitHub’s hosted Linux runners have both. To deploy to a remote engine from CI, give the job the SSH key for that host and declare a [`Docker.Context`](engines-and-contexts.md) for it. Registry passwords come from `Config`, like any other secret. See [Registries & credentials](registries.md) and [CI](../environments/ci.md).
+
+Next, choose where your containers run in [Engines & contexts](engines-and-contexts.md).

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to AWS with AWS.Website.Nuxt — the nitro server on a Lambda Web Function, S3 assets behind CloudFront, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to AWS. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server. There is no `nitro.preset` to edit and no build command to run.
@@ -133,7 +133,7 @@ export const Website = AWS.Website.Nuxt("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Nuxt’s own dev server (nitro dev, full HMR) instead of deploying anything; `site.url` is the dev server’s `http://localhost:<port>` address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

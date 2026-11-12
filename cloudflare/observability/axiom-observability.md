@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/observability/axiom-observability
 title: "Ship Worker telemetry to Axiom"
 description: "Declare Axiom datasets, a least-privilege ingest token, and monitors in the same Stack as the Worker that emits the telemetry — or let Cloudflare push Workers Logs to Axiom natively."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Effect already emits OpenTelemetry — every span, `Metric`, and
@@ -14,7 +14,7 @@ token, and the alert that pages you all live in the same Stack as
 the Worker they observe. A retention or threshold change is a
 reviewable diff, not a dashboard click.
 
-This guide wires a Worker's telemetry into Axiom two ways:
+A Worker's telemetry reaches Axiom two ways:
 
 1. **From the Worker** — the `Axiom.Telemetry` binding layer; the
    [built-in telemetry](../../infrastructure-as-effects/telemetry.md) exports

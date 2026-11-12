@@ -2,20 +2,25 @@
 url: https://alchemy.run/cloudflare/networking/domains
 title: "Domains & DNS"
 description: "Manage Cloudflare zones, DNS records, DNSSEC, and zone settings as resources — and safely adopt the domains you already have."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Your domain is infrastructure too. Alchemy manages Cloudflare
-zones, the DNS records inside them, DNSSEC, and per-zone settings
-as ordinary resources — declared next to the Workers they route
-to, diffed and converged on every deploy.
+Your domain is infrastructure too. Alchemy manages Cloudflare zones, the DNS records inside them, DNSSEC, and per-zone settings as ordinary resources — declared next to the Workers they route to, diffed and converged on every deploy.
 
-Most of the time you won't create a zone from scratch: the domain
-already exists in your Cloudflare account, hand-configured over
-the years. Adoption is designed for exactly that — Alchemy takes
-over an existing zone or record only when you explicitly opt in,
-so a deploy can never clobber DNS it doesn't own.
+Most of the time you won’t create a zone from scratch: the domain already exists in your Cloudflare account, hand-configured over the years. Adoption is designed for exactly that — Alchemy takes over an existing zone or record only when you explicitly opt in, so a deploy can never clobber DNS it doesn’t own.
+
+example.comzone · name servers on CloudflareDNSSEC · zone settings
+
+api.example.comA · proxied
+
+app.example.comCNAME · proxied
+
+example.comMX · mail
+
+shop.example.comWorker custom domain
+
+A zone holds one domain's DNS records and its settings. A Worker's custom domain is a hostname in the zone that the Worker answers.
 
 ## Create a zone
 
@@ -30,14 +35,9 @@ const zone = yield* Cloudflare.Zone.Zone("MyZone", {
 // zone.zoneId, zone.nameServers, zone.status, ...
 ```
 
-Cloudflare assigns name servers to the new zone
-(`zone.nameServers`); point your registrar at them and the zone
-moves from `pending` to `active` once Cloudflare detects proof of
-ownership.
+Cloudflare assigns name servers to the new zone (`zone.nameServers`); point your registrar at them and the zone moves from `pending` to `active` once Cloudflare detects proof of ownership.
 
-Zones default to **retain**: destroying the stack does *not*
-delete the zone in Cloudflare. Opt in to actual deletion with
-`destroy()`:
+Zones default to **retain**: destroying the stack does *not* delete the zone in Cloudflare. Opt in to actual deletion with `destroy()`:
 
 ```typescript
 import { destroy } from "alchemy/RemovalPolicy";
@@ -49,10 +49,7 @@ yield* Cloudflare.Zone.Zone("MyZone", {
 
 ## Adopt an existing zone
 
-A Cloudflare zone carries no ownership markers, so Alchemy cannot
-prove it created a zone that already exists. Deploying a `Zone`
-whose name matches a pre-existing zone fails with an
-`OwnedBySomeoneElse` error — unless you opt in with `adopt(true)`:
+A Cloudflare zone carries no ownership markers, so Alchemy cannot prove it created a zone that already exists. Deploying a `Zone` whose name matches a pre-existing zone fails with an `OwnedBySomeoneElse` error — unless you opt in with `adopt(true)`:
 
 ```typescript
 import { adopt } from "alchemy/AdoptPolicy";
@@ -63,17 +60,11 @@ const zone = yield* Cloudflare.Zone.Zone("MyZone", {
 // zone.zoneId, zone.nameServers, zone.accountId, ...
 ```
 
-The engine takes over the existing zone instead of creating a new
-one, and from then on manages it like any other resource. The
-same gate can be lifted for an entire deploy with
-`alchemy deploy --adopt`. How
-ownership gating works under the hood is covered in
-[Concepts › Provider](../../infrastructure-as-code/provider.md).
+The engine takes over the existing zone instead of creating a new one, and from then on manages it like any other resource. The same gate can be lifted for an entire deploy with `alchemy deploy --adopt`. How ownership gating works under the hood is covered in [Concepts › Provider](../../infrastructure-as-code/provider.md).
 
 ## DNS records
 
-`Cloudflare.DNS.Record` manages a single record in a zone. A
-plain A record:
+`Cloudflare.DNS.Record` manages a single record in a zone. A plain A record:
 
 ```typescript
 yield* Cloudflare.DNS.Record("ApiA", {
@@ -85,38 +76,26 @@ yield* Cloudflare.DNS.Record("ApiA", {
 });
 ```
 
-Set `proxied: true` to send traffic through Cloudflare's proxy
-(orange-clouded in the dashboard). Proxied records use
-Cloudflare's automatic TTL — the default when `ttl` is omitted —
-and only `A`, `AAAA`, and `CNAME` records are proxiable:
+Set `proxied: true` to send traffic through Cloudflare’s proxy (orange-clouded in the dashboard). Proxied records use Cloudflare’s automatic TTL — the default when `ttl` is omitted — and only `A`, `AAAA`, and `CNAME` records are proxiable:
 
 ```typescript
 yield* Cloudflare.DNS.Record("AppCname", {
   zoneId: zone.zoneId,
   name: "app.example.com",
   type: "CNAME",
-  content: `${tunnel.tunnelId}.cfargotunnel.com`,
+  content: \`${tunnel.tunnelId}.cfargotunnel.com\`,
   proxied: true,
   comment: "app behind a Cloudflare Tunnel",
 });
 ```
 
-Cloudflare treats `(name, type)` as a record's identity: changing
-`content`, `ttl`, `proxied`, or `comment` patches the record in
-place, while changing `name` or `type` replaces it (a new record
-is created, then the old one deleted).
+A record is tracked by its Cloudflare record id, so changing its `name`, `type`, `content`, `ttl`, `proxied`, or `comment` updates it in place. Only moving it to another zone replaces it. Unless you set `comment`, Alchemy labels each record `Managed by Alchemy (<FQN>)` in the dashboard.
 
-Records get the same adoption safety as zones. If a record with
-the same `(name, type)` already exists in the zone — a
-hand-edited apex `A` record, an email DKIM/SPF entry — the deploy
-refuses to take it over unless you pipe `adopt(true)`. This is
-deliberate: DNS is where "already configured in the dashboard"
-lives, and overwriting it silently would be the worst possible
-default.
+Records get the same adoption safety as zones. If a record with the same name, type and `content` (and `priority`, for MX and URI) already exists in the zone — a hand-edited apex `A` record, an email DKIM/SPF entry — the deploy refuses to take it over unless you pipe `adopt(true)`. A record with different content is left alone and a new one is created beside it, so adding a second TXT or MX record never overwrites the first. For an `A` or `AAAA` record that means traffic is split between the old and new address until you remove the old record or adopt it. To adopt a record and then change it, declare its current `content` first, then change it in a later deploy. A CNAME is the exception: a name holds only one, so `adopt(true)` takes over an existing CNAME whatever it points at.
 
 ## Worker custom domains
 
-This is the layer under a Worker's `domain` prop. When you write:
+This is the layer under a Worker’s `domain` prop. When you write:
 
 ```typescript
 export default Cloudflare.Worker(
@@ -129,19 +108,11 @@ export default Cloudflare.Worker(
 );
 ```
 
-Cloudflare infers the zone from the hostname — the zone must
-already exist in the account. Declaring the `Zone` resource in
-the same stack (or adopting the existing one, as above) is what
-satisfies that requirement end-to-end. The
-[custom domains guide](custom-domains.md) walks
-through the full setup: zone, DNS, and Worker wired together.
+Cloudflare infers the zone from the hostname — the zone must already exist in the account. Declaring the `Zone` resource in the same stack (or adopting the existing one, as above) is what satisfies that requirement end-to-end. The [custom domains guide](custom-domains.md) walks through the full setup: zone, DNS, and Worker wired together.
 
 ## Zone settings and DNSSEC
 
-`Cloudflare.Zone.Setting` pins a single zone setting to a desired
-value. Settings are singletons — they always exist with a
-Cloudflare default — so the resource patches the value on deploy
-and restores the original on destroy:
+`Cloudflare.Zone.Setting` pins a single zone setting to a desired value. Settings are singletons — they always exist with a Cloudflare default — so the resource patches the value on deploy and restores the original on destroy:
 
 ```typescript
 yield* Cloudflare.Zone.Setting("AlwaysUseHttps", {
@@ -151,37 +122,28 @@ yield* Cloudflare.Zone.Setting("AlwaysUseHttps", {
 });
 ```
 
-`Cloudflare.DNS.Dnssec` signs the zone. Activation completes at
-your registrar: paste the `ds` attribute (the DS record) there,
-and Cloudflare reports `pending` until it's in place:
+`Cloudflare.DNS.Dnssec` signs the zone. Activation completes at your registrar: paste the `ds` attribute (the DS record) there, and Cloudflare reports `pending` until it’s in place:
 
 ```typescript
 const dnssec = yield* Cloudflare.DNS.Dnssec("ZoneDnssec", {
   zoneId: zone.zoneId,
 });
-// Paste `dnssec.ds` at your registrar to complete activation.
+// Paste \`dnssec.ds\` at your registrar to complete activation.
 ```
 
-Like zone settings, DNSSEC is a per-zone singleton: destroying
-the resource restores whatever state the zone had before Alchemy
-first managed it.
+Like zone settings, DNSSEC is a per-zone singleton: destroying the resource restores whatever state the zone had before Alchemy first managed it.
 
 ## Where next
 
 Guides:
 
-- [Custom domains](custom-domains.md) — serve a
-  Worker from your own hostname, end to end.
+- [Custom domains](custom-domains.md) — serve a Worker from your own hostname, end to end.
 
 Related:
 
-- [Workers](../compute/workers.md) — the compute your DNS points
-  at.
-- [Email](../email.md) — route mail on the zone and send from
-  Workers.
-- [DNS Adapters](../../infrastructure-as-code/dns-adapters.md) — publish another
-  platform's custom-domain records (AWS, Fly, Railway, …) in a Cloudflare
-  zone.
+- [Workers](../compute/workers.md) — the compute your DNS points at.
+- [Email](../email.md) — route mail on the zone and send from Workers.
+- [DNS Adapters](../../infrastructure-as-code/dns-adapters.md) — publish another platform’s custom-domain records (AWS, Fly, Railway, …) in a Cloudflare zone.
 
 Reference:
 

@@ -2,13 +2,13 @@
 url: https://alchemy.run/infrastructure-as-code/custom-provider
 title: "Custom Provider"
 description: "Add support for a new cloud or third-party API by declaring a Resource type and implementing its lifecycle as an Effect Layer."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Providers are Effect `Layer` s — adding support for a new cloud or third-party API is “declare a type, implement a Layer”. See [Providers](provider.md) for the operation contract.
 
-This guide walks through building a Stripe `Product` provider end-to-end: declaring props and attributes, defining the resource type, implementing the lifecycle (`reconcile`, `delete`, `diff`, `read`), bundling it into a `providers()` layer, and writing a test.
+Take a Stripe `Product` provider, built end to end: declaring props and attributes, defining the resource type, implementing the lifecycle (`reconcile`, `delete`, `diff`, `read`), bundling it into a `providers()` layer, and writing a test.
 
 See [Resource lifecycle](resource-lifecycle.md) for the semantics of when each lifecycle method fires.
 
@@ -374,6 +374,39 @@ return StripeProduct.Provider.of({
 
 Resources with no enumeration API (singletons, existence-only resources) keep the `Effect.succeed([])` stub instead.
 
+## Implement lookup (optional)
+
+`lookup` lets users bind a product they created outside Alchemy: `StripeProduct.lookup({ productId })`. Declare what it takes as the Resource type’s sixth parameter:
+
+```typescript
+export type StripeProduct = Resource<
+  "Stripe.Product",
+  StripeProductProps,
+  StripeProductAttributes
+  StripeProductAttributes,
+  never,
+  undefined,
+  { productId: string }
+>;
+```
+
+Then return the product’s attributes, or `undefined` when there is no such product (see [Providers › lookup](provider.md#lookup)):
+
+```typescript
+return StripeProduct.Provider.of({
+  stables: ["productId"],
+  lookup: Effect.fn(function* ({ productId }) {
+    const { apiKey } = yield* yield* StripeCredentials;
+    const stripe = new Stripe(Redacted.value(apiKey));
+    const product = yield* Effect.tryPromise(() =>
+      stripe.products.retrieve(productId),
+    ).pipe(Effect.catch(() => Effect.undefined));
+    return product ? { productId: product.id, created: product.created } : undefined;
+  }),
+  // ...
+});
+```
+
 ## Bundle into a providers() layer
 
 Users expect the same one-line ergonomics as the built-ins (`Cloudflare.providers()`, `AWS.providers()`). Bundle the resource collection and every provider implementation into a single layer:
@@ -509,7 +542,7 @@ If you’d rather start from a real provider:
 ## Where next
 
 - [Local Providers](local-provider.md) — give your resource a second, dev-mode implementation that emulates it locally (`ProviderLayer.dual`, `LocalProvider.make`).
-- [Custom Auth Provider](../environments/custom-auth-provider.md) — build the `StripeCredentials` service and login flow this guide consumes.
+- [Custom Auth Provider](../environments/custom-auth-provider.md) — build the `StripeCredentials` service and login flow the provider consumes.
 - [Auth Providers](../environments/auth-providers.md) — how credentials resolve: lazy Effects, Profiles, auto-refresh.
 - [Actions](action.md) — deploy-time work that isn’t a resource.
 - [Testing Providers](../testing/testing-providers.md) — the harness patterns behind `test.provider`.

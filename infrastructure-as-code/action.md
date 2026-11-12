@@ -2,11 +2,11 @@
 url: https://alchemy.run/infrastructure-as-code/action
 title: "Actions"
 description: "A node in the dependency graph that runs an Effect during apply when its inputs change."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-An **Action** is a node in the stack’s dependency graph that runs an arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has no provider lifecycle — no replace, no read, no delete. The engine just diffs the resolved input against the last persisted hash and either runs the body or skips it. If Outputs or the plan/persisted-state model are new to you, [Outputs](outputs.md) and [Resource Lifecycle](resource-lifecycle.md) are the background this page builds on.
+An **Action** is a node in the stack’s dependency graph that runs an arbitrary Effect during `apply`. Unlike a [Resource](resource.md), it has no provider lifecycle — no replace, no read, no delete. The engine just diffs the resolved input against the last persisted hash and either runs the body or skips it. If Outputs or the plan/persisted-state model are new to you, [Outputs](outputs.md) and [Resource Lifecycle](resource-lifecycle.md) are the background Actions build on.
 
 Actions are useful for one-off deploy-time work that needs to be reproducible and dependency-aware: seeding a database, posting a release notification, generating an artifact and uploading it, invalidating a CDN cache, running a migration check.
 

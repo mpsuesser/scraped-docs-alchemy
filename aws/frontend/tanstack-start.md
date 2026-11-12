@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to AWS with AWS.Website.TanStackStart — SSR on a Lambda Web Function, client assets on S3 + CloudFront, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to AWS. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server.
@@ -178,7 +178,7 @@ export const Website = AWS.Website.TanStackStart("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs TanStack Start’s own Vite dev server (native HMR) instead of deploying anything; `site.url` is the dev server’s `http://localhost:<port>` address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

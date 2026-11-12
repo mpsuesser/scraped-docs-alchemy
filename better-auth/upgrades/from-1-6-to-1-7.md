@@ -2,16 +2,11 @@
 url: https://alchemy.run/better-auth/upgrades/from-1-6-to-1-7
 title: "Upgrading from 1.6 to 1.7.5 or newer"
 description: "Upgrade Better Auth directly from 1.6, preserve existing users, and update your schema and application APIs."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Upgrade directly to 1.7.5 or a later compatible 1.x release. The core account
-schema is unchanged from 1.6; no issuer column or identity backfill is needed.
-
-:::caution[Already upgraded to 1.7.0–1.7.2?]
-Follow the [upstream issuer cleanup instructions](https://better-auth.com/docs/guides/1-7-upgrade-guide#account-identity-keeps-the-provider-key) first.
-:::
+Upgrade directly to 1.7.5 or a later compatible 1.x release. The core account schema is unchanged from 1.6; no issuer column or identity backfill is needed.
 
 ## Back up existing data
 
@@ -19,8 +14,7 @@ Back up the database and rehearse on a copy with existing users, accounts, and s
 
 Resolve duplicate provider/account ID pairs using your configured table names. Never merge users by email alone.
 
-These integrations need manual preparation. Follow the corresponding
-[upstream instructions](https://better-auth.com/docs/guides/1-7-upgrade-guide):
+These integrations need manual preparation. Follow the corresponding [upstream instructions](https://better-auth.com/docs/guides/1-7-upgrade-guide):
 
 | Integration | Before deploying |
 | --- | --- |
@@ -30,17 +24,12 @@ These integrations need manual preparation. Follow the corresponding
 | SCIM | Stop old provisioning and follow the reprovisioning procedure. D1 cannot support the new transaction requirements. |
 | Device Authorization | Resolve duplicate device/user codes; use bounded strings on MySQL and SQL Server. |
 
-:::caution[Deployment does not pause existing traffic]
-Alchemy delays the new host deployment, but old instances keep running; use a maintenance window for incompatible changes. An application rollback does not reverse database changes.
-:::
-
 ## Upgrade packages together
 
-Update the Alchemy Better Auth package to a release supporting 1.7.5, then
-align Better Auth and its synchronized plugins/adapters:
+Update the Alchemy Better Auth package to a release supporting 1.7.5, then align Better Auth and its synchronized plugins/adapters:
 
 ```sh
-npx auth@1.7.5 upgrade
+pnpx auth@1.7.5 upgrade
 ```
 
 Use Node.js 22.12 or newer and the CLI version matching your target release. Review workspace catalogs and overrides.
@@ -49,8 +38,7 @@ The command updates dependencies, not application code or identity data.
 
 ## Apply the schema
 
-For [SQL layers with automatic migrations](../guides/migrations.md#choose-the-migration-transport),
-the wrapper stays unchanged:
+For [SQL layers with automatic migrations](../guides/migrations.md#choose-the-migration-transport), the wrapper stays unchanged:
 
 ```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
@@ -66,19 +54,17 @@ After any manual preparation, deploy:
 alchemy deploy
 ```
 
-The schema is applied before the new host. Ordinary email/password accounts
-need no identity conversion when upgrading directly from 1.6.
+The schema is applied before the new host. Ordinary email/password accounts need no identity conversion when upgrading directly from 1.6.
 
 ## Generate a Drizzle schema
 
 Drizzle users own schema migrations. Generate and review the auth schema:
 
 ```sh
-npx auth@1.7.5 generate --config ./auth.cli.ts
+pnpx auth@1.7.5 generate --config ./auth.cli.ts
 ```
 
-The CLI configuration exports an upstream Better Auth instance with the same
-plugins and schema options, using the Relations v2 adapter:
+The CLI configuration exports an upstream Better Auth instance with the same plugins and schema options, using the Relations v2 adapter:
 
 ```typescript
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
@@ -87,11 +73,11 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 Omit the adapter CLI flag, which selects the legacy generator:
 
 ```diff
-- npx auth@1.7.5 generate --config ./auth.cli.ts --adapter drizzle
-+ npx auth@1.7.5 generate --config ./auth.cli.ts
+npx auth@1.7.5 generate --config ./auth.cli.ts --adapter drizzle
+npx auth@1.7.5 generate --config ./auth.cli.ts
 ```
 
-Apply the schema through Drizzle's migration tooling and include the generated auth relations when constructing the database. See the complete [Drizzle configuration](../databases/drizzle.md).
+Apply the schema through Drizzle’s migration tooling and include the generated auth relations when constructing the database. See the complete [Drizzle configuration](../databases/drizzle.md).
 
 With automatic migrations disabled, apply your schema before deploying too.
 
@@ -111,8 +97,8 @@ authClient.linkSocial({ provider: "my-provider" });
 Update registered callback URLs:
 
 ```diff
-- /api/auth/oauth2/callback/:id
-+ /api/auth/callback/:id
+/api/auth/oauth2/callback/:id
+/api/auth/callback/:id
 ```
 
 Token/profile operations select a **local account row**, rather than a provider:
@@ -126,8 +112,8 @@ Token/profile operations select a **local account row**, rather than a provider:
 Move joins into the database options:
 
 ```diff
-- experimental: { joins: true }
-+ advanced: { database: { joins: true } }
+experimental: { joins: true }
+advanced: { database: { joins: true } }
 ```
 
 Custom secondary storage needs atomic operations:

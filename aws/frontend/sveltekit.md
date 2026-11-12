@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/sveltekit
 title: "SvelteKit"
 description: "Deploy a SvelteKit app to AWS with AWS.Website.SvelteKit — SSR on a Lambda Web Function, assets and prerendered pages on S3 + CloudFront, and Kit's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.SvelteKit` deploys a [SvelteKit](https://svelte.dev/docs/kit) app to AWS. It builds the app with SvelteKit’s own Vite pipeline and a wrangler-free in-memory Node adapter; the server runs on a [Lambda Web Function](../compute/web-functions.md). Client assets and prerendered pages are served from a private S3 bucket through CloudFront; dynamic routes stream from the server. Your `vite.config.ts` loads natively; there is no `svelte.config.js` to write (kit v3 dropped it) and no adapter to install.
@@ -125,7 +125,7 @@ export const Website = AWS.Website.SvelteKit("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs SvelteKit’s own Vite dev server — Node SSR with full HMR, which is already the AWS Lambda programming model (`process.env` included) — instead of deploying; `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

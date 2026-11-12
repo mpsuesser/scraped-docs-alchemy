@@ -1,0 +1,71 @@
+---
+url: https://alchemy.run/neon/storage
+title: "Storage"
+description: "How Neon Buckets store files on a branch through an S3-compatible API, how typed Objects hold configuration as values, and how Functions read and write them through bindings."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+Neon stores files in **Buckets**, next to the database, through the same API as Amazon S3. A bucket belongs to a branch, so a preview branch has its own files, just as it has its own rows.
+
+## A bucket belongs to a branch
+
+my-appproject
+
+mainbranch · production
+
+Uploadsprivate Bucket
+
+settings.jsonobject
+
+avatars/sam.pngobject
+
+pr-42branch · preview
+
+Uploadsprivate Bucket
+
+settings.jsonobject
+
+A Bucket belongs to a branch and holds objects. The preview branch has an Uploads Bucket of its own, so its files change without touching production's.
+
+A bucket is private unless you make it public. Uploads from a browser go straight to the bucket through presigned URLs, which a Function creates for one key and a short time.
+
+## Declare a bucket
+
+```typescript
+const uploads = yield* Neon.Bucket("Uploads", { branch, access: "private" });
+```
+
+`access: "public_read"` lets anyone download its files. `cors` rules let browsers upload to it directly, and `forceDestroy` empties it when it’s destroyed.
+
+## Read and write files
+
+Bind the bucket in a Function, at the access level the Function needs:
+
+```typescript
+const files = yield* Neon.ReadWriteBucket(uploads);
+```
+
+The client reads object metadata, gets and puts objects, and creates presigned `GET` and `PUT` URLs. `Neon.ReadBucket` and `Neon.WriteBucket` give less. Provide the matching Layer, like `Neon.ReadWriteBucketHttp`.
+
+## Keep typed values as Objects
+
+Configuration a Function reads, like defaults or feature flags, fits in one file. A `Neon.Object` declares that file and its value, and keeps the value’s type:
+
+```typescript
+const settings = yield* Neon.Object("Settings", {
+  bucket: uploads,
+  key: "settings.json",
+  value: { theme: "dark", pageSize: 20 },
+});
+```
+
+The type is inferred from `value`. Pass a type argument, or an Effect Schema to check the value when it’s read.
+
+A Function reads it with `Neon.ReadObject(settings)`, or replaces it with `Neon.WriteObject(settings)`, and gets the value with its type, with `Neon.ReadObjectHttp` or `Neon.WriteObjectHttp` provided.
+
+## How credentials reach storage
+
+A Function on the same branch, in production, uses credentials Neon gives it. Code anywhere else, a local run or another cloud, gets credentials Alchemy creates. To use one you’ve made yourself, pass `{ credential }` to the binding.
+
+Neon’s credentials work on a branch and its child branches. They can’t be limited to one bucket or one key, so a binding’s access level limits the client your code gets, not what the credential could do.

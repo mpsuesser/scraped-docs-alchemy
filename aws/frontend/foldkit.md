@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to AWS with native local development."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to AWS. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
@@ -136,7 +136,7 @@ export default Alchemy.Stack(
 One declaration expands into the whole stack — an S3 bucket, the asset upload, a CloudFront KeyValueStore holding the file manifest, a viewer-request CloudFront Function, and the distribution itself.
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## Deep links

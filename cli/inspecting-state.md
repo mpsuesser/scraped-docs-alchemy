@@ -2,14 +2,14 @@
 url: https://alchemy.run/cli/inspecting-state
 title: "Inspecting State"
 description: "See what alchemy thinks is deployed, debug a bad diff, and recover from bad state."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## What does alchemy think is deployed?
 
 ```sh
-bun alchemy state
+pnpm alchemy state
 ```
 
 ```
@@ -27,19 +27,19 @@ In an interactive terminal, bare `alchemy state` opens the state explorer. It is
 For scripts, drill down one level at a time with `state list`:
 
 ```sh
-bun alchemy state list
+pnpm alchemy state list
 ```
 
 Lists every stack in the store.
 
 ```sh
-bun alchemy state list myapp
+pnpm alchemy state list myapp
 ```
 
 Lists every stage recorded under `myapp`.
 
 ```sh
-bun alchemy state list myapp/dev_sam
+pnpm alchemy state list myapp/dev_sam
 ```
 
 Prints the state entries tracked under that stack and stage. Pass these paths to `state read`.
@@ -47,7 +47,7 @@ Prints the state entries tracked under that stack and stage. Pass these paths to
 Or skip the drilling entirely and read the whole estate at once:
 
 ```sh
-bun alchemy state read -r | jq 'to_entries[] | select(.value.resourceType == "AWS.EC2.Instance")'
+pnpm alchemy state read -r | jq 'to_entries[] | select(.value.resourceType == "AWS.EC2.Instance")'
 ```
 
 One call returns every record across all stacks and stages as a single JSON document to filter locally — see [state read](state.md#state-read).
@@ -55,7 +55,7 @@ One call returns every record across all stacks and stages as a single JSON docu
 ## Debugging a bad diff
 
 ```sh
-bun alchemy state read myapp/dev_sam/Bucket
+pnpm alchemy state read myapp/dev_sam/Bucket
 ```
 
 This is the persisted props/attrs the planner diffs against — see [state](state.md) for the output encoding. Compare it with what `alchemy plan` says it wants to change. Three usual causes:
@@ -72,22 +72,22 @@ When the record is beyond repair, delete it and redeploy. `state delete` only de
 
 ```sh
 # one stage
-bun alchemy state delete myapp/pr-42
+pnpm alchemy state delete myapp/pr-42
 
 # a whole stack
-bun alchemy state delete myapp
+pnpm alchemy state delete myapp
 ```
 
 Then deploy — resources alchemy owns are re-imported automatically:
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 If the deploy fails with `OwnedBySomeoneElse`, escalate:
 
 ```sh
-bun alchemy deploy --adopt
+pnpm alchemy deploy --adopt
 ```
 
 See [Adopting Resources](adopting-resources.md) for why the flag is usually unnecessary.
@@ -98,7 +98,7 @@ Pass `--backend local` to any `state` subcommand to read the on-disk `.alchemy/s
 
 ```sh
 # wipe local state after a botched bootstrap
-bun alchemy state delete myapp --backend local
+pnpm alchemy state delete myapp --backend local
 ```
 
 See [cloudflare](cloudflare.md) for bootstrap repair.

@@ -2,13 +2,13 @@
 url: https://alchemy.run/domain/optimistic-updates
 title: "Optimistic updates"
 description: "Show pending intent, confirm it by commandId from a View feed, and retry an unknown outcome safely."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Show a deposit when the customer clicks. Confirm it when the bank's event arrives. A successful command reply means the write committed. The line waits for the feed before it becomes confirmed.
 
-This guide uses `Bank = DomainFoldkit.make(CustomerApi)` from [Integrate with Foldkit](foldkit.md). The bank example keeps its own queue and line Model. The adapter has no generic pending-state helper.
+The examples use `Bank = DomainFoldkit.make(CustomerApi)` from [Integrate with Foldkit](foldkit.md). The bank example keeps its own queue and line Model. The adapter has no generic pending-state helper.
 
 ## Track each intent
 

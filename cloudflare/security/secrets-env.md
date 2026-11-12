@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/security/secrets-env
 title: "Secrets & env"
 description: "Bind env vars and secrets to Workers with effect/Config, generate stable tokens with Alchemy.Random, and graduate to Secrets Store when secrets are shared across Workers."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Three ways to get a secret into a Worker, by where the value lives.
@@ -40,73 +40,39 @@ export default Cloudflare.Worker(
 ```
 
 `Config` values bind as `secret_text` regardless of the constructor
-used.
+used, so they're hidden in the dashboard and in `wrangler`. For how `Config`
+reaches a runtime on any cloud, with defaults and `Redacted` values, see
+[Secrets and Config](../../environments/secrets.md).
 
-## Unwrap at the call site
+## Values from a secrets manager
 
-The value is a `Redacted<string>` — unwrap with `Redacted.value`
-only where the raw string is needed:
+`.env` is only the default. A Stack's `secrets` option reads the same `Config` values from a secrets manager instead, like Doppler or Infisical, so production keys never sit in a file on anyone's machine. Pick the source per stage:
 
-```typescript
-const response = yield* Effect.tryPromise(() =>
-  fetch("https://api.openai.com/v1/models", {
-    headers: { Authorization: `Bearer ${Redacted.value(apiKey)}` },
+```typescript title="alchemy.run.ts"
+import * as Alchemy from "alchemy";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Doppler from "@alchemy.run/doppler";
+import * as Effect from "effect/Effect";
+import Api from "./src/api.ts";
+
+export default Alchemy.Stack(
+  "MyApp",
+  {
+    providers: Cloudflare.providers(),
+    state: Cloudflare.state(),
+    secrets: ({ stage }) =>
+      stage === "prod"
+        ? Doppler.Secrets({ project: "my-app", config: "prd" })
+        : Alchemy.Secrets.DotEnv(),
+  },
+  Effect.gen(function* () {
+    const api = yield* Api;
+    return { url: api.url };
   }),
 );
 ```
 
-:::caution
-Coercing a `Redacted` into a template literal yields the literal
-string `"<redacted>"` — `` `Bearer ${apiKey}` `` sends
-`Bearer <redacted>`.
-:::
-
-## Plain vars and defaults
-
-Non-secret config uses `Config.String` / `Config.Number`, and any
-combinator works:
-
-```typescript
-const port = yield* Config.Number("PORT").pipe(
-  Config.withDefault(3000),
-);
-```
-
-The raw source value is bound; combinators re-run at runtime against
-it, and a default is never bound. See
-[Secrets and Config](../../environments/secrets.md) for the full semantics.
-
-## Resolve Config in the constructor, not in fetch
-
-`fetch` never runs at deploy time, so a `Config` yielded only there
-is never discovered or bound:
-
-```typescript
-// 🚫 nothing is bound — API_KEY won't exist at runtime
-Effect.gen(function* () {
-  return {
-    fetch: Effect.gen(function* () {
-      const apiKey = yield* Config.Redacted("API_KEY");
-      // ...
-    }),
-  };
-});
-```
-
-Resolve it in the outer `Effect.gen` and reference the `const` from
-the handler:
-
-```typescript
-// ✅ bound in Construction, used in Runtime
-Effect.gen(function* () {
-  const apiKey = yield* Config.Redacted("API_KEY");
-  return {
-    fetch: Effect.gen(function* () {
-      return new Response(Redacted.value(apiKey));
-    }),
-  };
-});
-```
+Your code doesn't change: `Config.Redacted("API_KEY")` reads from whichever source the stage uses. See [Secret providers](../../environments/secret-providers.md) for Doppler, Infisical, ordering several sources, and writing your own.
 
 ## Async Workers: the env prop
 
@@ -222,6 +188,6 @@ Related:
 
 Reference:
 
-- [Store API reference](https://alchemy.run/providers/cloudflare/secretsstore#store)
+- [Store API reference](https://alchemy.run/providers/cloudflare/secretsstore)
 - [Secret API reference](https://alchemy.run/providers/cloudflare/secretsstore#secret)
 - [ReadSecret API reference](https://alchemy.run/providers/cloudflare/secretsstore#readsecret)

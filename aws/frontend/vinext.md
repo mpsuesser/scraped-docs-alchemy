@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to AWS with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The React Server Components handler runs on a [Lambda Web Function](../compute/web-functions.md), a Node HTTP server that serves many requests per environment and streams responses. S3 stores assets and CloudFront routes asset requests to S3 and other requests to the server. This uses vinext, not OpenNext.
@@ -100,7 +100,7 @@ export const Website = AWS.Website.Vinext("Website", {
 ## Local development
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 The Website runs `vinext dev` with native HMR and creates no cloud resources. Other resources declared in the Stack retain their own provider behavior. Apply `.pipe(Alchemy.remote())` to the Website for a live deployment during dev.

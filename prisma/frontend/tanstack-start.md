@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start to Prisma Compute with Prisma.Website.TanStackStart — React or Solid SSR on Bun, with native Vite dev locally."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Prisma.Website.TanStackStart` builds [TanStack Start](https://tanstack.com/start) for React or Solid through your project’s Vite pipeline. The shared Node target wraps its fetch handler as an HTTP server; SSR and client assets run on **Bun in Prisma Compute** from a `tar.gz` upload. There is no Docker image or registry.
@@ -108,7 +108,7 @@ Your `vite.config.ts` is the build configuration. Keep Vite’s default output d
 
 ## Local dev
 
-`bun alchemy dev` starts TanStack Start’s native Vite server with HMR and creates no Prisma resources for the Website. Opt into live deployment during dev explicitly:
+`alchemy dev` starts TanStack Start’s native Vite server with HMR and creates no Prisma resources for the Website. Opt into live deployment during dev explicitly:
 
 ```typescript
 export const Website = Prisma.Website.TanStackStart("Website").pipe(

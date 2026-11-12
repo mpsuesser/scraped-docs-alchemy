@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/local-first
 title: "Offline and local first"
 description: "Choose how local an app is, and keep it working offline by recording intents and sending them when the connection returns."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 How local an app can be depends on who decides what the user does: the server, or the device. There are four ways to build it. Two of them work with a domain model today.
@@ -14,7 +14,7 @@ The server decides. The app shows a change before the server confirms it, and co
 
 ## Offline intents
 
-The server still decides, but the app keeps working without a connection. It records what the user asked for, an intent, and never a fact only the server can establish. Intents wait in a queue, survive a reload, and go to the server in order once it can be reached. A conflict is just a rejection: a withdrawal made offline against money that's gone comes back `InsufficientFunds`. The rest of this page builds this.
+The server still decides, but the app keeps working without a connection. It records what the user asked for, an intent, and never a fact only the server can establish. Intents wait in a queue, survive a reload, and go to the server in order once it can be reached. A conflict is just a rejection: a withdrawal made offline against money that's gone comes back `InsufficientFunds`.
 
 ## A local copy of the server's aggregates
 

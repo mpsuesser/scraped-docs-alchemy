@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/drizzle
 title: "Add Drizzle ORM"
 description: "Deploy a Cloudflare Worker with Drizzle queries, Hyperdrive connections, and reviewed, committed migrations on Neon or PlanetScale."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This walkthrough connects a Worker to Postgres through Hyperdrive; [SQL](../../sql.md) owns the portable client APIs. For Cloudflare’s SQLite database, use [Drizzle on D1](d1-drizzle.md).
@@ -63,7 +63,7 @@ The generator writes SQL and snapshots to `migrations`; it does not need databas
 ## Generate and review migrations
 
 ```sh
-bunx drizzle-kit generate
+pnpm drizzle-kit generate
 git diff -- src/schema.ts migrations
 git status --short
 git add src/schema.ts drizzle.config.ts migrations
@@ -153,7 +153,7 @@ Only the runtime and database providers are needed; committed migration files do
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 The configured branch applies pending committed SQL before the Worker serves queries; deployment does not generate new migrations. Keep an existing `drizzle-kit migrate` workflow unless you deliberately choose Alchemy-managed application, as described in [migration ownership](../../sql/drizzle/migrations.md).
@@ -203,11 +203,11 @@ return yield* HttpServerResponse.json({ user });
 ## Iterate on the schema
 
 ```sh
-bunx drizzle-kit generate
+pnpm drizzle-kit generate
 git add src/schema.ts migrations
 git diff --cached
 git commit -m "Update database schema"
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Review each generated change before committing and deploy only those committed files. Reverting a TypeScript schema does not undo applied SQL; author and review a new migration or follow your database’s restore procedure.
@@ -259,7 +259,7 @@ Select the MySQL resource variant in the [PlanetScale guide](../../planetscale/g
 ## Select the MySQL client
 
 ```sh
-bun add @effect/sql-mysql2
+pnpm add @effect/sql-mysql2
 ```
 
 ```typescript

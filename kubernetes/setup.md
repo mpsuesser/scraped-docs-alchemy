@@ -2,15 +2,15 @@
 url: https://alchemy.run/kubernetes/setup
 title: "Setup"
 description: "Install Alchemy and connect it to a Kubernetes cluster, whether a local cluster on your machine, any cluster in your kubeconfig, or an explicit connection for CI. Then add a registry for images built from your code."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Alchemy deploys to any Kubernetes cluster whose API server it can reach. That includes a cluster on your machine, GKE, AKS, EKS, DigitalOcean, k3s, or an on-prem fleet. This page covers what you need before the first deploy. You need the `alchemy` and `@alchemy.run/kubernetes` packages, a cluster to deploy to, a registry for images built from your code, and permission to manage objects in the cluster.
+Alchemy deploys to any Kubernetes cluster whose API server it can reach. That includes a cluster on your machine, GKE, AKS, EKS, DigitalOcean, k3s, or an on-prem fleet. You need the `alchemy` and `@alchemy.run/kubernetes` packages, a cluster to deploy to, a registry for images built from your code, and permission to manage objects in the cluster.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - [Docker](https://docs.docker.com/get-started/get-docker/), to build images from your code and to run a local cluster
 - A cluster. Use [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) for a local one, or credentials for a hosted one. Hosted credentials are usually a kubeconfig context that already works with `kubectl`.
 - [`helm`](https://helm.sh/docs/intro/install/), only if you install [Helm charts](objects/helm-charts.md)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS fullstack app to Cloudflare Workers with Cloudflare.Website.Octane — native Octane and Vite configuration, no hosting adapter or Wrangler file required."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Cloudflare.Website.Octane` builds and deploys an [OctaneJS](https://octanejs.dev/) fullstack app as a Cloudflare Worker. Alchemy preserves Octane’s native compiler and client build, builds the server for Workers, and generates the Worker entry. No hosting adapter, Wrangler file, or separate build command is required.
@@ -157,7 +157,7 @@ export const OctaneApp = Cloudflare.Website.Vite("Octane", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Octane’s own Vite dev server — the plugin’s in-process SSR middleware serves rendering, server routes, and RPC with full HMR.

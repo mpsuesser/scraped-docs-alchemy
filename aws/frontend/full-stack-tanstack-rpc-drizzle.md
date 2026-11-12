@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/full-stack-tanstack-rpc-drizzle
 title: "Full-stack TanStack Start + RPC + Drizzle"
 description: "Build a reactive full-stack app on AWS — a TanStack Start UI on CloudFront and Lambda that drives an Effect RPC Lambda over Drizzle and Aurora DSQL, with browser state wired through Effect 4's native atom RPC."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 [TanStack Start](tanstack-start.md) · [Effect RPC](../apis/effect-rpc.md) · [Drizzle + DSQL](../data/drizzle-dsql.md)
@@ -364,7 +364,7 @@ function TodoList() {
 [AWS setup](../setup.md)
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Open `websiteUrl` to create, toggle, and delete todos.
@@ -372,7 +372,7 @@ Open `websiteUrl` to create, toggle, and delete todos.
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 The frontend runs locally; the backend Lambda and DSQL remain on AWS and incur charges.

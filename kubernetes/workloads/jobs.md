@@ -2,23 +2,20 @@
 url: https://alchemy.run/kubernetes/workloads/jobs
 title: "Jobs & CronJobs"
 description: "Run work to completion with Kubernetes.Job, as a container image or as an Effect program, and on a schedule as a CronJob. Covers how Job names, re-runs, retries, and cleanup work."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) runs work until it
-finishes, such as migrations, seeds, smoke tests, and reports. It
-applies a **ServiceAccount** and a Kubernetes **Job**. When you set
-`schedule`, it applies a **CronJob** instead.
+[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) runs work until it finishes, such as migrations, seeds, smoke tests, and reports. It applies a **ServiceAccount** and a Kubernetes **Job**. When you set `schedule`, it applies a **CronJob** instead.
+
+<svg viewBox="0 0 653.6 168" style="max-width: 752px" role="img" aria-label="A Job runs a pod until one succeeds, retrying up to backoffLimit. A CronJob creates a new Job on every schedule."><line stroke-opacity="0.2" stroke="currentColor" x1="81.6" y1="24" x2="81.6" y2="162"></line><line stroke-opacity="0.2" stroke="currentColor" x1="473.6" y1="24" x2="473.6" y2="162"></line><g><text fill="currentColor" x="4" y="56">pod 1</text> <g><rect stroke="currentColor" fill="none" x="81.6" y="40" width="134.4" height="24" rx="5"></rect><text fill="currentColor" x="148.8" y="56" text-anchor="middle">fails</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="74" x2="653.6" y2="74"></line><text fill="currentColor" x="4" y="94">pod 2</text> <text fill="currentColor" x="4" y="108">retry</text> <g><rect stroke="currentColor" fill="none" x="249.6" y="84" width="168.00000000000003" height="24" rx="5"></rect><text fill="currentColor" x="333.6" y="100" text-anchor="middle">succeeds</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="118" x2="653.6" y2="118"></line><text fill="currentColor" x="4" y="138">CronJob</text> <text fill="currentColor" x="4" y="152">0 3 * * *</text> <g><rect stroke="currentColor" fill="none" x="473.6" y="128" width="112" height="24" rx="5"></rect><text fill="currentColor" x="529.6" y="144" text-anchor="middle">tonight's Job</text></g></g> <text fill="currentColor" x="81.6" y="18" text-anchor="middle">applied</text> <text fill="currentColor" x="473.6" y="18" text-anchor="middle">03:00</text></svg> <svg viewBox="0 0 330 213" style="max-width: 379px" role="img" aria-label="A Job runs a pod until one succeeds, retrying up to backoffLimit. A CronJob creates a new Job on every schedule."><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="24" x2="0" y2="207"></line><line stroke-opacity="0.2" stroke="currentColor" x1="222.6" y1="24" x2="222.6" y2="207"></line><g><text fill="currentColor" x="0" y="44">pod 1</text> <g><rect stroke="currentColor" fill="none" x="0" y="54" width="76.32" height="24" rx="5"></rect><text fill="currentColor" x="38.16" y="70" text-anchor="middle">fails</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="84" x2="330" y2="84"></line><text fill="currentColor" x="0" y="98">pod 2 <tspan fill="currentColor" dx="8">retry</tspan></text> <g><rect stroke="currentColor" fill="none" x="95.39999999999999" y="108" width="95.39999999999999" height="24" rx="5"></rect><text fill="currentColor" x="143.1" y="124" text-anchor="middle">succeeds</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="138" x2="330" y2="138"></line><text fill="currentColor" x="0" y="152">CronJob <tspan fill="currentColor" dx="8">0 3 * * *</tspan></text> <g><rect stroke="currentColor" fill="none" x="222.6" y="162" width="63.599999999999994" height="24" rx="5"></rect><text fill="currentColor" x="222.6" y="198" text-anchor="start">tonight's Job</text></g></g> <text fill="currentColor" x="0" y="18" text-anchor="start">applied</text> <text fill="currentColor" x="222.6" y="18" text-anchor="middle">03:00</text></svg>
+
+A Job runs a pod until one succeeds, retrying up to backoffLimit. A CronJob creates a new Job on every schedule.
 
 A Job runs one of two things:
 
-- **A container image.** It can be any image, with its own
-  entrypoint and arguments. Nothing about the program needs to know
-  about Alchemy.
-- **An Effect program.** It's an Effect you write in the same
-  codebase, bundled into an image and run in the pod. It can read
-  configuration, call other services, and use bindings.
+- **A container image.** It can be any image, with its own entrypoint and arguments. Nothing about the program needs to know about Alchemy.
+- **An Effect program.** It’s an Effect you write in the same codebase, bundled into an image and run in the pod. It can read configuration, call other services, and use bindings.
 
 ## Run a container image
 
@@ -36,20 +33,13 @@ const migrate = yield* Kubernetes.Job("Migrate", {
 });
 ```
 
-The cluster's nodes pull the image as written, so this works on any
-cluster. It takes the same image, environment, resource, and pod
-template props as a [Deployment](deployments.md),
-without the port and Service.
+The cluster’s nodes pull the image as written, so this works on any cluster. It takes the same image, environment, resource, and pod template props as a [Deployment](deployments.md), without the port and Service.
 
 ## Run an Effect program
 
-Declare the Job in its own module with `main: import.meta.url` and an
-implementation that returns `{ run }`. This example assumes
-`src/infra.ts` exports the cluster and an `Api` Deployment, as
-described in [Why the props are an Effect](#why-the-props-are-an-effect):
+Declare the Job in its own module with `main: import.meta.url` and an implementation that returns `{ run }`. This example assumes `src/infra.ts` exports the cluster and an `Api` Deployment, as described in [Why the props are an Effect](#why-the-props-are-an-effect):
 
 ```typescript
-// src/Seed.ts
 import * as Kubernetes from "@alchemy.run/kubernetes";
 import * as Effect from "effect/Effect";
 import { Api, Cluster } from "./infra.ts";
@@ -72,7 +62,7 @@ export default Kubernetes.Job(
     return {
       run: Effect.gen(function* () {
         const service = yield* apiService;
-        yield* Effect.log(`seeding records through ${service}`);
+        yield* Effect.log(\`seeding records through ${service}\`);
       }).pipe(Effect.orDie),
     };
   }),
@@ -81,54 +71,32 @@ export default Kubernetes.Job(
 
 Then yield it from your Stack with `yield* Seed`.
 
-On deploy, Alchemy bundles the module, builds an image for the
-cluster's nodes, pushes it to the cluster's registry, and applies the
-Job. In the pod, a generated entrypoint runs `run` to completion and
-exits:
+On deploy, Alchemy bundles the module, builds an image for the cluster’s nodes, pushes it to the cluster’s registry, and applies the Job. In the pod, a generated entrypoint runs `run` to completion and exits:
 
 - **Success.** The process exits 0 and the Job completes.
-- **Failure.** A failed or defected `run` exits non-zero, which
-  Kubernetes counts against `backoffLimit`.
+- **Failure.** A failed or defected `run` exits non-zero, which Kubernetes counts against `backoffLimit`.
 
-Yielding a resource attribute such as `api.serviceName` in the
-implementation binds it to the Job. Alchemy resolves the value at
-deploy time and delivers it to the pod, and `run` reads it by
-yielding the returned Effect. The binding also makes the Job depend
-on the resource.
+Yielding a resource attribute such as `api.serviceName` in the implementation binds it to the Job. Alchemy resolves the value at deploy time and delivers it to the pod, and `run` reads it by yielding the returned Effect. The binding also makes the Job depend on the resource.
 
-`run` can use `HttpClient` to call other services. It can also use the Bun
-platform services, such as the file system and child processes. A
-Job has nowhere to return errors, so `run` must handle them or turn
-them into defects with `Effect.orDie`.
+`run` can use `HttpClient` to call other services. It can also use the Bun platform services, such as the file system and child processes. A Job has nowhere to return errors, so `run` must handle them or turn them into defects with `Effect.orDie`.
 
 ### What the cluster needs
 
 The image has to be pushed somewhere the nodes can pull from:
 
-- **[`Kubernetes.LocalCluster`](../clusters/local.md).** It has
-  a built-in registry, so there's nothing to configure.
-- **Any other cluster.** It needs a
-  [`registry`](../clusters/registries.md) on the connection,
-  such as `ghcr.io/acme`.
-- **[Amazon EKS](../clusters/eks.md).** It uses ECR, which is
-  created for you.
+- **[`Kubernetes.LocalCluster`](../clusters/local.md).** It has a built-in registry, so there’s nothing to configure.
+- **Any other cluster.** It needs a [`registry`](../clusters/registries.md) on the connection, such as `ghcr.io/acme`.
+- **[Amazon EKS](../clusters/eks.md).** It uses ECR, which is created for you.
 
-The generated entrypoint imports `@effect/platform-bun`, so install
-it alongside `alchemy` and `effect`.
+The generated entrypoint imports `@effect/platform-bun`, so install it alongside `alchemy` and `effect`.
 
 ### Why the props are an Effect
 
-The props are an Effect so the module can `yield*` shared resources
-that the Stack also uses, such as the cluster, a namespace, or a
-Deployment to call. Declare those shared resources at module scope in
-a file such as `src/infra.ts`. Each `yield*` resolves to the same
-resource. When the props don't reference anything, pass a plain
-object instead.
+The props are an Effect so the module can `yield*` shared resources that the Stack also uses, such as the cluster, a namespace, or a Deployment to call. Declare those shared resources at module scope in a file such as `src/infra.ts`. Each `yield*` resolves to the same resource. When the props don’t reference anything, pass a plain object instead.
 
 ### Tagged Jobs
 
-The tagged form declares the Job as a class, so other code can depend
-on it by type and the implementation is provided as a Layer:
+The tagged form declares the Job as a class, so other code can depend on it by type and the implementation is provided as a Layer:
 
 ```typescript
 export class Backfill extends Kubernetes.Job<Backfill>()("Backfill") {}
@@ -141,54 +109,47 @@ export default Backfill.make(
 );
 ```
 
+## Choose a container runtime
+
+`runtimeClassName` runs the Job’s pod under a RuntimeClass the cluster defines. On EKS Auto Mode, `isolated-sandbox` runs it in its own Nitro Sandbox, a good fit for code you didn’t write:
+
+```typescript
+yield* Kubernetes.Job("RunGeneratedCode", {
+  cluster,
+  image: "ghcr.io/acme/runner:1",
+  runtimeClassName: "isolated-sandbox",
+});
+```
+
+See [EKS: Run each pod in its own VM](../../aws/compute/eks.md#run-each-pod-in-its-own-vm).
+
 ## When a Job runs
 
-Kubernetes starts a Job as soon as it's created. Alchemy creates a
-new Job whenever what it runs changes. A Job runs:
+Kubernetes starts a Job as soon as it’s created. Alchemy creates a new Job whenever what it runs changes. A Job runs:
 
 - On the first deploy.
-- On every deploy that changes its spec. That means the image,
-  `args`, `env` values, resources, or pod template. `env` values
-  include Outputs that resolved to new values.
-- For Effect programs, on every deploy that changes the program or
-  anything it imports.
+- On every deploy that changes its spec. That means the image, `args`, `env` values, resources, or pod template. `env` values include Outputs that resolved to new values.
+- For Effect programs, on every deploy that changes the program or anything it imports.
 
-A Job doesn't run on deploys that leave it unchanged. The deploy
-doesn't wait for the Job to finish. Follow it with
-`kubectl wait --for=condition=complete job/<jobName>` and
-`kubectl logs job/<jobName>`.
+A Job doesn’t run on deploys that leave it unchanged. The deploy doesn’t wait for the Job to finish. Follow it with `kubectl wait --for=condition=complete job/<jobName>` and `kubectl logs job/<jobName>`.
 
 ## Job names
 
-A Job's pod template can't change after the Job is created, so
-Alchemy names each one-shot Job after its spec. `jobName` is the base
-name plus the first eight characters of a hash, for example
-`seed-5133e709`. A changed spec produces a new name. Alchemy applies
-the new Job and deletes the previous one along with its pods.
+A Job’s pod template can’t change after the Job is created, so Alchemy names each one-shot Job after its spec. `jobName` is the base name plus the first eight characters of a hash, for example `seed-5133e709`. A changed spec produces a new name. Alchemy applies the new Job and deletes the previous one along with its pods.
 
-Kubernetes caps Job names at 63 characters, so the base name is
-truncated to fit. Read the current name from the `jobName`
-attribute rather than predicting it.
+Kubernetes caps Job names at 63 characters, so the base name is truncated to fit. Read the current name from the `jobName` attribute rather than predicting it.
 
 ## Retries, restarts, and cleanup
 
-- `backoffLimit` sets how many failed pods Kubernetes retries before
-  marking the Job failed.
-- `restartPolicy` sets what happens after a failure. `"Never"` is the
-  default and starts a new pod. `"OnFailure"` restarts the container
-  in place.
-- `ttlSecondsAfterFinished` makes Kubernetes delete the finished Job
-  this many seconds after it completes or fails.
+- `backoffLimit` sets how many failed pods Kubernetes retries before marking the Job failed.
+- `restartPolicy` sets what happens after a failure. `"Never"` is the default and starts a new pod. `"OnFailure"` restarts the container in place.
+- `ttlSecondsAfterFinished` makes Kubernetes delete the finished Job this many seconds after it completes or fails.
 
-With `ttlSecondsAfterFinished`, Kubernetes removes the Job object on
-its own. Alchemy tracks the Job through its ServiceAccount, so a
-garbage-collected Job is not treated as missing and does not run
-again until its spec changes.
+With `ttlSecondsAfterFinished`, Kubernetes removes the Job object on its own. Alchemy tracks the Job through its ServiceAccount, so a garbage-collected Job is not treated as missing and does not run again until its spec changes.
 
 ## Run on a schedule
 
-Set `schedule` to a standard five-field cron expression and Alchemy
-applies a `CronJob` instead. It works for both kinds of Job:
+Set `schedule` to a standard five-field cron expression and Alchemy applies a `CronJob` instead. It works for both kinds of Job:
 
 ```typescript
 // an image
@@ -221,20 +182,11 @@ export default Kubernetes.Job(
 );
 ```
 
-`backoffLimit`, `restartPolicy`, and `ttlSecondsAfterFinished` apply
-to each Job the CronJob starts. A CronJob can be updated in place, so
-it keeps a stable name. That name is the base name, truncated to 52
-characters so Kubernetes can append its own suffix to each Job it
-starts. Changing the program updates the CronJob's image, and the
-next scheduled run uses it.
+`backoffLimit`, `restartPolicy`, and `ttlSecondsAfterFinished` apply to each Job the CronJob starts. A CronJob can be updated in place, so it keeps a stable name. That name is the base name, truncated to 52 characters so Kubernetes can append its own suffix to each Job it starts. Changing the program updates the CronJob’s image, and the next scheduled run uses it.
 
-Schedules are evaluated in the time zone of the cluster's controller
-manager, which is UTC on most hosted clusters. The CronJob
-`timeZone` field isn't exposed as a prop. If you need it, write the
-CronJob as a [Manifest](../objects/manifests.md).
+Schedules are evaluated in the time zone of the cluster’s controller manager, which is UTC on most hosted clusters. The CronJob `timeZone` field isn’t exposed as a prop. If you need it, write the CronJob as a [Manifest](../objects/manifests.md).
 
-Adding or removing `schedule` switches between a one-shot Job and a
-CronJob. Alchemy applies the new object and deletes the old one.
+Adding or removing `schedule` switches between a one-shot Job and a CronJob. Alchemy applies the new object and deletes the old one.
 
 ## Attributes
 
@@ -249,9 +201,6 @@ CronJob. Alchemy applies the new object and deletes the old one.
 
 ## Where next
 
-- **[Tutorial part 3](../tutorial/part-3.md).** Builds an
-  Effect smoke test and a scheduled Effect Job on a local cluster.
-- **[Configuration & bindings](bindings.md).**
-  Pass values and credentials to a Job.
-- **[`Job` reference](https://alchemy.run/providers/kubernetes/reference/workloads#job).** Lists every prop
-  and attribute.
+- **[Tutorial part 3](../tutorial/part-3.md).** Builds an Effect smoke test and a scheduled Effect Job on a local cluster.
+- **[Configuration & bindings](bindings.md).** Pass values and credentials to a Job.
+- **[`Job` reference](https://alchemy.run/providers/kubernetes/reference/workloads#job).** Lists every prop and attribute.

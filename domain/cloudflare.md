@@ -2,26 +2,22 @@
 url: https://alchemy.run/domain/cloudflare
 title: "Cloudflare Durable Objects"
 description: "Host a domain model on Durable Objects behind a Worker, with live reads over WebSockets."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Host your model on Cloudflare, and every aggregate instance, view key and policy gets its own Durable Object. You declare none of them yourself.
 
-## Host the model in a Worker
+## Host the model
 
-Provide `DomainCloudflare.layerDurableObjects()` as the platform, and serve your Apis from the Worker.
+Provide `DomainCloudflare.layerDurableObjects()` to the model’s Layer, as you would `DomainRivet.layerDurableObjects` or `Domain.InMemory`, and serve your Apis from the Worker.
 
 ```typescript
-// packages/server/src/BankWorker.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as DomainCloudflare from "@alchemy.run/cloudflare/Domain";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Stripe from "@alchemy.run/stripe";
-import { Account } from "@bank/domain/Account/Account.aggregate";
-import { AccountSummary } from "@bank/domain/Account/AccountSummary.view";
 import { Bank, BankHandlers } from "@bank/domain/Bank.model";
 import { CustomerApi } from "@bank/domain/CustomerApi.api";
-import { LedgerStore } from "@bank/domain/Ledger/LedgerStore";
 import { SupportApi } from "@bank/domain/SupportApi.api";
 import * as Telemetry from "alchemy/Telemetry";
 import * as Effect from "effect/Effect";
@@ -40,7 +36,7 @@ import { StripeSettlements } from "./Settlement/StripeSettlements.ts";
 /**
  * Everything the Worker serves: the middleware both Apis declare, and the
  * Bank hosted on Durable Objects, with the ledger in D1. Swap
- * `DomainCloudflare.layerDurableObjects()` for `Domain.InMemory` and nothing else changes.
+ * \`DomainCloudflare.layerDurableObjects()\` for \`Domain.InMemory\` and nothing else changes.
  */
 const BankLive = Layer.mergeAll(
   SessionLive,
@@ -61,32 +57,15 @@ const BankLive = Layer.mergeAll(
   ),
 );
 
-/** `/api/ledger/<account>`: the ledger is a store the bank owns, so it is served by a plain route. */
-const LEDGER = /^\/api\/ledger\/([^/]+)$/;
-
 export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
   "BankWorker",
   { main: import.meta.url },
   Effect.gen(function* () {
     const customerApi = yield* CustomerApi;
     const supportApi = yield* SupportApi;
-    const ledger = yield* LedgerStore;
-    const summaries = yield* AccountSummary;
     const sessionKey = yield* SessionKey;
     const signedIn = (request: HttpServerRequest) =>
       actorOf(request.headers).pipe(Effect.provideService(SessionKey, sessionKey));
-    const ledgerRoute = (accountId: string) =>
-      Effect.gen(function* () {
-        const request = yield* HttpServerRequest;
-        const actor = yield* signedIn(request);
-        if (Option.isNone(actor)) return HttpServerResponse.empty({ status: 401 });
-        const summary = yield* summaries.query(Account.ref(accountId)).pipe(Effect.orDie);
-        const owner = Option.getOrNull(summary)?.customerId;
-        if (actor.value._tag === "Customer" && owner !== actor.value.customerId) {
-          return HttpServerResponse.empty({ status: 404 });
-        }
-        return yield* HttpServerResponse.json(yield* ledger.forAccount(accountId));
-      });
     // The app's own telemetry, collected here and forwarded with the bank's
     // credentials, so no ingest token reaches a browser. Signed-in users only.
     const telemetry = Telemetry.relay({
@@ -103,8 +82,6 @@ export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
         if (path === "/api/session") {
           return yield* sessionRoute.pipe(Effect.provideService(SessionKey, sessionKey));
         }
-        const ledgerPath = LEDGER.exec(path);
-        if (ledgerPath) return yield* ledgerRoute(decodeURIComponent(ledgerPath[1]!));
         if (path.startsWith("/api/telemetry/")) return yield* telemetry;
         if (path.startsWith("/api")) return yield* customerApi.fetch;
         if (path.startsWith("/support")) return yield* supportApi.fetch;
@@ -115,16 +92,16 @@ export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
 ) {}
 ```
 
-Each aggregate, view and policy becomes a Durable Object class on this Worker while it starts, so there are no bindings or classes to write.
+Each aggregate, view and policy becomes a Durable Object class on this Worker while it starts, so there are no bindings or classes to write. A [query](query.md) has no key, so no object owns it: it runs in the Worker, where the store it reads (here, D1) is bound.
 
 ## Deploy it
 
 ```typescript
-// alchemy.run.ts
 import BankWorker from "@bank/server/BankWorker";
 import * as Alchemy from "alchemy";
 import * as Axiom from "@alchemy.run/axiom";
 import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -132,7 +109,12 @@ import * as Layer from "effect/Layer";
 export default Alchemy.Stack(
   "CloudflareDomainExample",
   {
-    providers: Layer.mergeAll(Cloudflare.providers(), Stripe.providers(), Axiom.providers()),
+    providers: Layer.mergeAll(
+      Cloudflare.providers(),
+      DomainCloudflare.providers(),
+      Stripe.providers(),
+      Axiom.providers(),
+    ),
     state: Alchemy.localState(),
   },
   Effect.gen(function* () {
@@ -150,11 +132,13 @@ export default Alchemy.Stack(
 );
 ```
 
+`DomainCloudflare.providers()` sits next to `Cloudflare.providers()`: a deploy that adds a view or projection waits through it until the view has received its history.
+
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
-`bun alchemy dev` runs the same Worker and Durable Objects on your machine.
+`alchemy dev` runs the same Worker and Durable Objects on your machine.
 
 ## Know what runs where
 
@@ -163,9 +147,9 @@ bun alchemy deploy
 | An aggregate instance, like account `a-1` | One Durable Object, named by its id |
 | A view key, like the summary of `a-1` | One Durable Object per view and key |
 | A policy | One Durable Object per policy and key (by default, per source instance) |
-| A projection | One Durable Object per projection and key, with the key's input log |
+| A projection | One Durable Object per projection and key, with the key’s input log |
 | A stream key, like the card of `a-1` | One Durable Object per stream and key |
-| A saga run, like transfer `t-1` | One Durable Object per saga and run, holding its steps' results |
+| A saga run, like transfer `t-1` | One Durable Object per saga and run, holding its steps’ results |
 
 Sagas run on `Cloudflare.Workflows.layerDurableObjectEngine()`, the same engine you can use for plain Effect workflows. See [Effect workflows](../cloudflare/compute/effect-workflows.md).
 
@@ -174,64 +158,60 @@ Sagas run on `Cloudflare.Workflows.layerDurableObjectEngine()`, the same engine 
 Pass a `jurisdiction` to `DomainCloudflare.layerDurableObjects` in `BankLive` to create and store every Durable Object of the model, saga runs included, only inside a jurisdiction, for example the EU for personal data:
 
 ```typescript
-  Layer.provide(
-    Layer.mergeAll(
-      DomainCloudflare.layerDurableObjects({ jurisdiction: "eu" }),
-      SiftFraudCheck,
-      StripePayments,
-      Cloudflare.D1.QueryDatabaseBinding,
-    ),
+Layer.provide(
+  Layer.mergeAll(
+    DomainCloudflare.layerDurableObjects({ jurisdiction: "eu" }),
+    SiftFraudCheck,
+    StripePayments,
+    Cloudflare.D1.QueryDatabaseBinding,
   ),
+),
 ```
 
-A Durable Object in a jurisdiction is a different object from the one with the same name outside it. A model that already has data starts empty when you add a jurisdiction, and its old objects stay where they were. Other resources the Worker uses, like the ledger's D1 database, take their own `jurisdiction`. `alchemy dev` doesn't emulate jurisdictions: local workerd runs the model unrestricted.
+A Durable Object in a jurisdiction is a different object from the one with the same name outside it. A model that already has data starts empty when you add a jurisdiction, and its old objects stay where they were. Other resources the Worker uses, like the ledger’s D1 database, take their own `jurisdiction`. `alchemy dev` doesn’t emulate jurisdictions: local workerd runs the model unrestricted.
 
 ## Host several models in one Worker
 
-Each model's Durable Object classes are named after the model: `Billing.AccountAggregate` and `Audit.AccountAggregate` when both list `Account`, and `Billing.OpenAccountWorkflow` for a saga. Their data never mixes, so several models can share one Worker and one `layerDurableObjects()`. Two different models with the same name in one Worker fail its deploy.
+Each model’s Durable Object classes are named after the model: `Billing.AccountAggregate` and `Audit.AccountAggregate` when both list `Account`, and `Billing.OpenAccountWorkflow` for a saga. Their data never mixes, so several models can share one Worker and one `DomainCloudflare.layerDurableObjects()`. Two different models with the same name in one Worker fail its deploy.
 
 Renaming a model renames its classes, and the model starts empty under the new names.
 
 ## Upgrade without losing data
 
-Each Worker records the Domain version it was deployed with. When a later Alchemy release lays models out differently, the next deploy moves the deployed data to the new layout: it renames classes in place, so every aggregate, view row and running saga carries over.
+Models deployed before Domain version 0 named classes after the definition alone, like `AccountAggregate`. The next deploy renames each to the model’s class with the Durable Object’s [`renamedFrom`](https://alchemy.run/providers/cloudflare/workers#durableobject), so every aggregate, view row and running saga carries over.
 
-Models deployed before versions existed named classes after the definition alone, like `AccountAggregate`. If two models in one Worker listed the same aggregate, they shared that class and its data, and only one can keep it. The deploy fails until you choose:
+If two models in one Worker listed the same aggregate, they shared that class and its data, and only one can keep it. The deploy fails with `DurableObjectRenameConflict` until the others set `legacyData: false`:
 
 ```typescript
-import * as DomainCloudflare from "@alchemy.run/cloudflare/Domain";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Layer from "effect/Layer";
 import { Audit, AuditHandlers } from "./Audit.ts";
 import { Billing, BillingHandlers } from "./Billing.ts";
 
 const Platform = DomainCloudflare.layerDurableObjects();
 // Billing keeps the accounts both models wrote; Audit starts empty.
-export const BillingLive = Billing.layer(BillingHandlers, { legacyData: true }).pipe(
+export const BillingLive = Billing.layer(BillingHandlers).pipe(Layer.provide(Platform));
+export const AuditLive = Audit.layer(AuditHandlers, { legacyData: false }).pipe(
   Layer.provide(Platform),
 );
-export const AuditLive = Audit.layer(AuditHandlers).pipe(Layer.provide(Platform));
 ```
 
 ## Count on these guarantees
 
 Commands to one aggregate instance run one at a time. Its events, new state and reply commit together, or not at all.
 
-Every event reaches the views, projections and policies that consume it, at least once and in order for each source, even if a Durable Object restarts in between. A projection key whose handler fails keeps its inputs and retries them. Scheduled commands fire when they're due, even after a restart.
+Every event reaches the views, projections and policies that consume it, at least once and in order for each source, even if a Durable Object restarts in between. A projection key whose handler fails keeps its inputs and retries them. Scheduled commands fire when they’re due, even after a restart.
 
 ## Watch without polling
 
-With `Domain.protocolWebSocket`, each `watch` or `events` read is a WebSocket to the Durable Object that owns the key. Every change is pushed down it as it commits. Between changes the object hibernates, so a quiet watch doesn't keep it running.
+With `Domain.protocolWebSocket`, each `watch` or `events` read is a WebSocket to the Durable Object that owns the key. Every change is pushed down it as it commits. Between changes the object hibernates, so a quiet watch doesn’t keep it running.
 
 `get`, `list` and commands go over plain HTTP. See [Api](api.md#choose-a-protocol).
 
 ## Deploy without dropping requests
 
-During a deploy, some Durable Objects still run the previous version for a moment. Calls between them are retried for about a minute until the new version answers, and a client's live read reconnects and carries on from its last change.
+During a deploy, some Durable Objects still run the previous version for a moment. Calls between them are retried for about a minute until the new version answers, and a client’s live read reconnects and carries on from its last change.
 
 ## Add consumers to a running Domain
 
 A deploy that adds a view or a projection, or bumps a version, fills it from the history before it finishes. See [History at scale](backfill.md).
-
-:::note
-The same model runs [in memory](in-memory.md) for tests. The full Worker, with Stripe and a support Api, is in the [bank example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-domain).
-:::

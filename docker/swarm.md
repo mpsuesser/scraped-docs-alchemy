@@ -1,247 +1,30 @@
 ---
 url: https://alchemy.run/docker/swarm
-title: "Docker Swarm"
-description: "Provision a swarm and deploy replicated services to it, from local dev to a remote VPS"
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+title: "Swarms"
+description: "Turn an engine into a swarm with Docker.Swarm, locally or on a server over SSH, use a swarm you didn't create, and grow it to more nodes."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Docker Swarm is orchestration built into Docker: replicated services, rolling
-updates, and overlay networking, without running Kubernetes. Alchemy models
-the swarm itself (`Docker.Swarm`) and its workloads (`Docker.Service`,
-overlay `Docker.Network`), targeting any engine through a `Docker.Context`.
+**Swarm** is the orchestrator built into the Docker engine. A swarm is a group of engines, called **nodes**, that run [services](services.md) together. **Managers** hold the swarm’s state and take commands, and every node runs **tasks**, the containers a service asks for. When a task or a whole node fails, the managers start replacements elsewhere. It’s orchestration without installing anything beyond Docker.
 
-## Create the swarm
+alchemy deployyour machine
 
-```typescript
-import * as Docker from "@alchemy.run/docker";
+swarmDocker.Swarm
 
-const swarm = yield* Docker.Swarm("swarm");
-```
+vpsnode · manager
 
-`Docker.Swarm` is an idempotent `docker swarm init`: it turns the engine into
-a single-node swarm whose node is both manager and worker. Regular
-`docker run` and `docker build` usage of the engine is unaffected, and if the
-resource is destroyed the node leaves the swarm again.
+web.1task
 
-## Use an existing swarm
+web.2task
 
-A swarm you didn't create with `Docker.Swarm` is still fully usable. There
-are two ways in, depending on who should own the swarm's lifecycle.
+node-2node · worker
 
-### Reference it
+web.3task
 
-```typescript
-const vps = yield* Docker.Context("vps", {
-  docker: "host=ssh://deploy@example.com",
-});
+Alchemy talks only to a manager. The swarm places a service's tasks on every node, including nodes you joined to it by hand.
 
-const web = yield* Docker.Service("web", {
-  context: vps,
-  image: "nginx:alpine",
-  replicas: 3,
-});
-```
-
-Services never require a `Docker.Swarm` resource — they only need the engine
-behind `context` to already be a swarm manager. Pass a `Docker.Context` (or a
-plain context name) and Alchemy manages the workloads while the swarm itself
-stays someone else's responsibility: destroying the stack removes the
-services and leaves the swarm untouched.
-
-### Adopt it
-
-```typescript
-const swarm = yield* Docker.Swarm("swarm").pipe(Alchemy.adopt(true));
-```
-
-Adoption makes the swarm's lifecycle part of the stack. An engine that is
-already in swarm mode is treated as foreign — the deploy fails with
-`OwnedBySomeoneElse` until you opt in with `adopt(true)` (or `--adopt`).
-After adoption Alchemy manages the swarm like one it created, **including
-dissolving the node's membership on destroy** — so adopt only when this
-stack should own the swarm, and reference otherwise.
-
-## Deploy a service
-
-```typescript
-const web = yield* Docker.Service("web", {
-  context: swarm,
-  image: "nginx:alpine",
-  replicas: 2,
-  ports: [{ external: 8080, internal: 80 }],
-});
-```
-
-Passing the swarm as `context` does two things: the service deploys **after**
-the swarm exists, and it targets the same engine. The swarm keeps `replicas`
-copies of the container running, and the published port is reachable on every
-node through the routing mesh.
-
-## Roll out a new image
-
-```diff lang="typescript"
-const web = yield* Docker.Service("web", {
-  context: swarm,
--  image: "ghcr.io/acme/web:1.0.0",
-+  image: "ghcr.io/acme/web:1.1.0",
-  replicas: 2,
-+  updateConfig: { order: "start-first", failureAction: "rollback" },
-});
-```
-
-Changing the image, replicas, environment, labels, networks, ports, mounts,
-secrets or policies updates the service in place with `docker service update`.
-Swarm starts each new task before stopping the old one, and if the new tasks
-fail it rolls the service back and the deploy fails with
-`DockerServiceUpdateFailed`. Changing the name, context, command or endpoint
-mode still replaces the service.
-
-## Connect services on an overlay network
-
-```typescript
-const network = yield* Docker.Network("app-net", {
-  context: swarm,
-  driver: "overlay",
-});
-
-const db = yield* Docker.Service("db", {
-  context: swarm,
-  image: "postgres:18-alpine",
-  networks: [{ name: network.name, aliases: ["postgres"] }],
-});
-```
-
-Overlay networks span the whole swarm. Services attached to the same network
-reach each other by service name or alias — here, other services resolve the
-database as `postgres`.
-
-## Write an effectful service
-
-```typescript
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/http/HttpServerResponse";
-
-const api = yield* Docker.Service(
-  "api",
-  {
-    context: swarm,
-    main: import.meta.url,
-    port: 3000,
-    ports: [{ external: 8080, internal: 3000 }],
-    replicas: 2,
-  },
-  Effect.gen(function* () {
-    return {
-      fetch: Effect.gen(function* () {
-        return yield* HttpServerResponse.json({ ok: true });
-      }),
-    };
-  }),
-);
-```
-
-Instead of a pre-built image, `main` points at this module. Alchemy bundles
-the program, bakes it into a content-addressed image built on the swarm's
-engine, and serves the returned `fetch` handler with a Bun HTTP server on
-`port`. The image is only rebuilt when the code changes; unchanged redeploys
-are no-ops.
-
-## Add background work
-
-```diff lang="typescript"
-+import { ServerHost } from "alchemy/Runtime/Process";
-+import * as Schedule from "effect/Schedule";
-
-const api = yield* Docker.Service(
-  // ...
-  Effect.gen(function* () {
-+    const host = yield* ServerHost;
-+    yield* host.run(
-+      Effect.log("heartbeat").pipe(
-+        Effect.repeat(Schedule.spaced("30 seconds")),
-+        Effect.asVoid,
-+      ),
-+    );
-    return {
-      fetch: Effect.gen(function* () {
-        return yield* HttpServerResponse.json({ ok: true });
-      }),
-    };
-  }),
-);
-```
-
-`host.run` registers a long-running loop that executes alongside the HTTP
-server inside every replica.
-
-## Deploy to a remote machine
-
-### Point a context at the machine
-
-```typescript
-const vps = yield* Docker.Context("vps", {
-  docker: "host=ssh://deploy@example.com",
-});
-```
-
-A Docker context is a pointer to another engine. With an SSH endpoint, every
-Docker operation — including image builds — runs on that machine; nothing
-needs to be installed there beyond Docker.
-
-### Initialize the swarm there
-
-```typescript
-const swarm = yield* Docker.Swarm("swarm", {
-  context: vps,
-  advertiseAddr: "10.0.0.1",
-});
-```
-
-The same `Docker.Swarm`, now initializing the remote engine. `advertiseAddr`
-is the address other swarm members would use to reach this manager — Docker
-requires it when the host has several network interfaces. Like the other init
-props, it only applies when the swarm is first created.
-
-### Services follow the swarm
-
-```typescript
-const web = yield* Docker.Service("web", {
-  context: swarm,
-  image: "nginx:alpine",
-  replicas: 3,
-});
-```
-
-Nothing else changes: services take the swarm as `context`, so the same stack
-deploys locally or to the VPS depending on which engine the swarm targets.
-
-## Grow to more nodes
-
-Adding machines to the swarm is host-level setup (there is no resource for
-node membership yet). On the manager, print the join command:
-
-```sh
-docker swarm join-token worker
-```
-
-Run the printed `docker swarm join --token ... <manager-ip>:2377` on each new
-machine, and label nodes to target them with `placement.constraints`:
-
-```sh
-docker node update --label-add zone=eu <node>
-```
-
-Alchemy keeps managing the swarm's workloads through the manager. Note that
-`main`-bundled images are built on the manager's local store — multi-node
-swarms need images on a registry every node can reach (build with
-`Docker.Image` + `registry` and pass the pushed ref as `image`).
-
-## Local dev and production
-
-Putting it together: one stack that deploys a single replica to your local
-swarm during `alchemy dev`, and three replicas to a VPS over SSH in
-production.
+## Create a swarm
 
 ```typescript
 import * as Alchemy from "alchemy";
@@ -249,30 +32,91 @@ import * as Docker from "@alchemy.run/docker";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
-  "swarm-app",
+  "MyApp",
   {
     providers: Docker.providers(),
     state: Alchemy.localState(),
   },
   Effect.gen(function* () {
-    const dev = yield* Alchemy.ALCHEMY_DEV;
+    const swarm = yield* Docker.Swarm("swarm");
 
-    const vps = dev
-      ? undefined
-      : yield* Docker.Context("vps", {
-          docker: "host=ssh://deploy@example.com",
-        });
-
-    const swarm = yield* Docker.Swarm("swarm", { context: vps });
-
-    const app = yield* Docker.Service("app", {
+    const web = yield* Docker.Service("web", {
       context: swarm,
-      image: "ghcr.io/acme/app:latest",
-      replicas: dev ? 1 : 3,
+      image: "nginx:alpine",
+      replicas: 2,
       ports: [{ external: 8080, internal: 80 }],
     });
 
-    return { service: app.name };
+    return { service: web.name };
   }),
 );
 ```
+
+`Docker.Swarm` runs `docker swarm init` on the engine, which becomes a one-node swarm whose node is both manager and worker. `docker run` and `docker build` keep working on it as before. Passing the swarm as a service’s `context` deploys the service to the same engine, after the swarm exists.
+
+## Run it on a server
+
+Point a [context](engines-and-contexts.md) at the server, and create the swarm there:
+
+```typescript
+const vps = yield* Docker.Context("vps", {
+  docker: "host=ssh://deploy@example.com",
+});
+
+const swarm = yield* Docker.Swarm("swarm", {
+  context: vps,
+  advertiseAddr: "10.0.0.1",
+});
+```
+
+`advertiseAddr` is the address other nodes use to reach this manager, and Docker requires it when the server has more than one network interface. `listenAddr`, `defaultAddrPool` and `subnetSize` set the swarm’s own networking. All four apply only when the swarm is first created.
+
+## Use a swarm you didn’t create
+
+A service only needs its engine to be a swarm manager, so you can skip `Docker.Swarm` and point services at the context:
+
+```typescript
+const vps = yield* Docker.Context("vps", {
+  docker: "host=ssh://deploy@example.com",
+});
+
+const web = yield* Docker.Service("web", {
+  context: vps,
+  image: "nginx:alpine",
+  replicas: 3,
+});
+```
+
+The swarm stays someone else’s. Destroying the Stack removes its services and leaves the swarm alone.
+
+To make the Stack own an existing swarm instead, adopt it:
+
+```typescript
+const swarm = yield* Docker.Swarm("swarm").pipe(Alchemy.adopt(true));
+```
+
+Without `adopt`, a deploy to an engine that is already a swarm fails with `OwnedBySomeoneElse`.
+
+## What destroying does
+
+Destroying a `Docker.Swarm` runs `docker swarm leave --force`. The node leaves the swarm, and every service running on it stops. The Stack’s own services are removed first. Adopt a swarm only when the Stack should own it this way.
+
+## Grow it to more nodes
+
+Joining machines is done on the hosts themselves; there’s no resource for it. On the manager, print the join command:
+
+```sh
+docker swarm join-token worker
+```
+
+Run the `docker swarm join --token … 10.0.0.1:2377` it prints on each new machine. Label nodes to steer services onto them with [placement](services.md#place-tasks-on-nodes):
+
+```sh
+docker node update --label-add zone=eu node-2
+```
+
+Every node must be able to pull a service’s images, so a swarm of several nodes needs its images in a [registry](registries.md). An image built on the manager exists only there.
+
+## Next
+
+Run workloads on it in [Services](services.md).

@@ -1,0 +1,100 @@
+---
+url: https://alchemy.run/cluster/gcp
+title: "GCP"
+description: "Run an Effect Cluster's database and runners on Compute Engine, called from Cloud Run or anywhere through a regional load balancer."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+Host your cluster in your GCP project: Postgres and the runners run on Compute Engine instances in a VPC of their own. A regional load balancer on a static address serves the pool’s gateway, so a Cloud Run service, a Worker or anything else calls the rooms by id.
+
+```typescript
+import * as ClusterGCP from "@alchemy.run/effect-cluster/GCP";
+import * as Layer from "effect/Layer";
+
+export const Database = ClusterGCP.Database("Cluster");
+
+export const Default = ClusterGCP.ComputeEnginePool("Default", { replicas: 2 }).pipe(
+  Layer.provide(Database),
+);
+```
+
+Install `@alchemy.run/gcp` and finish [GCP setup](../gcp/setup.md).
+
+GCP projectyour profile's project
+
+load balancerstatic address
+
+programCloud Storage bucket
+
+VPCand its subnetwork
+
+DatabaseCompute Engine instance
+
+disk
+
+persistent
+
+DefaultComputeEnginePool
+
+instancezone a
+
+instancezone b
+
+Firewall rules let only the runners, by network tag, reach Postgres and each other. Each runner fetches the pool's program from the bucket.
+
+## The database
+
+`ClusterGCP.Database` creates a VPC and subnetwork, and runs Postgres in a container on an instance with a persistent disk of its own. Firewall rules let only the runners reach it, by network tag, and let runners reach each other.
+
+```typescript
+import * as ClusterGCP from "@alchemy.run/effect-cluster/GCP";
+
+export const Database = ClusterGCP.Database("Cluster", {
+  machineType: "e2-standard-2",
+  diskSize: 100,
+});
+```
+
+## The pool
+
+`ComputeEnginePool` runs one instance per runner, spread across the region’s zones. Each fetches the pool’s program from a Cloud Storage bucket and runs it on the host network; a change to the program reaches every runner through its metadata.
+
+```typescript
+import * as ClusterGCP from "@alchemy.run/effect-cluster/GCP";
+import * as Layer from "effect/Layer";
+
+export const Database = ClusterGCP.Database("Cluster");
+
+export const Default = ClusterGCP.ComputeEnginePool("Default", {
+  replicas: 3,
+  machineType: "e2-standard-2",
+}).pipe(Layer.provide(Database));
+```
+
+Cloud Run can’t run runners: runners take connections from each other, and Cloud Run instances can’t.
+
+## Call it from Cloud Run
+
+```typescript
+import * as GCP from "@alchemy.run/gcp";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Room } from "./Room.ts";
+
+export default class Api extends GCP.Run.Service<Api>()(
+  "Api",
+  { main: import.meta.url, invokerIamDisabled: true },
+  Effect.gen(function* () {
+    const rooms = yield* Room;
+    return {
+      fetch: Effect.gen(function* () {
+        const lobby = yield* rooms.getByName("lobby");
+        return yield* HttpServerResponse.json({ members: yield* lobby.Join({ name: "sam" }) });
+      }).pipe(Effect.orDie),
+    };
+  }),
+) {}
+```
+
+Every option, with its default, is in the reference: [Database](https://alchemy.run/providers/cluster/gcp#database) and [ComputeEnginePool](https://alchemy.run/providers/cluster/gcp#computeenginepool).

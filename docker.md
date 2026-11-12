@@ -1,89 +1,86 @@
 ---
 url: https://alchemy.run/docker
 title: "Docker"
-description: "Images, containers, networks, and volumes as Stack resources, driven through your active Docker CLI context."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+description: "Docker builds applications into images and runs them as isolated containers on a Docker engine, on your laptop, a CI runner or a server."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-The Docker provider manages images, containers, networks, and volumes by shelling out to the `docker` CLI’s active context — Docker Desktop, a remote or SSH context, a CI daemon. There is no daemon API client and no credentials of its own, and the resources live in the same Stack as your cloud resources. It is separate from `Cloudflare.Container`; registry image references are the boundary between Docker-managed images and cloud container platforms.
+Docker builds an application into an image, a layered filesystem snapshot plus the command to run, and runs images as isolated containers on a Docker engine, on your laptop, a CI runner or a server. Registries carry images between machines, which is why nearly every cloud runs containers from them. Swarm, built into the engine, runs replicated services across a cluster of engines.
 
-New here? [Set up Docker](docker/setup.md) first.
+**New to Docker?** Start with [What is Docker?](docker/what-is-docker.md).
 
-## Resources
+## A quick example
 
-`RemoteImage`, `Network`, `Volume`, and `Container` compose into a local service — here, Postgres with a named volume, a network alias, a published port, and a healthcheck:
+Pull Postgres and run it with its data on a volume:
 
 ```typescript
+import * as Alchemy from "alchemy";
+import * as Docker from "@alchemy.run/docker";
+import * as Config from "effect/Config";
+import * as Effect from "effect/Effect";
+
 export default Alchemy.Stack(
-  "DockerPostgresExample",
+  "MyApp",
   {
-    providers: Layer.merge(Docker.providers(), Alchemy.RandomProvider()),
+    providers: Docker.providers(),
     state: Alchemy.localState(),
   },
   Effect.gen(function* () {
-    const password = yield* Alchemy.makeRandom("PostgresPassword", {
-      bytes: 16,
-    });
-
-    const image = yield* Docker.RemoteImage("postgres-image", {
-      name: "postgres",
-      tag: "18-alpine",
-      alwaysPull: false,
-    });
-    const network = yield* Docker.Network("app-network");
     const data = yield* Docker.Volume("postgres-data");
 
     const postgres = yield* Docker.Container("postgres", {
-      name: "alchemy-example-postgres",
-      image,
-      environment: {
-        POSTGRES_DB: "app",
-        POSTGRES_USER: "alchemy",
-        POSTGRES_PASSWORD: password,
-      },
+      image: "postgres:18-alpine",
+      environment: { POSTGRES_PASSWORD: yield* Config.Redacted("POSTGRES_PASSWORD") },
       ports: [{ external: 15432, internal: 5432 }],
-      volumes: [
-        { hostPath: data.name, containerPath: "/var/lib/postgresql/data" },
-      ],
-      networks: [{ name: network.name, aliases: ["postgres"] }],
-      healthcheck: {
-        cmd: ["CMD-SHELL", "pg_isready -U alchemy -d app"],
-        interval: "5 seconds",
-        timeout: "5 seconds",
-        retries: 10,
-      },
+      volumes: [{ hostPath: data.name, containerPath: "/var/lib/postgresql/data" }],
       start: true,
     });
-    return { container: postgres.name, hostPort: postgres.ports };
+
+    return { ports: postgres.ports };
   }),
 );
 ```
 
-`Container` accepts the image resource directly, `alwaysPull: false` pins the pulled tag so re-deploys are no-ops, and environment values accept `Redacted` secrets — they are passed via process env, never on the CLI. [Run local services](docker/local-services.md) walks through this composition.
-
-`Image` builds from a Dockerfile:
+Build your own image from a Dockerfile, and push it to a registry:
 
 ```typescript
-const image = yield* Docker.Image("app", {
-  name: "my-app",
-  tag: "latest",
-  build: {
-    context: "./app",
-    dockerfile: "Dockerfile",
-    args: { NODE_ENV: "production" },
+const image = yield* Docker.Image("api", {
+  name: "acme/api",
+  build: { context: "./api" },
+  registry: {
+    server: "ghcr.io",
+    username: "acme",
+    password: yield* Config.Redacted("GITHUB_TOKEN"),
   },
 });
 ```
 
-The build *is* the diff: `diff` runs `docker build` and compares the resulting `imageId` against the last deploy, and the result is memoized so plan + deploy build once — see [Build and push an image](docker/build-and-push.md) for tagging and pushing to a registry.
+Deploy, and Alchemy creates everything on the engine your `docker` CLI talks to:
 
-`Docker.inspectContainer(name)` reads live runtime details for any container by name, including the bound host ports.
+```sh
+pnpm alchemy deploy
+```
 
-## Compose with your cloud
+## Where to start
 
-[ECS](aws/compute/ecs.md) Tasks build their image with your local Docker — the AWS provider layers the same Docker service — and [Cloudflare Containers](cloudflare/compute/containers.md) bring your own image by consuming the registry reference you push from [Build and push an image](docker/build-and-push.md). By contrast, [MicroVMs](aws/compute/microvms.md) build server-side on AWS and need no local Docker at all.
+**Want to build?** Install the provider in [Setup](docker/setup.md), then follow [Local Postgres](docker/local-services.md) step by step.
 
-## Reference
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).
 
-[Container](https://alchemy.run/providers/docker/reference/container#container) · [Image](https://alchemy.run/providers/docker/reference/image#image) · [Network](https://alchemy.run/providers/docker/reference/network#network) · [RemoteImage](https://alchemy.run/providers/docker/reference/image#remoteimage) · [Volume](https://alchemy.run/providers/docker/reference/volume#volume)
+## The docs
+
+### Engines & access
+
+- [Engines & contexts](docker/engines-and-contexts.md)
+- [Registries & credentials](docker/registries.md)
+
+### Swarm
+
+- [Swarms](docker/swarm.md)
+- [Services](docker/services.md)
+- [Effectful services](docker/effectful-services.md)
+
+### Guides
+
+- [Local Postgres](docker/local-services.md)

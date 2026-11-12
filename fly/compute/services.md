@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/compute/services
 title: "Services"
 description: "An Effect program running in Fly Machines in its own Fly App. Scale it with count."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A [`Service`](https://alchemy.run/providers/fly/reference/service#service) is an Effect program running
@@ -267,8 +267,8 @@ export default class Gateway extends Fly.Service<Gateway>()(
 ```
 
 Binding makes `Gateway` deploy after `Users` and hands it the address
-and caller token of `Users`. Only Services that bind `Users` receive
-its token, so only they can call its methods. The caller must be on
+of `Users`. `Users` answers method calls only from the Apps that bind
+it, named by the `Fly-Src` header Fly's proxy signs. The caller must be on
 the same network as the target; otherwise its deploy fails with
 `Fly.ServiceUnreachable`.
 
@@ -354,7 +354,11 @@ can be unavailable during deployment; this is not blue/green deployment.
 ## Config
 
 Yield `Config` in the constructor. Alchemy reads the value from the env of
-whoever deploys and writes it onto the Machine.
+whoever deploys and stores it as a secret on the Service's App, under a
+name scoped to the Service, so it never appears in the Machine config and
+never collides with another secret on the App. A Service in a shared App (`app`) writes it
+into the Machine env instead, because Fly gives every App secret to every
+Machine in the App.
 
 ```typescript
 import * as Config from "effect/Config";

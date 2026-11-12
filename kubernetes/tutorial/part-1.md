@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/tutorial/part-1
 title: "Part 1: Your First Deployment"
 description: "Create a Stack, start a Kubernetes cluster on your machine with Kubernetes.LocalCluster, deploy a replicated HTTP service with Kubernetes.Deployment, and reach it with kubectl."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In this first part you’ll create a Stack, start a Kubernetes cluster on your machine, and deploy a replicated HTTP service. You won’t write a line of YAML.
@@ -12,7 +12,7 @@ The tutorial runs on a local cluster so you can follow it without a cloud accoun
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - [Docker](https://docs.docker.com/get-started/get-docker/), [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation), and [`kubectl`](https://kubernetes.io/docs/tasks/tools/)
 
 kind runs Kubernetes inside Docker containers. Alchemy runs it for you, but it must be installed. On macOS, run `brew install kind`.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/github/setup
 title: "Setup"
 description: "Connect alchemy to GitHub — account, credentials, and profiles."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Install `@alchemy.run/github`:
@@ -86,6 +86,20 @@ Effect.provide(GitHub.fromToken(token, { baseUrl: "github.example.com" }))
 ```
 
 To read from the environment instead, `GitHub.fromEnv()` builds the same layer from `GITHUB_ACCESS_TOKEN` or `GITHUB_TOKEN` (and resolves the enterprise host from `GITHUB_BASE_URL` / `GITHUB_API_URL` / `GH_HOST` when set).
+
+To act as a GitHub App installation, `GitHub.fromApp` mints the installation access token with the App’s private key and mints a new one before it expires:
+
+```typescript
+Effect.provide(
+  GitHub.fromApp({
+    appId: "123456",
+    privateKey: Redacted.make(pem),
+    installationId: 7890,
+  }),
+)
+```
+
+`privateKey` is the `.pem` file GitHub gave you. `repositories` and `permissions` narrow the token, and `baseUrl` targets GitHub Enterprise.
 
 ## Next steps
 

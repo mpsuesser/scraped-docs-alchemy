@@ -2,15 +2,15 @@
 url: https://alchemy.run/railway/tutorial/part-1
 title: "Part 1: Your First Project"
 description: "Install Alchemy, create a Stack with a Railway Project, and deploy it."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Install Alchemy and Effect, create a Stack with a Railway Project, and deploy it. A Project is the parent for Services, Environments, Variables, and disks.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A Railway workspace and an account API token — see [Setup](../setup.md) if you haven’t created those yet
 
 ## Create a project

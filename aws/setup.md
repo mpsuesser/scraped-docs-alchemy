@@ -2,13 +2,13 @@
 url: https://alchemy.run/aws/setup
 title: "Setup"
 description: "Connect Alchemy to AWS with SSO, console login, stored access keys, or CI environment credentials."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 24.11.1+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - An AWS account and an IAM identity with permission to create the resources you plan to deploy
 
 ## Create a project
@@ -27,15 +27,17 @@ pnpm add alchemy@latest @alchemy.run/aws@latest effect @effect/platform-bun @eff
 
 Connect AWS with `alchemy profile edit --add AWS` and pick an authentication method. The choice is saved to your **`default`** [profile](../environments/profiles.md) and reused on every subsequent command; a deploy with nothing configured fails with that exact command to run. Authentication changes only through the `profile` command.
 
-There are three local profile methods:
+There are three local profile methods. Start with console login unless your organization already signs in through IAM Identity Center.
 
-### SSO (recommended)
+Console login is AWS’s keyless sign-in for every account. You sign in to the AWS Management Console in your browser, as the root user, an IAM user or through federation, and the AWS CLI receives short-lived credentials for that same identity. There’s nothing to set up in the account, and no long-lived access keys on your machine.
 
-Alchemy runs `aws sso login --profile <name>` for you and loads credentials from the AWS SSO cache. You pick which profile from `~/.aws/config` to use; the account ID and region come from that profile. Use this when your org signs in through IAM Identity Center. When the SSO session expires, run `alchemy profile refresh` to refresh it.
+Alchemy runs `aws login --profile <name>` (AWS CLI v2.32+) for you and loads the session it writes to `~/.aws/config` (`login_session`). When the session expires, run `alchemy profile refresh`.
 
-### Console login
+### SSO through IAM Identity Center
 
-Alchemy runs `aws login --profile <name>` (AWS CLI v2.32+) and loads credentials from the console-login session that command writes to `~/.aws/config` (`login_session`). Use this when you sign into the AWS Management Console as a root user, IAM user, or through IAM federation — the same identity, without long-lived access keys. When the session expires, run `alchemy profile refresh` to refresh it.
+SSO is for organizations that have set up **IAM Identity Center**: a single sign-in for many accounts, with users and permission sets managed centrally, often connected to Okta, Google Workspace or Entra ID. It takes setup in an AWS Organization, so it pays off when a team works across several accounts.
+
+Alchemy runs `aws sso login --profile <name>` for you and loads credentials from the AWS SSO cache. The profile you pick in `~/.aws/config` decides the account and region. When the session expires, run `alchemy profile refresh`.
 
 ### Stored access keys
 

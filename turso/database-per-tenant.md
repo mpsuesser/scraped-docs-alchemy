@@ -2,8 +2,8 @@
 url: https://alchemy.run/turso/database-per-tenant
 title: "Database per tenant"
 description: "Give each customer their own Turso database."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Give each customer their own database. Their data stays separate, and removing a customer is just deleting their database.
@@ -22,6 +22,26 @@ Add `Turso.ManageDatabasesHttp` to the Worker. The Worker gets two tokens:
 - A database token that can run SQL on every database in `Tenants`.
 
 Your own Turso API token stays on your machine.
+
+ApiWorker
+
+API token
+
+create, delete
+
+DB token
+
+SQL on every one
+
+Tenantsgroup
+
+acmedatabase
+
+globexdatabase
+
+initechcreated at sign-up
+
+Each customer gets a database of its own in the Tenants group. The Worker creates and deletes them with an API token limited to the group, and queries them with one database token.
 
 ## Create a tenant
 
@@ -45,7 +65,7 @@ Copy a template database so new tenants start with your tables. See [Create the 
 
 ```typescript
 const sql = yield* SQL.LibSQL(tenants.connect("acme"));
-const notes = yield* sql`SELECT * FROM notes`;
+const notes = yield* sql\`SELECT * FROM notes\`;
 ```
 
 `connect` works with [Drizzle.LibSQL](../sql/drizzle/libsql.md) too. The connection opens on the first query and closes when the request ends.
@@ -58,7 +78,7 @@ const acme = yield* tenants.get("acme"); // undefined when missing
 yield* tenants.delete("acme");
 ```
 
-`delete` doesn't fail if the database is already gone.
+`delete` doesn’t fail if the database is already gone.
 
 ## Update existing tenants
 
@@ -77,7 +97,7 @@ For tenants your app creates, run the change on each one from the Worker. Write 
 ```typescript
 for (const { name } of yield* tenants.list()) {
   const sql = yield* SQL.LibSQL(tenants.connect(name));
-  yield* sql`CREATE INDEX IF NOT EXISTS notes_created ON notes (created_at)`;
+  yield* sql\`CREATE INDEX IF NOT EXISTS notes_created ON notes (created_at)\`;
 }
 ```
 

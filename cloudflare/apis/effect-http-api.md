@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/apis/effect-http-api
 title: "Effect HTTP API"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as a Cloudflare Worker."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Effect HTTP is the trust-boundary modality: schema-validated REST endpoints — real URLs, path params, query strings, payloads — that any HTTP client can call, no Effect or TypeScript required on the consumer’s side. This page deploys one to a Cloudflare Worker; the concept home is [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the modalities.
+Effect HTTP is the trust-boundary modality: schema-validated REST endpoints — real URLs, path params, query strings, payloads — that any HTTP client can call, no Effect or TypeScript required on the consumer’s side. Deploy one to a Cloudflare Worker; the concept home is [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the modalities.
 
 In the [tutorial](../tutorial/part-2.md), you built a Worker with manual `if/else` routing and raw request parsing. That works, but as your API grows you lose type safety at the boundary — request payloads aren’t validated, response shapes aren’t enforced, and errors slip through untyped.
 
@@ -79,7 +79,7 @@ export class TasksGroup extends HttpApiGroup.make("Tasks")
 export class TaskApi extends HttpApi.make("TaskApi").add(TasksGroup) {}
 ```
 
-Nothing executes yet — `TaskApi` is purely a value-level description. The same `TaskApi` constant is what we’ll hand to the client at the end of this guide.
+Nothing executes yet — `TaskApi` is purely a value-level description. The same `TaskApi` constant is what we’ll hand to the client at the end.
 
 ## 3\. Build the Worker
 

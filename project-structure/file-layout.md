@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/file-layout
 title: "File layout"
 description: "How to organize an Alchemy project — one file per Resource or Layer, group Resources that travel together by concern, and keep alchemy.run.ts as the composition root."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A typical alchemy app ([`examples/cloudflare-neon-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle)):
@@ -21,8 +21,8 @@ A typical alchemy app ([`examples/cloudflare-neon-drizzle`](https://github.com/a
 
 Three rules produce this shape: one file per Resource or Layer,
 group Resources that travel together, and keep `alchemy.run.ts`
-as the composition root. This page walks a project from one file
-to that shape.
+as the composition root. A project grows from one file to that
+shape.
 
 ## Start with one file
 

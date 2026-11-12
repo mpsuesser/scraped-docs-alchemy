@@ -2,15 +2,15 @@
 url: https://alchemy.run/fly/setup
 title: "Setup"
 description: "Create a Fly org, generate an API token, and store it in a profile."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Everything you need before deploying to Fly.io: the alchemy package, a Fly organization, and an API token stored in a profile.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A [Fly.io](https://fly.io/) account
 - [Docker](https://docs.docker.com/get-docker/) for [Services](compute/services.md) (Alchemy builds and pushes an image). Raw [Machines](compute/machines.md) with a public image do not need it. Neither do [Sprites](compute/sprites.md).
 

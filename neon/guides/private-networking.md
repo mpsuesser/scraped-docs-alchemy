@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/private-networking
 title: "Private networking"
 description: "Prepare AWS PrivateLink endpoints, register them with Neon, enable private DNS, and verify database access."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Neon Private Networking routes database connections through AWS PrivateLink.
@@ -23,7 +23,7 @@ plan entitlement.
 
 The AWS client application, VPC endpoint, and Neon project must use the same
 supported AWS region. Copy the organization ID from Organization Settings and
-verify the project's region before creating endpoints. This guide concerns
+verify the project's region before creating endpoints. Private networking covers
 Postgres traffic, not a private network for Function, Auth, storage, or AI URLs.
 Check each service's network limitations before combining it with a restricted
 database; [Neon Auth](https://neon.com/docs/auth/overview) currently documents

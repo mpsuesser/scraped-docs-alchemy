@@ -2,21 +2,17 @@
 url: https://alchemy.run/cloudflare/data/prisma
 title: "Prisma ORM with Postgres"
 description: "Deploy Prisma ORM v8 on Cloudflare Workers with Neon Postgres, Hyperdrive, controlled migrations, and Effect-native queries."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 [Contracts](../../sql/prisma/contracts.md) · [Query API](../../sql/prisma/postgres.md) · [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-prisma)
 
-:::caution
-Requires Prisma ORM **8.0.0-rc** and **PostgreSQL 17+**. Pin the ORM and CLI versions used by your Alchemy release.
-:::
-
 ## Install the dependencies
 
 ```sh
-bun add alchemy @alchemy.run/cloudflare @alchemy.run/neon @alchemy.run/prisma effect @prisma/orm-postgres arktype
-bun add -d prisma
+pnpm add alchemy@latest @alchemy.run/cloudflare@latest @alchemy.run/neon@latest @alchemy.run/prisma@latest effect @prisma/orm-postgres arktype
+pnpm add -D prisma
 ```
 
 [Cloudflare setup](../setup.md) · [Neon setup](../../neon/setup.md) · [Define a contract](../../sql/prisma/contracts.md)
@@ -24,7 +20,6 @@ bun add -d prisma
 ## Configure validation for Workers
 
 ```typescript
-// src/prisma/validation.ts
 import { configure } from "arktype/config";
 
 configure({ jitless: true });
@@ -48,7 +43,6 @@ PSL-first projects skip this step.
 ## Provision the database and migrations
 
 ```typescript
-// src/db.ts
 import * as Neon from "@alchemy.run/neon";
 import * as Prisma from "@alchemy.run/prisma";
 import * as Effect from "effect/Effect";
@@ -72,7 +66,6 @@ export const Db = Effect.gen(function* () {
 ## Add Hyperdrive
 
 ```typescript
-// src/db.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Hyperdrive = Effect.gen(function* () {
@@ -89,7 +82,6 @@ Caching is disabled so reads immediately reflect writes. [Hyperdrive guide](hype
 ## Connect in a Worker
 
 ```typescript
-// src/api.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as PrismaPostgres from "@alchemy.run/prisma/ORM/Postgres";
 import * as Effect from "effect/Effect";
@@ -130,7 +122,6 @@ const db = yield* makeDatabase(conn.connectionString);
 ## Wire the stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Neon from "@alchemy.run/neon";
@@ -159,7 +150,7 @@ export default Alchemy.Stack(
 ## Deploy and query
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 curl https://<your-worker>.workers.dev
 ```
 
@@ -168,10 +159,10 @@ This demo route is public. Add authentication before exposing private data.
 ## Clean up
 
 ```sh
-bun alchemy destroy
+pnpm alchemy destroy
 ```
 
-Destroy removes the example's Worker, Hyperdrive configuration, and Neon resources, including the database data.
+Destroy removes the example’s Worker, Hyperdrive configuration, and Neon resources, including the database data.
 
 ## Runnable examples
 

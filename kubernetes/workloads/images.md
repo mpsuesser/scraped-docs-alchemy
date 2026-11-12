@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/workloads/images
 title: "Container images"
 description: "Choose where a Deployment or Job's container image comes from and where built images are pushed. Sources are a registry reference, your own Dockerfile, or a bundled Effect program."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Every [Deployment](deployments.md) and
@@ -76,6 +76,27 @@ const legacy = yield* Kubernetes.Deployment("Legacy", {
 pass a path relative to the directory you deploy from.
 Editing any file in the context triggers a rebuild and a rollout on
 the next deploy.
+
+## Cache build layers
+
+Builds reuse the local BuildKit cache of the machine they run on. A
+fresh CI runner has none and rebuilds every step. Keep the layers in
+the cluster's registry with `build.cache`:
+
+```typescript
+const legacy = yield* Kubernetes.Deployment("Legacy", {
+  cluster,
+  context: "./legacy",
+  port: 8080,
+  build: { cache: true },
+});
+```
+
+Builds then import and export every stage's layers at the image
+repository's `:buildcache` tag. It works the same for `main` programs.
+The cache is off by default and never changes the image, so turning
+it on doesn't trigger a rollout. Other backends take BuildKit's cache
+backends, as in [Docker builds](../../docker/build-caches.md).
 
 ## Bundle an Effect program
 
@@ -164,7 +185,7 @@ const api = yield* Kubernetes.Deployment("Api", {
 
 You can manage an image's name and tags yourself, for example to
 publish `acme/api:v1.4.0` for other systems too. Build it with
-[`Docker.Image`](../../docker/build-and-push.md) and pass its reference as
+[`Docker.Image`](../../docker/build-images.md) and pass its reference as
 `image`:
 
 ```typescript

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to AWS with AWS.Website.SolidStart — SSR on a Lambda Web Function, S3 assets behind CloudFront, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to AWS. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and client assets plus prerendered pages are served from a private S3 bucket through CloudFront. A CloudFront Function routes each request at the edge — uploaded files go to S3, everything else streams from the server.
@@ -142,7 +142,7 @@ export const Website = AWS.Website.SolidStart("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs SolidStart’s own Vite dev server (native HMR) instead of deploying anything; `site.url` is the dev server’s `http://localhost:<port>` address and no AWS resources are created. Nitro plays no part in dev. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

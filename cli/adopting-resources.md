@@ -2,42 +2,40 @@
 url: https://alchemy.run/cli/adopting-resources
 title: "Adopting Resources"
 description: "How alchemy takes ownership of pre-existing cloud resources — recovery by default, --adopt for foreign resources, and the programmatic AdoptPolicy."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Two situations put alchemy in front of a cloud resource it has no state for: existing infrastructure you want alchemy to start managing, and a fresh (or wiped) state store sitting in front of resources alchemy already created.
 
 ```sh
-bun alchemy deploy --adopt
+pnpm alchemy deploy --adopt
 ```
 
 ## How the engine decides
 
-When a resource has no prior state, the engine calls the provider's
-`read` to check whether the resource already exists in the cloud. The
-return value drives one of three paths:
+When a resource has no prior state, the engine calls the provider’s `read` to check whether the resource already exists in the cloud. The return value drives one of three paths:
 
-| `read` returns      | Without `--adopt`         | With `--adopt`        |
-| ------------------- | ------------------------- | --------------------- |
-| `undefined`         | create                    | create                |
-| owned (plain attrs) | silent adopt              | silent adopt          |
-| `Unowned(attrs)`    | fail `OwnedBySomeoneElse` | take over (silently)  |
+| `read` returns | Without `--adopt` | With `--adopt` |
+| --- | --- | --- |
+| `undefined` | create | create |
+| owned (plain attrs) | silent adopt | silent adopt |
+| `Unowned(attrs)` | fail `OwnedBySomeoneElse` | take over (silently) |
 
-"Owned" means the provider can prove the resource was created by *this* stack/stage/logical-id — typically by inspecting tags or a naming convention.
+“Owned” means the provider can prove the resource was created by *this* stack/stage/logical-id — typically by inspecting tags or a naming convention.
 
-The same table drives the provider-side contract: see [Adoption in Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md#adoption) for the engine's routing and [the `read` operation](../infrastructure-as-code/provider.md#read) for how a provider returns `Unowned(attrs)`.
+The same table drives the provider-side contract: see [Adoption in Resource Lifecycle](../infrastructure-as-code/resource-lifecycle.md#adoption) for the engine’s routing and [the `read` operation](../infrastructure-as-code/provider.md#read) for how a provider returns `Unowned(attrs)`.
 
 ## Recovery is the default
 
 Re-importing owned resources into a fresh state store needs **no** flag — recovering a wiped state store for resources you already own is the default behavior.
 
-`--adopt` only matters when the provider reports a resource exists but isn't ours. That's the deliberately load-bearing case: by default alchemy refuses to silently overwrite tags/config of a resource it can't prove ownership of. `--adopt` says "yes, take it over."
+`--adopt` only matters when the provider reports a resource exists but isn’t ours. That’s the deliberately load-bearing case: by default alchemy refuses to silently overwrite tags/config of a resource it can’t prove ownership of. `--adopt` says “yes, take it over.”
 
 ```sh
 # Re-import existing alchemy-tagged resources into a fresh state
 # store — no flag needed for these. Ones with foreign ownership tags
-# will surface as `OwnedBySomeoneElse` errors.
+# will surface as \`OwnedBySomeoneElse\` errors.
 alchemy deploy
 
 # Preview the takeover without applying it.
@@ -47,13 +45,13 @@ alchemy plan --adopt
 alchemy deploy --adopt
 ```
 
-## The `--adopt` flag
+## The --adopt flag
 
 `--adopt` opts the *entire* deploy in to adoption-on-conflict — it is provided as a single `AdoptPolicy` layer over the whole stack execution, not per resource.
 
-The default is `false` so an unintentional collision still surfaces loudly instead of silently overwriting someone else's resource. The option is part of the shared `ExecStackOptions` that every stack-executing command (including `dev`) runs through.
+The default is `false` so an unintentional collision still surfaces loudly instead of silently overwriting someone else’s resource. The option is part of the shared `ExecStackOptions` that every stack-executing command (including `dev`) runs through.
 
-## When adoption is refused: `OwnedBySomeoneElse`
+## When adoption is refused: OwnedBySomeoneElse
 
 When `read` reports an existing resource as `Unowned` and adoption is off, the deploy fails with the typed `OwnedBySomeoneElse` error, carrying `message`, `resourceType`, `logicalId`, and `physicalName`.
 
@@ -73,7 +71,7 @@ yield* deploy(
 ).pipe(adopt(true));
 ```
 
-`AdoptPolicy` is consulted at plan time, so the combinator must wrap the *deploy* (or test runner's `stack.deploy(...)`) — not the inner resource-declaration effect.
+`AdoptPolicy` is consulted at plan time, so the combinator must wrap the *deploy* (or test runner’s `stack.deploy(...)`) — not the inner resource-declaration effect.
 
 `adopt()` with no argument means `true`, and it also accepts an `Effect<boolean>` for dynamic policies:
 

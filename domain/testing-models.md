@@ -2,11 +2,11 @@
 url: https://alchemy.run/domain/testing-models
 title: "Testing a model"
 description: "Test your model's rules, views, policies and deadlines with stories that run it in memory."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Your model is tested with [stories](story.md): given some history, when a command is sent, then these events are recorded. This page sets up a story runner and covers what a story can check.
+Your model is tested with [stories](story.md): given some history, when a command is sent, then these events are recorded.
 
 ## Create a story runner
 
@@ -71,7 +71,13 @@ Run stories with Vitest and `@effect/vitest`: each story is an Effect, so `it.ef
 
 The test above uses most of the checks. `then` checks the next events recorded on an instance; with no events, it checks that nothing new was recorded. Every recorded event needs a `then`, on every instance, including the ones a policy writes. `replied` checks the last command's reply, and `rejected` checks that it was refused with exactly this rejection. `state` checks an instance's current state directly, or part of it.
 
-Views and streams are checked as a client would read them. `view` checks a view key's state, or part of it, and `emitted` checks every event a view key has emitted. `streamed` checks the next entries a projection appended to a stream key.
+Views and streams are checked as a client would read them. `view` checks a view key's state, or part of it, and `emitted` checks every event a view key has emitted. `streamed` checks the next entries a projection appended to a stream key. `query` asks a [query](query.md) and checks its rows, each a partial match; asked with no expectation, it must be rejected, and `rejected` checks how.
+
+```typescript title="packages/domain/test/Bank.story.test.ts"
+as(alex),
+query(AccountLedger, { account: a1.id }),
+rejected(new NotOwner()),
+```
 
 Commands run as whoever `provide` says, as their middleware would. Here `asSam` provides `CurrentActor`, so the account's ownership check passes.
 

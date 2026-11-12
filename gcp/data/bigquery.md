@@ -2,19 +2,32 @@
 url: https://alchemy.run/gcp/data/bigquery
 title: "BigQuery"
 description: "Create BigQuery datasets and tables, stream rows in, and run parameterized queries from Cloud Run with ReadTable and WriteTable bindings."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-BigQuery is Google's data warehouse. Declare a dataset and a table,
-stream rows into it from one service, and query it from another.
+BigQuery is Google’s data warehouse. Declare a dataset and a table, stream rows into it from one service, and query it from another.
+
+## Datasets, tables and queries
+
+A **dataset** groups tables in one location. A **table** has a schema, and rows stream into it as they happen. A query scans the columns it names across every row, which is what BigQuery is built for: questions over millions of events, not lookups of one.
+
+Analytics.events · BigQuery tableWHERE type = @type
+
+| id | type | occurredAt | payload |
+| --- | --- | --- | --- |
+| e\_101 | signup | 2026-11-03 09:12 | {} |
+| e\_102 | order | 2026-11-03 09:15 | { total: 120 } |
+| e\_103 | signup | 2026-11-03 10:02 | {} |
+| e\_104 | order | 2026-11-04 08:40 | { total: 35 } |
+
+The events table, with a JSON payload column so producers can add fields. A query with type = signup reads the matching rows.
 
 ## Create a dataset and a table
 
-A table needs its dataset's id, so build it inside an `Effect.gen`:
+A table needs its dataset’s id, so build it inside an `Effect.gen`:
 
 ```typescript
-// src/resources.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 
@@ -37,13 +50,11 @@ export const Events = Effect.gen(function* () {
 });
 ```
 
-`forceDestroy` deletes the tables with the dataset. A `JSON` column
-lets producers add fields without changing the schema.
+`forceDestroy` deletes the tables with the dataset. A `JSON` column lets producers add fields without changing the schema.
 
 ## Write and query from a service
 
 ```typescript
-// src/Api.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -73,7 +84,7 @@ export default class Api extends GCP.Function<Api>()(
         }
 
         const rows = yield* reader.query(
-          `SELECT COUNT(*) AS n FROM \`${yield* tableId}\` WHERE type = @type`,
+          \`SELECT COUNT(*) AS n FROM \\`${yield* tableId}\\` WHERE type = @type\`,
           { type: "signup" },
         );
         return yield* HttpServerResponse.json({ count: Number(rows[0]?.n ?? 0) });
@@ -85,16 +96,11 @@ export default class Api extends GCP.Function<Api>()(
 ) {}
 ```
 
-`insert` takes plain row objects. `insertIds` drops a repeated row
-within BigQuery's dedup window, so a retried insert doesn't
-double-count.
+`insert` takes plain row objects. `insertIds` drops a repeated row within BigQuery’s dedup window, so a retried insert doesn’t double-count.
 
-`query` runs SQL with named parameters, so input never lands in the
-SQL text. Table names resolve against the bound table's dataset, and
-rows come back as plain JavaScript.
+`query` runs SQL with named parameters, so input never lands in the SQL text. Table names resolve against the bound table’s dataset, and rows come back as plain JavaScript.
 
-`yield* table.tableId` in the constructor gives you an accessor.
-`yield*` it again inside the handler to read the value.
+`yield* table.tableId` in the constructor gives you an accessor. `yield*` it again inside the handler to read the value.
 
 ## What each binding grants
 
@@ -104,20 +110,13 @@ rows come back as plain JavaScript.
 | `WriteTable` | `bigquery.dataEditor` on the table |
 | `ReadWriteTable` | both of the above |
 
-Running a query is a project permission in BigQuery, so `jobUser`
-can't be narrower.
+Running a query is a project permission in BigQuery, so `jobUser` can’t be narrower.
 
 ## Example
 
-[`examples/gcp-event-pipeline`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-event-pipeline)
-publishes events to Pub/Sub and drains them into BigQuery with a
-Cloud Run job.
-[`examples/gcp-cron`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-cron)
-records scheduled runs in a table.
+[`examples/gcp-event-pipeline`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-event-pipeline) publishes events to Pub/Sub and drains them into BigQuery with a Cloud Run job. [`examples/gcp-cron`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-cron) records scheduled runs in a table.
 
 ## Where next
 
-- [Pub/Sub](../messaging/pubsub.md) — the ingestion pipeline that feeds
-  BigQuery.
-- [BigQuery reference](https://alchemy.run/providers/gcp/bigquery#table) — every prop and
-  attribute.
+- [Pub/Sub](../messaging/pubsub.md) — the ingestion pipeline that feeds BigQuery.
+- [BigQuery reference](https://alchemy.run/providers/gcp/bigquery#table) — every prop and attribute.

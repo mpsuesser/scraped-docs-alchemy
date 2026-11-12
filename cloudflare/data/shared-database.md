@@ -2,35 +2,37 @@
 url: https://alchemy.run/cloudflare/data/shared-database
 title: "Shared database across stages"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, copy-on-write branches, no extra clusters."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-[Stages](../../environments/stages.md) make it cheap to spin up isolated copies
-of a stack — per-developer, `pr-42`, `prod`. Most resources should
-be isolated. But some — a Neon Postgres project, a shared S3
-bucket, a global rate limiter — are too expensive or too stateful
-to re-provision per stage. PR-preview stages should *point at* the
-shared instance instead.
+[Stages](../../environments/stages.md) make it cheap to spin up isolated copies of a stack — per-developer, `pr-42`, `prod`. Most resources should be isolated. But some — a Neon Postgres project, a shared S3 bucket, a global rate limiter — are too expensive or too stateful to re-provision per stage. PR-preview stages should *point at* the shared instance instead.
 
-`Resource.ref(id, { stage })` reads a deployed resource's
-attributes from another stage of the same stack — typed, lazy,
-resolved at plan time against the persisted state store. See
-[References](../../infrastructure-as-code/references.md) for the full reference surface
-(`Output.ref`, `Output.stackRef`, `Stack.stage`).
+my-appstack
 
-The example we'll build: a Neon Postgres project that's owned by
-`staging`, with PR-preview stages (`pr-*`) referencing it instead
-of creating their own. The full file lives in
-[`examples/cloudflare-neon-drizzle/src/Db.ts`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle/src/Db.ts).
+stagingstage
+
+app-dbNeon project · created here
+
+ApiWorker
+
+pr-42stage
+
+app-dbref("app-db", { stage: "staging" })
+
+ApiWorker
+
+The staging stage owns the database. pr-42 deploys its own Worker but only references staging's database, so destroying the PR stage leaves it alone.
+
+`Resource.ref(id, { stage })` reads a deployed resource’s attributes from another stage of the same stack — typed, lazy, resolved at plan time against the persisted state store. See [References](../../infrastructure-as-code/references.md) for the full reference surface (`Output.ref`, `Output.stackRef`, `Stack.stage`).
+
+The example we’ll build: a Neon Postgres project that’s owned by `staging`, with PR-preview stages (`pr-*`) referencing it instead of creating their own. The full file lives in [`examples/cloudflare-neon-drizzle/src/Db.ts`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-neon-drizzle/src/Db.ts).
 
 ## Start with the unconditional version
 
-A Neon project plus a per-stage branch. Every stage gets its own
-project — wasteful for short-lived PR previews:
+A Neon project plus a per-stage branch. Every stage gets its own project — wasteful for short-lived PR previews:
 
 ```typescript
-// src/Db.ts
 import * as Alchemy from "alchemy";
 import * as Drizzle from "@alchemy.run/drizzle";
 import * as Neon from "@alchemy.run/neon";
@@ -65,64 +67,46 @@ Fine for `staging` and `prod`. Overkill for `pr-147`.
 
 ## Read the current stage
 
-Pull the active stage from the `Stack` service so we can branch on
-it. `Alchemy.Stack` is the same handle used everywhere — it gives
-you `name`, `stage`, and friends:
+Pull the active stage from the `Stack` service so we can branch on it. `Alchemy.Stack` is the same handle used everywhere — it gives you `name`, `stage`, and friends:
 
-```diff lang="typescript"
- export const NeonDb = Effect.gen(function* () {
-+  const { stage } = yield* Alchemy.Stack;
-+
-   const schema = yield* Drizzle.Schema("app-schema", {
-     schema: "./src/schema.ts",
-     out: "./migrations",
-   });
+```typescript
+export const NeonDb = Effect.gen(function* () {
+  const { stage } = yield* Alchemy.Stack;
+
+  const schema = yield* Drizzle.Schema("app-schema", {
+    schema: "./src/schema.ts",
+    out: "./migrations",
+  });
 ```
 
-`stage` is whatever was passed to `alchemy deploy --stage <name>`.
-We'll use it to route PR previews to the shared project.
+`stage` is whatever was passed to `alchemy deploy --stage <name>`. We’ll use it to route PR previews to the shared project.
 
-## Swap in `Neon.Project.ref` for PR stages
+## Swap in Neon.Project.ref for PR stages
 
-Here's the key step. Replace the unconditional `Neon.Project(...)`
-with a conditional that uses `Neon.Project.ref(...)` when the stage
-is a PR preview, and creates a real project otherwise:
+Here’s the key step. Replace the unconditional `Neon.Project(...)` with a conditional that uses `Neon.Project.ref(...)` when the stage is a PR preview, and creates a real project otherwise:
 
-```diff lang="typescript"
--  const project = yield* Neon.Project("app-db", {
--    region: "aws-us-east-1",
--  });
-+  const project = stage.startsWith("pr-")
-+    ? yield* Neon.Project.ref("app-db", { stage: "staging" })
-+    : yield* Neon.Project("app-db", {
-+        region: "aws-us-east-1",
-+      });
+```typescript
+const project = yield* Neon.Project("app-db", {
+  region: "aws-us-east-1",
+});
+const project = stage.startsWith("pr-")
+  ? yield* Neon.Project.ref("app-db", { stage: "staging" })
+  : yield* Neon.Project("app-db", {
+      region: "aws-us-east-1",
+    });
 ```
 
 Three things to know about `Resource.ref`:
 
-1. **Same logical ID.** `"app-db"` — the same logical ID the
-   `staging` stage uses to create the project. The ref lookup is
-   keyed by `{ stack, stage, id }`.
-2. **Typed.** `project` is `Neon.Project` either way — same
-   attributes, same downstream API. The branch resource doesn't
-   know or care that one stage's `project` is real and another's
-   is a reference.
-3. **Resolved at plan time.** Alchemy reads the attributes (project
-   id, host, etc.) from the staging stage's state file. If
-   `staging` hasn't been deployed yet, plan fails with
-   `InvalidReferenceError` — deploy `staging` first, then PR
-   stages can reference it.
+1. **Same logical ID.** `"app-db"` — the same logical ID the `staging` stage uses to create the project. The ref lookup is keyed by `{ stack, stage, id }`.
+2. **Typed.** `project` is `Neon.Project` either way — same attributes, same downstream API. The branch resource doesn’t know or care that one stage’s `project` is real and another’s is a reference.
+3. **Resolved at plan time.** Alchemy reads the attributes (project id, host, etc.) from the staging stage’s state file. If `staging` hasn’t been deployed yet, plan fails with `InvalidReferenceError` — deploy `staging` first, then PR stages can reference it.
 
-The signature is
-`Resource.ref(id, { stage?: string, stack?: string })`. Both
-options default to the current stack and stage; here we override
-`stage` to point at the long-lived shared environment.
+The signature is `Resource.ref(id, { stage?: string, stack?: string })`. Both options default to the current stack and stage; here we override `stage` to point at the long-lived shared environment.
 
 ## Pass the reference downstream
 
-Once `project` exists (real or referenced), the rest of the file
-is identical. The branch creates per-stage:
+Once `project` exists (real or referenced), the rest of the file is identical. The branch creates per-stage:
 
 ```typescript
 const branch = yield* Neon.Branch("app-branch", {
@@ -131,14 +115,11 @@ const branch = yield* Neon.Branch("app-branch", {
 });
 ```
 
-Each PR stage gets its own ephemeral Neon **branch** off the
-shared **project** — which is exactly the point. Branches are
-copy-on-write and free; projects aren't.
+Each PR stage gets its own ephemeral Neon **branch** off the shared **project** — which is exactly the point. Branches are copy-on-write and free; projects aren’t.
 
 ## The whole picture
 
 ```typescript
-// src/Db.ts
 import * as Alchemy from "alchemy";
 import * as Drizzle from "@alchemy.run/drizzle";
 import * as Neon from "@alchemy.run/neon";
@@ -181,24 +162,16 @@ Then PR stages can reference it:
 alchemy deploy --stage pr-147
 ```
 
-Plan reads `staging`'s state, resolves `app-db` against it, and
-provisions only the per-stage `Neon.Branch`. Tearing down a PR
-stage with `alchemy destroy --stage pr-147` deletes the branch but
-leaves the shared project alone — Alchemy doesn't own it from this
-stage's perspective.
+Plan reads `staging` ’s state, resolves `app-db` against it, and provisions only the per-stage `Neon.Branch`. Tearing down a PR stage with `alchemy destroy --stage pr-147` deletes the branch but leaves the shared project alone — Alchemy doesn’t own it from this stage’s perspective.
 
 ## The same pattern with PlanetScale
 
-`Resource.ref` isn't Neon-specific. The
-[PlanetScale](../../planetscale.md) examples use the identical shape — a
-long-lived `PostgresDatabase` owned by a staging tier, referenced
-from `pr-*` stages that only own the ephemeral pieces (branch,
-role, Hyperdrive, Worker):
+`Resource.ref` isn’t Neon-specific. The [PlanetScale](../../planetscale.md) examples use the identical shape — a long-lived `PostgresDatabase` owned by a staging tier, referenced from `pr-*` stages that only own the ephemeral pieces (branch, role, Hyperdrive, Worker):
 
 ```typescript
 const database = stage.startsWith("pr-")
   ? yield* Planetscale.PostgresDatabase.ref("app-db", {
-      stage: `staging-${stage}`,
+      stage: \`staging-${stage}\`,
     })
   : yield* Planetscale.PostgresDatabase("app-db", {
       region: { slug: "us-east" },
@@ -211,24 +184,13 @@ const branch = yield* Planetscale.PostgresBranch("app-branch", {
 });
 ```
 
-One twist worth stealing: instead of pointing every PR at a single
-global `staging`, the ref targets `staging-${stage}` — so `pr-42`
-reads from `staging-pr-42`. Each PR gets a parallel staging stage
-that owns its database, keeping PR data isolated while the
-create-vs-reference split stays the same. Deploy `staging-pr-42`
-before `pr-42`, same as the Neon flow. If you'd rather share one
-database across all PRs, use `stage: "staging"` exactly as above.
+One twist worth stealing: instead of pointing every PR at a single global `staging`, the ref targets `staging-${stage}` — so `pr-42` reads from `staging-pr-42`. Each PR gets a parallel staging stage that owns its database, keeping PR data isolated while the create-vs-reference split stays the same. Deploy `staging-pr-42` before `pr-42`, same as the Neon flow. If you’d rather share one database across all PRs, use `stage: "staging"` exactly as above.
 
-The MySQL family works identically — `MySQLDatabase.ref`,
-`MySQLBranch`, `MySQLPassword`. Full files:
-[`cloudflare-planetscale-postgres-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-postgres-drizzle/src/Db.ts)
-and
-[`cloudflare-planetscale-mysql-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-mysql-drizzle/src/Db.ts).
+The MySQL family works identically — `MySQLDatabase.ref`, `MySQLBranch`, `MySQLPassword`. Full files: [`cloudflare-planetscale-postgres-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-postgres-drizzle/src/Db.ts) and [`cloudflare-planetscale-mysql-drizzle`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-mysql-drizzle/src/Db.ts).
 
 ## Cross-stack too
 
-`Resource.ref` also takes a `stack` option for pulling a resource
-out of a *different* stack:
+`Resource.ref` also takes a `stack` option for pulling a resource out of a *different* stack:
 
 ```typescript
 const project = yield* Neon.Project.ref("app-db", {
@@ -237,29 +199,22 @@ const project = yield* Neon.Project.ref("app-db", {
 });
 ```
 
-The lookup is `{ stack, stage, id }` — change any of them and
-you're pointing at a different deployed resource. For pulling a
-whole stack's outputs (instead of a single resource) see the
-multi-stack section of [Monorepos](../../project-structure/monorepo.md).
+The lookup is `{ stack, stage, id }` — change any of them and you’re pointing at a different deployed resource. For pulling a whole stack’s outputs (instead of a single resource) see the multi-stack section of [Monorepos](../../project-structure/monorepo.md).
 
 ## When to use which
 
-| Goal                                        | Use                                            |
-| ------------------------------------------- | ---------------------------------------------- |
-| Reference a single resource, same stack, different stage | `Resource.ref(id, { stage })`            |
-| Reference a single resource, different stack | `Resource.ref(id, { stack, stage })`           |
-| Reference an entire stack's outputs         | `Backend.stage[name]` ([guide](../../project-structure/monorepo.md))             |
-| Reference an arbitrary deployed Output      | [`Output.ref`](../../infrastructure-as-code/outputs.md#ref)          |
+| Goal | Use |
+| --- | --- |
+| Reference a single resource, same stack, different stage | `Resource.ref(id, { stage })` |
+| Reference a single resource, different stack | `Resource.ref(id, { stack, stage })` |
+| Reference an entire stack’s outputs | `Backend.stage[name]` ([guide](../../project-structure/monorepo.md)) |
+| Reference an arbitrary deployed Output | [`Output.ref`](../../infrastructure-as-code/outputs.md#ref) |
 
-All four resolve through the same state store — they just differ
-in what shape they return.
+All four resolve through the same state store — they just differ in what shape they return.
 
 ## Related
 
 - [Resource](../../infrastructure-as-code/resource.md#ref) — `Resource.ref` reference.
-- [Stages](../../environments/stages.md) — naming conventions for `pr-*`,
-  `dev_*`, `staging`, `prod`.
-- [Monorepos](../../project-structure/monorepo.md) — whole-stack references via
-  typed `Stack` handles.
-- [Neon](../../neon.md) and [PlanetScale](../../planetscale.md) — the two database
-  providers used in this guide.
+- [Stages](../../environments/stages.md) — naming conventions for `pr-*`, `dev_*`, `staging`, `prod`.
+- [Monorepos](../../project-structure/monorepo.md) — whole-stack references via typed `Stack` handles.
+- [Neon](../../neon.md) and [PlanetScale](../../planetscale.md) — the two database providers in these examples.

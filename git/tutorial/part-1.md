@@ -2,15 +2,15 @@
 url: https://alchemy.run/git/tutorial/part-1
 title: "Part 1: Push your first repository"
 description: "Deploy a Git host, push a commit, and clone it back. Add storage and hashing one layer at a time."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Start with a Git remote you can push to. This part deploys a Worker backed by Durable Objects and R2, then sends a real commit through it and clones it back.
 
 ## Create the project
 
-You need Bun or Node.js 22+, Git, and a Cloudflare account with Workers, Durable Objects, and R2. Complete [Cloudflare setup](../../cloudflare/setup.md) to connect your account.
+You need [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/), Git, and a Cloudflare account with Workers, Durable Objects, and R2. Complete [Cloudflare setup](../../cloudflare/setup.md) to connect your account.
 
 ```sh
 mkdir git-tutorial

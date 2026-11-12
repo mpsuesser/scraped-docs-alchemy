@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Hetzner with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Hetzner.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The built app runs on a Hetzner Cloud Server using vinext’s production Node server as a systemd service. Alchemy creates a server when `server` is omitted and uploads `dist/` with the runtime dependency installation.
@@ -87,7 +87,7 @@ The default data cache is process-local. To persist ISR and `"use cache"` across
 ## Local development
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 The Website runs `vinext dev` with native HMR and creates no cloud resources. Other resources declared in the Stack retain their own provider behavior. Apply `.pipe(Alchemy.remote())` to the Website for a live deployment during dev.

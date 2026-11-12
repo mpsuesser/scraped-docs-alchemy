@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod instances of your stack with --stage, and tune resources per stage."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In [Part 3](part-3.md) you wrote integration tests against a deployed stack. But so far everything has landed in a single environment. In this part you’ll use **stages** — isolated instances of the same Stack — to give every developer, environment, and (in [Part 5](part-5.md)) every pull request its own copy of the infrastructure.
@@ -16,7 +16,7 @@ You’ve been using stages all along. If you don’t pass `--stage`, Alchemy dep
 $ whoami
 sam
 
-$ bun alchemy deploy
+$ pnpm alchemy deploy
 # deploys to stage \`live_sam\`
 ```
 
@@ -32,7 +32,7 @@ Each developer on your team automatically gets a personal sandbox without any co
 Pass `--stage` to deploy a completely separate instance of the same program:
 
 ```sh
-bun alchemy deploy --stage staging
+pnpm alchemy deploy --stage staging
 ```
 
 ```
@@ -86,7 +86,7 @@ export default class Api extends AWS.Lambda.Function<Api>()(
   Stack.useSync((stack) => ({
     main: import.meta.url,
     functionUrl: true,
-    memory: stack.stage === "prod" ? 1024 : 512,
+    memorySize: stack.stage === "prod" ? 1024 : 512,
   })),
   Effect.gen(function* () {
     /* ... */
@@ -101,7 +101,7 @@ Now `alchemy deploy --stage prod` provisions a 1024 MB function while every othe
 When you’re done with an environment, tear down just that stage:
 
 ```sh
-bun alchemy destroy --stage staging
+pnpm alchemy destroy --stage staging
 ```
 
 The plan lists everything in `staging` for deletion and leaves every other stage alone.

@@ -2,27 +2,19 @@
 url: https://alchemy.run/cloudflare/data/hyperdrive-private-database
 title: "Private database (Workers VPC)"
 description: "Connect Hyperdrive to a database inside a private network — such as Aurora in an AWS VPC — through a Cloudflare Tunnel and a Workers VPC Service, with no public endpoint."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-[Hyperdrive](hyperdrive.md) can reach a database that has no
-public endpoint. A `cloudflared` connector runs inside the private network
-and dials out to Cloudflare. A TCP VPC Service names the database host
-behind it, and Hyperdrive egresses through that service.
+[Hyperdrive](hyperdrive.md) can reach a database that has no public endpoint. A `cloudflared` connector runs inside the private network and dials out to Cloudflare. A TCP VPC Service names the database host behind it, and Hyperdrive egresses through that service.
 
-This guide connects a Worker to Aurora PostgreSQL in private AWS subnets.
-The same three Cloudflare resources work for any private network that can
-run `cloudflared`. The finished project is in
-[`examples/cloudflare-hyperdrive-aws-vpc`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-hyperdrive-aws-vpc).
+Take a Worker that connects to Aurora PostgreSQL in private AWS subnets. The same three Cloudflare resources work for any private network that can run `cloudflared`. The finished project is in [`examples/cloudflare-hyperdrive-aws-vpc`](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-hyperdrive-aws-vpc).
 
 ## Add the providers
 
-The stack needs AWS, Cloudflare, and `Alchemy.Random` for the database
-password.
+The stack needs AWS, Cloudflare, and `Alchemy.Random` for the database password.
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as AWS from "@alchemy.run/aws";
 import * as Cloudflare from "@alchemy.run/cloudflare";
@@ -43,12 +35,9 @@ export default Alchemy.Stack(
 
 ## Create the network
 
-`AWS.EC2.Network` builds a VPC with public and private subnets. The
-connector runs in the public subnets so it can dial out; Aurora goes in
-the private ones.
+`AWS.EC2.Network` builds a VPC with public and private subnets. The connector runs in the public subnets so it can dial out; Aurora goes in the private ones.
 
 ```typescript
-// src/Database.ts
 import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
@@ -66,16 +55,13 @@ export const ConnectorSecurityGroup = Effect.gen(function* () {
 });
 ```
 
-The connector's security group has no inbound rules. The tunnel is an
-outbound connection.
+The connector’s security group has no inbound rules. The tunnel is an outbound connection.
 
 ## Create the database
 
-Aurora only admits the connector's security group. The password is
-generated once, kept in state, and written to the cluster's admin secret.
+Aurora only admits the connector’s security group. The password is generated once, kept in state, and written to the cluster’s admin secret.
 
 ```typescript
-// src/Database.ts
 import * as Alchemy from "alchemy";
 import * as Output from "alchemy/Output";
 import * as Redacted from "effect/Redacted";
@@ -115,11 +101,9 @@ export const Database = Effect.gen(function* () {
 
 ## Create the tunnel
 
-A Cloudflare Tunnel carries Hyperdrive's traffic into the VPC. It needs no
-public hostnames.
+A Cloudflare Tunnel carries Hyperdrive’s traffic into the VPC. It needs no public hostnames.
 
 ```typescript
-// src/Connector.ts
 import * as AWS from "@alchemy.run/aws";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -132,11 +116,9 @@ export const Tunnel = Cloudflare.Tunnel.Tunnel("Tunnel", {
 
 ## Run the connector in the VPC
 
-`cloudflared` runs on ECS Fargate. The tunnel token goes into Secrets
-Manager and reaches the container as `TUNNEL_TOKEN`.
+`cloudflared` runs on ECS Fargate. The tunnel token goes into Secrets Manager and reaches the container as `TUNNEL_TOKEN`.
 
 ```typescript
-// src/Connector.ts
 export const Connector = Effect.gen(function* () {
   const network = yield* Network;
   const securityGroup = yield* ConnectorSecurityGroup;
@@ -160,11 +142,9 @@ export const Connector = Effect.gen(function* () {
 
 ## Expose the database as a VPC Service
 
-`Cloudflare.Connectivity.DirectoryService` with `type: "tcp"` is a TCP VPC
-Service. It points at the Aurora writer endpoint through the tunnel.
+`Cloudflare.Connectivity.DirectoryService` with `type: "tcp"` is a TCP VPC Service. It points at the Aurora writer endpoint through the tunnel.
 
 ```typescript
-// src/Hyperdrive.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
@@ -192,28 +172,17 @@ export const AuroraService = Effect.gen(function* () {
 });
 ```
 
-`cloudflared` resolves the hostname with the VPC's DNS, so the private
-endpoint works as-is.
+`cloudflared` resolves the hostname with the VPC’s DNS, so the private endpoint works as-is.
 
-Hyperdrive connects to the database when it is created, so the whole path
-must be live first. The hostname waits on the writer instance and the
-connector service, so neither the VPC Service nor Hyperdrive is created
-until Aurora is accepting connections and `cloudflared` is running.
+Hyperdrive connects to the database when it is created, so the whole path must be live first. The hostname waits on the writer instance and the connector service, so neither the VPC Service nor Hyperdrive is created until Aurora is accepting connections and `cloudflared` is running.
 
-Workers VPC verifies the origin certificate by default and only trusts
-public CAs and Cloudflare Origin CA. Aurora's certificate comes from the
-Amazon RDS CA, so verification is disabled. The connection is still
-encrypted with TLS. A database with a publicly trusted certificate can keep
-the default `verify_full`.
+Workers VPC verifies the origin certificate by default and only trusts public CAs and Cloudflare Origin CA. Aurora’s certificate comes from the Amazon RDS CA, so verification is disabled. The connection is still encrypted with TLS. A database with a publicly trusted certificate can keep the default `verify_full`.
 
 ## Point Hyperdrive at the service
 
-A Hyperdrive `origin` with `serviceId` egresses through the VPC Service.
-The host and port come from the service, so the origin only needs the
-database credentials.
+A Hyperdrive `origin` with `serviceId` egresses through the VPC Service. The host and port come from the service, so the origin only needs the database credentials.
 
 ```typescript
-// src/Hyperdrive.ts
 export const Hyperdrive = Effect.gen(function* () {
   const service = yield* AuroraService;
   const password = yield* DbPassword;
@@ -229,15 +198,13 @@ export const Hyperdrive = Effect.gen(function* () {
 });
 ```
 
-A VPC origin can't be combined with `mtls`. TLS is configured on the VPC
-Service instead.
+A VPC origin can’t be combined with `mtls`. TLS is configured on the VPC Service instead.
 
 ## Query from a Worker
 
 The Worker sees an ordinary Hyperdrive binding.
 
 ```typescript
-// src/worker.ts
 import type { Hyperdrive } from "@cloudflare/workers-types";
 import { Client } from "pg";
 
@@ -255,29 +222,27 @@ export default {
 };
 ```
 
-An Effect Worker binds it with `Cloudflare.Hyperdrive.Connect(Hyperdrive)`,
-as shown in the [Hyperdrive guide](hyperdrive.md#bind-hyperdrive-to-your-worker).
+An Effect Worker binds it with `Cloudflare.Hyperdrive.Connect(Hyperdrive)`, as shown in the [Hyperdrive guide](hyperdrive.md#bind-hyperdrive-to-your-worker).
 
 ## Wire up the stack
 
-```diff lang="typescript"
-// alchemy.run.ts
-+import { Connector } from "./src/Connector.ts";
-+import { Hyperdrive } from "./src/Hyperdrive.ts";
+```typescript
+import { Connector } from "./src/Connector.ts";
+import { Hyperdrive } from "./src/Hyperdrive.ts";
 
 export default Alchemy.Stack(
   "CloudflareHyperdriveAwsVpc",
   { /* ... */ },
   Effect.gen(function* () {
--    return {};
-+    yield* Connector;
-+    const hd = yield* Hyperdrive;
-+    const worker = yield* Cloudflare.Worker("Api", {
-+      main: "./src/worker.ts",
-+      compatibility: { flags: ["nodejs_compat"] },
-+      env: { DB: hd },
-+    });
-+    return { url: worker.url };
+    return {};
+    yield* Connector;
+    const hd = yield* Hyperdrive;
+    const worker = yield* Cloudflare.Worker("Api", {
+      main: "./src/worker.ts",
+      compatibility: { flags: ["nodejs_compat"] },
+      env: { DB: hd },
+    });
+    return { url: worker.url };
   }),
 );
 ```
@@ -285,16 +250,14 @@ export default Alchemy.Stack(
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
-Open the Worker URL. It returns the Aurora Postgres version, read through
-Hyperdrive, the VPC Service, and the tunnel.
+Open the Worker URL. It returns the Aurora Postgres version, read through Hyperdrive, the VPC Service, and the tunnel.
 
 ## Local development
 
-`alchemy dev` can't reach a private network. Set `dev` on the Connection to
-a database your machine can reach:
+`alchemy dev` can’t reach a private network. Set `dev` on the Connection to a database your machine can reach:
 
 ```typescript
 yield* Cloudflare.Hyperdrive.Connection("Hyperdrive", {

@@ -2,22 +2,33 @@
 url: https://alchemy.run/railway/networking
 title: "Custom domains, TCP & private networks"
 description: "Reach a Railway Service on your own hostname, expose databases over public TCP, and name private-mesh DNS."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-HTTP [Services](compute/services.md) already get a generated
-`*.up.railway.app` hostname. That is enough for most apps. Add a
-[`CustomDomain`](https://alchemy.run/providers/railway/reference/networking#customdomain) for a hostname you
-control. Add a [`TcpProxy`](https://alchemy.run/providers/railway/reference/networking#tcpproxy) so a laptop
-or deploy-time migration can reach Postgres, MySQL, Mongo, or Redis.
-Named [`PrivateNetwork`](https://alchemy.run/providers/railway/reference/networking#privatenetwork)s add
-custom DNS on the default `*.railway.internal` mesh.
+HTTP [Services](compute/services.md) already get a generated `*.up.railway.app` hostname. That is enough for most apps. Add a [`CustomDomain`](https://alchemy.run/providers/railway/reference/networking#customdomain) for a hostname you control. Add a [`TcpProxy`](https://alchemy.run/providers/railway/reference/networking#tcpproxy) so a laptop or deploy-time migration can reach Postgres, MySQL, Mongo, or Redis. Named [`PrivateNetwork`](https://alchemy.run/providers/railway/reference/networking#privatenetwork) s add custom DNS on the default `*.railway.internal` mesh.
+
+productionenvironment · private network \*.railway.internal
+
+apiService
+
+workerService
+
+Postgresdatabase
+
+public
+
+TCP proxy, if you add one
+
+private
+
+postgres.railway.internal
+
+Services in an environment reach each other by name on its private network. Only what you publish gets a public hostname, and a database is reachable from outside only through a TCP proxy.
 
 ## Publish the Service
 
-A Service with `port` listens inside the container. Alchemy creates
-a `*.up.railway.app` domain and points it at that port.
+A Service with `port` listens inside the container. Alchemy creates a `*.up.railway.app` domain and points it at that port.
 
 ```typescript
 export default class Api extends Railway.Service<Api>()(
@@ -35,8 +46,7 @@ export default class Api extends Railway.Service<Api>()(
 ) {}
 ```
 
-Yield the Service in the Stack. `api.url` is
-`https://{name}.up.railway.app`.
+Yield the Service in the Stack. `api.url` is `https://{name}.up.railway.app`.
 
 ```typescript
 export default Alchemy.Stack(
@@ -49,13 +59,11 @@ export default Alchemy.Stack(
 );
 ```
 
-There is no IpAssignment resource. Railway's edge terminates TLS on
-443.
+There is no IpAssignment resource. Railway’s edge terminates TLS on 443.
 
 ## Custom domains
 
-A CustomDomain is a user hostname on a Service. Railway issues a
-Let's Encrypt certificate once DNS is verified.
+A CustomDomain is a user hostname on a Service. Railway issues a Let’s Encrypt certificate once DNS is verified.
 
 ```typescript
 const site = yield* Railway.Project("Site");
@@ -71,18 +79,11 @@ const www = yield* Railway.CustomDomain("Www", {
 });
 ```
 
-Yield `Www` in the Stack. Publish the records in `www.dnsRecords`
-(the `CNAME` and the verification `TXT`) with your DNS host. `www.url`
-is `https://www.example.com`. `verified` flips once Railway sees the
-record.
+Yield `Www` in the Stack. Publish the records in `www.dnsRecords` (the `CNAME` and the verification `TXT`) with your DNS host. `www.url` is `https://www.example.com`. `verified` flips once Railway sees the record.
 
-`Railway.Website.*` composites can publish those records for you: pass
-`domain: { name: "www.example.com", dns: Cloudflare.DNS.Adapter() }` (or
-`AWS.Route53.Adapter()`, `Hetzner.DNS.Adapter()`). See
-[DNS Adapters](../infrastructure-as-code/dns-adapters.md).
+`Railway.Website.*` composites can publish those records for you: pass `domain: { name: "www.example.com", dns: Cloudflare.DNS.Adapter() }` (or `AWS.Route53.Adapter()`, `Hetzner.DNS.Adapter()`). See [DNS Adapters](../infrastructure-as-code/dns-adapters.md).
 
-`targetPort` is optional and updates in place. Changing `domain`,
-`service`, or `environment` replaces the CustomDomain.
+`targetPort` is optional and updates in place. Changing `domain`, `service`, or `environment` replaces the CustomDomain.
 
 ```typescript
 const www = yield* Railway.CustomDomain("Www", {
@@ -95,17 +96,9 @@ const www = yield* Railway.CustomDomain("Www", {
 
 ## TCP proxies
 
-A TcpProxy exposes a service over public TCP
-(`{domain}:{proxyPort}` on `*.proxy.rlwy.net`). Identity is the
-Railway proxy id. There is no in-place update — changing `service`,
-`postgres`, `redis`, `environment`, or `applicationPort` replaces
-the proxy.
+A TcpProxy exposes a service over public TCP (`{domain}:{proxyPort}` on `*.proxy.rlwy.net`). Identity is the Railway proxy id. There is no in-place update — changing `service`, `postgres`, `redis`, `environment`, or `applicationPort` replaces the proxy.
 
-[`Railway.Postgres`](data/postgres.md),
-[`MySQL`](data/mysql.md), and [`Mongo`](data/mongo.md)
-already create one when `public` is true (the default). Use
-`TcpProxy` for Redis, or for a database created with `public:
-false`.
+[`Railway.Postgres`](data/postgres.md), [`MySQL`](data/mysql.md), and [`Mongo`](data/mongo.md) already create one when `public` is true (the default). Use `TcpProxy` for Redis, or for a database created with `public: false`.
 
 ```typescript
 const site = yield* Railway.Project("Site");
@@ -128,21 +121,13 @@ const proxy = yield* Railway.TcpProxy("CacheProxy", {
 });
 ```
 
-Pass a `Railway.Service` (or `{ serviceId }`) for any other
-container.
+Pass a `Railway.Service` (or `{ serviceId }`) for any other container.
 
-In-service bindings (`ConnectPostgres`, `ConnectMySQL`,
-`ConnectMongo`, `ReadWriteRedis`) always use the private
-`{name}.railway.internal` URL. The TCP proxy is for laptops and CI.
+In-service bindings (`ConnectPostgres`, `ConnectMySQL`, `ConnectMongo`, `ReadWriteRedis`) always use the private `{name}.railway.internal` URL. The TCP proxy is for laptops and CI.
 
 ## Private networks
 
-Every environment already has the default `*.railway.internal` mesh
-— `{serviceName}.railway.internal` is derived from the Service name,
-no extra resource. [`PrivateNetwork`](https://alchemy.run/providers/railway/reference/networking#privatenetwork)
-create-or-gets an additional named network. Attach a Service with
-[`PrivateNetworkEndpoint`](https://alchemy.run/providers/railway/reference/networking#privatenetwork)
-for a custom DNS name.
+Every environment already has the default `*.railway.internal` mesh — `{serviceName}.railway.internal` is derived from the Service name, no extra resource. [`PrivateNetwork`](https://alchemy.run/providers/railway/reference/networking#privatenetwork) create-or-gets an additional named network. Attach a Service with [`PrivateNetworkEndpoint`](https://alchemy.run/providers/railway/reference/networking#privatenetwork) for a custom DNS name.
 
 ```typescript
 const net = yield* Railway.PrivateNetwork("Mesh", {
@@ -155,15 +140,8 @@ const endpoint = yield* Railway.PrivateNetworkEndpoint("ApiDns", {
 });
 ```
 
-Railway has no per-network delete. Destroy is a no-op; the network
-is removed when its Project/Environment is deleted.
+Railway has no per-network delete. Destroy is a no-op; the network is removed when its Project/Environment is deleted.
 
 ## Where next
 
-The [tutorial](tutorial/part-2.md) deploys a Service that
-answers on `*.up.railway.app`. Custom domains and TCP proxies hang
-off the Service / Postgres / Redis. See the
-[`CustomDomain`](https://alchemy.run/providers/railway/reference/networking#customdomain),
-[`TcpProxy`](https://alchemy.run/providers/railway/reference/networking#tcpproxy),
-[`PrivateNetwork`](https://alchemy.run/providers/railway/reference/networking#privatenetwork) (includes
-`PrivateNetworkEndpoint`) references.
+The [tutorial](tutorial/part-2.md) deploys a Service that answers on `*.up.railway.app`. Custom domains and TCP proxies hang off the Service / Postgres / Redis. See the [`CustomDomain`](https://alchemy.run/providers/railway/reference/networking#customdomain), [`TcpProxy`](https://alchemy.run/providers/railway/reference/networking#tcpproxy), [`PrivateNetwork`](https://alchemy.run/providers/railway/reference/networking#privatenetwork) (includes `PrivateNetworkEndpoint`) references.

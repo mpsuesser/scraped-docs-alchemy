@@ -2,16 +2,15 @@
 url: https://alchemy.run/planetscale/guides/drizzle
 title: "Drizzle ORM with PlanetScale"
 description: "Configure PlanetScale Postgres or MySQL branches, committed Drizzle migrations, and role or password connections."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Use the portable [Postgres](../../sql/drizzle/postgres.md) or [MySQL](../../sql/drizzle/mysql.md) client with PlanetScale. This page owns database configuration; [Add Drizzle ORM](../../cloudflare/data/drizzle.md) owns Worker deployment.
+Use the portable [Postgres](../../sql/drizzle/postgres.md) or [MySQL](../../sql/drizzle/mysql.md) client with PlanetScale. [Add Drizzle ORM](../../cloudflare/data/drizzle.md) covers deploying it in a Worker.
 
 ## Define the schema
 
 ```typescript
-// drizzle.config.ts
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
@@ -26,7 +25,7 @@ Use the [Postgres schema example](../../sql/drizzle/postgres.md#define-the-schem
 ## Generate and review migrations
 
 ```sh
-bunx drizzle-kit generate
+pnpm drizzle-kit generate
 git diff -- src/schema.ts migrations
 git status --short
 git add src/schema.ts drizzle.config.ts migrations
@@ -39,7 +38,6 @@ Generate when the schema changes, then review and commit the schema, SQL, and sn
 ## Apply them on the branch
 
 ```typescript
-// src/Db.ts
 import * as Planetscale from "@alchemy.run/planetscale";
 import * as Effect from "effect/Effect";
 
@@ -63,7 +61,7 @@ export const PlanetscaleDb = Effect.gen(function* () {
 
 Register `Planetscale.providers()` in your Stack; the branch applies committed migrations transactionally and the role supplies application credentials. [Postgres](../data/postgres.md) covers branch and role options.
 
-## Connect via `origin` / `pooledOrigin`
+## Connect via origin / pooledOrigin
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
@@ -82,10 +80,9 @@ export const Hyperdrive = Effect.gen(function* () {
 
 ## MySQL: generate and check in migrations
 
-```diff lang="typescript"
-// drizzle.config.ts
--  dialect: "postgresql",
-+  dialect: "mysql",
+```typescript
+dialect: "postgresql",
+dialect: "mysql",
 ```
 
 For Vitess, use `mysql-core` columns and run the same generate, review, and commit commands above. Do not reuse Postgres migration SQL on a MySQL branch.
@@ -93,7 +90,6 @@ For Vitess, use `mysql-core` columns and run the same generate, review, and comm
 ## MySQL: apply and connect
 
 ```typescript
-// src/Db.ts
 import * as Planetscale from "@alchemy.run/planetscale";
 import * as Effect from "effect/Effect";
 
@@ -116,19 +112,19 @@ export const PlanetscaleDb = Effect.gen(function* () {
 });
 ```
 
-`MySQLPassword` provides `password.origin` for Hyperdrive, without a pooled variant. [PlanetScale migrations](../data/migrations.md) covers statement splitting and MySQL's non-transactional DDL behavior.
+`MySQLPassword` provides `password.origin` for Hyperdrive, without a pooled variant. [PlanetScale migrations](../data/migrations.md) covers statement splitting and MySQL’s non-transactional DDL behavior.
 
 ## Deploy committed files
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 The branch applies pending committed files; this configuration does not generate SQL during deployment. If `drizzle-kit migrate` already owns application, keep that workflow unless you deliberately choose Alchemy-managed migrations; see [migration ownership](../../sql/drizzle/migrations.md).
 
 ## Wire it into your runtime
 
-Follow [Add Drizzle ORM](../../cloudflare/data/drizzle.md) for Worker bindings, or [SQL databases](../../sql/databases.md) to choose a client for another runtime. Existing [Postgres](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-postgres-drizzle) and [MySQL](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-mysql-drizzle) projects demonstrate connections and queries, but use the optional schema resource rather than this guide's generation workflow.
+Follow [Add Drizzle ORM](../../cloudflare/data/drizzle.md) for Worker bindings, or [SQL databases](../../sql/databases.md) to choose a client for another runtime. Existing [Postgres](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-postgres-drizzle) and [MySQL](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-planetscale-mysql-drizzle) projects demonstrate connections and queries, but use the optional schema resource rather than generating migrations with `drizzle-kit`.
 
 ## Where next
 

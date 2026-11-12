@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Fly with Fly.Website.Nuxt — nitro's node preset on a Machine, assets baked into the image, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Fly.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Fly. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs on a Machine, and client assets plus prerendered pages are baked into the image. Omit `app` and a `Fly.App` is created under the site; a `Fly.Service` listens on port 3000 and a shared IPv4 assignment makes `https://{app}.fly.dev` answer. There is no `nitro.preset` to edit and no build command to run.
@@ -112,7 +112,7 @@ Nitro’s `isr` route rule is implemented only by the Vercel and Netlify presets
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Nuxt’s own dev server (nitro dev, full HMR) instead of deploying; `site.url` is the local address and no Fly resources are created. Wrap the site in `Alchemy.remote()` to deploy the live App and Service even during dev.

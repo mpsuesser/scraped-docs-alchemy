@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/memory
 title: "Memory"
 description: "Run a disposable Better Auth Worker with an isolate-local memory store."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Use `Memory` for throwaway development and tests, not production authentication. This complete Worker example keeps records only for the lifetime of each isolate.
@@ -11,14 +11,14 @@ Use `Memory` for throwaway development and tests, not production authentication.
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5
 ```
 
 No optional database driver or `kysely` peer is required by the memory adapter.
 
 ## Define the database layer
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { Memory } from "@alchemy.run/better-auth/Memory";
 
 export const AuthDatabase = Memory();
@@ -28,7 +28,7 @@ Construct the layer once for the host, not inside `fetch`, so requests in the sa
 
 ## Define the auth Worker
 
-```typescript title="src/worker.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -55,7 +55,7 @@ Better Auth instances remain request-scoped, while the layer retains the backing
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -79,7 +79,7 @@ Alchemy generates and binds a stable signing secret, persisted in local stack st
 ## Run locally
 
 ```sh
-bunx alchemy dev
+pnpm alchemy dev
 ```
 
 Use the printed URL rather than assuming a local port. Set `AUTH_ORIGIN` to that URL to check the auth endpoint:
@@ -94,7 +94,7 @@ A restart or isolate replacement loses users and sessions. Even without a restar
 
 When an in-process test needs access to the backing store, replace `src/auth-database.ts` with this file:
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { Memory } from "@alchemy.run/better-auth/Memory";
 import type { MemoryDB } from "better-auth/adapters/memory";
 
@@ -102,7 +102,7 @@ export const records: MemoryDB = {};
 export const AuthDatabase = Memory(records);
 ```
 
-The adapter initializes missing model arrays from the auth schema, including plugins. Give independent tests independent stores; importing this module in the test process does not expose a separate Worker's in-memory records.
+The adapter initializes missing model arrays from the auth schema, including plugins. Give independent tests independent stores; importing this module in the test process does not expose a separate Worker’s in-memory records.
 
 ## Migration behavior
 

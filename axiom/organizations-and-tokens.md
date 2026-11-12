@@ -1,0 +1,54 @@
+---
+url: https://alchemy.run/axiom/organizations-and-tokens
+title: "Organizations and tokens"
+description: "How an Axiom organization holds your datasets, how Alchemy deploys with a personal token, and how your Stack mints API tokens that can only ingest or only query."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+Everything on Axiom belongs to an **organization**: datasets, monitors, notifiers, dashboards, and your bill. Two kinds of token reach it. A **personal token** acts as you, with everything you can do. An **API token** can do only what it’s granted: ingest into one dataset, query another.
+
+acmeorganizationpersonal token: everything you can do
+
+error-rateMonitor
+
+opsDashboard
+
+app-tracesdataset
+
+app-logsdataset
+
+auditdataset
+
+Everything lives in the organization. Your personal token deploys it all, while the API token your app ships with can only ingest into app-traces and app-logs.
+
+## Deploy with a profile
+
+Alchemy deploys with the token in your [profile](../environments/profiles.md), usually a personal token, since it creates datasets, monitors and other tokens:
+
+```sh
+alchemy profile edit --add Axiom
+```
+
+See [Setup](setup.md).
+
+## API tokens for your runtimes
+
+The app that sends telemetry needs only to ingest, and only into its own datasets. Declare that token in your Stack:
+
+```typescript
+const ingest = yield* Axiom.ApiToken("ingest", {
+  name: "prod-ingest",
+  datasetCapabilities: {
+    "my-app-traces": { ingest: ["create"] },
+  },
+});
+```
+
+`ingest.token` is an output, so it goes straight into your runtime’s secrets. A dashboard tool gets a token that can only query.
+
+Destroying an `ApiToken` revokes it, so removing it from your Stack removes the access too.
+
+## In CI
+
+With `CI=true`, Alchemy skips the profile and reads `AXIOM_TOKEN` from the environment, plus `AXIOM_ORG_ID` when the token is a personal one. See [CI](../environments/ci.md).

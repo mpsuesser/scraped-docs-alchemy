@@ -2,11 +2,11 @@
 url: https://alchemy.run/domain/backfill
 title: "History at scale"
 description: "How a deploy backfills new views and projections on Cloudflare, how long it takes, and how to run a large Domain within Cloudflare's limits."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-When a deploy adds a view or a projection, or bumps a version, the new consumer [receives the history](model.md#consumers-added-later-receive-the-history) recorded before it. On Cloudflare the deploy does that work and waits for it. This page explains how, how long it takes, measured on Cloudflare, and what to keep in mind as a Domain grows.
+When a deploy adds a view or a projection, or bumps a version, the new consumer [receives the history](model.md#consumers-added-later-receive-the-history) recorded before it. On Cloudflare the deploy does that work and waits for it.
 
 ## The deploy waits for the history
 

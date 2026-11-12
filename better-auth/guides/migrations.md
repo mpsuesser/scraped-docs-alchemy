@@ -2,14 +2,13 @@
 url: https://alchemy.run/better-auth/guides/migrations
 title: "Migrations"
 description: "Apply Better Auth schema changes at deploy, or manage the schema yourself."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Deploy an additional field
 
 ```typescript
-// worker.ts
 import { BetterAuth } from "@alchemy.run/better-auth";
 import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
 import * as Cloudflare from "@alchemy.run/cloudflare";
@@ -38,7 +37,6 @@ export default class AuthApi extends Cloudflare.Worker<AuthApi>()(
 This auth-only Worker declares an optional `timezone` column on the user model. The database layer supplies both the runtime binding and the deploy-time migration connection.
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -57,7 +55,7 @@ export default Alchemy.Stack(
 Use Bun, matching `alchemy` and `@alchemy.run/better-auth` releases, Better Auth 1.7.5, Effect 4, and `kysely`, with Cloudflare credentials configured. This standalone stack creates a new database; applying a change to an existing installation requires retaining its stack, stage, resource identities, and state.
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 The migration action applies missing tables, columns, and indexes before the updated host deploys, while existing instances may still serve traffic. Migration code does not run on incoming requests or during planning.
@@ -65,13 +63,13 @@ The migration action applies missing tables, columns, and indexes before the upd
 ## Repeat or force a deployment
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 An unchanged schema, database identity, and dialect skip the migration action. Plugin fields, model names, and indexes participate in the schema fingerprint.
 
 ```sh
-bunx alchemy deploy --force
+pnpm alchemy deploy --force
 ```
 
 Force reapplies the deployment, including its migration action; an already-current schema remains a no-op. It does not override migration safety checks, merge users, or rewrite account identities.
@@ -95,7 +93,7 @@ Use a maintenance window for changes incompatible with running instances. Rollin
 | Drizzle | Application-owned migration tooling |
 | Memory | No SQL migration |
 
-Runtime connectivity does not prove deploy-time connectivity. In particular, Hyperdrive migrations need access to the origin database rather than the Worker's runtime binding.
+Runtime connectivity does not prove deploy-time connectivity. In particular, Hyperdrive migrations need access to the origin database rather than the Worker’s runtime binding.
 
 ## Opt out only when another process owns the schema
 

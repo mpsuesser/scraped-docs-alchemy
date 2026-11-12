@@ -2,28 +2,25 @@
 url: https://alchemy.run/cloudflare/compute/hibernatable-websockets
 title: "Accept WebSockets"
 description: "Accept WebSocket connections in a Durable Object, broadcast between peers, and survive Cloudflare's hibernation."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-The `Counter` Durable Object you added in the previous part holds
-state per key but only over plain HTTP. Now you'll build `Room` — a
-chat Durable Object that accepts WebSocket connections, broadcasts
-messages between peers, and **survives hibernation**.
+The `Counter` Durable Object you added in the previous part holds state per key but only over plain HTTP. Now you’ll build `Room` — a chat Durable Object that accepts WebSocket connections, broadcasts messages between peers, and **survives hibernation**.
 
-Cloudflare can evict an idle Durable Object from memory while
-keeping its WebSocket connections open. When a message arrives the
-DO is reconstructed from scratch, your constructor Effect runs again, and
-your `webSocketMessage` handler is invoked. Any per-instance state
-you held in JavaScript variables is gone — you have to put it back.
+Cloudflare can evict an idle Durable Object from memory while keeping its WebSocket connections open. When a message arrives the DO is reconstructed from scratch, your constructor Effect runs again, and your `webSocketMessage` handler is invoked. Any per-instance state you held in JavaScript variables is gone — you have to put it back.
+
+<svg viewBox="0 0 685.6 124" style="max-width: 788px" role="img" aria-label="The connection stays open while the Room is evicted. A message brings the Room back: its constructor runs again, then webSocketMessage handles it."><line stroke-opacity="0.2" stroke="currentColor" x1="416.00000000000006" y1="24" x2="416.00000000000006" y2="118"></line><g><text fill="currentColor" x="4" y="50">WebSocket</text> <text fill="currentColor" x="4" y="64">to the browser</text> <g><rect stroke="currentColor" fill="none" x="136" y="40" width="537.6" height="24" rx="5"></rect><text fill="currentColor" x="404.8" y="56" text-anchor="middle">open the whole time</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="74" x2="685.6" y2="74"></line><text fill="currentColor" x="4" y="94">Room</text> <text fill="currentColor" x="4" y="108">in memory</text> <g><rect stroke="currentColor" fill="none" x="136" y="84" width="78.4" height="24" rx="5"></rect><text fill="currentColor" x="175.2" y="100" text-anchor="middle">running</text></g> <g><rect stroke="currentColor" fill="none" x="214.4" y="84" width="201.60000000000005" height="24" rx="5"></rect><text fill="currentColor" x="315.20000000000005" y="100" text-anchor="middle">hibernated · not billed</text></g> <g><rect stroke="currentColor" fill="none" x="416.00000000000006" y="84" width="39.19999999999993" height="24" rx="5"></rect></g><g><rect stroke="currentColor" fill="none" x="455.2" y="84" width="123.2000000000001" height="24" rx="5"></rect><text fill="currentColor" x="516.8000000000001" y="100" text-anchor="middle">webSocketMessage</text></g> <g><rect stroke="currentColor" fill="none" x="578.4000000000001" y="84" width="95.19999999999993" height="24" rx="5"></rect><text fill="currentColor" x="626" y="100" text-anchor="middle">hibernated</text></g></g> <text fill="currentColor" x="416.00000000000006" y="18" text-anchor="middle">a message arrives</text></svg> <svg viewBox="0 0 330 159" style="max-width: 379px" role="img" aria-label="The connection stays open while the Room is evicted. A message brings the Room back: its constructor runs again, then webSocketMessage handles it."><line stroke-opacity="0.2" stroke="currentColor" x1="171.72" y1="24" x2="171.72" y2="153"></line><g><text fill="currentColor" x="0" y="44">WebSocket <tspan fill="currentColor" dx="8">to the browser</tspan></text> <g><rect stroke="currentColor" fill="none" x="12.72" y="54" width="305.28" height="24" rx="5"></rect><text fill="currentColor" x="165.35999999999999" y="70" text-anchor="middle">open the whole time</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="84" x2="330" y2="84"></line><text fill="currentColor" x="0" y="98">Room <tspan fill="currentColor" dx="8">in memory</tspan></text> <g><rect stroke="currentColor" fill="none" x="12.72" y="108" width="44.519999999999996" height="24" rx="5"></rect><text fill="currentColor" x="12.72" y="144" text-anchor="start">running</text></g> <g><rect stroke="currentColor" fill="none" x="57.239999999999995" y="108" width="114.48" height="24" rx="5"></rect></g><g><rect stroke="currentColor" fill="none" x="171.72" y="108" width="22.25999999999999" height="24" rx="5"></rect></g><g><rect stroke="currentColor" fill="none" x="193.98" y="108" width="69.96000000000001" height="24" rx="5"></rect><text fill="currentColor" x="193.98" y="144" text-anchor="start">webSocketMessage</text></g> <g><rect stroke="currentColor" fill="none" x="263.94" y="108" width="54.06" height="24" rx="5"></rect></g></g><text fill="currentColor" x="171.72" y="18" text-anchor="middle">a message arrives</text></svg>
+
+constructor runs againevicted from memory
+
+The connection stays open while the Room is evicted. A message brings the Room back: its constructor runs again, then webSocketMessage handles it.
 
 ## Accept a connection
 
-Start with the smallest possible Room — just enough to complete
-the WebSocket handshake. Create `src/room.ts`:
+Start with the smallest possible Room — just enough to complete the WebSocket handshake. Create `src/room.ts`:
 
 ```typescript
-// src/room.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
@@ -42,23 +39,15 @@ export default class Room extends Cloudflare.DurableObject<Room>()(
 ) {}
 ```
 
-`Cloudflare.upgrade()` does two things in one call: it builds a
-`101 Switching Protocols` response with the right headers, and it
-hands you a `Socket` you can `send` / `close` /
-`serializeAttachment` on. Returning the response from `fetch` is
-what tells Cloudflare to hijack the TCP connection and complete the
-handshake.
+`Cloudflare.upgrade()` does two things in one call: it builds a `101 Switching Protocols` response with the right headers, and it hands you a `Socket` you can `send` / `close` / `serializeAttachment` on. Returning the response from `fetch` is what tells Cloudflare to hijack the TCP connection and complete the handshake.
 
 This compiles and accepts connections, but messages go nowhere yet.
 
-## Remember who's connected
+## Remember who’s connected
 
-Add a `sessions` map and stash the new socket into it on every
-upgrade. Tag each socket with an id so we know which session sent
-what later:
+Add a `sessions` map and stash the new socket into it on every upgrade. Tag each socket with an id so we know which session sent what later:
 
-```diff lang="typescript"
-// src/room.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
@@ -66,14 +55,14 @@ export default class Room extends Cloudflare.DurableObject<Room>()(
   "Rooms",
   Effect.gen(function* () {
     return Effect.gen(function* () {
-+      const sessions = new Map<string, Cloudflare.WebSocket>();
+      const sessions = new Map<string, Cloudflare.WebSocket>();
 
       return {
         fetch: Effect.gen(function* () {
           const [response, socket] = yield* Cloudflare.upgrade();
-+          const id = crypto.randomUUID();
-+          socket.serializeAttachment({ id });
-+          sessions.set(id, socket);
+          const id = crypto.randomUUID();
+          socket.serializeAttachment({ id });
+          sessions.set(id, socket);
           return response;
         }),
       };
@@ -82,20 +71,13 @@ export default class Room extends Cloudflare.DurableObject<Room>()(
 ) {}
 ```
 
-`socket.serializeAttachment({ id })` persists a structured-cloneable value
-**alongside the socket itself**. Cloudflare keeps it across
-hibernation, so when the DO wakes back up the socket still
-remembers which session it belongs to. We'll need that in the next
-two steps.
+`socket.serializeAttachment({ id })` persists a structured-cloneable value **alongside the socket itself**. Cloudflare keeps it across hibernation, so when the DO wakes back up the socket still remembers which session it belongs to. We’ll need that in the next two steps.
 
 ## Handle incoming messages
 
-Add a `webSocketMessage` handler. Cloudflare invokes it every time
-a peer sends data; we look up the sender's session id from the
-attachment, prefix each message with a short label, and fan it out
-to everyone in the room:
+Add a `webSocketMessage` handler. Cloudflare invokes it every time a peer sends data; we look up the sender’s session id from the attachment, prefix each message with a short label, and fan it out to everyone in the room:
 
-```diff lang="typescript"
+```typescript
 return {
   fetch: Effect.gen(function* () {
     const [response, socket] = yield* Cloudflare.upgrade();
@@ -104,85 +86,73 @@ return {
     sessions.set(id, socket);
     return response;
   }),
-+  webSocketMessage: Effect.fn(function* (
-+    socket: Cloudflare.WebSocket,
-+    message: string | ArrayBuffer,
-+  ) {
-+    const attachment = socket.deserializeAttachment<{ id: string }>();
-+    if (!attachment) return;
-+    const text =
-+      typeof message === "string"
-+        ? message
-+        : new TextDecoder().decode(message);
-+    const label = attachment.id.slice(0, 8);
-+    for (const peer of sessions.values()) {
-+      yield* peer.send(`[${label}] ${text}`);
-+    }
-+  }),
+  webSocketMessage: Effect.fn(function* (
+    socket: Cloudflare.WebSocket,
+    message: string | ArrayBuffer,
+  ) {
+    const attachment = socket.deserializeAttachment<{ id: string }>();
+    if (!attachment) return;
+    const text =
+      typeof message === "string"
+        ? message
+        : new TextDecoder().decode(message);
+    const label = attachment.id.slice(0, 8);
+    for (const peer of sessions.values()) {
+      yield* peer.send(\`[${label}] ${text}\`);
+    }
+  }),
 };
 ```
 
-`Effect.fn` lets you write a generator function with
-arbitrary parameters. The Cloudflare runtime calls it with the
-socket and the inbound payload (which can be a string or an
-`ArrayBuffer` depending on how the client sent it).
+`Effect.fn` lets you write a generator function with arbitrary parameters. The Cloudflare runtime calls it with the socket and the inbound payload (which can be a string or an `ArrayBuffer` depending on how the client sent it).
 
 ## Clean up on disconnect
 
-When a peer disconnects, drop them from the `sessions` map so we
-don't try to send to a dead socket:
+When a peer disconnects, drop them from the `sessions` map so we don’t try to send to a dead socket:
 
-```diff lang="typescript"
+```typescript
 return {
   fetch: /* ... */,
   webSocketMessage: /* ... */,
-+  webSocketClose: Effect.fn(function* (
-+    ws: Cloudflare.WebSocket,
-+    code: number,
-+    reason: string,
-+  ) {
-+    const attachment = ws.deserializeAttachment<{ id: string }>();
-+    if (attachment) sessions.delete(attachment.id);
-+    yield* ws.close(code, reason);
-+  }),
-+  webSocketError: Effect.fn(function* (
-+    ws: Cloudflare.WebSocket,
-+    error: unknown,
-+  ) {
-+    // Cloudflare closes an errored socket after this handler runs; only
-+    // the session bookkeeping is ours to clean up.
-+    const attachment = ws.deserializeAttachment<{ id: string }>();
-+    if (attachment) sessions.delete(attachment.id);
-+  }),
+  webSocketClose: Effect.fn(function* (
+    ws: Cloudflare.WebSocket,
+    code: number,
+    reason: string,
+  ) {
+    const attachment = ws.deserializeAttachment<{ id: string }>();
+    if (attachment) sessions.delete(attachment.id);
+    yield* ws.close(code, reason);
+  }),
+  webSocketError: Effect.fn(function* (
+    ws: Cloudflare.WebSocket,
+    error: unknown,
+  ) {
+    // Cloudflare closes an errored socket after this handler runs; only
+    // the session bookkeeping is ours to clean up.
+    const attachment = ws.deserializeAttachment<{ id: string }>();
+    if (attachment) sessions.delete(attachment.id);
+  }),
 };
 ```
 
-`webSocketError` fires when the connection fails instead of closing
-cleanly (a network reset, a protocol error). The runtime closes the
-socket afterwards, so the handler only has to drop the peer's state.
+`webSocketError` fires when the connection fails instead of closing cleanly (a network reset, a protocol error). The runtime closes the socket afterwards, so the handler only has to drop the peer’s state.
 
 ## Restore sessions after hibernation
 
-Here's the catch. Cloudflare can evict an idle DO from memory
-while keeping its WebSockets open. When the next message arrives,
-the DO is reconstructed: the inner `Effect.gen` runs again, and
-your `sessions` map starts empty — but the open sockets are still
-there.
+Here’s the catch. Cloudflare can evict an idle DO from memory while keeping its WebSockets open. When the next message arrives, the DO is reconstructed: the inner `Effect.gen` runs again, and your `sessions` map starts empty — but the open sockets are still there.
 
-Resolve `Cloudflare.DurableObjectState` in the **outer** Effect,
-then rehydrate the map at the top of the inner constructor by reading
-every attached socket back from the runtime:
+Resolve `Cloudflare.DurableObjectState` in the **outer** Effect, then rehydrate the map at the top of the inner constructor by reading every attached socket back from the runtime:
 
-```diff lang="typescript"
+```typescript
 Effect.gen(function* () {
-+  const state = yield* Cloudflare.DurableObjectState;
+  const state = yield* Cloudflare.DurableObjectState;
   return Effect.gen(function* () {
     const sessions = new Map<string, Cloudflare.WebSocket>();
 
-+    for (const socket of yield* state.getWebSockets()) {
-+      const data = socket.deserializeAttachment<{ id: string }>();
-+      if (data) sessions.set(data.id, socket);
-+    }
+    for (const socket of yield* state.getWebSockets()) {
+      const data = socket.deserializeAttachment<{ id: string }>();
+      if (data) sessions.set(data.id, socket);
+    }
 
     return {
       fetch: /* ... */,
@@ -193,25 +163,11 @@ Effect.gen(function* () {
 });
 ```
 
-`state.getWebSockets()` returns every still-attached socket on the
-current instance, and `deserializeAttachment` recovers the
-`{ id }` we stashed in the upgrade step. Without this loop the
-first message after hibernation would broadcast to nobody.
-
-:::note
-The `state` *reference* is resolved in the outer (Construction) Effect, but
-`state.getWebSockets()` is
-[colored with `RuntimeContext`](../../infrastructure-as-effects/layers.md#the-types-hold-the-boundary),
-so it can only run in the inner (runtime) Effect — which is exactly
-where it needs to be, since it must re-run every time Cloudflare
-reconstructs the instance after hibernation.
-:::
+`state.getWebSockets()` returns every still-attached socket on the current instance, and `deserializeAttachment` recovers the `{ id }` we stashed in the upgrade step. Without this loop the first message after hibernation would broadcast to nobody.
 
 ## Define the session data
 
-You can save session data on a WebSocket and validate it when reading it
-back—even after the Durable Object wakes from hibernation. First, define
-what a valid session contains:
+You can save session data on a WebSocket and validate it when reading it back—even after the Durable Object wakes from hibernation. First, define what a valid session contains:
 
 ```typescript
 import * as Schema from "effect/Schema";
@@ -222,8 +178,7 @@ const Session = Schema.Struct({
 });
 ```
 
-`id` is a string. `joinedAt` is a `Date` in your code; this schema converts
-it to a string for storage and back to a `Date` when you read it.
+`id` is a string. `joinedAt` is a `Date` in your code; this schema converts it to a string for storage and back to a `Date` when you read it.
 
 ## Save session data on a socket
 
@@ -234,9 +189,7 @@ const joinedAt = yield* Effect.sync(() => new Date());
 yield* socket.setAttachment(Session, { id, joinedAt });
 ```
 
-This saves the session on this connection, so it survives hibernation.
-Cloudflare must be able to serialize the stored value, and the serialized
-attachment must fit within 16,384 bytes, including serialization overhead.
+This saves the session on this connection, so it survives hibernation. Cloudflare must be able to serialize the stored value, and the serialized attachment must fit within 16,384 bytes, including serialization overhead.
 
 ## Read the session back
 
@@ -247,10 +200,7 @@ session.id;       // string
 session.joinedAt; // Date
 ```
 
-`getAttachment` checks the saved data against `Session`. Missing or invalid
-data fails with `WebSocketAttachmentError` instead of returning an invalid
-session. The existing `serializeAttachment` and `deserializeAttachment`
-methods remain available if you do not want schema validation.
+`getAttachment` checks the saved data against `Session`. Missing or invalid data fails with `WebSocketAttachmentError` instead of returning an invalid session. The existing `serializeAttachment` and `deserializeAttachment` methods remain available if you do not want schema validation.
 
 ## Validate attachments after hibernation
 
@@ -269,13 +219,9 @@ for (const socket of yield* state.getWebSockets()) {
 }
 ```
 
-This example closes connections whose sessions are missing or invalid,
-including older sessions without `joinedAt`. Your code chooses this behavior;
-`getAttachment` does not close the connection for you.
+This example closes connections whose sessions are missing or invalid, including older sessions without `joinedAt`. Your code chooses this behavior; `getAttachment` does not close the connection for you.
 
-For diagnostics, `WebSocketAttachmentError.reason` identifies `encode`,
-`decode`, `missing`, `read`, or `write`; `cause` contains the original error.
-A stored `null` or `undefined` counts as missing.
+For diagnostics, `WebSocketAttachmentError.reason` identifies `encode`, `decode`, `missing`, `read`, or `write`; `cause` contains the original error. A stored `null` or `undefined` counts as missing.
 
 ## Choose an attachment error policy
 
@@ -290,34 +236,25 @@ const session = yield* socket.getAttachment(Session).pipe(
 if (session === undefined) return;
 ```
 
-Omit `catchTag` to propagate the typed failure, or handle it at your normal
-Effect boundary. These helpers are for application-owned attachments, not
-the internal serializer metadata of WebSocket RPC connections.
+Omit `catchTag` to propagate the typed failure, or handle it at your normal Effect boundary. These helpers are for application-owned attachments, not the internal serializer metadata of WebSocket RPC connections.
 
 ## Address groups of sockets with tags
 
-To message a subset of the room, tag sockets when you accept them
-instead of tracking group membership yourself:
+To message a subset of the room, tag sockets when you accept them instead of tracking group membership yourself:
 
 ```typescript
 const [response, socket] = yield* Cloudflare.upgrade({
-  tags: [`user:${userId}`, "role:admin"],
+  tags: [\`user:${userId}\`, "role:admin"],
 });
 ```
 
-`state.getWebSockets("role:admin")` then returns only the sockets
-with that tag, and `state.getTags(socket.ws)` reads a socket's tags.
-The runtime stores tags with the socket, so both work after
-hibernation without rebuilding any in-memory state. Cloudflare allows
-at most 10 tags per socket, each at most 256 characters.
+`state.getWebSockets("role:admin")` then returns only the sockets with that tag, and `state.getTags(socket.ws)` reads a socket’s tags. The runtime stores tags with the socket, so both work after hibernation without rebuilding any in-memory state. Cloudflare allows at most 10 tags per socket, each at most 256 characters.
 
 ## Extract a broadcast helper
 
-Before wiring this up, pull the broadcast loop into a reusable
-`broadcast` function — we'll need it again when we add scheduled
-reminders below:
+Before wiring this up, pull the broadcast loop into a reusable `broadcast` function — we’ll need it again when we add scheduled reminders below:
 
-```diff lang="typescript"
+```typescript
 Effect.gen(function* () {
   const state = yield* Cloudflare.DurableObjectState;
   return Effect.gen(function* () {
@@ -328,12 +265,12 @@ Effect.gen(function* () {
       if (data) sessions.set(data.id, socket);
     }
 
-+    const broadcast = (text: string) =>
-+      Effect.gen(function* () {
-+        for (const peer of sessions.values()) {
-+          yield* peer.send(text);
-+        }
-+      });
+    const broadcast = (text: string) =>
+      Effect.gen(function* () {
+        for (const peer of sessions.values()) {
+          yield* peer.send(text);
+        }
+      });
 
     return {
       fetch: /* ... */,
@@ -343,56 +280,52 @@ Effect.gen(function* () {
         const text = typeof message === "string"
           ? message
           : new TextDecoder().decode(message);
--        for (const peer of sessions.values()) {
--          yield* peer.send(`[${attachment.id.slice(0, 8)}] ${text}`);
--        }
-+        yield* broadcast(`[${attachment.id.slice(0, 8)}] ${text}`);
+        for (const peer of sessions.values()) {
+          yield* peer.send(\`[${attachment.id.slice(0, 8)}] ${text}\`);
+        }
+        yield* broadcast(\`[${attachment.id.slice(0, 8)}] ${text}\`);
       }),
       webSocketClose: /* ... */,
-+      broadcast,
+      broadcast,
     };
   });
 });
 ```
 
-Returning `broadcast` from the inner Effect makes it callable as an
-RPC method — handy when other resources (a Workflow, a Container)
-want to push messages into the room.
+Returning `broadcast` from the inner Effect makes it callable as an RPC method — handy when other resources (a Workflow, a Container) want to push messages into the room.
 
 ## Wire the Room into the Worker
 
-The Worker forwards any `Upgrade: websocket` request on `/room/:id`
-to the matching DO instance:
+The Worker forwards any `Upgrade: websocket` request on `/room/:id` to the matching DO instance:
 
-```diff lang="typescript"
-// src/worker.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
-+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
-+import Room from "./room.ts";
+import Room from "./room.ts";
 
 export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-+    const rooms = yield* Room;
+    const rooms = yield* Room;
 
     return {
       fetch: Effect.gen(function* () {
-+        const request = yield* HttpServerRequest;
-+
-+        if (request.url.startsWith("/room/")) {
-+          if (request.headers.upgrade !== "websocket") {
-+            return HttpServerResponse.text(
-+              "Expected Upgrade: websocket",
-+              { status: 426 },
-+            );
-+          }
-+          const id = request.url.split("/").pop()!;
-+          return yield* rooms.getByName(id).fetch(request);
-+        }
-+
+        const request = yield* HttpServerRequest;
+
+        if (request.url.startsWith("/room/")) {
+          if (request.headers.upgrade !== "websocket") {
+            return HttpServerResponse.text(
+              "Expected Upgrade: websocket",
+              { status: 426 },
+            );
+          }
+          const id = request.url.split("/").pop()!;
+          return yield* rooms.getByName(id).fetch(request);
+        }
+
         return HttpServerResponse.text("Hello from my Worker!");
       }),
     };
@@ -400,32 +333,21 @@ export default Cloudflare.Worker(
 );
 ```
 
-`rooms.getByName(id).fetch(request)` is the typed equivalent of
-"forward this HTTP request to the DO". Because the DO returned a
-`fetch` field with the upgrade response, the runtime hijacks the
-TCP connection — the Worker's response **is** the WebSocket
-handshake.
+`rooms.getByName(id).fetch(request)` is the typed equivalent of “forward this HTTP request to the DO”. Because the DO returned a `fetch` field with the upgrade response, the runtime hijacks the TCP connection — the Worker’s response **is** the WebSocket handshake.
 
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## Connect from a test
 
-The integration test connects to the deployed Worker over a real
-WebSocket using Effect's native [`Socket`](https://effect.website/docs/platform/socket/)
-module. Unlike the raw `WebSocket` global, `Socket` is fully
-Effect-aware: the connection lifecycle is tied to a `Scope`,
-incoming frames flow through a `Queue`, and the open handshake is
-signalled with a `Deferred`.
+The integration test connects to the deployed Worker over a real WebSocket using Effect’s native [`Socket`](https://effect.website/docs/platform/socket/) module. Unlike the raw `WebSocket` global, `Socket` is fully Effect-aware: the connection lifecycle is tied to a `Scope`, incoming frames flow through a `Queue`, and the open handshake is signalled with a `Deferred`.
 
-Start the test file with the imports and a `stack` deployed once
-per run:
+Start the test file with the imports and a `stack` deployed once per run:
 
 ```typescript
-// test/integ.test.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
@@ -443,15 +365,11 @@ const { test, beforeAll, deploy } = Test.make({
 const stack = beforeAll(deploy(Stack));
 ```
 
-`beforeAll(deploy(Stack))` deploys your Worker + Room once and
-exposes the result (including the public `url`) as an `Effect`
-the tests can `yield*`.
+`beforeAll(deploy(Stack))` deploys your Worker + Room once and exposes the result (including the public `url`) as an `Effect` the tests can `yield*`.
 
 ## Open the socket and acquire a writer
 
-We want each test to say "give me a connected client" and get back
-something with `send` and `next` methods. Start by opening the
-socket and grabbing a writer for sending frames:
+We want each test to say “give me a connected client” and get back something with `send` and `next` methods. Start by opening the socket and grabbing a writer for sending frames:
 
 ```typescript
 const connect = (url: string) =>
@@ -465,60 +383,22 @@ const connect = (url: string) =>
   });
 ```
 
-`Socket.makeWebSocket(url)` builds a `Socket` resource. It needs a
-`WebSocketConstructor` in context, which we'll provide at the test
-boundary. `socket.writer` returns a function for sending frames —
-acquiring it once is more efficient than re-deriving it per send.
+`Socket.makeWebSocket(url)` builds a `Socket` resource. It needs a `WebSocketConstructor` in context, which we’ll provide at the test boundary. `socket.writer` returns a function for sending frames — acquiring it once is more efficient than re-deriving it per send.
 
 ## Drain inbound frames into a queue
 
-To let the test consume incoming messages, push each frame into an
-unbounded `Queue` and expose a `next` accessor that pulls one off:
+To let the test consume incoming messages, push each frame into an unbounded `Queue` and expose a `next` accessor that pulls one off:
 
-```diff lang="typescript"
-const connect = (url: string) =>
-  Effect.gen(function* () {
-    const socket = yield* Socket.makeWebSocket(url);
-+    const messages = yield* Queue.unbounded<string>();
-    const send = yield* socket.writer;
-
-+    yield* Effect.forkScoped(
-+      socket.runString((msg) => Queue.offer(messages, msg)),
-+    );
-+
-    return {
-      send: (msg: string) => send(msg),
-+      next: Queue.take(messages),
-    };
-  });
-```
-
-`socket.runString` consumes inbound text frames and hands each one
-to your callback. `Effect.forkScoped` runs the read loop in the
-background, tied to the surrounding scope — when the test scope
-closes, the loop is interrupted and the socket is closed.
-
-## Wait for the open handshake
-
-Returning before the socket is actually open lets the caller race
-the handshake — `send` could fire before the server is ready. Block
-on a `Deferred` that the `onOpen` hook fulfils:
-
-```diff lang="typescript"
+```typescript
 const connect = (url: string) =>
   Effect.gen(function* () {
     const socket = yield* Socket.makeWebSocket(url);
     const messages = yield* Queue.unbounded<string>();
     const send = yield* socket.writer;
-+    const opened = yield* Deferred.make<void>();
 
     yield* Effect.forkScoped(
--      socket.runString((msg) => Queue.offer(messages, msg)),
-+      socket.runString((msg) => Queue.offer(messages, msg), {
-+        onOpen: Deferred.succeed(opened, undefined),
-+      }),
+      socket.runString((msg) => Queue.offer(messages, msg)),
     );
-+    yield* Deferred.await(opened);
 
     return {
       send: (msg: string) => send(msg),
@@ -527,15 +407,40 @@ const connect = (url: string) =>
   });
 ```
 
-`Deferred.await(opened)` blocks the helper until `onOpen` fires, so
-the caller can `send` immediately on return without racing the
-handshake.
+`socket.runString` consumes inbound text frames and hands each one to your callback. `Effect.forkScoped` runs the read loop in the background, tied to the surrounding scope — when the test scope closes, the loop is interrupted and the socket is closed.
+
+## Wait for the open handshake
+
+Returning before the socket is actually open lets the caller race the handshake — `send` could fire before the server is ready. Block on a `Deferred` that the `onOpen` hook fulfils:
+
+```typescript
+const connect = (url: string) =>
+  Effect.gen(function* () {
+    const socket = yield* Socket.makeWebSocket(url);
+    const messages = yield* Queue.unbounded<string>();
+    const send = yield* socket.writer;
+    const opened = yield* Deferred.make<void>();
+
+    yield* Effect.forkScoped(
+      socket.runString((msg) => Queue.offer(messages, msg)),
+      socket.runString((msg) => Queue.offer(messages, msg), {
+        onOpen: Deferred.succeed(opened, undefined),
+      }),
+    );
+    yield* Deferred.await(opened);
+
+    return {
+      send: (msg: string) => send(msg),
+      next: Queue.take(messages),
+    };
+  });
+```
+
+`Deferred.await(opened)` blocks the helper until `onOpen` fires, so the caller can `send` immediately on return without racing the handshake.
 
 ## Write the test body
 
-Open two clients to the same room, have one send `"hello bob"`,
-and assert the other receives the broadcast. Wrap the whole effect
-in `Effect.scoped` so the test scope closes when it finishes:
+Open two clients to the same room, have one send `"hello bob"`, and assert the other receives the broadcast. Wrap the whole effect in `Effect.scoped` so the test scope closes when it finishes:
 
 ```typescript
 test(
@@ -556,32 +461,26 @@ test(
 );
 ```
 
-`Effect.scoped` closes the scope at the end of the test, which
-interrupts every forked read loop in `connect` and closes both
-sockets.
+`Effect.scoped` closes the scope at the end of the test, which interrupts every forked read loop in `connect` and closes both sockets.
 
 ## Provide the WebSocket constructor
 
-`Socket.makeWebSocket` doesn't know how to actually open a
-connection by itself — it depends on a `WebSocketConstructor`
-service. Provide the global one:
+`Socket.makeWebSocket` doesn’t know how to actually open a connection by itself — it depends on a `WebSocketConstructor` service. Provide the global one:
 
-```diff lang="typescript"
+```typescript
 test(
   "Room broadcasts messages between peers",
   Effect.gen(function* () {
     // ...
   }).pipe(
     Effect.scoped,
-+    Effect.provide(Socket.layerWebSocketConstructorGlobal),
+    Effect.provide(Socket.layerWebSocketConstructorGlobal),
   ),
   { timeout: 30_000 },
 );
 ```
 
-`layerWebSocketConstructorGlobal` supplies the runtime's global
-`WebSocket` constructor. On Bun and Node 22+ this picks up the
-built-in `WebSocket`.
+`layerWebSocketConstructorGlobal` supplies the runtime’s global `WebSocket` constructor. On Bun and Node 22+ this picks up the built-in `WebSocket`.
 
 Run it:
 
@@ -589,40 +488,29 @@ Run it:
 bun test test/integ.test.ts
 ```
 
-Alice's `"hello bob"` arrives at the Room as a `webSocketMessage`,
-the broadcast loop sends `"[<alice-id>] hello bob"` to every peer,
-and Bob's `next` resolves with it from the queue.
+Alice’s `"hello bob"` arrives at the Room as a `webSocketMessage`, the broadcast loop sends `"[<alice-id>] hello bob"` to every peer, and Bob’s `next` resolves with it from the queue.
 
-## Register a reminder callback
+Durable Objects have **alarms** — single-shot timers backed by the DO’s storage. `Alchemy.makeCallback` uses SQLite and native alarms to persist typed jobs across hibernation. Register a reminder handler in the inner Effect, after restoring sessions and defining `broadcast`:
 
-Durable Objects have **alarms** — single-shot timers backed by the
-DO's storage. `Alchemy.makeCallback` uses SQLite and native alarms to
-persist typed jobs across hibernation. Register a reminder handler in
-the inner Effect, after restoring sessions and defining `broadcast`:
-
-```diff lang="typescript"
-// src/room.ts
-+import * as Alchemy from "alchemy";
+```typescript
+import * as Alchemy from "alchemy";
 
 // Inside the inner Effect, after defining broadcast:
-+const onReminder = yield* Alchemy.makeCallback(
-+  "reminder",
-+  Effect.fn(function* (payload: { message: string }) {
-+    yield* broadcast(`[reminder] ${payload.message}`);
-+  }),
-+);
+const onReminder = yield* Alchemy.makeCallback(
+  "reminder",
+  Effect.fn(function* (payload: { message: string }) {
+    yield* broadcast(\`[reminder] ${payload.message}\`);
+  }),
+);
 ```
 
-The inner Effect registers this handler again after each hibernation.
-Alchemy invokes it when a persisted job is due, so this example does
-not need a custom `alarm` handler.
+The inner Effect registers this handler again after each hibernation. Alchemy invokes it when a persisted job is due, so this example does not need a custom `alarm` handler.
 
 ## Schedule a future broadcast (alarms)
 
-Recognise `/remind <seconds> <message>` inside `webSocketMessage`
-and schedule a job using the callback handle:
+Recognise `/remind <seconds> <message>` inside `webSocketMessage` and schedule a job using the callback handle:
 
-```diff lang="typescript"
+```typescript
 webSocketMessage: Effect.fn(function* (socket, message) {
   const attachment = socket.deserializeAttachment<{ id: string }>();
   if (!attachment) return;
@@ -630,45 +518,30 @@ webSocketMessage: Effect.fn(function* (socket, message) {
     ? message
     : new TextDecoder().decode(message);
 
-+  const remindMatch = text.match(/^\/remind\s+(\d+)\s+(.+)$/);
-+  if (remindMatch) {
-+    const delaySec = parseInt(remindMatch[1], 10);
-+    const reminder = remindMatch[2];
-+    const id = yield* Effect.sync(() => crypto.randomUUID());
-+    yield* onReminder.schedule(id, {
-+      after: `${delaySec} seconds`,
-+      payload: { message: reminder },
-+    });
-+    yield* socket.send(`[system] Reminder scheduled in ${delaySec}s`);
-+    return;
-+  }
+  const remindMatch = text.match(/^\/remind\s+(\d+)\s+(.+)$/);
+  if (remindMatch) {
+    const delaySec = parseInt(remindMatch[1], 10);
+    const reminder = remindMatch[2];
+    const id = yield* Effect.sync(() => crypto.randomUUID());
+    yield* onReminder.schedule(id, {
+      after: \`${delaySec} seconds\`,
+      payload: { message: reminder },
+    });
+    yield* socket.send(\`[system] Reminder scheduled in ${delaySec}s\`);
+    return;
+  }
 
-  yield* broadcast(`[${attachment.id.slice(0, 8)}] ${text}`);
+  yield* broadcast(\`[${attachment.id.slice(0, 8)}] ${text}\`);
 }),
 ```
 
-Each random ID creates an independent reminder in this Room. Reusing
-an ID would replace its pending reminder; `onReminder.cancel(id)`
-cancels it. The payload is typed by the registered handler.
+Each random ID creates an independent reminder in this Room. Reusing an ID would replace its pending reminder; `onReminder.cancel(id)` cancels it. The payload is typed by the registered handler.
 
-:::caution[Broadcasts can repeat]
-Callback delivery is at least once. If a broadcast reaches some peers
-and then fails, a retry can send the reminder again. For deduplicated
-messages, include a stable message ID and have clients ignore IDs they
-have already received. This example delivers to the peers connected
-when it runs; it does not queue messages for disconnected users.
-:::
-
-If you previously deployed this tutorial using `scheduleEvent`, keep
-your existing `alarm` handler and `processScheduledEvents` call until
-those jobs drain. Old rows are preserved, not converted to callbacks.
-See [upgrading existing schedules](durable-objects.md#upgrade-existing-schedules)
-and the [native alarm retry limitation](durable-objects.md#retry-failed-callbacks).
+If you previously deployed this tutorial using `scheduleEvent`, keep your existing `alarm` handler and `processScheduledEvents` call until those jobs drain. Old rows are preserved, not converted to callbacks. See [upgrading existing schedules](durable-objects.md#upgrade-existing-schedules) and the [native alarm retry limitation](durable-objects.md#retry-failed-callbacks).
 
 ## Verify the reminder
 
-Add a test that sends `/remind 1 hello` and waits for the callback's
-broadcast:
+Add a test that sends `/remind 1 hello` and waits for the callback’s broadcast:
 
 ```typescript
 // test/integ.test.ts (additions)
@@ -694,7 +567,4 @@ test(
 );
 ```
 
-You now have an interesting backend. Next you'll
-[add a React SPA](../frontend/vite-spa.md) so users have a UI
-to talk to it — frontend and backend deploying together from the
-same `alchemy.run.ts`.
+You now have an interesting backend. Next you’ll [add a React SPA](../frontend/vite-spa.md) so users have a UI to talk to it — frontend and backend deploying together from the same `alchemy.run.ts`.

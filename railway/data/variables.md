@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/data/variables
 title: "Variables"
 description: "Config.Redacted on a Service, Railway.Variable when Railway should own the value."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Most secrets in a [`Service`](../compute/services.md) come from your `.env`. Yield `Config.Redacted` in the constructor. Alchemy binds the value onto the Service.
@@ -41,6 +41,36 @@ export default class Api extends Railway.Service<Api>()(
 The value is `Redacted<string>`. Unwrap with `Redacted.value` only where you need the raw string. Do not pass `env: { ... }` on a Service. Yield Config.
 
 See [Secrets & Config](../../environments/secrets.md) for combinators and stages.
+
+## Values from a secrets manager
+
+`.env` is only the default. A Stack’s `secrets` option reads the same `Config` values from a secrets manager instead, like Doppler or Infisical, so production keys never sit in a file on anyone’s machine. Pick the source per stage:
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as Railway from "@alchemy.run/railway";
+import * as Doppler from "@alchemy.run/doppler";
+import * as Effect from "effect/Effect";
+import Api from "./src/api.ts";
+
+export default Alchemy.Stack(
+  "MyApp",
+  {
+    providers: Railway.providers(),
+    state: Alchemy.localState(),
+    secrets: ({ stage }) =>
+      stage === "prod"
+        ? Doppler.Secrets({ project: "my-app", config: "prd" })
+        : Alchemy.Secrets.DotEnv(),
+  },
+  Effect.gen(function* () {
+    const api = yield* Api;
+    return { url: api.url };
+  }),
+);
+```
+
+Your code doesn’t change: `Config.Redacted("API_KEY")` reads from whichever source the stage uses. See [Secret providers](../../environments/secret-providers.md) for Doppler, Infisical, ordering several sources, and writing your own.
 
 ## When Railway should own the variable
 

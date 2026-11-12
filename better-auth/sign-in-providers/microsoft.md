@@ -2,16 +2,16 @@
 url: https://alchemy.run/better-auth/sign-in-providers/microsoft
 title: "Microsoft"
 description: "Add Microsoft sign-in to an Alchemy Worker with D1, one small step at a time."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Start in an existing Alchemy project with [Bun](https://bun.sh) and a [configured Cloudflare profile](../../cloudflare/setup.md). This standalone walkthrough uses Better Auth 1.7.5's built-in Microsoft Entra ID provider; all application files are introduced below.
+Start in an existing Alchemy project on [Node.js](https://nodejs.org/) or [Bun](https://bun.sh/) and a [configured Cloudflare profile](../../cloudflare/setup.md). This standalone walkthrough uses Better Auth 1.7.5’s built-in Microsoft Entra ID provider; all application files are introduced below.
 
 ## Add the auth dependencies
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@1.7.5 kysely
+pnpm add @alchemy.run/better-auth@latest better-auth@1.7.5 kysely
 ```
 
 Use an `@alchemy.run/better-auth` release matching your installed Alchemy release. Keep your existing `alchemy` and `effect` dependencies.
@@ -45,18 +45,18 @@ export class Auth extends Context.Service<
 }
 ```
 
-The service keeps its options directly inside `BetterAuth` and reads Config during construction. Leaving `AUTH_BASE_URL` unset lets Better Auth use the incoming request's origin.
+The service keeps its options directly inside `BetterAuth` and reads Config during construction. Leaving `AUTH_BASE_URL` unset lets Better Auth use the incoming request’s origin.
 
 ## Start with Microsoft disabled
 
 Apply this addition to `src/auth.ts`:
 
-```diff lang="typescript"
+```typescript
 const makeAuth = Effect.gen(function* () {
   const baseURL = yield* Config.String("AUTH_BASE_URL").pipe(Config.option);
-+  const enabled = yield* Config.Boolean("MICROSOFT_ENABLED").pipe(
-+    Config.withDefault(false),
-+  );
+  const enabled = yield* Config.Boolean("MICROSOFT_ENABLED").pipe(
+    Config.withDefault(false),
+  );
   return yield* BetterAuth({
 ```
 
@@ -66,21 +66,21 @@ Microsoft stays disabled until you know the local URL and register its callback.
 
 Apply both hunks to `src/auth.ts`, adding the import and the inline provider options:
 
-```diff lang="typescript"
+```typescript
 import * as Option from "effect/Option";
-+import * as Redacted from "effect/Redacted";
+import * as Redacted from "effect/Redacted";
 @@
     baseURL: Option.getOrUndefined(baseURL),
-+    socialProviders: enabled ? {
-+      microsoft: {
-+        clientId: yield* Config.String("MICROSOFT_CLIENT_ID"),
-+        clientSecret: Redacted.value(yield* Config.Redacted("MICROSOFT_CLIENT_SECRET")),
-+        tenantId: yield* Config.String("MICROSOFT_TENANT_ID"),
-+        disableProfilePhoto: true,
-+        disableDefaultScope: true,
-+        scope: ["openid", "profile", "email"],
-+      },
-+    } : {},
+    socialProviders: enabled ? {
+      microsoft: {
+        clientId: yield* Config.String("MICROSOFT_CLIENT_ID"),
+        clientSecret: Redacted.value(yield* Config.Redacted("MICROSOFT_CLIENT_SECRET")),
+        tenantId: yield* Config.String("MICROSOFT_TENANT_ID"),
+        disableProfilePhoto: true,
+        disableDefaultScope: true,
+        scope: ["openid", "profile", "email"],
+      },
+    } : {},
     account: { accountLinking: { disableImplicitLinking: true } },
 ```
 
@@ -161,7 +161,7 @@ export default Alchemy.Stack(
 );
 ```
 
-The output exposes the Worker's actual URL. Preserve the local state directory so subsequent runs retain resource identities and the signing secret.
+The output exposes the Worker’s actual URL. Preserve the local state directory so subsequent runs retain resource identities and the signing secret.
 
 ## Add the browser page
 
@@ -207,7 +207,7 @@ async function run(action: () => Promise<string>) {
 }
 ```
 
-The client uses the page's origin and the default `/api/auth` path. It imports no server Auth module or credentials.
+The client uses the page’s origin and the default `/api/auth` path. It imports no server Auth module or credentials.
 
 ## Start Microsoft sign-in
 
@@ -237,7 +237,7 @@ Append to `src/client.ts`:
 async function readSession(): Promise<string> {
   const { data, error } = await authClient.getSession();
   if (error) return "Could not check your session. Try again.";
-  return data ? `Signed in as ${data.user.name}.` : "Not signed in.";
+  return data ? \`Signed in as ${data.user.name}.\` : "Not signed in.";
 }
 
 document.getElementById("read-session")!.onclick = () => void run(readSession);
@@ -257,7 +257,7 @@ document.getElementById("sign-out")!.onclick = () => void run(async () => {
 });
 ```
 
-This ends the application's session. It does not promise to sign the user out of every Microsoft application.
+This ends the application’s session. It does not promise to sign the user out of every Microsoft application.
 
 ## Bundle the browser client
 
@@ -270,24 +270,20 @@ The final client is the initial `src/client.ts` block followed by the three appe
 ## Discover the local origin
 
 ```sh
-bunx alchemy dev --stage microsoft-guide
+pnpm alchemy dev --stage microsoft-guide
 ```
 
 Run without provider credentials or `MICROSOFT_ENABLED=true` for this first start; Alchemy allocates a port and prints the actual origin. Keep Microsoft disabled until the registration below is ready, and rebuild the browser bundle whenever you edit `src/client.ts`.
 
-## Register the Entra application
-
 Open the [Microsoft Entra admin center](https://entra.microsoft.com/), select the intended directory, and choose **Entra ID → App registrations → New registration**. Record the **Application (client) ID** and **Directory (tenant) ID** from **Overview** after choosing your supported account types.
 
-For company-only sign-in, select the single-tenant option and use the directory's tenant GUID. Microsoft's [app registration guide](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) covers the registration screens.
+For company-only sign-in, select the single-tenant option and use the directory’s tenant GUID. Microsoft’s [app registration guide](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) covers the registration screens.
 
 ## Choose the tenant boundary
 
 Use the tenant GUID for a specific directory; for matching multitenant registrations, `organizations` admits work/school accounts, `consumers` admits personal accounts, and `common` admits both classes. This example requires an explicit tenant instead of silently defaulting to `common`.
 
-Better Auth 1.7.5 checks a specific tenant's issuer against `https://login.microsoftonline.com/<tenant-guid>/v2.0`; multitenant endpoints bind the issuer to the token's `tid` and enforce the selected account class. A multitenant endpoint is not an organization allowlist: authorize customer tenants and application membership on the server, never from email domains or login hints.
-
-## Register the Web callback
+Better Auth 1.7.5 checks a specific tenant’s issuer against `https://login.microsoftonline.com/<tenant-guid>/v2.0`; multitenant endpoints bind the issuer to the token’s `tid` and enforce the selected account class. A multitenant endpoint is not an organization allowlist: authorize customer tenants and application membership on the server, never from email domains or login hints.
 
 ```text
 /api/auth/callback/microsoft
@@ -312,7 +308,7 @@ Under **Certificates & secrets → Client secrets → New client secret**, copy 
 ## Enable Microsoft locally
 
 ```sh
-bunx alchemy dev --stage microsoft-guide --env-file .env.local
+pnpm alchemy dev --stage microsoft-guide --env-file .env.local
 ```
 
 Stop the first dev process before running this command, and update the registered callback if the newly printed origin changes. Open that origin, select **Sign in with Microsoft**, then use **Read session** and **Sign out** to exercise the roundtrip.
@@ -329,13 +325,13 @@ MICROSOFT_CLIENT_SECRET=replace-with-production-secret-value
 MICROSOFT_TENANT_ID=replace-with-production-directory-tenant-guid
 ```
 
-Replace the example origin with the actual HTTPS Worker origin, without a trailing slash or `/api/auth`; `baseURL` does not attach a domain to the Worker. Use a separate production registration and secret, register that origin plus `/api/auth/callback/microsoft`, and supply these values through your deployment's server configuration.
+Replace the example origin with the actual HTTPS Worker origin, without a trailing slash or `/api/auth`; `baseURL` does not attach a domain to the Worker. Use a separate production registration and secret, register that origin plus `/api/auth/callback/microsoft`, and supply these values through your deployment’s server configuration.
 
 ## Preserve provider identity
 
-The built-in provider derives the account subject from Microsoft's immutable `oid`, not email or `preferred_username`; do not assume one person has the same identity across tenants. Microsoft may omit email or a trustworthy verification signal, so never fabricate an address or force `emailVerified: true` to bypass a failure.
+The built-in provider derives the account subject from Microsoft’s immutable `oid`, not email or `preferred_username`; do not assume one person has the same identity across tenants. Microsoft may omit email or a trustworthy verification signal, so never fabricate an address or force `emailVerified: true` to bypass a failure.
 
-Keep implicit linking disabled and retain provider-email and same-email checks if you later add account linking. Follow Better Auth's [account-linking guidance](https://www.better-auth.com/docs/concepts/users-accounts#account-linking) rather than trusting Microsoft solely to merge accounts by email.
+Keep implicit linking disabled and retain provider-email and same-email checks if you later add account linking. Follow Better Auth’s [account-linking guidance](https://www.better-auth.com/docs/concepts/users-accounts#account-linking) rather than trusting Microsoft solely to merge accounts by email.
 
 ## Diagnose callback failures
 

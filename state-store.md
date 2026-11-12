@@ -2,8 +2,8 @@
 url: https://alchemy.run/state-store
 title: "State Store"
 description: "How Alchemy persists resource state between deploys to compute diffs and track infrastructure."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Alchemy persists resource state between deploys so it can compute diffs — comparing the desired state in your code against the current state of your infrastructure.
@@ -123,6 +123,12 @@ The store answers on its `workers.dev` URL. Some networks can’t reach `workers
 
 ```typescript
 state: Cloudflare.state({ domain: "alchemy-state.example.com" }),
+```
+
+Commands that don’t load the stack file take the same hostname as `--domain`, so they reach the store where deploys do:
+
+```sh
+alchemy state list --backend cloudflare --domain alchemy-state.example.com
 ```
 
 ## AWS state store
@@ -257,9 +263,18 @@ const program = Effect.gen(function* () {
 }).pipe(Effect.provide(Alchemist.layer()), Effect.scoped);
 ```
 
-`Alchemist.State.layer(source)` provides the same store as a `State` layer. The backend is the provider’s name: `cloudflare`, `aws` or `gcp`. Pass `name` for a [named store](#more-than-one-store-per-account).
+`Alchemist.State.layer(source)` provides the same store as a `State` layer. The backend is the provider’s name: `cloudflare`, `aws` or `gcp`. Next to it go the store’s options, for what the profile can’t tell it, the same ones the CLI takes as flags: `name` for a [named store](#more-than-one-store-per-account), and `domain` for a Cloudflare store on a [custom domain](#serve-it-on-your-own-domain):
 
-Only the profile and `name` pick the store this way. Options set in the stack file, such as a [pinned account](#pin-the-account) or a [custom domain](#serve-it-on-your-own-domain), aren’t read; use the `configured` source (the CLI default, without `--backend`) when they matter.
+```typescript
+const source = {
+  type: "provider",
+  backend: "cloudflare",
+  name: "team-a-state",
+  domain: "alchemy-state.example.com",
+} as const;
+```
+
+Options set in the stack file aren’t read, such as a [pinned account](#pin-the-account); use the `configured` source (the CLI default, without `--backend`) when they matter.
 
 ## Writing your own state store
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/vite-spa
 title: "Add a React SPA"
 description: "Ship a React single-page app from the same Stack as your Worker — built with Vite and deployed to Cloudflare in one command."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`Cloudflare.Website.Vite`](vite.md): build the client assets, ship them to Cloudflare, and serve them through a Worker so your frontend and backend share one URL surface and one deploy. For the resource itself — what it does, its props, `memo` semantics, and dev mode — see the [Vite resource page](vite.md).
@@ -211,7 +211,7 @@ Your existing `vite.config.ts`, plugins, aliases, and `tsconfig` are all preserv
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Alchemy runs Vite on `rootDir`, uploads the assets, creates a Worker that serves them, and prints the new `webUrl` stack output:
@@ -268,7 +268,7 @@ test(
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs the whole Stack locally with hot reloading. For a `Cloudflare.Website.Vite` worker that means Alchemy boots Vite’s dev server (HMR, instant module updates) behind Alchemy’s local proxy; each Worker gets its own local URL:
@@ -296,7 +296,7 @@ See [Local Development](../../environments/local-development.md) for the full mo
 
 ## Use a different framework
 
-This page is the plain React SPA path. Other frameworks have their own landing pages, each flowing from the same [`Cloudflare.Website.Vite` resource](vite.md):
+Other frameworks have their own landing pages, each flowing from the same [`Cloudflare.Website.Vite` resource](vite.md):
 
 - [TanStack Start](tanstack-start.md) — full-stack React with server routes and runtime bindings
 - [React Router](react-router.md) — SPA or React Server Components

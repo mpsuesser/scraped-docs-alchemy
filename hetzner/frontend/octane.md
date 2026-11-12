@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Hetzner with Hetzner.Website.Octane — SSR as a systemd unit on port 3000, client assets baked into the unit, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Hetzner.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to a Hetzner Cloud Server. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server runs as a systemd unit on port 3000 (`Hetzner.Service` on a `Hetzner.Server`); client assets are baked into the unit. The live URL is `http://{ipv4}:3000` — no TLS on the Service. No Dockerfile, no build command to run.
@@ -127,7 +127,7 @@ Octane’s intended setup is asset-first with SSR on miss: exact files in `dist/
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Octane’s own Vite dev server — the plugin’s in-process SSR middleware serves rendering, server routes, and RPC with full HMR. `site.url` is the local address and no Hetzner resources are created (`server` and `service` are `undefined`). Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

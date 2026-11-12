@@ -2,42 +2,31 @@
 url: https://alchemy.run/cloudflare/ai/ai-search
 title: "Add AI Search (AutoRAG)"
 description: "Stand up a Cloudflare AI Search (AutoRAG) pipeline over an R2 bucket with one Search call, bind it into your Worker as a typed Effect client, and answer questions over your own documents."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Cloudflare **AI Search** indexes the documents in an
-R2 bucket and answers questions over them with retrieval-augmented
-generation — chunking, embedding, vector search, reranking, and
-generation, all managed by Cloudflare.
+Cloudflare **AI Search** indexes the documents in an R2 bucket and answers questions over them with retrieval-augmented generation — chunking, embedding, vector search, reranking, and generation, all managed by Cloudflare.
 
-A working pipeline needs more than one resource: the instance itself,
-plus a scoped API token so the indexer can read your R2 bucket. The
-`Cloudflare.AI.Search` helper wires all of that up in a single call.
-We'll use it here and unpack exactly what it creates.
+A working pipeline needs more than one resource: the instance itself, plus a scoped API token so the indexer can read your R2 bucket. The `Cloudflare.AI.Search` helper wires all of that up in a single call. We’ll use it here and unpack exactly what it creates.
 
 ## Create the R2 bucket
 
-AI Search indexes objects from an R2 bucket, so that's the source.
-Create `src/Docs.ts` with a bucket definition.
+AI Search indexes objects from an R2 bucket, so that’s the source. Create `src/Docs.ts` with a bucket definition.
 
 ```typescript
-// src/Docs.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Docs = Cloudflare.R2.Bucket("Docs", {});
 ```
 
-This is the bucket you'll drop Markdown, PDFs, or text files into —
-AI Search picks them up on its next sync.
+This is the bucket you’ll drop Markdown, PDFs, or text files into — AI Search picks them up on its next sync.
 
 ## Declare the AI Search pipeline
 
-Add a `Search` construct and pass the `Docs` bucket as `source`. That
-field selects R2 as the data source.
+Add a `Search` construct and pass the `Docs` bucket as `source`. That field selects R2 as the data source.
 
 ```typescript
-// src/Search.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import { Docs } from "./Docs.ts";
 
@@ -46,33 +35,17 @@ export const Search = Cloudflare.AI.Search("Search", {
 });
 ```
 
-`Search` is a **construct**, not a single resource. Calling it expands
-into several resources so you don't have to wire them up by hand.
-
-:::note[Crawling a website instead]
-Passing a URL as `source` (instead of a bucket) indexes a website by
-crawling it, with optional `parse` / `crawl` / `store` options and no
-service token. This tutorial focuses on the R2 source — see the
-[`Search` reference](https://alchemy.run/providers/cloudflare/ai#search) for the
-web-crawler options.
-:::
+`Search` is a **construct**, not a single resource. Calling it expands into several resources so you don’t have to wire them up by hand.
 
 ## What the helper creates
 
-For an R2 source, the indexer needs a service token to read your bucket.
-Cloudflare only creates that token for you through the dashboard or
-Wrangler — never on a programmatic API create — so `Search` provisions
-it as stable children of the construct:
+For an R2 source, the indexer needs a service token to read your bucket. Cloudflare only creates that token for you through the dashboard or Wrangler — never on a programmatic API create — so `Search` provisions it as stable children of the construct:
 
-- a least-privilege `Cloudflare.ApiToken.AccountApiToken` scoped to the
-  **AI Search Index Engine** permission group,
-- a `Cloudflare.AI.SearchToken` that wraps that API token into the
-  service-token shape AI Search expects,
-- the `Cloudflare.AI.SearchInstance` itself, with the service token's
-  id wired into its `tokenId`.
+- a least-privilege `Cloudflare.ApiToken.AccountApiToken` scoped to the **AI Search Index Engine** permission group,
+- a `Cloudflare.AI.SearchToken` that wraps that API token into the service-token shape AI Search expects,
+- the `Cloudflare.AI.SearchInstance` itself, with the service token’s id wired into its `tokenId`.
 
-So the single `Search("Search", …)` call above is shorthand for
-roughly this:
+So the single `Search("Search", …)` call above is shorthand for roughly this:
 
 ```typescript
 const apiToken = yield* Cloudflare.ApiToken.AccountApiToken("Token", {
@@ -80,7 +53,7 @@ const apiToken = yield* Cloudflare.ApiToken.AccountApiToken("Token", {
     {
       effect: "allow",
       permissionGroups: ["AI Search Index Engine"],
-      resources: { [`com.cloudflare.api.account.${accountId}`]: "*" },
+      resources: { [\`com.cloudflare.api.account.${accountId}\`]: "*" },
     },
   ],
 });
@@ -94,38 +67,26 @@ const instance = yield* Cloudflare.AI.SearchInstance("Instance", {
 });
 ```
 
-`Search` translates the `source` bucket into the instance's `type: "r2"` +
-`source: bucket.bucketName` for you. The value it returns **is** the
-`SearchInstance` (with the managed `serviceToken` attached), so you can pass
-it straight to anything that expects a `SearchInstance` — no destructuring
-needed.
+`Search` translates the `source` bucket into the instance’s `type: "r2"` + `source: bucket.bucketName` for you. The value it returns **is** the `SearchInstance` (with the managed `serviceToken` attached), so you can pass it straight to anything that expects a `SearchInstance` — no destructuring needed.
 
 ## Index only part of the bucket
 
-By default AI Search indexes every object in the bucket. Pass `prefix` to
-scope indexing to one key prefix, and `include` / `exclude` glob patterns
-for finer control.
+By default AI Search indexes every object in the bucket. Pass `prefix` to scope indexing to one key prefix, and `include` / `exclude` glob patterns for finer control.
 
-```diff lang="typescript"
+```typescript
 export const Search = Cloudflare.AI.Search("Search", {
   source: Docs,
-+  prefix: "docs/",
-+  include: ["/docs/**"],
-+  exclude: ["/docs/drafts/**"],
+  prefix: "docs/",
+  include: ["/docs/**"],
+  exclude: ["/docs/drafts/**"],
 });
 ```
 
-`prefix` limits indexing to keys under `docs/`. `include` / `exclude` are
-[micromatch](https://github.com/micromatch/micromatch) glob patterns (`*`
-matches within a path segment, `**` across segments; up to 10 each) — only
-objects matching an `include` pattern are indexed, and `exclude` wins over
-`include`.
+`prefix` limits indexing to keys under `docs/`. `include` / `exclude` are [micromatch](https://github.com/micromatch/micromatch) glob patterns (`*` matches within a path segment, `**` across segments; up to 10 each) — only objects matching an `include` pattern are indexed, and `exclude` wins over `include`.
 
 ## Reuse an existing token
 
-If your account already has a registered AI Search service token, pass
-its `tokenId` and `Search` skips minting the `AccountApiToken` +
-`SearchToken` children, wiring your token into the instance instead.
+If your account already has a registered AI Search service token, pass its `tokenId` and `Search` skips minting the `AccountApiToken` + `SearchToken` children, wiring your token into the instance instead.
 
 ```typescript
 export const Search = Cloudflare.AI.Search("Search", {
@@ -134,14 +95,11 @@ export const Search = Cloudflare.AI.Search("Search", {
 });
 ```
 
-Otherwise the default — letting the construct provision a least-privilege
-token that lives in your stack's state and is torn down on `destroy` — is
-the simplest path.
+Otherwise the default — letting the construct provision a least-privilege token that lives in your stack’s state and is torn down on `destroy` — is the simplest path.
 
 ## Group pipelines under a namespace
 
-Pass a `SearchNamespace` resource as `namespace` to group related
-pipelines under it instead of the account-provided `default` namespace.
+Pass a `SearchNamespace` resource as `namespace` to group related pipelines under it instead of the account-provided `default` namespace.
 
 ```typescript
 const Knowledge = Cloudflare.AI.SearchNamespace("Knowledge", {});
@@ -152,17 +110,13 @@ export const Search = Cloudflare.AI.Search("Search", {
 });
 ```
 
-Passing the namespace resource (not its name) lets the engine order the
-pipeline after the namespace on deploy and tear it down before the
-namespace on destroy. The namespace is immutable — changing it replaces
-the pipeline.
+Passing the namespace resource (not its name) lets the engine order the pipeline after the namespace on deploy and tear it down before the namespace on destroy. The namespace is immutable — changing it replaces the pipeline.
 
 ## Add both to the stack
 
-```diff lang="typescript"
-// alchemy.run.ts
-+import { Docs } from "./src/Docs.ts";
-+import { Search } from "./src/Search.ts";
+```typescript
+import { Docs } from "./src/Docs.ts";
+import { Search } from "./src/Search.ts";
 import Api from "./src/Api.ts";
 
 export default Alchemy.Stack(
@@ -170,154 +124,126 @@ export default Alchemy.Stack(
   { providers: Cloudflare.providers(), state: Cloudflare.state() },
   Effect.gen(function* () {
     const api = yield* Api;
-+    const docs = yield* Docs;
-+    const search = yield* Search;
+    const docs = yield* Docs;
+    const search = yield* Search;
 
     return {
       url: api.url.as<string>(),
-+      bucket: docs.bucketName,
-+      search: search.instanceId,
+      bucket: docs.bucketName,
+      search: search.instanceId,
     };
   }),
 );
 ```
 
-`yield* Search` registers the construct — the bucket, both tokens, and
-the instance all get created on the next deploy, in dependency order.
-The value is the `SearchInstance` itself, so `search.instanceId` reads
-straight off it.
+`yield* Search` registers the construct — the bucket, both tokens, and the instance all get created on the next deploy, in dependency order. The value is the `SearchInstance` itself, so `search.instanceId` reads straight off it.
 
 ## Bind the instance into the Worker
 
-`Cloudflare.AI.QuerySearch(search)` attaches the
-single-instance `ai_search` binding and returns a typed Effect client.
-Call it during the Worker's Construction phase.
+`Cloudflare.AI.QuerySearch(search)` attaches the single-instance `ai_search` binding and returns a typed Effect client. Call it during the Worker’s Construction phase.
 
-```diff lang="typescript"
-// src/Api.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
-+import { Search } from "./Search.ts";
+import { Search } from "./Search.ts";
 
 export default class Api extends Cloudflare.Worker<Api>()(
   "Api",
   { main: import.meta.url },
   Effect.gen(function* () {
-+    const aiSearch = yield* Search;
-+    const search = yield* Cloudflare.AI.QuerySearch(aiSearch);
+    const aiSearch = yield* Search;
+    const search = yield* Cloudflare.AI.QuerySearch(aiSearch);
 
     return {
       fetch: Effect.gen(function* () {
         // …existing routes
       }),
     };
--  }),
-+  }).pipe(Effect.provide(Cloudflare.AI.QuerySearchBinding)),
+  }),
+  }).pipe(Effect.provide(Cloudflare.AI.QuerySearchBinding)),
 ) {}
 ```
 
-`Cloudflare.AI.QuerySearchBinding` is the runtime side of the
-binding. Provide it once at the bottom of the constructor's layer chain and the
-`QuerySearch(...)` above resolves to a live `SearchInstance` handle at runtime.
+`Cloudflare.AI.QuerySearchBinding` is the runtime side of the binding. Provide it once at the bottom of the constructor’s layer chain and the `QuerySearch(...)` above resolves to a live `SearchInstance` handle at runtime.
 
-## Answer questions on `/ask`
+## Answer questions on /ask
 
-`search.chatCompletions({ messages })` runs the full RAG pipeline —
-retrieve the relevant chunks, then answer with the configured generation
-model. It returns an Effect, so call it like any other.
+`search.chatCompletions({ messages })` runs the full RAG pipeline — retrieve the relevant chunks, then answer with the configured generation model. It returns an Effect, so call it like any other.
 
-```diff lang="typescript"
-+import { HttpServerRequest } from "effect/http/HttpServerRequest";
-+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+```typescript
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
-   return {
-     fetch: Effect.gen(function* () {
-       const request = yield* HttpServerRequest;
-+      const url = new URL(request.url, "http://api");
+  return {
+    fetch: Effect.gen(function* () {
+      const request = yield* HttpServerRequest;
+      const url = new URL(request.url, "http://api");
 
-+      if (url.pathname === "/ask") {
-+        const query = url.searchParams.get("q") ?? "What is this about?";
-+        const answer = yield* search
-+          .chatCompletions({ messages: [{ role: "user", content: query }] })
-+          .pipe(Effect.orDie);
-+        return yield* HttpServerResponse.json({
-+          response: answer.choices[0]?.message.content,
-+          sources: answer.chunks.map((c) => c.item.key),
-+        });
-+      }
+      if (url.pathname === "/ask") {
+        const query = url.searchParams.get("q") ?? "What is this about?";
+        const answer = yield* search
+          .chatCompletions({ messages: [{ role: "user", content: query }] })
+          .pipe(Effect.orDie);
+        return yield* HttpServerResponse.json({
+          response: answer.choices[0]?.message.content,
+          sources: answer.chunks.map((c) => c.item.key),
+        });
+      }
 
-       return HttpServerResponse.text("Not Found", { status: 404 });
-     }),
-   };
+      return HttpServerResponse.text("Not Found", { status: 404 });
+    }),
+  };
 ```
 
-`answer.choices[0].message.content` is the generated text; `answer.chunks`
-are the source chunks it drew from, so we surface their item keys as
-citations. `Effect.orDie` turns an `AiSearchError` into a 500 — swap in
-`Effect.catchTag("AiSearchError", …)` if you want typed handling.
+`answer.choices[0].message.content` is the generated text; `answer.chunks` are the source chunks it drew from, so we surface their item keys as citations. `Effect.orDie` turns an `AiSearchError` into a 500 — swap in `Effect.catchTag("AiSearchError", …)` if you want typed handling.
 
-## Retrieve chunks without generation on `/search`
+## Retrieve chunks without generation on /search
 
-When you only want the matching chunks (e.g. to render your own UI or
-feed another model), use `search.search({ query })` — same retrieval,
-no generation step, so it's cheaper and faster.
+When you only want the matching chunks (e.g. to render your own UI or feed another model), use `search.search({ query })` — same retrieval, no generation step, so it’s cheaper and faster.
 
-```diff lang="typescript"
-+      if (url.pathname === "/search") {
-+        const query = url.searchParams.get("q") ?? "";
-+        const hits = yield* search.search({ query }).pipe(Effect.orDie);
-+        return yield* HttpServerResponse.json(hits.chunks);
-+      }
+```typescript
+if (url.pathname === "/search") {
+  const query = url.searchParams.get("q") ?? "";
+  const hits = yield* search.search({ query }).pipe(Effect.orDie);
+  return yield* HttpServerResponse.json(hits.chunks);
+}
 ```
 
-`hits.chunks` is the ranked list of chunks with their scores and source
-metadata — no generated answer, because nothing was generated.
+`hits.chunks` is the ranked list of chunks with their scores and source metadata — no generated answer, because nothing was generated.
 
 ## Try it
 
 Deploy, upload a document to the bucket, and ask a question.
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 
 # upload a doc into the indexed bucket (via wrangler)
-echo "Alchemy deploys with 'bun alchemy deploy'." > faq.txt
-bunx wrangler r2 object put "$(bun alchemy stack output bucket)/faq.txt" --file faq.txt --remote
+echo "Alchemy deploys with 'pnpm alchemy deploy'." > faq.txt
+pnpx wrangler r2 object put "$(pnpm alchemy stack output bucket)/faq.txt" --file faq.txt --remote
 
 # ask over it
-curl "$(bun alchemy stack output url)/ask?q=How%20do%20I%20deploy%3F"
+curl "$(pnpm alchemy stack output url)/ask?q=How%20do%20I%20deploy%3F"
 ```
 
-You can also drag files straight into the bucket from the Cloudflare
-dashboard → **R2** → your bucket — anything in there gets indexed.
+You can also drag files straight into the bucket from the Cloudflare dashboard → **R2** → your bucket — anything in there gets indexed.
 
-Indexing is asynchronous — a freshly uploaded file takes a short while
-to appear in results. Open the Cloudflare dashboard → **AI** →
-**AI Search** → your instance to watch the sync status and confirm the
-document was indexed before querying.
+Indexing is asynchronous — a freshly uploaded file takes a short while to appear in results. Open the Cloudflare dashboard → **AI** → **AI Search** → your instance to watch the sync status and confirm the document was indexed before querying.
 
 ## Drop down to the low-level resources
 
-The `Search` helper is the fast path for the common R2 case. Reach
-for the underlying resources directly when you need to:
+The `Search` helper is the fast path for the common R2 case. Reach for the underlying resources directly when you need to:
 
-- **share one token across many instances** — create the
-  `SearchToken` once and pass its `id` as `tokenId` to each
-  `SearchInstance`,
+- **share one token across many instances** — create the `SearchToken` once and pass its `id` as `tokenId` to each `SearchInstance`,
 - **adopt an existing instance or token** rather than create one.
 
-Everything the helper does is just these resources composed — there's
-no behavior you lose by dropping down.
+Everything the helper does is just these resources composed — there’s no behavior you lose by dropping down.
 
 ## What you have now
 
 - An R2 bucket whose contents are indexed for retrieval.
-- A managed, least-privilege API token + AI Search service token, both
-  owned by your stack and torn down on `destroy`.
+- A managed, least-privilege API token + AI Search service token, both owned by your stack and torn down on `destroy`.
 - A `SearchInstance` bound into your Worker as a typed Effect client.
-- `/ask` (full RAG) and `/search` (retrieval only) routes over your own
-  documents.
+- `/ask` (full RAG) and `/search` (retrieval only) routes over your own documents.
 
-For the full prop surface — embedding/generation models, R2 prefix and
-include/exclude filters, reranking, query rewriting, and similarity
-caching — see the [AI Search resource reference](https://alchemy.run/providers/cloudflare/ai#search).
+For the full prop surface — embedding/generation models, R2 prefix and include/exclude filters, reranking, query rewriting, and similarity caching — see the [AI Search resource reference](https://alchemy.run/providers/cloudflare/ai#search).

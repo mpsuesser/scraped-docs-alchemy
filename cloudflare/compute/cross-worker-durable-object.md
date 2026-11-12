@@ -2,13 +2,27 @@
 url: https://alchemy.run/cloudflare/compute/cross-worker-durable-object
 title: "Bind to another Worker's Durable Object"
 description: "Share a Durable Object across multiple Workers — one Worker hosts the runtime, others bind to it by scriptName for a typed RPC stub — and move the host later with the data intact."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A Durable Object is *hosted* by exactly one Worker, but any number of **other** Workers can bind to the same DO. This is how you share state across Workers: one Worker hosts the DO, every other Worker addresses it by `scriptName` and gets a typed RPC stub.
 
-By the end of this part you’ll have two Workers, `WorkerA` and `WorkerB`, sharing a single `Counter` Durable Object. Writes through either Worker are visible from the other.
+Take two Workers, `WorkerA` and `WorkerB`, sharing a single `Counter` Durable Object. Writes through either Worker are visible from the other.
+
+my-companyaccount
+
+WorkerBWorker
+
+WorkerAWorker · hosts Counter
+
+CounterDurable Object namespace
+
+"alice"object · count 3
+
+"bob"object · count 1
+
+The objects live in WorkerA's namespace. WorkerB holds only a binding to it, so getByName('alice') from either Worker reaches the same object and the same count.
 
 ## Move the DO into its own module
 
@@ -330,10 +344,14 @@ import WorkerBLive, { WorkerB } from "./src/workerB.ts";
 ### Deploy the move
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 `WorkerA` references `WorkerB` through `Counter.from(WorkerB)`, so the engine deploys `WorkerB` first. Its deploy moves the namespace and every stored object to `WorkerB` ’s script, and `WorkerA` ’s deploy then converges on its own (nothing is deleted for a class that moved away). Every counter keeps its count. Afterwards the `transferredFrom` declaration is inert — on fresh stages and on every later deploy it does nothing — so leave it in place.
+
+<svg viewBox="0 0 647.8 124" style="max-width: 745px" role="img" aria-label="One deploy moves the namespace and every stored object to WorkerB. The count is the same before and after, and both Workers keep reaching it."><line stroke-opacity="0.2" stroke="currentColor" x1="333.4" y1="24" x2="333.4" y2="118"></line><g><text fill="currentColor" x="4" y="56">WorkerA</text> <g><rect stroke="currentColor" fill="none" x="75.80000000000001" y="40" width="257.59999999999997" height="24" rx="5"></rect><text fill="currentColor" x="204.6" y="56" text-anchor="middle">hosts Counter · alice = 3</text></g> <g><rect stroke="currentColor" fill="none" x="333.4" y="40" width="302.4" height="24" rx="5"></rect><text fill="currentColor" x="484.59999999999997" y="56" text-anchor="middle">binds Counter from WorkerB</text></g></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="74" x2="647.8" y2="74"></line><text fill="currentColor" x="4" y="100">WorkerB</text> <g><rect stroke="currentColor" fill="none" x="75.80000000000001" y="84" width="257.59999999999997" height="24" rx="5"></rect><text fill="currentColor" x="204.6" y="100" text-anchor="middle">binds Counter from WorkerA</text></g> <g><rect stroke="currentColor" fill="none" x="333.4" y="84" width="302.4" height="24" rx="5"></rect><text fill="currentColor" x="484.59999999999997" y="100" text-anchor="middle">hosts Counter · alice = 3</text></g></g> <text fill="currentColor" x="333.4" y="18" text-anchor="middle">deploy: WorkerB first, transferredFrom WorkerA</text></svg> <svg viewBox="0 0 330 174" style="max-width: 379px" role="img" aria-label="One deploy moves the namespace and every stored object to WorkerB. The count is the same before and after, and both Workers keep reaching it."><line stroke-opacity="0.2" stroke="currentColor" x1="146.28" y1="24" x2="146.28" y2="168"></line><g><text fill="currentColor" x="0" y="44">WorkerA</text> <g><rect stroke="currentColor" fill="none" x="0" y="54" width="146.28" height="24" rx="5"></rect><text fill="currentColor" x="0" y="90" text-anchor="start">hosts Counter · alice = 3</text></g> <g><rect stroke="currentColor" fill="none" x="146.28" y="54" width="171.72" height="24" rx="5"></rect></g></g><g><line stroke-opacity="0.2" stroke="currentColor" x1="0" y1="99" x2="330" y2="99"></line><text fill="currentColor" x="0" y="113">WorkerB</text> <g><rect stroke="currentColor" fill="none" x="0" y="123" width="146.28" height="24" rx="5"></rect><text fill="currentColor" x="0" y="159" text-anchor="start">binds Counter from WorkerA</text></g> <g><rect stroke="currentColor" fill="none" x="146.28" y="123" width="171.72" height="24" rx="5"></rect></g></g><text fill="currentColor" x="146.28" y="18" text-anchor="middle">deploy: WorkerB first, transferredFrom WorkerA</text></svg>
+
+One deploy moves the namespace and every stored object to WorkerB. The count is the same before and after, and both Workers keep reaching it.
 
 ### Keep the host history for chained moves
 

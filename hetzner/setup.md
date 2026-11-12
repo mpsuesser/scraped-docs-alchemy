@@ -2,15 +2,15 @@
 url: https://alchemy.run/hetzner/setup
 title: "Setup"
 description: "Install Alchemy and connect it to Hetzner Cloud — create a project, generate an API token, and store it in a profile."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Everything you need before deploying to Hetzner Cloud: the alchemy package, a Hetzner project, and an API token stored in a profile.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A [Hetzner Cloud](https://console.hetzner.com/) account
 
 ## Create a Hetzner project

@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to AWS with AWS.Website.Octane — SSR on a Lambda Web Function, assets on S3 + CloudFront, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to AWS. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the deploy target’s finishing pass wraps its fetch handler in a Node server. The server deploys on a [Lambda Web Function](../compute/web-functions.md); `dist/client` is served from a private S3 bucket through CloudFront. No CloudFormation, no build command to run.
@@ -110,7 +110,7 @@ export const Website = AWS.Website.Octane("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Octane’s own Vite dev server — the plugin’s in-process SSR middleware serves rendering, server routes, and RPC with full HMR. `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

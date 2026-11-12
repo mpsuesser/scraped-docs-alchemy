@@ -2,52 +2,21 @@
 url: https://alchemy.run/aws/compute/hyperpod
 title: "HyperPod"
 description: "Provision SageMaker HyperPod clusters — Slurm or EKS orchestrated — and run ML workloads on them with sbatch, raw manifests, or effectful Jobs with task governance."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-**SageMaker HyperPod** is AWS's persistent fleet for ML training
-and inference: a cluster of accelerated instances with automatic
-health checks, faulty-node replacement, and deep health checks
-for GPUs. Where ECS and EKS run application containers, HyperPod
-runs distributed training — and stays up between jobs.
+SageMaker HyperPod is a standing fleet of accelerated instances for ML training and inference. It checks each node's health, including deep checks on its GPUs, replaces nodes that fail, and stays up between jobs. Where [ECS](ecs.md) and [EKS](eks.md) run application containers, HyperPod runs distributed training.
 
-The HyperPod primitives:
+## Clusters, instance groups and lifecycle scripts
 
-- A **Cluster** is the fleet. It is orchestrated by **Slurm**
-  (the default) or by an **EKS** cluster you attach it to.
-- An **instance group** names a set of identical instances — a
-  controller group, a worker group — each with an instance type,
-  count, execution role, and lifecycle script.
-- A **lifecycle script** (`on_create.sh` in S3) runs on every
-  node when it boots. This is where real clusters install
-  schedulers, mount FSx, and wire observability.
-- **Task governance** (EKS orchestration only) arbitrates the
-  fleet between teams: a scheduler policy sets priority classes,
-  and per-team compute quotas reserve capacity.
+A **cluster** is the fleet. It's divided into **instance groups**, each a set of identical instances with one type, count, role and **lifecycle script**: the script every node runs when it boots, which installs the scheduler, mounts shared storage and wires up monitoring. A cluster usually has a controller group and one or more worker groups.
 
-Alchemy models these with
-[`Cluster`](https://alchemy.run/providers/aws/sagemaker#cluster),
-[`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker#clusterschedulerconfig),
-and [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker#computequota), and
-Kubernetes workloads opt onto HyperPod nodes by referencing their
-attributes (the group's `nodeSelector`, the quota's governed
-`namespace` and `queueName`) from plain
-[`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) and
-[`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) props.
+Something has to decide which job runs on which nodes. That's the **orchestrator**, and a cluster has one of two. **Slurm**, the default, is the classic HPC scheduler: you submit jobs with `sbatch` from a login node. **EKS** makes the nodes part of a Kubernetes cluster you attach, and you run Deployments and Jobs on them.
 
-## Choose an orchestrator
+Choose Slurm for HPC-style training queues. Choose EKS when your platform is already Kubernetes, or to share the fleet between teams with **task governance**: a scheduler policy of priority classes, and compute quotas that reserve capacity per team.
 
-|                 | Slurm (default)                       | EKS (`orchestrator: { Eks }`)                        |
-| --------------- | ------------------------------------- | ---------------------------------------------------- |
-| Workloads       | `sbatch` on the login node (over SSM) | Kubernetes objects — `Deployment`, `Job`, `Manifest` |
-| High-level DX   | —                                     | `Kubernetes.Job` / `Deployment` via HyperPod attributes |
-| Governance      | Slurm accounting                      | `ClusterSchedulerConfig` + `ComputeQuota` (Kueue)    |
-| Extra plumbing  | Lifecycle bucket + script             | EKS cluster + the HyperPod dependencies Helm chart   |
-
-Pick Slurm for classic HPC-style training queues. Pick EKS when
-your platform is Kubernetes or you want typed workloads and task
-governance.
+In Alchemy, the fleet is [`SageMaker.Cluster`](https://alchemy.run/providers/aws/sagemaker#cluster). Governance is [`ClusterSchedulerConfig`](https://alchemy.run/providers/aws/sagemaker#clusterschedulerconfig) and [`ComputeQuota`](https://alchemy.run/providers/aws/sagemaker#computequota). On EKS, plain [`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) and [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) workloads run on HyperPod nodes by naming the group's `nodeSelector`, and the quota's `namespace` and `queueName`.
 
 ## Create a Slurm cluster
 

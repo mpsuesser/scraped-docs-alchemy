@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to Railway with Railway.Website.Nextjs — next build plus a Node next({ dev: false }) container, and next dev under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Railway.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to Railway as a long-running Node process. It runs a real `next build`, then a serve entry that `import("next")` + `next({ dev: false }).prepare()` + `getRequestHandler()` on port 3000:
@@ -99,7 +99,7 @@ export function GET() {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs `next dev` (native HMR, Turbopack) instead of deploying; `site.url` is the local address and no Railway resources are created. Wrap the site in `Alchemy.remote()` to deploy the live Service even during dev.

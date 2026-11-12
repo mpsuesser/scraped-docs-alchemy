@@ -2,8 +2,8 @@
 url: https://alchemy.run/cli/state
 title: "state"
 description: "Browse, read, and delete entries in the state store."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ```sh
@@ -33,10 +33,15 @@ All subcommands share these options:
 | Option              | Description                                                                                                                                    |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--backend <name>`  | `configured` (default) uses the stack's state layer; `local` reads `.alchemy/state`, including orphaned state after a failed bootstrap; a provider's store (`aws`, `cloudflare`) is reached from the profile alone, without a stack file |
-| `--name <name>`     | With a provider store, address one other than the account's default, by logical name (1-20 lowercase letters, digits and hyphens) |
+| `--name <name>`     | With a provider store, address one other than the default: a logical name on AWS and GCP (1-20 lowercase letters, digits and hyphens), the full Worker name on Cloudflare |
+| `--domain <host>`   | With `--backend cloudflare`, the hostname the store is served on when it has a [custom domain](../state-store.md#serve-it-on-your-own-domain) |
 | `--profile <name>`  | Auth profile to use (defaults to `$ALCHEMY_PROFILE` or `default`)                                                                        |
 | `--env-file <path>` | Load environment variables from a file                                                                                                         |
 | `--config, -c <file>` | Stack entrypoint to resolve the state layer from (defaults to `alchemy.run.ts`)                                                              |
+
+`--name`, `--domain` and any other store option come from the installed
+providers' state stores, and each backend takes only the flags it
+contributes. `alchemy state --help` lists them.
 
 ## `state list`
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Hetzner with Hetzner.Website.Nuxt — nitro's node preset as a systemd unit on port 3000, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Hetzner.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to a Hetzner Cloud Server. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server runs as a systemd unit on port 3000, and client assets plus prerendered pages are baked into the unit. Omit `server` to get a `cpx12` / `ubuntu-24.04` VM in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. There is no `nitro.preset` to edit and no build command to run.
@@ -124,7 +124,7 @@ Nitro’s `isr` route rule is implemented only by the Vercel and Netlify presets
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Nuxt’s own dev server (nitro dev, full HMR) instead of deploying; `site.url` is the local address and no Hetzner resources are created. Wrap the site in `Alchemy.remote()` to deploy the live Server and Service even during dev.

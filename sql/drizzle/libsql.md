@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/libsql
 title: "libSQL"
 description: "Use Drizzle with a libSQL database, such as Turso."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Drizzle.LibSQL` gives you typed Drizzle queries on a libSQL database, such as [Turso](../../turso.md).
@@ -53,7 +53,7 @@ export default defineConfig({
 ```
 
 ```sh
-bunx drizzle-kit generate
+pnpm drizzle-kit generate
 git add src/schema.ts drizzle.config.ts migrations
 git commit -m "Add database migration"
 ```

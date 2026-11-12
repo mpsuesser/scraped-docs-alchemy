@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/tutorial/part-1
 title: "Part 1: Model an account"
 description: "Declare events, commands and rejections, decide them in an aggregate, and check it with stories."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Build a bank in eight parts, starting with an account that opens, takes deposits and refuses overdrafts. This part runs on your machine: no cloud account needed yet.
@@ -13,23 +13,22 @@ If commands, aggregates and events are new to you, read [What is Domain-Driven D
 ## Install
 
 ```sh
-bun add alchemy @alchemy.run/domain effect
-bun add -d vitest @effect/vitest
+pnpm add alchemy@latest @alchemy.run/domain@latest effect
+pnpm add -D vitest @effect/vitest
 ```
 
 ## Give your coding agent the skill
 
 ```sh
-bun add -d skills-npm
-bunx skills-npm setup
+pnpm add -D skills-npm
+pnpm skills-npm setup
 ```
 
-alchemy ships an `alchemy-domain` skill, and `skills-npm` links it into your coding agent's skills folder on every install, matching the alchemy version you have. Your agent then knows the building blocks and conventions this tutorial uses. For other ways to install it, see [Build it with your coding agent](../../domain.md#build-it-with-your-coding-agent).
+alchemy ships an `alchemy-domain` skill, and `skills-npm` links it into your coding agent’s skills folder on every install, matching the alchemy version you have. Your agent then knows the building blocks and conventions this tutorial uses. For other ways to install it, see [Build it with your coding agent](../../domain.md#build-it-with-your-coding-agent).
 
 ## Name account ids
 
 ```typescript
-// src/Account.id.ts
 import * as Schema from "effect/Schema";
 
 export const AccountId = Schema.String.pipe(Schema.brand("AccountId"));
@@ -40,7 +39,6 @@ A branded id keeps an account id from being mixed up with any other string. The 
 ## Record that an account opened
 
 ```typescript
-// src/OpenAccount.command.ts
 import * as Domain from "@alchemy.run/domain";
 import * as Schema from "effect/Schema";
 
@@ -53,34 +51,31 @@ Each command gets a file named after it, with a `.command.ts` suffix, holding th
 
 ## Refuse to open an account twice
 
-```diff lang="typescript"
-// src/OpenAccount.command.ts
-
+```typescript
 export class AccountOpened extends Domain.Event("AccountOpened", { owner: Schema.String }) {}
-+
-+export class AlreadyOpen extends Domain.Rejection("AlreadyOpen") {}
+
+export class AlreadyOpen extends Domain.Rejection("AlreadyOpen") {}
 ```
 
 A rejection is a typed reason to say no. Callers receive it exactly as declared.
 
 ## Ask to open an account
 
-```diff lang="typescript"
-// src/OpenAccount.command.ts
+```typescript
 import * as Domain from "@alchemy.run/domain";
 import * as Schema from "effect/Schema";
-+import { AccountId } from "./Account.id.ts";
+import { AccountId } from "./Account.id.ts";
 
 export class AccountOpened extends Domain.Event("AccountOpened", { owner: Schema.String }) {}
 
 export class AlreadyOpen extends Domain.Rejection("AlreadyOpen") {}
-+
-+export class OpenAccount extends Domain.Command("OpenAccount", {
-+  target: AccountId,
-+  input: { owner: Schema.String },
-+  events: [AccountOpened],
-+  rejects: [AlreadyOpen],
-+}) {}
+
+export class OpenAccount extends Domain.Command("OpenAccount", {
+  target: AccountId,
+  input: { owner: Schema.String },
+  events: [AccountOpened],
+  rejects: [AlreadyOpen],
+}) {}
 ```
 
 A command asks one account for a change. It lists every event it may record and every rejection it may return.
@@ -88,7 +83,6 @@ A command asks one account for a change. It lists every event it may record and 
 ## Declare the account
 
 ```typescript
-// src/Account.aggregate.ts
 import * as Domain from "@alchemy.run/domain";
 import * as Schema from "effect/Schema";
 import { AccountId } from "./Account.id.ts";
@@ -106,8 +100,8 @@ export class Account extends Domain.Aggregate("Account", {
   initial: { _tag: "Unopened" },
   commands: [OpenAccount],
   decide: {
-    OpenAccount: (s, cmd) =>
-      s._tag !== "Unopened" ? new AlreadyOpen() : [new AccountOpened({ owner: cmd.owner })],
+    OpenAccount: (account, cmd) =>
+      account._tag !== "Unopened" ? new AlreadyOpen() : [new AccountOpened({ owner: cmd.owner })],
   },
   evolve: {
     AccountOpened: (_, e) => ({ _tag: "Open" as const, owner: e.owner, balance: 0 }),
@@ -120,7 +114,6 @@ The account is an aggregate. `decide` takes a command and the current state, and
 ## Group it in a model
 
 ```typescript
-// src/Bank.model.ts
 import * as Domain from "@alchemy.run/domain";
 import { Account } from "./Account.aggregate.ts";
 
@@ -129,12 +122,11 @@ export class Bank extends Domain.Model("Bank", {
 }) {}
 ```
 
-A model is everything you host together. You'll add views and policies to it in the next parts.
+A model is everything you host together. You’ll add views and policies to it in the next parts.
 
 ## Test opening an account
 
 ```typescript
-// test/Account.test.ts
 import { it } from "@effect/vitest";
 import { Story } from "@alchemy.run/domain/Story";
 import { Account } from "../src/Account.aggregate.ts";
@@ -171,7 +163,6 @@ Both stories pass.
 ## Record deposits
 
 ```typescript
-// src/DepositMoney.command.ts
 import * as Domain from "@alchemy.run/domain";
 import * as Schema from "effect/Schema";
 
@@ -183,50 +174,47 @@ export class MoneyDeposited extends Domain.Event("MoneyDeposited", {
 
 The event carries the balance after the deposit, so anyone reading it knows the new balance without adding anything up.
 
-## Refuse an account that isn't open
+## Refuse an account that isn’t open
 
 ```typescript
-// src/NotOpen.rejection.ts
 import * as Domain from "@alchemy.run/domain";
 
 export class NotOpen extends Domain.Rejection("NotOpen") {}
 ```
 
-Deposits need an open account, and so will withdrawals. A rejection two commands share gets a file of its own, instead of living in either command's file.
+Deposits need an open account, and so will withdrawals. A rejection two commands share gets a file of its own, instead of living in either command’s file.
 
 ## Ask to deposit
 
-```diff lang="typescript"
-// src/DepositMoney.command.ts
+```typescript
 import * as Domain from "@alchemy.run/domain";
 import * as Schema from "effect/Schema";
-+import { AccountId } from "./Account.id.ts";
-+import { NotOpen } from "./NotOpen.rejection.ts";
+import { AccountId } from "./Account.id.ts";
+import { NotOpen } from "./NotOpen.rejection.ts";
 
 export class MoneyDeposited extends Domain.Event("MoneyDeposited", {
   amount: Schema.Int,
   balanceAfter: Schema.Int,
 }) {}
-+
-+export class DepositMoney extends Domain.Command("DepositMoney", {
-+  target: AccountId,
-+  input: { amount: Schema.Int },
-+  events: [MoneyDeposited],
-+  rejects: [NotOpen],
-+  reply: { balance: Schema.Int },
-+}) {}
+
+export class DepositMoney extends Domain.Command("DepositMoney", {
+  target: AccountId,
+  input: { amount: Schema.Int },
+  events: [MoneyDeposited],
+  rejects: [NotOpen],
+  reply: { balance: Schema.Int },
+}) {}
 ```
 
 `reply` declares what the caller gets back once the deposit is recorded: the new balance.
 
 ## Decide deposits
 
-```diff lang="typescript"
-// src/Account.aggregate.ts
+```typescript
 import * as Schema from "effect/Schema";
 import { AccountId } from "./Account.id.ts";
-+import { DepositMoney, MoneyDeposited } from "./DepositMoney.command.ts";
-+import { NotOpen } from "./NotOpen.rejection.ts";
+import { DepositMoney, MoneyDeposited } from "./DepositMoney.command.ts";
+import { NotOpen } from "./NotOpen.rejection.ts";
 import { AccountOpened, AlreadyOpen, OpenAccount } from "./OpenAccount.command.ts";
 // ...
 type State = typeof State.Type;
@@ -235,62 +223,60 @@ export class Account extends Domain.Aggregate("Account", {
   id: AccountId,
   state: State,
   initial: { _tag: "Unopened" },
--  commands: [OpenAccount],
-+  commands: [OpenAccount, DepositMoney],
+  commands: [OpenAccount],
+  commands: [OpenAccount, DepositMoney],
   decide: {
-    OpenAccount: (s, cmd) =>
-      s._tag !== "Unopened" ? new AlreadyOpen() : [new AccountOpened({ owner: cmd.owner })],
-+    DepositMoney: (s, cmd) =>
-+      s._tag !== "Open"
-+        ? new NotOpen()
-+        : [new MoneyDeposited({ amount: cmd.amount, balanceAfter: s.balance + cmd.amount })],
+    OpenAccount: (account, cmd) =>
+      account._tag !== "Unopened" ? new AlreadyOpen() : [new AccountOpened({ owner: cmd.owner })],
+    DepositMoney: (account, cmd) =>
+      account._tag !== "Open"
+        ? new NotOpen()
+        : [new MoneyDeposited({ amount: cmd.amount, balanceAfter: account.balance + cmd.amount })],
   },
   evolve: {
     AccountOpened: (_, e) => ({ _tag: "Open" as const, owner: e.owner, balance: 0 }),
-+    MoneyDeposited: (s, e) => (s._tag === "Open" ? { ...s, balance: e.balanceAfter } : s),
-+  },
-+  reply: {
-+    DepositMoney: (s) => ({ balance: s._tag === "Open" ? s.balance : 0 }),
+    MoneyDeposited: (s, e) => (s._tag === "Open" ? { ...s, balance: e.balanceAfter } : s),
+  },
+  reply: {
+    DepositMoney: (s) => ({ balance: s._tag === "Open" ? s.balance : 0 }),
   },
 }) {}
 ```
 
-`evolve` never refuses an event, because it already happened. `decide` already returned `NotOpen` for an account that isn't open, so `evolve` and `reply` just cover every state. `reply` answers from the state after the deposit.
+`evolve` never refuses an event, because it already happened. `decide` already returned `NotOpen` for an account that isn’t open, so `evolve` and `reply` just cover every state. `reply` answers from the state after the deposit.
 
 ## Test deposits
 
-```diff lang="typescript"
-// test/Account.test.ts
+```typescript
 import { Account } from "../src/Account.aggregate.ts";
 import { Bank } from "../src/Bank.model.ts";
-+import { DepositMoney, MoneyDeposited } from "../src/DepositMoney.command.ts";
-+import { NotOpen } from "../src/NotOpen.rejection.ts";
+import { DepositMoney, MoneyDeposited } from "../src/DepositMoney.command.ts";
+import { NotOpen } from "../src/NotOpen.rejection.ts";
 import { AccountOpened, AlreadyOpen, OpenAccount } from "../src/OpenAccount.command.ts";
     // ...
     Story.rejected(new AlreadyOpen()),
   ),
 );
-+
-+it.effect("deposits into an open account and replies with the balance", () =>
-+  story(
-+    Story.given(account, new AccountOpened({ owner: "sam" })),
-+    Story.when(account, new DepositMoney({ amount: 100 })),
-+    Story.then(account, new MoneyDeposited({ amount: 100, balanceAfter: 100 })),
-+    Story.replied({ balance: 100 }),
-+  ),
-+);
-+
-+it.effect("refuses a deposit into an account that isn't open", () =>
-+  story(Story.when(account, new DepositMoney({ amount: 100 })), Story.rejected(new NotOpen())),
-+);
+
+it.effect("deposits into an open account and replies with the balance", () =>
+  story(
+    Story.given(account, new AccountOpened({ owner: "sam" })),
+    Story.when(account, new DepositMoney({ amount: 100 })),
+    Story.then(account, new MoneyDeposited({ amount: 100, balanceAfter: 100 })),
+    Story.replied({ balance: 100 }),
+  ),
+);
+
+it.effect("refuses a deposit into an account that isn't open", () =>
+  story(Story.when(account, new DepositMoney({ amount: 100 })), Story.rejected(new NotOpen())),
+);
 ```
 
-`replied` checks the last command's reply.
+`replied` checks the last command’s reply.
 
 ## Withdraw money
 
 ```typescript
-// src/WithdrawMoney.command.ts
 import * as Domain from "@alchemy.run/domain";
 import * as Schema from "effect/Schema";
 import { AccountId } from "./Account.id.ts";
@@ -319,11 +305,10 @@ A withdrawal follows the same shape as a deposit, with one more way to say no: `
 
 ## Decide withdrawals
 
-```diff lang="typescript"
-// src/Account.aggregate.ts
+```typescript
 import { NotOpen } from "./NotOpen.rejection.ts";
 import { AccountOpened, AlreadyOpen, OpenAccount } from "./OpenAccount.command.ts";
-+import { InsufficientFunds, MoneyWithdrawn, WithdrawMoney } from "./WithdrawMoney.command.ts";
+import { InsufficientFunds, MoneyWithdrawn, WithdrawMoney } from "./WithdrawMoney.command.ts";
 
 const State = Schema.Union([
   // ...
@@ -333,30 +318,30 @@ export class Account extends Domain.Aggregate("Account", {
   id: AccountId,
   state: State,
   initial: { _tag: "Unopened" },
--  commands: [OpenAccount, DepositMoney],
-+  commands: [OpenAccount, DepositMoney, WithdrawMoney],
+  commands: [OpenAccount, DepositMoney],
+  commands: [OpenAccount, DepositMoney, WithdrawMoney],
   decide: {
-    OpenAccount: (s, cmd) =>
-      s._tag !== "Unopened" ? new AlreadyOpen() : [new AccountOpened({ owner: cmd.owner })],
-    DepositMoney: (s, cmd) =>
-      s._tag !== "Open"
+    OpenAccount: (account, cmd) =>
+      account._tag !== "Unopened" ? new AlreadyOpen() : [new AccountOpened({ owner: cmd.owner })],
+    DepositMoney: (account, cmd) =>
+      account._tag !== "Open"
         ? new NotOpen()
-        : [new MoneyDeposited({ amount: cmd.amount, balanceAfter: s.balance + cmd.amount })],
-+    WithdrawMoney: (s, cmd) =>
-+      s._tag !== "Open"
-+        ? new NotOpen()
-+        : cmd.amount > s.balance
-+          ? new InsufficientFunds({ balance: s.balance, requested: cmd.amount })
-+          : [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: s.balance - cmd.amount })],
+        : [new MoneyDeposited({ amount: cmd.amount, balanceAfter: account.balance + cmd.amount })],
+    WithdrawMoney: (account, cmd) =>
+      account._tag !== "Open"
+        ? new NotOpen()
+        : cmd.amount > account.balance
+          ? new InsufficientFunds({ balance: account.balance, requested: cmd.amount })
+          : [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: account.balance - cmd.amount })],
   },
   evolve: {
     AccountOpened: (_, e) => ({ _tag: "Open" as const, owner: e.owner, balance: 0 }),
     MoneyDeposited: (s, e) => (s._tag === "Open" ? { ...s, balance: e.balanceAfter } : s),
-+    MoneyWithdrawn: (s, e) => (s._tag === "Open" ? { ...s, balance: e.balanceAfter } : s),
+    MoneyWithdrawn: (s, e) => (s._tag === "Open" ? { ...s, balance: e.balanceAfter } : s),
   },
   reply: {
     DepositMoney: (s) => ({ balance: s._tag === "Open" ? s.balance : 0 }),
-+    WithdrawMoney: (s) => ({ balance: s._tag === "Open" ? s.balance : 0 }),
+    WithdrawMoney: (s) => ({ balance: s._tag === "Open" ? s.balance : 0 }),
   },
 }) {}
 ```
@@ -365,28 +350,27 @@ The account checks the balance it holds right now. Withdrawals to one account ru
 
 ## Test an overdraft
 
-```diff lang="typescript"
-// test/Account.test.ts
+```typescript
 import { NotOpen } from "../src/NotOpen.rejection.ts";
 import { AccountOpened, AlreadyOpen, OpenAccount } from "../src/OpenAccount.command.ts";
-+import { InsufficientFunds, WithdrawMoney } from "../src/WithdrawMoney.command.ts";
+import { InsufficientFunds, WithdrawMoney } from "../src/WithdrawMoney.command.ts";
 
 const story = Story.make(Bank);
   // ...
   story(Story.when(account, new DepositMoney({ amount: 100 })), Story.rejected(new NotOpen())),
 );
-+
-+it.effect("refuses to withdraw more than the balance", () =>
-+  story(
-+    Story.given(
-+      account,
-+      new AccountOpened({ owner: "sam" }),
-+      new MoneyDeposited({ amount: 100, balanceAfter: 100 }),
-+    ),
-+    Story.when(account, new WithdrawMoney({ amount: 150 })),
-+    Story.rejected(new InsufficientFunds({ balance: 100, requested: 150 })),
-+  ),
-+);
+
+it.effect("refuses to withdraw more than the balance", () =>
+  story(
+    Story.given(
+      account,
+      new AccountOpened({ owner: "sam" }),
+      new MoneyDeposited({ amount: 100, balanceAfter: 100 }),
+    ),
+    Story.when(account, new WithdrawMoney({ amount: 150 })),
+    Story.rejected(new InsufficientFunds({ balance: 100, requested: 150 })),
+  ),
+);
 ```
 
 ```sh
@@ -394,7 +378,3 @@ bun vitest run
 ```
 
 All five stories pass. You have an account that opens once, takes deposits, and never goes below zero.
-
-:::note
-Next, show the balance and a statement with [views](part-2.md). The full design of aggregates is in [Aggregate](../aggregate.md).
-:::

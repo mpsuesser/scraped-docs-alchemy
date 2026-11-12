@@ -2,13 +2,13 @@
 url: https://alchemy.run/domain/sessions
 title: "Sessions and middleware"
 description: "Authenticate every request, carry who is asking into the domain, and sign browsers in with a cookie."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Every command and read starts with a question: who is asking? Middleware answers it before the request reaches the domain, and provides the answer as a request context that `decide` and `validate` read.
 
-This page signs sessions by hand: the Worker signs a token, and middleware checks it. To sign users in with GitHub, Google or another provider, see [Sign in with better-auth](better-auth.md).
+Sign sessions by hand: the Worker signs a token, and middleware checks it. To sign users in with GitHub, Google or another provider, see [Sign in with better-auth](better-auth.md).
 
 ## Declare who is asking
 
@@ -152,6 +152,7 @@ import BankWorker from "@bank/server/BankWorker";
 import * as Alchemy from "alchemy";
 import * as Axiom from "@alchemy.run/axiom";
 import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -159,7 +160,12 @@ import * as Layer from "effect/Layer";
 export default Alchemy.Stack(
   "CloudflareDomainExample",
   {
-    providers: Layer.mergeAll(Cloudflare.providers(), Stripe.providers(), Axiom.providers()),
+    providers: Layer.mergeAll(
+      Cloudflare.providers(),
+      DomainCloudflare.providers(),
+      Stripe.providers(),
+      Axiom.providers(),
+    ),
     state: Alchemy.localState(),
   },
   Effect.gen(function* () {

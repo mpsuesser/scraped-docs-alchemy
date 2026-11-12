@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/setup
 title: "Setup"
 description: "Connect alchemy to Prisma — account, service tokens, and profiles."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Sign up at [prisma.io](https://www.prisma.io/) and create a service token in the [Prisma Console](https://console.prisma.io/) (workspace settings → service tokens). Install `@alchemy.run/prisma`:
@@ -44,7 +44,7 @@ See [Profiles](../environments/profiles.md) for how credentials are stored and s
 
 ## Local dev
 
-`bun alchemy dev` needs no Prisma credentials. Database resources run against a local `@prisma/dev` Postgres, Compute resources run their configured `dev.command`, and the remaining Prisma resources return compatible local outputs. See [Postgres](data/postgres.md) for the dev database options.
+`alchemy dev` needs no Prisma credentials. Database resources run against a local `@prisma/dev` Postgres, Compute resources run their configured `dev.command`, and the remaining Prisma resources return compatible local outputs. See [Postgres](data/postgres.md) for the dev database options.
 
 ## Next steps
 

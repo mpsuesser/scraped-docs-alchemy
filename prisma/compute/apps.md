@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/compute/apps
 title: "Apps"
 description: "Prisma Compute apps as Stack resources — framework builds or Effect-native services, env wiring, custom domains, and a local dev command."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Prisma.Compute` deploys an application onto Prisma's managed
@@ -134,7 +134,7 @@ remove the old resource.
 
 ## Local dev
 
-Under `bun alchemy dev`, `dev.command` runs your app locally (e.g.
+Under `alchemy dev`, `dev.command` runs your app locally (e.g.
 `vite dev`) with the same env the deployed app would see — including
 connection bindings, which resolve to the local
 [dev database](../data/postgres.md#local-dev):

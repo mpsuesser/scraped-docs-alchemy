@@ -2,12 +2,12 @@
 url: https://alchemy.run/cli
 title: "CLI"
 description: "Every alchemy command at a glance — the command map, common options, and how the interactive TUI decides when to render."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ```sh
-bun alchemy <command> [options]
+pnpm alchemy <command> [options]
 ```
 
 Every command operates on an `alchemy.run.ts` stack file (or a custom entrypoint passed with `--config <file>`, which must exist) and targets a [stage](environments/stages.md).

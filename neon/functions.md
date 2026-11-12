@@ -1,0 +1,99 @@
+---
+url: https://alchemy.run/neon/functions
+title: "Functions"
+description: "How Neon Functions run Node.js Fetch handlers next to a branch's database, in native or Effect form, how they subscribe to uploads and schedules, and why every handler authenticates its callers."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+A Neon Function is a Node.js program Neon runs for a branch. It answers HTTP at a public URL, and it already holds credentials for its own branch’s database and storage, so it can query Postgres and read files without any secret of yours.
+
+## A Function belongs to a branch
+
+A Function is declared on a branch, and reaches that branch’s database and buckets with credentials Neon gives it. A preview branch gets its own copy of the Function, talking to its own data.
+
+pr-42branch
+
+ApiFunction · public URL
+
+credentials
+
+this branch's, from Neon
+
+neondbPostgres database
+
+UploadsBucket
+
+A Function lives on a branch, next to that branch's database and storage, and Neon gives it credentials for them. A preview branch gets its own copy.
+
+## Declare a native Function
+
+A native Function is a file that exports a Fetch handler, an object with `fetch`, or an app like Hono. Point `main` at it:
+
+```typescript
+const api = yield* Neon.Function("Api", { branch, main: "./src/api.ts" });
+```
+
+Alchemy bundles the file and its dependencies, and Neon serves it.
+
+## Declare an Effect Function
+
+The Effect form is a class. Declare the branch it runs on in an Effect, so both the class’s props and its program can resolve it:
+
+```typescript
+export const Database = Effect.gen(function* () {
+  const project = yield* Neon.Project("app-db", { region: "aws-us-east-1" });
+  return yield* Neon.Branch("Main", { project, migrations: "./migrations" });
+});
+```
+
+The props name the branch and the entry file. The program binds what the Function uses, and returns its handlers:
+
+```typescript
+export default class Api extends Neon.Function<Api>()(
+  "Api",
+  Effect.gen(function* () {
+    return { branch: yield* Database, main: import.meta.url };
+  }),
+  Effect.gen(function* () {
+    const db = yield* Neon.Connect(yield* Database);
+    const sql = yield* SQL.Postgres({ url: db.connectionString });
+    return {
+      fetch: Effect.gen(function* () {
+        const rows = yield* sql\`SELECT now() AS now\`;
+        return yield* HttpServerResponse.json(rows[0]);
+      }).pipe(Effect.orDie),
+    };
+  }).pipe(Effect.provide(Neon.ConnectHttp)),
+) {}
+```
+
+`Neon.Connect` hands the Function its branch’s connection string, and `SQL.Postgres` opens a pool on the first query of each request, closed when the request ends.
+
+A Function can run when a file lands in a bucket. Subscribe from Construction:
+
+```typescript
+yield* Neon.BucketEventSource(uploads, { name: "ProcessUploads", prefix: "incoming/" }, (event) =>
+  Effect.log(event.objectKey),
+);
+```
+
+Provide `Neon.BucketEventSourceHttp`. The subscription creates the trigger and the route it calls. `Neon.CronEventSource`, with `Neon.CronEventSourceHttp`, runs a handler on a schedule instead.
+
+These are HTTP deliveries, not a queue: there’s no acknowledgement and no retry to configure. Under `alchemy dev`, uploads to the cloud don’t reach your machine and no schedule runs.
+
+## Deploy a prebuilt app
+
+To deploy output you’ve already built, like a framework’s server bundle, pass `artifact` instead of `main`, and Alchemy uploads it as it is:
+
+```typescript
+const site = yield* Neon.Function("Site", { branch, artifact: { directory: "./dist" } });
+```
+
+The directory must contain an `index.mjs` exporting a Fetch handler, with all its dependencies. The [Website resources](frontend/vite.md) build and deploy this way for you.
+
+## Authenticate every request
+
+A Function’s URL is public. Anyone who finds it can call it, and nothing in Neon restricts who may. So a handler that does anything protected checks the caller first, usually by verifying the user’s token from [Neon Auth](guides/production-auth.md).
+
+The [upload tutorial](tutorial/functions.md) builds a Function that verifies tokens, signs uploads and records events in Postgres.

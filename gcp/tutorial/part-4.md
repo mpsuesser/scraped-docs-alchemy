@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/tutorial/part-4
 title: "Part 4: Stages"
 description: "Deploy isolated dev, staging, and prod copies of your stack with --stage, and tune Cloud Run per stage."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In [Part 3](part-3.md) you tested a deployed Stack. So far everything lands in one environment. **Stages** are separate copies of the same Stack: one per developer, per environment, and (in [Part 5](part-5.md)) per pull request.
@@ -16,7 +16,7 @@ Without `--stage`, Alchemy deploys to `live_$USER`:
 $ whoami
 sam
 
-$ bun alchemy deploy
+$ pnpm alchemy deploy
 # deploys to stage \`live_sam\`
 ```
 
@@ -29,7 +29,7 @@ Every developer gets a personal copy with no setup. The stage comes from, in ord
 ## Deploy a second stage
 
 ```sh
-bun alchemy deploy --stage staging
+pnpm alchemy deploy --stage staging
 ```
 
 ```
@@ -55,9 +55,15 @@ Each stage has its own state and its own resource names. The stage is part of ev
 Deploying or destroying one stage never touches another:
 
 ```sh
-bun alchemy deploy --stage prod
-bun alchemy deploy --stage pr-42
-bun alchemy destroy --stage pr-42   # only removes pr-42
+pnpm alchemy deploy --stage prod
+```
+
+```sh
+pnpm alchemy deploy --stage pr-42
+```
+
+```sh
+pnpm alchemy destroy --stage pr-42   # only removes pr-42
 ```
 
 Stage names must match `[a-z0-9][-_a-z0-9]*`.
@@ -90,7 +96,7 @@ export default class Api extends GCP.Function<Api>()(
 ## Destroy a stage
 
 ```sh
-bun alchemy destroy --stage staging
+pnpm alchemy destroy --stage staging
 ```
 
 The plan lists everything in `staging` for deletion, including the service account Alchemy created for the service.
@@ -114,8 +120,11 @@ See [Test harness → stage](../../testing/test-harness.md#stage) for the per-ca
 Stages separate **what** is deployed. [Profiles](../../environments/profiles.md) choose **where**: which GCP project and credentials. Pair a `prod` stage with a `prod` profile pointing at a separate project:
 
 ```sh
-bun alchemy deploy --stage prod --profile prod
-bun alchemy deploy --stage pr-42 --profile default
+pnpm alchemy deploy --stage prod --profile prod
+```
+
+```sh
+pnpm alchemy deploy --stage pr-42 --profile default
 ```
 
 ## Recap

@@ -2,8 +2,8 @@
 url: https://alchemy.run/axiom/guides/dashboards
 title: "Dashboards as code"
 description: "Declare Axiom dashboards — charts, layout, filter bars, saved views, and deploy annotations — as alchemy resources next to the services they observe."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 An Axiom dashboard is a single JSON document: charts, a grid layout,
@@ -11,8 +11,8 @@ a time window, a refresh interval. In alchemy that document is the
 input to one `Dashboard` resource, so a chart tweak is a reviewable
 diff and every stage gets the same dashboard.
 
-This guide builds an ops dashboard chart by chart, then adds the two
-resources that round it out: saved `View`s and deploy `Annotation`s.
+Take an ops dashboard, built chart by chart, and the two resources
+that round it out: saved `View`s and deploy `Annotation`s.
 You'll need the Axiom provider registered ([setup](../setup.md)) and
 a dataset to query ([ingest](../data/ingest.md)).
 

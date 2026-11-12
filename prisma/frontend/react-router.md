@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v8 framework apps to Prisma Compute with Prisma.Website.ReactRouter — SSR on Bun and native Vite dev locally."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Prisma.Website.ReactRouter` builds [React Router](https://reactrouter.com/) v8 in framework mode through your project’s Vite pipeline. The shared Node target wraps the server manifest with `createRequestHandler` and serves client assets first. The output runs on **Bun in Prisma Compute** from a `tar.gz` upload, without a Docker image or registry.
@@ -103,7 +103,7 @@ A route module without a default component is a resource route. It uses the same
 
 ## Local dev
 
-`bun alchemy dev` runs React Router’s Vite dev server with HMR; the Website creates no Prisma resources. Opt into live deployment during dev:
+`alchemy dev` runs React Router’s Vite dev server with HMR; the Website creates no Prisma resources. Opt into live deployment during dev:
 
 ```typescript
 export const Website = Prisma.Website.ReactRouter("Website").pipe(

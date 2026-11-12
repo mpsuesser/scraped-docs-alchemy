@@ -2,15 +2,39 @@
 url: https://alchemy.run/gcp/data/cloud-sql
 title: "Cloud SQL"
 description: "Run Postgres on Cloud SQL, connect Cloud Run to it over the Cloud SQL socket with GCP.SQL.Connect, and query it with Drizzle."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Cloud SQL runs Postgres or MySQL for you. A Cloud Run service reaches it through the Cloud SQL socket, with no public IP and no VPC to set up. This page builds a Postgres todo API with Drizzle.
+Cloud SQL runs Postgres or MySQL for you. A Cloud Run service reaches it through the Cloud SQL socket, with no public IP and no VPC to set up. Take a Postgres todo API with Drizzle.
 
 ```sh
 pnpm add @alchemy.run/drizzle@latest drizzle-orm
 ```
+
+## Instances, databases and users
+
+A Cloud SQL **instance** is one managed Postgres or MySQL server in a region, sized by its **tier**. It holds **databases** and the **users** that sign in to them. Cloud Run reaches it through the Cloud SQL socket, and deploys apply migrations through the Cloud SQL Data API, so neither needs a network route to it.
+
+us-central1region
+
+PostgresCloud SQL instance · db-f1-micro
+
+Appdatabase
+
+AppUseruser
+
+ApiCloud Run service
+
+reaches it
+
+/cloudsql/… socket
+
+signs in as
+
+AppUser
+
+The instance is the server you pay for, and its databases and users are resources of their own. The service in the same region reaches it through the socket Cloud SQL mounts, with no public IP.
 
 ## Create the instance
 

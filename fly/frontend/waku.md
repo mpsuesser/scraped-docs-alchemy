@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Fly with Fly.Website.Waku — RSC server on a Machine, SSG pages baked into the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Fly.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Fly. It builds the project programmatically: the RSC server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and the client output — including SSG-prerendered pages — is baked into the image. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -104,7 +104,7 @@ export const getConfig = async () => ({ render: "dynamic" }) as const;
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Waku’s own dev server (native HMR) instead of deploying; `site.url` is the local address and no Fly resources are created. Wrap the site in `Alchemy.remote()` to deploy the live App and Service even during dev:

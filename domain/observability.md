@@ -1,9 +1,9 @@
 ---
 url: https://alchemy.run/domain/observability
 title: "Observability"
-description: "Trace how commands, events and reactions flow through an @alchemy.run/domain model, across Durable Objects and over hours. Automatic spans, correlation ids and metrics, plus the attributes you choose to record."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+description: "Trace how commands, events and reactions flow through an @alchemy.run/domain model, across Durable Objects and over hours. Automatic spans, correlation ids and metrics, plus the attributes your handlers record."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A model records what it does as it does it. Every command, every event it commits, and every policy, view, projection and saga that reacts to it gets a span, named after the building block. The spans connect into traces that follow a flow from a click to everything it caused.
@@ -14,13 +14,13 @@ A model records what it does as it does it. Every command, every event it commit
 
 A hosted model records into whatever tracer the runtime provides. Send it to an OpenTelemetry backend, such as Axiom, Honeycomb or your own collector, to see each flow as one connected trace. The bank declares its Axiom datasets and an ingest token next to its Worker:
 
-```typescript title="packages/server/src/Observability.ts"
+```typescript
 return Axiom.Telemetry({ token: ingest, traces, logs, serviceName: "bank" });
 ```
 
 and provides that Layer to the Worker, with the rest of what it hosts. `Alchemy.Telemetry.layerOtlp` does the same for any OTLP endpoint.
 
-`Cloudflare.Telemetry()` shows a Worker's spans in Cloudflare's dashboard instead, with no backend to run. Cloudflare starts a new trace for every Worker and Durable Object event, so a flow that crosses objects shows up as separate traces, joined only by `domain.correlation_id`, and spans from a browser can't be added.
+`Cloudflare.Telemetry()` shows a Worker’s spans in Cloudflare’s dashboard instead, with no backend to run. Cloudflare starts a new trace for every Worker and Durable Object event, so a flow that crosses objects shows up as separate traces, joined only by `domain.correlation_id`, and spans from a browser can’t be added.
 
 ## Follow a command
 
@@ -40,34 +40,36 @@ Domain.send Account.WithdrawMoney           the Worker, where the Api received i
 
 Each event carries the span that committed it, so the policies and views that react to it continue the same trace, however long the delivery took.
 
+A [query](query.md) is a `Domain.query <Name>` span in the Worker, with `domain.outcome` and the rows it returned (`domain.query.rows`). Waiting for the caller’s own write adds a `Domain.caughtUp <Projection>` span. A view’s or stream’s `validate` is a `Domain.validate <Name>` span with `domain.mode`. Nothing from an input is recorded unless its handler annotates it.
+
 ## Trace the browser
 
-foldkit traces every Command it runs, and every Api call carries the caller's trace on, so the browser can start the trace: a click, the commands it sends, and everything they cause on the server. Give the app a tracer that exports to its own origin:
+foldkit traces every Command it runs, and every Api call carries the caller’s trace on, so the browser can start the trace: a click, the commands it sends, and everything they cause on the server. Give the app a tracer that exports to its own origin:
 
-```typescript title="packages/web/src/entry.ts"
+```typescript
 const Tracing = OtlpTracer.layer({
-  url: `${location.origin}/api/telemetry/v1/traces`,
+  url: \`${location.origin}/api/telemetry/v1/traces\`,
   resource: { serviceName: "bank-web" },
 }).pipe(Layer.provide(OtlpSerialization.layerJson));
 ```
 
 ## Collect it through your Worker
 
-`Telemetry.relay` receives the browser's spans in your own Worker and forwards them to wherever the Worker's telemetry goes, with the Worker's credentials. No ingest token reaches a browser, and only signed-in users may send. `signedIn` is the Worker's check of the request's session (see [Sessions and middleware](sessions.md#sign-the-session)):
+`Telemetry.relay` receives the browser’s spans in your own Worker and forwards them to wherever the Worker’s telemetry goes, with the Worker’s credentials. No ingest token reaches a browser, and only signed-in users may send. `signedIn` is the Worker’s check of the request’s session (see [Sessions and middleware](sessions.md#sign-the-session)):
 
-```typescript title="packages/server/src/BankWorker.ts"
+```typescript
 const telemetry = Telemetry.relay({
   authorize: HttpServerRequest.pipe(Effect.flatMap(signedIn), Effect.map(Option.isSome)),
 });
 ```
 
-Mount it under the Api's path, so the app's Worker forwards it like any other call:
+Mount it under the Api’s path, so the app’s Worker forwards it like any other call:
 
-```typescript title="packages/server/src/BankWorker.ts"
+```typescript
 if (path.startsWith("/api/telemetry/")) return yield* telemetry;
 ```
 
-`route` decides where each batch goes: the Worker's own destinations, a separate dataset for browser traces, or anywhere else. Cloudflare Workers Observability only records a Worker's own spans, so send browser spans to an OTLP destination such as Axiom.
+`route` decides where each batch goes: the Worker’s own destinations, a separate dataset for browser traces, or anywhere else. Cloudflare Workers Observability only records a Worker’s own spans, so send browser spans to an OTLP destination such as Axiom.
 
 ## See every outcome
 
@@ -81,31 +83,26 @@ Every span carries `domain.correlation_id`, the id of the first command in the f
 
 ## Record what matters to you
 
-Nothing from a command or event is recorded unless you ask for it. Return the attributes you want from `attributes`, on the declaration:
+Nothing from a command, an event or a query’s input is recorded unless a handler asks for it. Every handler runs inside the engine’s span for it, already named (`Domain.decide Account.WithdrawMoney`, `Domain.query AccountLedger`, `Domain.projection Ledger`), so plain Effect annotates that span:
 
-```typescript title="packages/domain/src/Account/WithdrawMoney.command.ts"
-attributes: (cmd) => ({ "bank.amount": cmd.amount }),
+```typescript
+decide: {
+  WithdrawMoney: Effect.fn(function* (account, cmd, { now }) {
+    // Recorded on this command's decide span; nothing else from it is.
+    yield* Effect.annotateCurrentSpan("bank.amount", cmd.amount);
+    const o = yield* authorized(account);
+    // ...
+  }),
+},
 ```
 
-Commands, events and rejections all accept it. Events and rejections take it as a third argument: `Domain.Event("MoneyWithdrawn", { amount: Cents }, { attributes: (e) => ({ ... }) })`.
+An effectful `decide`, a query’s handler, a view’s `validate`, a policy, a saga step, a projection and an external system’s operation all work the same way. Use a plain `Effect.fn`: naming it would add a span of its own, nested under the engine’s.
 
 ## Keep secrets out
 
-A `Redacted` value is recorded as `<redacted>`, even when you return it from `attributes`. Make a secret field `Schema.Redacted(...)` and it never reaches a trace, or a log.
+Record only what you annotate, and never annotate a secret. Make a secret field `Schema.Redacted(...)`, and unwrap it only where it’s used, so it never reaches a trace or a log by accident.
 
-## Annotate from a handler
-
-An effectful `decide`, a policy, a saga step and a projection all run inside their span, so plain Effect annotates it:
-
-```typescript
-WithdrawMoney: Effect.fn(function* (s, cmd) {
-  yield* Effect.annotateCurrentSpan("bank.tier", s.tier);
-  yield* Effect.log("large withdrawal");
-  // ...
-}),
-```
-
-Logs from a handler carry the span's trace and its `domain.*` attributes, so they line up with the trace that caused them.
+Logs from a handler carry the span’s trace and its `domain.*` attributes, so they line up with the trace that caused them.
 
 ## Watch it keep up
 
@@ -113,7 +110,7 @@ The model counts and times its work as metrics: `domain.commands` and `domain.co
 
 ## Trace less
 
-Views apply every event they fold, so they're the busiest spans. Turn them off on the Layer that hosts the model:
+Views apply every event they fold, so they’re the busiest spans. Turn them off on the Layer that hosts the model:
 
 ```typescript
 Bank.layer(BankHandlers, { telemetry: { views: false } })

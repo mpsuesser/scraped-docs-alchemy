@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/postgres
 title: "Postgres"
 description: "Deploy Better Auth on Lambda with an existing PostgreSQL database and a request-scoped pg pool."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This example serves Better Auth through a Lambda Function URL using an existing PostgreSQL database. Both the Lambda and the deploying machine must be able to reach the server over TCP.
@@ -11,14 +11,14 @@ This example serves Better Auth through a Lambda Function URL using an existing 
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5 kysely pg
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5 kysely pg
 ```
 
 Configure AWS through an [Alchemy profile](../../environments/profiles.md) and set `DATABASE_URL` in the deploying environment. The connection layer does not create the database, credentials, or network access.
 
 ## Define the database layer
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { Postgres } from "@alchemy.run/better-auth/Postgres";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
@@ -36,7 +36,7 @@ Configuration resolves during host construction and is bound into the Lambda env
 
 ## Define the auth Lambda
 
-```typescript title="src/function.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import * as AWS from "@alchemy.run/aws";
 import * as Duration from "effect/Duration";
@@ -66,7 +66,7 @@ export default class AuthApi extends AWS.Lambda.Function<AuthApi>()(
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
@@ -90,7 +90,7 @@ Alchemy generates and binds the signing secret automatically. Preserve and prote
 ## Deploy and migrate
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 Automatic migrations use the resolved URL before updating the function, so the deployer needs schema-changing permissions. The runtime pool defaults to one connection per invocation; migrations create auth tables, not the database itself.
@@ -105,7 +105,7 @@ curl -i "$AUTH_ORIGIN/api/auth/get-session"
 
 For a restricted runtime role or a pooled runtime URL, set `DATABASE_MIGRATION_URL` as well and replace `src/auth-database.ts`:
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { Postgres } from "@alchemy.run/better-auth/Postgres";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
@@ -126,6 +126,6 @@ Both configuration values are bound to the host because they are read during con
 
 The Lambda above assumes a server reachable without VPC attachment; private RDS requires Lambda VPC connectivity and security-group access. Configure TLS according to your database provider, without disabling certificate verification.
 
-`Postgres` also accepts connection-string resource Outputs, such as PlanetScale's `role.connectionUrl`. For Workers, prefer [Hyperdrive](cloudflare-hyperdrive.md) or [Neon](neon.md); direct TCP requires `nodejs_compat` and a reachable origin.
+`Postgres` also accepts connection-string resource Outputs, such as PlanetScale’s `role.connectionUrl`. For Workers, prefer [Hyperdrive](cloudflare-hyperdrive.md) or [Neon](neon.md); direct TCP requires `nodejs_compat` and a reachable origin.
 
 Changing the connection does not transfer auth records, and automatic migrations are additive. See [configuration](../guides/configuration.md), [migrations](../guides/migrations.md), the [upgrade guide](../upgrades/from-1-6-to-1-7.md), and the [`Postgres` reference](https://alchemy.run/providers/betterauth/reference/postgres#postgres).

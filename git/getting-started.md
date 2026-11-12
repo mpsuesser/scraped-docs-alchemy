@@ -2,11 +2,11 @@
 url: https://alchemy.run/git/getting-started
 title: "Getting Started"
 description: "A complete quickstart for a Git host protected by a shared credential. Deploy it to Cloudflare, push a repository, and clone it back."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-For a step-by-step explanation, start with [Push your first repository](tutorial/part-1.md). This page provides a complete host protected by one shared credential.
+For a step-by-step explanation, start with [Push your first repository](tutorial/part-1.md). Here is a complete host, protected by one shared credential.
 
 You need a Cloudflare account with Workers, Durable Objects, and R2 enabled. [Cloudflare setup](../cloudflare/setup.md) connects one.
 
@@ -111,7 +111,7 @@ export default Alchemy.Stack(
 pnpm alchemy deploy
 ```
 
-The stack prints the Worker’s URL and the secret. The rest of this page calls them `$HOST` and `$GIT_SECRET`:
+The stack prints the Worker’s URL and the secret. From here on they’re `$HOST` and `$GIT_SECRET`:
 
 ```sh
 export HOST=...

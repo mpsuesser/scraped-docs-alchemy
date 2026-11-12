@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Fly with the shared Website API, native local development, and a platform-specific data cache."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Fly.Website.Vinext` builds with the Vinext Vite API for production and runs native `vinext dev` locally. The built app runs in a Fly Machine using vinext’s production Node server. Alchemy creates an App when `app` is omitted and deploys a Service containing `dist/` and vinext’s runtime dependencies.
@@ -92,7 +92,7 @@ const site = yield* Fly.Website.Vinext("Web", { redis });
 ## Local development
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 The Website runs `vinext dev` with native HMR and creates no cloud resources. Other resources declared in the Stack retain their own provider behavior. Apply `.pipe(Alchemy.remote())` to the Website for a live deployment during dev.

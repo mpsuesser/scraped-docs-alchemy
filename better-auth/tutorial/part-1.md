@@ -2,18 +2,18 @@
 url: https://alchemy.run/better-auth/tutorial/part-1
 title: "Part 1: Create an Auth service"
 description: "Install Better Auth, provide a D1 database layer, and create an Effect service."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Build one application with email/password authentication, an Effect HTTP API, and GitHub sign-in. This tutorial uses Bun and Cloudflare D1; [other databases](../databases.md) use the same Auth service.
 
-Use your existing Alchemy project with [Bun](https://bun.sh) and a [configured Cloudflare profile](../../cloudflare/setup.md). The examples use Effect 4 and Better Auth 1.7.5.
+Use your existing Alchemy project on [Node.js](https://nodejs.org/) or [Bun](https://bun.sh/) and a [configured Cloudflare profile](../../cloudflare/setup.md). The examples use Effect 4 and Better Auth 1.7.5.
 
 ## Install the module
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@1.7.5 kysely
+pnpm add @alchemy.run/better-auth@latest better-auth@1.7.5 kysely
 ```
 
 Use matching Alchemy and Better Auth integration releases. D1 uses Kysely internally; application code does not need to construct a Kysely client.
@@ -21,7 +21,6 @@ Use matching Alchemy and Better Auth integration releases. D1 uses Kysely intern
 ## Declare the database
 
 ```typescript
-// src/database.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const AuthDb = Cloudflare.D1.Database("AuthDb");
@@ -32,7 +31,6 @@ Alchemy creates the database when you deploy. During local development, D1 runs 
 ## Choose the authentication method
 
 ```typescript
-// src/auth.ts
 import { BetterAuth } from "@alchemy.run/better-auth";
 
 const makeAuth = BetterAuth({
@@ -45,24 +43,23 @@ Alchemy provisions a stable signing secret and applies D1 schema migrations. You
 
 ## Expose an Effect service
 
-```diff lang="typescript"
- // src/auth.ts
- import { BetterAuth } from "@alchemy.run/better-auth";
-+import * as Context from "effect/Context";
-+import * as Effect from "effect/Effect";
-+import * as Layer from "effect/Layer";
+```typescript
+import { BetterAuth } from "@alchemy.run/better-auth";
+import * as Context from "effect/Context";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
 
- const makeAuth = BetterAuth({
-   basePath: "/api/auth",
-   emailAndPassword: { enabled: true },
- });
-+
-+export class Auth extends Context.Service<
-+  Auth,
-+  Effect.Success<typeof makeAuth>
-+>()("app/Auth") {
-+  static readonly layer = Layer.effect(Auth, makeAuth);
-+}
+const makeAuth = BetterAuth({
+  basePath: "/api/auth",
+  emailAndPassword: { enabled: true },
+});
+
+export class Auth extends Context.Service<
+  Auth,
+  Effect.Success<typeof makeAuth>
+>()("app/Auth") {
+  static readonly layer = Layer.effect(Auth, makeAuth);
+}
 ```
 
 Handlers and middleware can now request the same typed service with `yield* Auth`.
@@ -70,7 +67,6 @@ Handlers and middleware can now request the same typed service with `yield* Auth
 ## Create the Worker
 
 ```typescript
-// src/worker.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -91,20 +87,19 @@ Alchemy selects an available local port. Use the URL it prints rather than assum
 
 ## Provide the database layer
 
-```diff lang="typescript"
- // src/worker.ts
-+import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
-+import * as Layer from "effect/Layer";
-+import { Auth } from "./auth.ts";
-+import { AuthDb } from "./database.ts";
+```typescript
+import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
+import * as Layer from "effect/Layer";
+import { Auth } from "./auth.ts";
+import { AuthDb } from "./database.ts";
 
-   Effect.gen(function* () {
-+    yield* Auth;
-     return { fetch: Effect.succeed(HttpServerResponse.text("Ready")) };
--  }),
-+  }).pipe(
-+    Effect.provide(Auth.layer.pipe(Layer.provide(CloudflareD1(AuthDb)))),
-+  ),
+  Effect.gen(function* () {
+    yield* Auth;
+    return { fetch: Effect.succeed(HttpServerResponse.text("Ready")) };
+  }),
+  }).pipe(
+    Effect.provide(Auth.layer.pipe(Layer.provide(CloudflareD1(AuthDb)))),
+  ),
 ```
 
 The host supplies the database; the Auth service stays independent of Cloudflare. This also registers the database binding and migration action.
@@ -112,7 +107,6 @@ The host supplies the database; the Auth service stays independent of Cloudflare
 ## Create the stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -133,7 +127,7 @@ Local state keeps this walkthrough self-contained. Preserve its state directory 
 ## Start development
 
 ```sh
-bunx alchemy dev --stage tutorial
+pnpm alchemy dev --stage tutorial
 ```
 
 In another terminal, paste the printed URL after running `read`, then press Enter:

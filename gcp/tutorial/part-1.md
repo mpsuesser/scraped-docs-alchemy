@@ -2,15 +2,15 @@
 url: https://alchemy.run/gcp/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with a Cloud Storage Bucket, and deploy it to Google Cloud."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In this part you install Alchemy, create a Stack with a Cloud Storage Bucket, and deploy it to your Google Cloud project.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 24.11.1+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A Google Cloud project and a service-account key that can create what you deploy. See [Setup](../setup.md).
 
 ## Create a project
@@ -63,7 +63,7 @@ The first argument, `"MyApp"`, names the Stack. Alchemy uses it as a prefix when
 Point Alchemy at your project once:
 
 ```sh
-bun alchemy profile edit --add GCP
+pnpm alchemy profile edit --add GCP
 ```
 
 Choose **gcloud login**, pick a gcloud configuration and sign in with your Google account. (**Service account JSON** works too, with a key file.) The choice is saved to your `default` [profile](../../environments/profiles.md).
@@ -150,7 +150,7 @@ Plan: no changes
 `destroy` deletes everything the Stack created:
 
 ```sh
-bun alchemy destroy
+pnpm alchemy destroy
 ```
 
 Deploy again afterwards if you try it. Part 2 builds on the Bucket.

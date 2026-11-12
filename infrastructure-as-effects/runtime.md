@@ -2,15 +2,15 @@
 url: https://alchemy.run/infrastructure-as-effects/runtime
 title: "Runtime"
 description: "A Runtime is a Resource that carries the code it runs — a Worker, Lambda Function, Container, or Server declared with the Effectful Constructor pattern. Bind what you need, return what you expose."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In Alchemy, a **Runtime** is a [Resource](../infrastructure-as-code/resource.md)
 that carries the code it runs: a Cloudflare Worker, Lambda Function,
 ECS Task, Container, or Server. The props are the cloud configuration.
 The Effect is the code. Here is the running example from
-[What is Alchemy?](../what-is-alchemy.md), which this page takes apart:
+[What is Alchemy?](../what-is-alchemy.md):
 
 ```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
@@ -43,7 +43,7 @@ which by convention is the Worker itself, and uploads that bundle as
 the Worker's script. Most Runtimes need no other props, because
 everything else they depend on comes in through bindings.
 
-The rest of this page follows that Effect. Alchemy also supports the
+Alchemy also supports the
 traditional two-file shape, a config file pointing at a plain
 `async fetch` handler, compared in
 [Effect handlers vs async handlers](#effect-handlers-vs-async-handlers).

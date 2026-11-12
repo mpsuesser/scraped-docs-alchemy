@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Cloudflare Workers with Cloudflare.Website.Nuxt — nitro's cloudflare_module preset, native nuxt.config.ts loading, and wrangler-free local dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Cloudflare.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app as a Cloudflare Worker. It builds the app through your project’s own `@nuxt/kit` with nitro’s `cloudflare_module` preset: the nitro server bundle deploys as the Worker script, and client assets plus prerendered pages deploy as Worker static assets. There is no `nitro.preset` to edit, no Wrangler file, and no build command to run.
@@ -174,7 +174,7 @@ Every framework route keeps working through the re-exported handler.
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Nuxt’s own dev server (nitro dev, full HMR) with the Worker’s real bindings served on `event.context.cloudflare` — wrangler-free, through the cloudflare-runtime platform proxy. Resource bindings (KV, R2, D1) round-trip to a local workerd instance, so dev state is live and shared; literal `env` values overlay the proxied bindings. Your server code is identical in dev and production.

@@ -2,19 +2,15 @@
 url: https://alchemy.run/gcp/apis/effect-http-api
 title: "Effect HTTP API on Cloud Run"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module, deploy it to Cloud Run, and call it from a typed client."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-`HttpApi` gives you real REST endpoints, with paths, query strings,
-and typed bodies, behind a typed client. Use it when the API's callers
-aren't all Effect, or aren't TypeScript. The concept lives at
-[Effect HTTP](../../apis/effect-http.md). This page wires it onto Cloud Run.
+`HttpApi` gives you real REST endpoints, with paths, query strings, and typed bodies, behind a typed client. Use it when the API’s callers aren’t all Effect, or aren’t TypeScript. The concept lives at [Effect HTTP](../../apis/effect-http.md).
 
 ## Define the schema
 
 ```typescript
-// src/Job.ts
 import * as Schema from "effect/Schema";
 
 export const JobId = Schema.String;
@@ -36,7 +32,6 @@ export class JobNotFound extends Schema.TaggedErrorClass<JobNotFound>()(
 ## Declare the API
 
 ```typescript
-// src/JobApi.ts
 import * as Schema from "effect/Schema";
 import * as HttpApi from "effect/http-api/HttpApi";
 import * as HttpApiEndpoint from "effect/http-api/HttpApiEndpoint";
@@ -63,11 +58,9 @@ export const JobApi = HttpApi.make("JobApi").add(
 
 ## Implement it on Cloud Run
 
-Bind a Firestore database, implement the handlers, and turn the API
-into a `fetch` handler:
+Bind a Firestore database, implement the handlers, and turn the API into a `fetch` handler:
 
 ```typescript
-// src/JobService.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -90,7 +83,7 @@ export default class JobService extends GCP.Function<JobService>()(
     const jobsGroup = HttpApiBuilder.group(JobApi, "Jobs", (handlers) =>
       handlers
         .handle("getJob", ({ query }) =>
-          db.get(`jobs/${query.jobId}`).pipe(
+          db.get(\`jobs/${query.jobId}\`).pipe(
             Effect.orDie,
             Effect.flatMap((doc) =>
               doc
@@ -107,7 +100,7 @@ export default class JobService extends GCP.Function<JobService>()(
         .handle("createJob", ({ payload }) =>
           Effect.gen(function* () {
             const id = crypto.randomUUID();
-            yield* db.set(`jobs/${id}`, { content: payload.content });
+            yield* db.set(\`jobs/${id}\`, { content: payload.content });
             return id;
           }).pipe(Effect.orDie),
         ),
@@ -130,14 +123,11 @@ export default class JobService extends GCP.Function<JobService>()(
 ) {}
 ```
 
-Handlers get typed input and must return the declared types. Firestore
-errors become 500s through `Effect.orDie`. `JobNotFound` stays typed
-and is sent as a 404.
+Handlers get typed input and must return the declared types. Firestore errors become 500s through `Effect.orDie`. `JobNotFound` stays typed and is sent as a 404.
 
 ## Add it to the Stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
@@ -154,7 +144,7 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Invalid payloads get a 400 with the validation errors.
@@ -164,7 +154,6 @@ Invalid payloads get a 400 with the validation errors.
 The same `JobApi` value builds a typed client:
 
 ```typescript
-// test/api.test.ts
 import * as Alchemy from "alchemy";
 import * as GCP from "@alchemy.run/gcp";
 import * as Test from "@alchemy.run/test/Bun";
@@ -206,14 +195,11 @@ test(
 );
 ```
 
-The first call retries while the new Firestore grant reaches the
-service.
+The first call retries while the new Firestore grant reaches the service.
 
 ## Call it from another service
 
-Keep the API service private and call it from another Cloud Run
-service. `GCP.Run.InvokeService` with `api` returns a typed
-`HttpApiClient` whose requests carry an ID token:
+Keep the API service private and call it from another Cloud Run service. `GCP.Run.InvokeService` with `api` returns a typed `HttpApiClient` whose requests carry an ID token:
 
 ```typescript
 // inside the calling service's Effect
@@ -221,8 +207,7 @@ const jobs = yield* GCP.Run.InvokeService(JobService, { api: JobApi });
 const job = yield* jobs.Jobs.getJob({ query: { jobId } });
 ```
 
-`GCP.Run.ServeHttpApi` is a shorter way to serve the API. It adds the
-platform layers and builds the router once per instance:
+`GCP.Run.ServeHttpApi` is a shorter way to serve the API. It adds the platform layers and builds the router once per instance:
 
 ```typescript
 return { fetch: GCP.Run.ServeHttpApi(JobApi, jobsGroup) };
@@ -230,11 +215,9 @@ return { fetch: GCP.Run.ServeHttpApi(JobApi, jobsGroup) };
 
 ## Run it as a sidecar
 
-Declare the API as a `GCP.Run.Container` and bind it with
-`GCP.Run.bindContainer` to call it over `localhost`:
+Declare the API as a `GCP.Run.Container` and bind it with `GCP.Run.bindContainer` to call it over `localhost`:
 
 ```typescript
-// src/JobSidecar.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import { JobApi } from "./JobApi.ts";
@@ -257,8 +240,6 @@ const job = yield* jobs.Jobs.getJob({ query: { jobId } });
 
 ## Where next
 
-- [Effect HTTP](../../apis/effect-http.md) — endpoints, groups, and clients in
-  depth.
-- [Effect RPC on Cloud Run](effect-rpc.md) — when every caller
-  is Effect.
+- [Effect HTTP](../../apis/effect-http.md) — endpoints, groups, and clients in depth.
+- [Effect RPC on Cloud Run](effect-rpc.md) — when every caller is Effect.
 - [Firestore](../data/firestore.md) — the client used above.

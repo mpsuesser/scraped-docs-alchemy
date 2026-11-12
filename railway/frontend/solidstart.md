@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Railway with Railway.Website.SolidStart — nitro's node preset on a container Service, prerendered pages in the image, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Railway.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Railway. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server plus client assets (prerendered pages included) run on one [`Railway.Service`](../compute/services.md). Alchemy creates a [`Railway.Project`](../compute/projects.md) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -136,7 +136,7 @@ export const Website = Railway.Website.SolidStart("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs SolidStart’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Railway resources are created. Nitro plays no part in dev. Wrap the site in `Alchemy.remote()` to deploy the live Service even during dev:

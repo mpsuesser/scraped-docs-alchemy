@@ -2,30 +2,21 @@
 url: https://alchemy.run/cloudflare/compute/add-a-workflow
 title: "Add a Workflow"
 description: "Orchestrate durable, multi-step work with Cloudflare Workflows — automatic retries, replayable steps, and at-least-once delivery."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-This guide builds a Workflow end to end: a durable multi-step job
-that writes to KV and broadcasts each task's progress back to a chat
-`Room` Durable Object. For the concept, start at
-[Workflows](workflows.md).
+Take a Workflow, built end to end: a durable multi-step job that writes to KV and broadcasts each task’s progress back to a chat `Room` Durable Object. For the concept, start at [Workflows](workflows.md).
 
 ## How a Workflow looks
 
-The two-phase shape — a constructor `Effect.gen` that returns an
-`Effect.fn` body — plus `task`, `sleep`, and the replay caution are
-covered on [Workflows](workflows.md).
+The two-phase shape — a constructor `Effect.gen` that returns an `Effect.fn` body — plus `task`, `sleep`, and the replay caution are covered on [Workflows](workflows.md).
 
 ## Create the workflow file
 
-Create `src/NotifyWorkflow.ts` with a typed workflow body. The
-`Effect.fn` takes the `input` payload directly, so `notifier.create({
-params: { roomId, message } })` is type-checked end to end — and the
-workflow's return value flows through to `instance.status().output`:
+Create `src/NotifyWorkflow.ts` with a typed workflow body. The `Effect.fn` takes the `input` payload directly, so `notifier.create({ params: { roomId, message } })` is type-checked end to end — and the workflow’s return value flows through to `instance.status().output`:
 
 ```typescript
-// src/NotifyWorkflow.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Room from "./room.ts";
@@ -43,68 +34,25 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
 ) {}
 ```
 
-The constructor resolves shared dependencies — here, the `Room` DO
-namespace from the previous tutorial so we can broadcast back to
-it. The inner `Effect.fn` is the workflow body that the Cloudflare
-runtime executes task by task.
+The constructor resolves shared dependencies — here, the `Room` DO namespace from the previous tutorial so we can broadcast back to it. The inner `Effect.fn` is the workflow body that the Cloudflare runtime executes task by task.
 
 ## Declare a KV namespace
 
-Tasks need somewhere durable to read and write. Give the workflow
-a KV namespace by declaring it in its own file:
+Tasks need somewhere durable to read and write. Give the workflow a KV namespace by declaring it in its own file:
 
 ```typescript
-// src/KV.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const KV = Cloudflare.KV.Namespace("KV");
 ```
 
-`Cloudflare.KV.Namespace("KV")` is just a description — Alchemy
-provisions the real namespace on the next deploy as soon as
-something binds to it.
+`Cloudflare.KV.Namespace("KV")` is just a description — Alchemy provisions the real namespace on the next deploy as soon as something binds to it.
 
 ## Bind KV to the workflow
 
-`Cloudflare.KV.ReadWriteNamespace(KV)` belongs in the workflow's outer
-Construction phase. It registers the binding on the workflow's worker and
-returns a typed Effect-native client whose methods (`get`, `put`,
-`list`, `delete`) are Effects you can `yield*` directly:
+`Cloudflare.KV.ReadWriteNamespace(KV)` belongs in the workflow’s outer Construction phase. It registers the binding on the workflow’s worker and returns a typed Effect-native client whose methods (`get`, `put`, `list`, `delete`) are Effects you can `yield*` directly:
 
-```diff lang="typescript"
-// src/NotifyWorkflow.ts
-import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Effect from "effect/Effect";
-+import { KV } from "./KV.ts";
-import Room from "./room.ts";
-
-export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>()(
-  "Notifier",
-  Effect.gen(function* () {
-    const rooms = yield* Room;
-+    const kv = yield* Cloudflare.KV.ReadWriteNamespace(KV);
-
-    return Effect.fn(function* (input: { roomId: string; message: string }) {
-      const { roomId, message } = input;
-      return { roomId, message };
-    });
-  }),
-) {}
-```
-
-Yielding the binding in the constructor is a one-time setup — the
-inner workflow body closes over `kv` and uses it on every run.
-
-## Add a task
-
-`Cloudflare.Workflows.task("name", effect)` runs the inner Effect inside a
-Cloudflare workflow step — the result is checkpointed so a crash +
-replay returns the persisted value instead of re-running the side
-effect. Wrap **anything** that touches the outside world — HTTP
-calls, binding I/O, file writes — in a task:
-
-```diff lang="typescript"
-// src/NotifyWorkflow.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { KV } from "./KV.ts";
@@ -118,41 +66,19 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
 
     return Effect.fn(function* (input: { roomId: string; message: string }) {
       const { roomId, message } = input;
-
-+      const stored = yield* Cloudflare.Workflows.task(
-+        "kv-roundtrip",
-+        Effect.gen(function* () {
-+          const key = `workflow:${roomId}`;
-+          yield* kv.put(key, message);
-+          return yield* kv.get(key);
-+        }).pipe(Effect.orDie),
-+      );
-
--      return { roomId, message };
-+      return { roomId, message: stored };
+      return { roomId, message };
     });
   }),
 ) {}
 ```
 
-`task` automatically threads the binding's service requirement
-through, so `kv.put` / `kv.get` work directly inside the inner
-Effect with no extra plumbing.
+Yielding the binding in the constructor is a one-time setup — the inner workflow body closes over `kv` and uses it on every run.
 
-:::caution[Always wrap I/O in `task`]
-The body Effect can re-execute many times during a replay. Anything
-you do outside a `task` (like a raw `kv.put`) runs on every replay.
-Wrapping the I/O in `task` makes the result persisted and the side
-effect run exactly once.
-:::
+## Add a task
 
-## Broadcast to the chat room
+`Cloudflare.Workflows.task("name", effect)` runs the inner Effect inside a Cloudflare workflow step — the result is checkpointed so a crash + replay returns the persisted value instead of re-running the side effect. Wrap **anything** that touches the outside world — HTTP calls, binding I/O, file writes — in a task:
 
-Add another task that fans the stored value out to the matching
-`Room` instance:
-
-```diff lang="typescript"
-// src/NotifyWorkflow.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { KV } from "./KV.ts";
@@ -170,35 +96,26 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
       const stored = yield* Cloudflare.Workflows.task(
         "kv-roundtrip",
         Effect.gen(function* () {
-          const key = `workflow:${roomId}`;
+          const key = \`workflow:${roomId}\`;
           yield* kv.put(key, message);
           return yield* kv.get(key);
         }).pipe(Effect.orDie),
       );
 
-+      const room = rooms.getByName(roomId);
-+      yield* Cloudflare.Workflows.task(
-+        "broadcast",
-+        room.broadcast(`[workflow] ${stored}`),
-+      );
-
+      return { roomId, message };
       return { roomId, message: stored };
     });
   }),
 ) {}
 ```
 
-Calling the DO's `broadcast` RPC method from inside a `task` makes
-the message-send durable too — replays don't double-broadcast.
+`task` automatically threads the binding’s service requirement through, so `kv.put` / `kv.get` work directly inside the inner Effect with no extra plumbing.
 
-## Sleep between tasks
+## Broadcast to the chat room
 
-`Cloudflare.Workflows.sleep("name", "2 seconds")` parks the workflow without
-billing for compute, then resumes at the requested time. Names are
-required because Cloudflare uses them as replay keys:
+Add another task that fans the stored value out to the matching `Room` instance:
 
-```diff lang="typescript"
-// src/NotifyWorkflow.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { KV } from "./KV.ts";
@@ -216,7 +133,7 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
       const stored = yield* Cloudflare.Workflows.task(
         "kv-roundtrip",
         Effect.gen(function* () {
-          const key = `workflow:${roomId}`;
+          const key = \`workflow:${roomId}\`;
           yield* kv.put(key, message);
           return yield* kv.get(key);
         }).pipe(Effect.orDie),
@@ -225,15 +142,8 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
       const room = rooms.getByName(roomId);
       yield* Cloudflare.Workflows.task(
         "broadcast",
-        room.broadcast(`[workflow] ${stored}`),
+        room.broadcast(\`[workflow] ${stored}\`),
       );
-
-+      yield* Cloudflare.Workflows.sleep("cooldown", "2 seconds");
-+
-+      yield* Cloudflare.Workflows.task(
-+        "finalize",
-+        room.broadcast(`[workflow] complete for ${roomId}`),
-+      );
 
       return { roomId, message: stored };
     });
@@ -241,58 +151,95 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
 ) {}
 ```
 
-After the cool-down the workflow broadcasts a "complete" message
-and finishes. The whole sequence — KV roundtrip → broadcast →
-sleep → broadcast → return — is durable end to end.
+Calling the DO’s `broadcast` RPC method from inside a `task` makes the message-send durable too — replays don’t double-broadcast.
+
+## Sleep between tasks
+
+`Cloudflare.Workflows.sleep("name", "2 seconds")` parks the workflow without billing for compute, then resumes at the requested time. Names are required because Cloudflare uses them as replay keys:
+
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Effect from "effect/Effect";
+import { KV } from "./KV.ts";
+import Room from "./room.ts";
+
+export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>()(
+  "Notifier",
+  Effect.gen(function* () {
+    const rooms = yield* Room;
+    const kv = yield* Cloudflare.KV.ReadWriteNamespace(KV);
+
+    return Effect.fn(function* (input: { roomId: string; message: string }) {
+      const { roomId, message } = input;
+
+      const stored = yield* Cloudflare.Workflows.task(
+        "kv-roundtrip",
+        Effect.gen(function* () {
+          const key = \`workflow:${roomId}\`;
+          yield* kv.put(key, message);
+          return yield* kv.get(key);
+        }).pipe(Effect.orDie),
+      );
+
+      const room = rooms.getByName(roomId);
+      yield* Cloudflare.Workflows.task(
+        "broadcast",
+        room.broadcast(\`[workflow] ${stored}\`),
+      );
+
+      yield* Cloudflare.Workflows.sleep("cooldown", "2 seconds");
+
+      yield* Cloudflare.Workflows.task(
+        "finalize",
+        room.broadcast(\`[workflow] complete for ${roomId}\`),
+      );
+
+      return { roomId, message: stored };
+    });
+  }),
+) {}
+```
+
+After the cool-down the workflow broadcasts a “complete” message and finishes. The whole sequence — KV roundtrip → broadcast → sleep → broadcast → return — is durable end to end.
 
 ## Bind a secret
 
-Most real workflows need credentials — an upstream API key, a
-signing token, etc. `Config.Redacted` registers a `secret_text`
-binding on the workflow at plantime and hands back a
-`Redacted<string>` for use inside steps:
+Most real workflows need credentials — an upstream API key, a signing token, etc. `Config.Redacted` registers a `secret_text` binding on the workflow at plantime and hands back a `Redacted<string>` for use inside steps:
 
-```diff lang="typescript"
- import * as Cloudflare from "@alchemy.run/cloudflare";
-+import * as Config from "effect/Config";
- import * as Effect from "effect/Effect";
- import { KV } from "./KV.ts";
- import Room from "./room.ts";
-
- export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>()(
-   "Notifier",
-   Effect.gen(function* () {
-     const rooms = yield* Room;
-     const kv = yield* Cloudflare.KV.ReadWriteNamespace(KV);
-+    const apiKey = yield* Config.Redacted("API_KEY");
-```
-
-`Config.Redacted("API_KEY")` reads `API_KEY` from the active
-`Config` provider (env vars, `.env`, …) at plantime and binds it
-into the workflow as `secret_text`. Set it in your local `.env`:
-
-```sh
-# .env
-API_KEY=sk-test-123
-```
-
-See [Concepts › Secrets](../../environments/secrets.md) for the full set of
-input shapes (literals, `Effect`, `Config`, …).
-
-## Use the secret in a task
-
-The `Redacted<string>` resolved in the constructor is captured by the Runtime
-body. Unwrap with `Redacted.value` only at the call
-site that needs it (here, an `Authorization` header):
-
-```diff lang="typescript"
-// src/NotifyWorkflow.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
-+import * as Redacted from "effect/Redacted";
-+import * as HttpClient from "effect/http/HttpClient";
-+import * as HttpClientRequest from "effect/http/HttpClientRequest";
+import { KV } from "./KV.ts";
+import Room from "./room.ts";
+
+export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>()(
+  "Notifier",
+  Effect.gen(function* () {
+    const rooms = yield* Room;
+    const kv = yield* Cloudflare.KV.ReadWriteNamespace(KV);
+    const apiKey = yield* Config.Redacted("API_KEY");
+```
+
+`Config.Redacted("API_KEY")` reads `API_KEY` from the active `Config` provider (env vars, `.env`, …) at plantime and binds it into the workflow as `secret_text`. Set it in your local `.env`:
+
+```sh
+API_KEY=sk-test-123
+```
+
+See [Concepts › Secrets](../../environments/secrets.md) for the full set of input shapes (literals, `Effect`, `Config`, …).
+
+## Use the secret in a task
+
+The `Redacted<string>` resolved in the constructor is captured by the Runtime body. Unwrap with `Redacted.value` only at the call site that needs it (here, an `Authorization` header):
+
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Config from "effect/Config";
+import * as Effect from "effect/Effect";
+import * as Redacted from "effect/Redacted";
+import * as HttpClient from "effect/http/HttpClient";
+import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import { KV } from "./KV.ts";
 import Room from "./room.ts";
 
@@ -311,23 +258,23 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
       const room = rooms.getByName(roomId);
       yield* Cloudflare.Workflows.task(
         "broadcast",
-        room.broadcast(`[workflow] ${stored}`),
+        room.broadcast(\`[workflow] ${stored}\`),
       );
 
-+      yield* Cloudflare.Workflows.task(
-+        "fetch-with-auth",
-+        HttpClientRequest.get("https://example.com/data").pipe(
-+          HttpClientRequest.bearerToken(Redacted.value(apiKey)),
-+          HttpClient.execute,
-+          Effect.flatMap((r) => r.text),
-+        ),
-+      );
+      yield* Cloudflare.Workflows.task(
+        "fetch-with-auth",
+        HttpClientRequest.get("https://example.com/data").pipe(
+          HttpClientRequest.bearerToken(Redacted.value(apiKey)),
+          HttpClient.execute,
+          Effect.flatMap((r) => r.text),
+        ),
+      );
 
       yield* Cloudflare.Workflows.sleep("cooldown", "2 seconds");
 
       yield* Cloudflare.Workflows.task(
         "finalize",
-        room.broadcast(`[workflow] complete for ${roomId}`),
+        room.broadcast(\`[workflow] complete for ${roomId}\`),
       );
 
       return { roomId, message: stored };
@@ -336,57 +283,50 @@ export default class NotifyWorkflow extends Cloudflare.Workflow<NotifyWorkflow>(
 ) {}
 ```
 
-`HttpClient.execute` runs inside
-`Cloudflare.Workflows.task`, so the response is checkpointed and the
-request only fires once across replays. `Redacted.value` is
-called at the single header site that needs the cleartext;
-elsewhere the value stays redacted.
+`HttpClient.execute` runs inside `Cloudflare.Workflows.task`, so the response is checkpointed and the request only fires once across replays. `Redacted.value` is called at the single header site that needs the cleartext; elsewhere the value stays redacted.
 
 ## Trigger from the Worker
 
-A Workflow becomes a typed handle when you `yield*` it in the
-Worker's Construction phase. Use `create()` to start an instance and
-`get(id).status()` to poll it:
+A Workflow becomes a typed handle when you `yield*` it in the Worker’s Construction phase. Use `create()` to start an instance and `get(id).status()` to poll it:
 
-```diff lang="typescript"
-// src/worker.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
-+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
-+import NotifyWorkflow from "./NotifyWorkflow.ts";
+import NotifyWorkflow from "./NotifyWorkflow.ts";
 
 export default Cloudflare.Worker(
   "Worker",
   { main: import.meta.url },
   Effect.gen(function* () {
-+    const notifier = yield* NotifyWorkflow;
+    const notifier = yield* NotifyWorkflow;
 
     return {
       fetch: Effect.gen(function* () {
-+        const request = yield* HttpServerRequest;
-+
-+        if (
-+          request.url.startsWith("/workflow/start/") &&
-+          request.method === "POST"
-+        ) {
-+          const roomId = request.url.split("/").pop()!;
-+          const instance = yield* notifier.create({
-+            params: {
-+              roomId,
-+              message: "hello from workflow",
-+            },
-+          });
-+          return yield* HttpServerResponse.json({ instanceId: instance.id });
-+        }
-+
-+        if (request.url.startsWith("/workflow/status/")) {
-+          const instanceId = request.url.split("/").pop()!;
-+          const instance = yield* notifier.get(instanceId);
-+          const status = yield* instance.status();
-+          return yield* HttpServerResponse.json(status);
-+        }
-+
+        const request = yield* HttpServerRequest;
+
+        if (
+          request.url.startsWith("/workflow/start/") &&
+          request.method === "POST"
+        ) {
+          const roomId = request.url.split("/").pop()!;
+          const instance = yield* notifier.create({
+            params: {
+              roomId,
+              message: "hello from workflow",
+            },
+          });
+          return yield* HttpServerResponse.json({ instanceId: instance.id });
+        }
+
+        if (request.url.startsWith("/workflow/status/")) {
+          const instanceId = request.url.split("/").pop()!;
+          const instance = yield* notifier.get(instanceId);
+          const status = yield* instance.status();
+          return yield* HttpServerResponse.json(status);
+        }
+
         return HttpServerResponse.text("Hello from my Worker!");
       }),
     };
@@ -394,25 +334,17 @@ export default Cloudflare.Worker(
 );
 ```
 
-`notifier.create({ params })` immediately returns an instance id —
-the workflow runs asynchronously on Cloudflare's side.
-`instance.status()` returns one of `"queued"`, `"running"`,
-`"paused"`, `"waiting"`, `"complete"`, `"errored"`, or
-`"terminated"` along with the `output` (what the body Effect
-returned) or `error`.
+`notifier.create({ params })` immediately returns an instance id — the workflow runs asynchronously on Cloudflare’s side. `instance.status()` returns one of `"queued"`, `"running"`, `"paused"`, `"waiting"`, `"complete"`, `"errored"`, or `"terminated"` along with the `output` (what the body Effect returned) or `error`.
 
 Deploy:
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
-Add a test that POSTs to `/workflow/start/:roomId`, then polls
-`/workflow/status/:instanceId` until the workflow reaches
-`complete`:
+Add a test that POSTs to `/workflow/start/:roomId`, then polls `/workflow/status/:instanceId` until the workflow reaches `complete`:
 
-```diff lang="typescript"
-// test/integ.test.ts
+```typescript
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Test from "@alchemy.run/test/Bun";
 import { expect } from "bun:test";
@@ -428,66 +360,52 @@ const { test, beforeAll, deploy } = Test.make({
 
 const stack = beforeAll(deploy(Stack));
 
-+test(
-+  "Notifier workflow completes within 60s",
-+  Effect.gen(function* () {
-+    const { url } = yield* stack;
-+    const roomId = `room-${Date.now()}`;
-+
-+    const start = yield* HttpClient.post(`${url}/workflow/start/${roomId}`);
-+    const { instanceId } = (yield* start.json) as { instanceId: string };
-+    expect(instanceId).toBeString();
-+
-+    const status = yield* HttpClient.get(
-+      `${url}/workflow/status/${instanceId}`,
-+    ).pipe(
-+      Effect.flatMap((res) => res.json),
-+      Effect.map((s) => s as { status: string }),
-+      Effect.repeat({
-+        schedule: Schedule.spaced("2 seconds"),
-+        until: (s) => s.status === "complete" || s.status === "errored",
-+      }),
-+      Effect.timeout("60 seconds"),
-+    );
-+
-+    expect(status.status).toBe("complete");
-+  }),
-+  { timeout: 120_000 },
-+);
+test(
+  "Notifier workflow completes within 60s",
+  Effect.gen(function* () {
+    const { url } = yield* stack;
+    const roomId = \`room-${Date.now()}\`;
+
+    const start = yield* HttpClient.post(\`${url}/workflow/start/${roomId}\`);
+    const { instanceId } = (yield* start.json) as { instanceId: string };
+    expect(instanceId).toBeString();
+
+    const status = yield* HttpClient.get(
+      \`${url}/workflow/status/${instanceId}\`,
+    ).pipe(
+      Effect.flatMap((res) => res.json),
+      Effect.map((s) => s as { status: string }),
+      Effect.repeat({
+        schedule: Schedule.spaced("2 seconds"),
+        until: (s) => s.status === "complete" || s.status === "errored",
+      }),
+      Effect.timeout("60 seconds"),
+    );
+
+    expect(status.status).toBe("complete");
+  }),
+  { timeout: 120_000 },
+);
 ```
 
 ```sh
 bun test test/integ.test.ts
 ```
 
-The polling loop should see the workflow transition through
-`running` and finish in `complete` within ~5 seconds (most of which
-is the `sleep("cooldown", "2 seconds")` cooldown).
+The polling loop should see the workflow transition through `running` and finish in `complete` within ~5 seconds (most of which is the `sleep("cooldown", "2 seconds")` cooldown).
 
 ## Test it locally
 
-The same test runs entirely on your machine — no separate
-workerd/vitest setup needed. Add `dev: true` to `Test.make` and the
-whole stack (Worker, Workflow, KV, Durable Objects) boots in a
-local workerd with real step semantics — tasks checkpoint, sleeps
-park, replays skip completed steps:
+The same test runs entirely on your machine — no separate workerd/vitest setup needed. Add `dev: true` to `Test.make` and the whole stack (Worker, Workflow, KV, Durable Objects) boots in a local workerd with real step semantics — tasks checkpoint, sleeps park, replays skip completed steps:
 
-```diff lang="typescript"
+```typescript
 const { test, beforeAll, deploy } = Test.make({
   providers: Cloudflare.providers(),
   state: Cloudflare.state(),
-+  dev: true,
+  dev: true,
 });
 ```
 
-`stack.url` now points at `http://localhost:<port>`, and the
-start/poll assertions run unchanged against the local workflow. See
-[Test harness → dev](../../testing/test-harness.md#dev) for the option's
-full semantics, and [Local development](../local-development.md)
-for what else runs locally.
+`stack.url` now points at `http://localhost:<port>`, and the start/poll assertions run unchanged against the local workflow. See [Test harness → dev](../../testing/test-harness.md#dev) for the option’s full semantics, and [Local development](../local-development.md) for what else runs locally.
 
-Your app now spans a Worker, a Vite frontend, Durable Objects,
-hibernatable WebSockets, a Container, and a Workflow — all
-deploying from CI thanks to [Part 5](../tutorial/part-5.md). From here,
-browse the [Concepts](../../infrastructure-as-code/stack.md), [Guides](../../cli.md), and
-[Providers](https://alchemy.run/providers) sections for whatever you need next.
+Your app now spans a Worker, a Vite frontend, Durable Objects, hibernatable WebSockets, a Container, and a Workflow — all deploying from CI thanks to [Part 5](../tutorial/part-5.md). From here, browse the [Concepts](../../infrastructure-as-code/stack.md), [Guides](../../cli.md), and [Providers](https://alchemy.run/providers) sections for whatever you need next.

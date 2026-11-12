@@ -2,14 +2,13 @@
 url: https://alchemy.run/better-auth/guides/secondary-storage
 title: "Secondary storage"
 description: "Supply a strongly consistent session and rate-limit store through an Effect layer."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Implement the complete storage contract
 
 ```typescript
-// storage.ts
 import {
   BetterAuthStorageError,
   SecondaryStorage,
@@ -20,13 +19,13 @@ import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Redacted from "effect/Redacted";
 
-const incrementScript = `
+const incrementScript = \`
 local count = redis.call("INCR", KEYS[1])
 if count == 1 then
   redis.call("EXPIRE", KEYS[1], ARGV[1])
 end
 return count
-`;
+\`;
 
 export const RedisStorage = Layer.effect(
   SecondaryStorage,
@@ -48,7 +47,7 @@ export const RedisStorage = Layer.effect(
           cause,
         }),
       });
-    const keyFor = (key: string) => `better-auth:${key}`;
+    const keyFor = (key: string) => \`better-auth:${key}\`;
     return SecondaryStorage.of({
       get: (key) => run((redis) => redis.get<string>(keyFor(key))),
       set: (key, value, ttlSeconds) => run((redis) =>
@@ -68,7 +67,7 @@ export const RedisStorage = Layer.effect(
 
 The external backend must offer strongly consistent reads and writes through a Redis REST endpoint compatible with `@upstash/redis`, including `GETDEL` and `EVAL`. Use a dedicated database and credential for each environment; an eventually consistent read replica or Cloudflare KV does not satisfy this contract.
 
-Install `@upstash/redis` and provide the endpoint's `REDIS_REST_URL` and protected `REDIS_REST_TOKEN` at deployment. The wrapper exports the Effect service, not a built-in Redis implementation; this file supplies the adapter.
+Install `@upstash/redis` and provide the endpoint’s `REDIS_REST_URL` and protected `REDIS_REST_TOKEN` at deployment. The wrapper exports the Effect service, not a built-in Redis implementation; this file supplies the adapter.
 
 Automatic JSON deserialization is disabled because Better Auth stores strings, including serialized JSON. Automatic retries are also disabled: replaying an increment or consume-once operation after an ambiguous network failure can change its meaning.
 
@@ -85,7 +84,6 @@ Automatic JSON deserialization is disabled because Better Auth stores strings, i
 ## Provide storage before constructing Better Auth
 
 ```typescript
-// worker.ts
 import { BetterAuth } from "@alchemy.run/better-auth";
 import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
 import * as Cloudflare from "@alchemy.run/cloudflare";
@@ -121,12 +119,11 @@ The optional service must be present when `BetterAuth` is constructed; providing
 
 `storeSessionInDatabase: true` retains a database copy but is not an outage fallback: Better Auth still reads sessions from secondary storage. Losing or evicting keys can sign users out, and changing stores is an operational migration rather than automatic session copying.
 
-The explicit limiter also runs in development, with a 60-second window and a maximum of 100 requests before endpoint-specific limits. It protects Better Auth's routes, not unrelated application endpoints.
+The explicit limiter also runs in development, with a 60-second window and a maximum of 100 requests before endpoint-specific limits. It protects Better Auth’s routes, not unrelated application endpoints.
 
 ## Run the standalone host
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -145,14 +142,14 @@ export default Alchemy.Stack(
 Use Bun, matching `alchemy` and `@alchemy.run/better-auth` releases, Better Auth 1.7.5, Effect 4, and `kysely`, in addition to the Redis SDK. Configure Cloudflare credentials and the external storage inputs before deployment; this stack provisions D1 and a stable signing secret, not the Redis service.
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 Preserve the local Alchemy state and use the printed URL. A local run must use a separate storage database from production because the REST store is external, not emulated by `alchemy dev`.
 
 ## Keep I/O request-scoped
 
-The layer captures only configuration; each operation creates its own REST client and request with Effect's abort signal. Auto-pipelining is disabled so no pending batch can span Worker events; the wrapper runs each operation in the captured `Alchemy.RuntimeContext`.
+The layer captures only configuration; each operation creates its own REST client and request with Effect’s abort signal. Auto-pipelining is disabled so no pending batch can span Worker events; the wrapper runs each operation in the captured `Alchemy.RuntimeContext`.
 
 A socket-based adapter must instead acquire disposable connections lazily within the request scope and release them there. Do not retain an open connection, response, or in-flight promise across Worker events.
 

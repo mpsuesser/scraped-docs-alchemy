@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/apis/effect-rpc
 title: "Effect RPC on Lambda"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Effect RPC is a trust-boundary tool: schemas validate every request, so reach for it when data needs sanitizing on its way in — a web app or an external service calling your Lambda. Internal calls use [Schemaless RPC](../../apis/schemaless.md) instead (on AWS, a Lambda Function driving a [MicroVM](../compute/microvms.md)); the [RPC overview](../../apis.md) has the full decision.
@@ -283,7 +283,7 @@ Yielding `JobFunction` deploys the function *and* everything it declared inside 
 ## 5\. Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## 6\. Call it from a typed client
@@ -330,7 +330,7 @@ The errors are typed values: `client.getJob` returns `Effect<Job, JobNotFound>`,
 
 ## Choosing an API style
 
-- **External Effect/TypeScript consumers** — this page.
+- **External Effect/TypeScript consumers** — Effect RPC, with a typed client.
 - **External plain-HTTP consumers** (curl, non-TypeScript clients) — [Effect HTTP API on Lambda](effect-http-api.md).
 - **Internal service-to-service calls** — [Schemaless RPC](../../apis/schemaless.md).
 - **The full decision** — [RPC overview](../../apis.md).
@@ -342,6 +342,6 @@ The full [`examples/aws-lambda-rpc`](https://github.com/alchemy-run/alchemy/tree
 ## Where next
 
 - [Lambda](../compute/lambda.md) — how the Function class, Function URLs, and the test harness work.
-- [Effect HTTP API on Lambda](effect-http-api.md) — the REST-style sibling of this guide, same wiring.
+- [Effect HTTP API on Lambda](effect-http-api.md) — the REST-style sibling, with the same wiring.
 - [Effect RPC on Workers](../../cloudflare/apis/effect-rpc.md) — the same `RpcGroup` deployed to Cloudflare, plus streaming and Durable Object routing.
 - [DynamoDB](../data/dynamodb.md) — the table resource and the rest of its bindings.

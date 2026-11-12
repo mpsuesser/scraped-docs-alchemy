@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/local-provider
 title: "Local Provider"
 description: "Build the local implementation of a resource — dual registration with ProviderLayer.dual and the LocalProvider runner for long-running processes."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 During `alchemy dev`, some resources shouldn't touch the cloud at all: a
@@ -11,7 +11,7 @@ Worker runs in a local `workerd`, a dev server is a child process on your
 machine. A **local provider** is the implementation that serves a resource
 type in dev, alongside the **live provider** used by `alchemy deploy`.
 
-This guide is about *building* one. For the user-facing dev model — and
+For the user-facing dev model — and
 opting a resource out of local emulation with `remote()` — see
 [Local development](../environments/local-development.md). If you haven't built
 a provider before, start with

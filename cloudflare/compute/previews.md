@@ -2,20 +2,17 @@
 url: https://alchemy.run/cloudflare/compute/previews
 title: "Worker Previews"
 description: "Deploy a branch or pull request as a first-class Preview of another Worker — its own URL, bindings, and isolated Durable Object state, without touching production traffic."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-A [Worker Preview](https://developers.cloudflare.com/workers/previews/) is
-a named copy of a Worker: own URL, own variables, secrets, and
-bindings, and isolated same-Worker Durable Object (and Container)
-state. The parent's live deployment is untouched.
+A [Worker Preview](https://developers.cloudflare.com/workers/previews/) is a named copy of a Worker: own URL, own variables, secrets, and bindings, and isolated same-Worker Durable Object (and Container) state. The parent’s live deployment is untouched.
 
-This is the branch and pull-request path. It is **not** a Worker
-version. Versions are for gradual rollouts and canaries — see
-[Gradual deployments](gradual-deployments.md).
+This is the branch and pull-request path. It is **not** a Worker version. Versions are for gradual rollouts and canaries — see [Gradual deployments](gradual-deployments.md).
 
-## Preview another stage's Worker
+Previews live under the Worker next to its live deployment, each with its own URL, bindings and Durable Object state. Destroying one leaves the rest alone.
+
+## Preview another stage’s Worker
 
 ```typescript
 const parent = yield* Cloudflare.Worker.ref("Api", { stage: "prod" });
@@ -24,7 +21,7 @@ const api = yield* Cloudflare.Worker("Api", {
   main: "./src/api.ts",
   preview: {
     of: parent,
-    message: `PR #${process.env.PR_NUMBER}`,
+    message: \`PR #${process.env.PR_NUMBER}\`,
   },
 });
 
@@ -32,20 +29,13 @@ const api = yield* Cloudflare.Worker("Api", {
 api.url;
 ```
 
-The Preview name defaults to a DNS-safe form of the stack stage
-(`pr-123`, `feat-login`). Override with `preview.name`. Destroying
-the Preview Worker deletes the Preview; the parent stays up.
+The Preview name defaults to a DNS-safe form of the stack stage (`pr-123`, `feat-login`). Override with `preview.name`. Destroying the Preview Worker deletes the Preview; the parent stays up.
 
-Bindings are whatever *this* Worker declares. Point them at staging
-resources, or let a PR stage create its own KV / D1 / R2. Same-Worker
-[Durable Object](durable-objects.md) classes are
-isolated automatically — each Preview gets its own namespace, deleted
-with the Preview. Version workers (`version.parent`) cannot host
-Durable Object classes; Previews can.
+Bindings are whatever *this* Worker declares. Point them at staging resources, or let a PR stage create its own KV / D1 / R2. Same-Worker [Durable Object](durable-objects.md) classes are isolated automatically — each Preview gets its own namespace, deleted with the Preview. Version workers (`version.parent`) cannot host Durable Object classes; Previews can.
 
 ## Custom-domain Preview URLs
 
-Enable Previews on the **parent** Worker's custom domain:
+Enable Previews on the **parent** Worker’s custom domain:
 
 ```typescript
 yield* Cloudflare.Worker("Api", {
@@ -57,18 +47,14 @@ yield* Cloudflare.Worker("Api", {
 });
 ```
 
-A Preview of that Worker is then at
-`https://<preview-name>.app.example.com`, plus a pinned
-`https://<deployment-id>-<preview-name>.app.example.com` per deploy.
+A Preview of that Worker is then at `https://<preview-name>.app.example.com`, plus a pinned `https://<deployment-id>-<preview-name>.app.example.com` per deploy.
 
-Use a dedicated Preview hostname (`previews.example.com`) when
-production already has subdomains, so the wildcard does not collide
-with `docs.example.com`.
+Use a dedicated Preview hostname (`previews.example.com`) when production already has subdomains, so the wildcard does not collide with `docs.example.com`.
 
 ## Preview, version, or stage?
 
 | What you want | Use |
-|---|---|
+| --- | --- |
 | Branch / PR with its own URL and isolated DOs | `preview.of` |
 | Canary a percentage of live traffic | `version.parent` + `version.traffic` |
 | Gradual rollout of this Worker | `version.traffic` |
@@ -77,11 +63,6 @@ with `docs.example.com`.
 
 `preview` and `version.parent` cannot be set together.
 
-Service bindings from a Preview currently resolve to the bound
-Worker's **production** deployment. Crons, queue consumers, and
-production routes stay on production. For an end-to-end multi-Worker
-PR, deploy a full stage instead.
+Service bindings from a Preview currently resolve to the bound Worker’s **production** deployment. Crons, queue consumers, and production routes stay on production. For an end-to-end multi-Worker PR, deploy a full stage instead.
 
-Preview URLs are public. Protect them with
-[Cloudflare Access](../security/access.md) on the parent
-Worker (`access.previews` stays on by default).
+Preview URLs are public. Protect them with [Cloudflare Access](../security/access.md) on the parent Worker (`access.previews` stays on by default).

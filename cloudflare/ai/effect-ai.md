@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/ai/effect-ai
 title: "Effect AI"
 description: "Wire Effect's LanguageModel and Chat services into a Cloudflare Worker — read API keys with effect/Config, provide the model layer to your handler, plug in persistence."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Effect's [`@effect/ai`](https://effect.website/docs/ai/introduction)
@@ -13,7 +13,7 @@ every model provider (OpenAI, Anthropic, Workers AI, …) ships as a
 (`generateText`, `streamText`, `Toolkit`, `Chat`, …) is
 provider-agnostic.
 
-This guide is about the *Alchemy* side of that picture: how to build
+On the *Alchemy* side of that picture, the questions are how to build
 the `LanguageModel` layer inside a Worker or Lambda
 ([Runtime](../../infrastructure-as-effects/runtime.md))
 (`Cloudflare.Worker`, `AWS.Lambda.Function`), where to read the API

@@ -2,11 +2,23 @@
 url: https://alchemy.run/cloudflare/ai/ai-gateway
 title: "Add an AI Gateway"
 description: "Wire an AI Gateway into your Worker, turn it into a typed Effect LanguageModel, and run generations and streams through Workers AI with caching, rate limiting, and logs."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 You’ve now wired Durable Objects, hibernatable WebSockets, a container, and a Workflow into your Worker. The last piece in the Cloudflare track is an **AI Gateway** — a stable account-scoped endpoint that fronts every model provider (Workers AI, OpenAI, Anthropic, Bedrock, …) and gives you caching, rate limiting, retries, DLP, and a single dashboard of every request, token, and cost.
+
+Gateway · request logserved from cache
+
+| time | provider · model | tokens | cost | cache |
+| --- | --- | --- | --- | --- |
+| 10:02:11 | workers-ai · llama-3.3 | 812 | $0.0002 | miss |
+| 10:02:40 | openai · gpt-4o-mini | 1,204 | $0.0007 | miss |
+| 10:02:52 | openai · gpt-4o-mini | 1,204 | $0 | hit |
+| 10:03:05 | anthropic · claude-haiku | 960 | $0.0012 | miss |
+| 10:03:09 | workers-ai · llama-3.3 | 812 | $0 | hit |
+
+Every call, to any provider, goes through the gateway and lands in one log with its tokens and cost. A repeat of a prompt inside cacheTtl is answered from the cache, at no cost.
 
 In Alchemy the gateway is a single resource. Once you’ve declared and bound it, `.model({...})` returns an Effect `LanguageModel.LanguageModel` Layer — and from there you’re using the same `generateText` / `streamText` APIs you’d use against any other provider.
 
@@ -142,10 +154,10 @@ import * as HttpServerResponse from "effect/http/HttpServerResponse";
 ## Try it
 
 ```sh
-bun alchemy deploy
-curl -X POST "$(bun alchemy stack output url)/generate" \
-  -H "content-type: application/json" \
-  -d '{"prompt":"Write a haiku about Effect"}'
+pnpm alchemy deploy
+curl -X POST "$(pnpm alchemy stack output url)/generate" \
+-H "content-type: application/json" \
+-d '{"prompt":"Write a haiku about Effect"}'
 ```
 
 The first call takes ~1–2 seconds. Send the **exact same** prompt again and it returns in milliseconds — that’s the `cacheTtl: 60` config doing its job. Open the Cloudflare dashboard → **AI** → **AI Gateway** → your gateway and you’ll see both requests, with the second flagged as a cache hit, plus latency and token usage on every entry.
@@ -180,9 +192,9 @@ import * as Sse from "effect/encoding/Sse";
 `Stream.provide(languageModel)` is the stream-aware equivalent of `Effect.provide` — the `LanguageModel` needs to be available for the entire lifetime of the stream, not just the initial setup.
 
 ```sh
-curl -N -X POST "$(bun alchemy stack output url)/stream" \
-  -H "content-type: application/json" \
-  -d '{"prompt":"Write a haiku about Effect, slowly."}'
+curl -N -X POST "$(pnpm alchemy stack output url)/stream" \
+-H "content-type: application/json" \
+-d '{"prompt":"Write a haiku about Effect, slowly."}'
 ```
 
 `-N` disables curl’s response buffering so you see each SSE event as soon as the Worker flushes it.
@@ -206,7 +218,7 @@ export const Gateway = Cloudflare.AI.Gateway("Gateway", {
 });
 ```
 
-Bumping `cacheTtl`, `rateLimitingLimit`, or toggling `authentication` is a single `bun alchemy deploy` away — the diff updates the gateway in place.
+Bumping `cacheTtl`, `rateLimitingLimit`, or toggling `authentication` is a single `alchemy deploy` away — the diff updates the gateway in place.
 
 ## What you have now
 

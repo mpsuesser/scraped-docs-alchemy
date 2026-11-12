@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/ci
 title: "CI"
 description: "Set up CI/CD pipelines for alchemy projects with GitHub Actions, automated deployments, and PR previews — with provider credentials managed as code."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 The core idea is **credentials as code**. Rather than copy-paste API keys into the GitHub UI, you let Alchemy provision exactly the credentials your CI needs — a scoped Cloudflare API token, an AWS IAM role for OIDC, etc. — and write them straight into the repo as encrypted secrets.
@@ -13,7 +13,7 @@ The core idea is **credentials as code**. Rather than copy-paste API keys into t
 Every auth provider declares the environment variables its CI resolution consumes, and `alchemy provider check-env` validates them against that contract. It prints one line per registered provider and exits with code 1 when a required variable is missing:
 
 ```sh
-$ bun alchemy provider check-env
+$ pnpm alchemy provider check-env
 ok Cloudflare
 MISSING AWS: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION | AWS_DEFAULT_REGION
 ```

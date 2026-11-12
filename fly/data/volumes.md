@@ -2,26 +2,35 @@
 url: https://alchemy.run/fly/data/volumes
 title: "Volumes"
 description: "A disk in one region, attached to one Machine."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-A Fly Volume is a disk in one [region](../compute/regions.md),
-attached to one Machine.
-Minimum size is 1 GB. Machines can be replaced. The Volume keeps
-the data.
+A Fly Volume is a disk in one [region](../compute/regions.md), attached to one Machine. Minimum size is 1 GB. Machines can be replaced. The Volume keeps the data.
 
-There is no standalone Volume resource. Create disks with
-[`MountVolume`](https://alchemy.run/providers/fly/reference/volume#mountvolume) or Machine `mounts`.
+There is no standalone Volume resource. Create disks with [`MountVolume`](https://alchemy.run/providers/fly/reference/volume#mountvolume) or Machine `mounts`.
 
-Fly cannot share one Volume across two Machines. `count: 3` creates
-three Volumes in one name-group, one per replica.
+Fly cannot share one Volume across two Machines. `count: 3` creates three Volumes in one name-group, one per replica.
+
+iadregion
+
+Machine 1replica
+
+dataVolume · 1 GB
+
+Machine 2replica
+
+dataVolume · 1 GB
+
+Machine 3replica
+
+dataVolume · 1 GB
+
+With count: 3, each Machine gets a Volume of its own, in its own region. The Volumes don't share data, so keep anything every replica needs in Postgres or a bucket.
 
 ## Mount into a Service
 
-Inside a [Service](../compute/services.md)'s constructor, bind a disk to a
-path and use it as a plain directory at runtime. App and region come
-from the parent Service:
+Inside a [Service](../compute/services.md) ’s constructor, bind a disk to a path and use it as a plain directory at runtime. App and region come from the parent Service:
 
 ```typescript
 export default class Api extends Fly.Service<Api>()(
@@ -33,7 +42,7 @@ export default class Api extends Fly.Service<Api>()(
 
     return {
       fetch: Effect.gen(function* () {
-        const text = yield* fs.readFileString(`${disk.path}/hello.txt`);
+        const text = yield* fs.readFileString(\`${disk.path}/hello.txt\`);
         // ...
       }),
     };
@@ -41,21 +50,15 @@ export default class Api extends Fly.Service<Api>()(
 ) {}
 ```
 
-At deploy time the binding writes `{ path, sizeGb }` into the
-Service. Reconcile creates one Volume per replica and writes
-`config.mounts`. At runtime you get `disk.path`.
+At deploy time the binding writes `{ path, sizeGb }` into the Service. Reconcile creates one Volume per replica and writes `config.mounts`. At runtime you get `disk.path`.
 
-`sizeGb` can **grow in place** via `extendVolume` — shrinking is
-not supported (Fly cannot shrink a Volume). Encryption and
-filesystem type are create-only.
+`sizeGb` can **grow in place** via `extendVolume` — shrinking is not supported (Fly cannot shrink a Volume). Encryption and filesystem type are create-only.
 
-If a replica Machine is replaced, its Volume re-attaches on the next
-deploy — the data rides along.
+If a replica Machine is replaced, its Volume re-attaches on the next deploy — the data rides along.
 
 ## Attach from a Machine
 
-For a raw Machine, pass `mounts` on the resource. App and region are
-the Machine's:
+For a raw Machine, pass `mounts` on the resource. App and region are the Machine’s:
 
 ```typescript
 const box = yield* Fly.Machine("Box", {
@@ -66,17 +69,11 @@ const box = yield* Fly.Machine("Box", {
 });
 ```
 
-Resolved attrs expose `mounts` (replica 0) and `replicas[i].mounts`
-(every replica's `volumeId` / `sizeGb` / group `name`).
+Resolved attrs expose `mounts` (replica 0) and `replicas[i].mounts` (every replica’s `volumeId` / `sizeGb` / group `name`).
 
 ## Snapshots
 
-Scheduled snapshots default on (`autoBackupEnabled`). Snapshot
-retention updates in place. An on-demand snapshot is
-[`VolumeSnapshot`](https://alchemy.run/providers/fly/reference/volume#volumesnapshot) — create is
-fire-and-forget; destroy is a no-op (snapshots follow Volume
-retention). Point it at a Volume id from the parent Machine or
-Service:
+Scheduled snapshots default on (`autoBackupEnabled`). Snapshot retention updates in place. An on-demand snapshot is [`VolumeSnapshot`](https://alchemy.run/providers/fly/reference/volume#volumesnapshot) — create is fire-and-forget; destroy is a no-op (snapshots follow Volume retention). Point it at a Volume id from the parent Machine or Service:
 
 ```typescript
 export const Nightly = Fly.VolumeSnapshot("Nightly", {
@@ -98,8 +95,6 @@ const restored = yield* Fly.Machine("Restored", {
 
 ## Where next
 
-- [Tutorial part 3](../tutorial/part-3.md) — mount a disk into a
-  Service step by step.
+- [Tutorial part 3](../tutorial/part-3.md) — mount a disk into a Service step by step.
 - [Services](../compute/services.md) — `count` and `MountVolume`.
-- [`MountVolume` reference](https://alchemy.run/providers/fly/reference/volume#mountvolume) and
-  [`VolumeSnapshot` reference](https://alchemy.run/providers/fly/reference/volume#volumesnapshot).
+- [`MountVolume` reference](https://alchemy.run/providers/fly/reference/volume#mountvolume) and [`VolumeSnapshot` reference](https://alchemy.run/providers/fly/reference/volume#volumesnapshot).

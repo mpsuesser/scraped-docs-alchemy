@@ -2,18 +2,29 @@
 url: https://alchemy.run/gcp/data/memorystore
 title: "Memorystore"
 description: "Create a Memorystore for Redis instance and reach it from Cloud Run over Direct VPC egress with the ReadWriteRedis binding."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Memorystore is managed Redis on a private IP. Cloud Run reaches it
-through your VPC, so the service needs VPC egress as well as the
-binding.
+Memorystore is managed Redis on a private IP. Cloud Run reaches it through your VPC, so the service needs VPC egress as well as the binding.
+
+## It lives on your network
+
+A Memorystore instance has a private IP in one of your VPC networks and nothing public. Cloud Run services run outside every VPC, so a service that uses Redis needs **Direct VPC egress**: an interface of its own on that network.
+
+defaultVPC network
+
+defaultsubnet · us-central1
+
+CacheRedis · 10.12.0.3:6379
+
+Api's interfaceDirect VPC egress
+
+The Redis instance and the service's egress interface sit in the same subnet, so the service reaches the private IP. Without the interface, there's no route to it.
 
 ## Create an instance
 
 ```typescript
-// src/resources.ts
 import * as GCP from "@alchemy.run/gcp";
 
 export const Cache = GCP.Redis.Instance("Cache", {
@@ -23,16 +34,13 @@ export const Cache = GCP.Redis.Instance("Cache", {
 });
 ```
 
-`BASIC` is a single node with no replica. Creating or deleting an
-instance takes several minutes.
+`BASIC` is a single node with no replica. Creating or deleting an instance takes several minutes.
 
 ## Connect from Cloud Run
 
-Give the service an interface on the network with Direct VPC egress,
-then bind the instance:
+Give the service an interface on the network with Direct VPC egress, then bind the instance:
 
 ```typescript
-// src/Api.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -63,14 +71,11 @@ export default class Api extends GCP.Function<Api>()(
 ) {}
 ```
 
-`PRIVATE_RANGES_ONLY` sends traffic for private addresses, like the
-Redis IP, through the VPC. Everything else leaves the normal way.
-Without `vpcAccess`, every command times out.
+`PRIVATE_RANGES_ONLY` sends traffic for private addresses, like the Redis IP, through the VPC. Everything else leaves the normal way. Without `vpcAccess`, every command times out.
 
 ## Use the client
 
-`ReadWriteRedis` returns the same Redis client as the Fly and Upstash
-providers: `get`, `set`, `incr`, `expire`, `pipeline`, and the rest.
+`ReadWriteRedis` returns the same Redis client as the Fly and Upstash providers: `get`, `set`, `incr`, `expire`, `pipeline`, and the rest.
 
 ```typescript
 const [, count, ttl] = yield* redis.pipeline([
@@ -80,23 +85,17 @@ const [, count, ttl] = yield* redis.pipeline([
 ]);
 ```
 
-`ReadRedis` and `WriteRedis` limit the service to read or write
-commands.
+`ReadRedis` and `WriteRedis` limit the service to read or write commands.
 
 ## No IAM, no pasted IPs
 
-Redis authenticates with the instance's AUTH string, so the binding
-grants no IAM role. Alchemy reads the private IP, port, and AUTH
-string when it deploys the instance and hands them to the service.
-You never copy them around.
+Redis authenticates with the instance’s AUTH string, so the binding grants no IAM role. Alchemy reads the private IP, port, and AUTH string when it deploys the instance and hands them to the service. You never copy them around.
 
 ## Example
 
-[`examples/gcp-memorystore-redis`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-memorystore-redis)
-is a fixed-window rate limiter on Memorystore.
+[`examples/gcp-memorystore-redis`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-memorystore-redis) is a fixed-window rate limiter on Memorystore.
 
 ## Where next
 
-- [VPC & private networking](../networking/vpc.md) — Direct VPC egress
-  in more detail.
+- [VPC & private networking](../networking/vpc.md) — Direct VPC egress in more detail.
 - [Redis reference](https://alchemy.run/providers/gcp/redis#instance) — every prop.

@@ -2,13 +2,19 @@
 url: https://alchemy.run/better-auth
 title: "Better Auth"
 description: "Build authentication with an Effect service, automatic database bindings, and deploy-time migrations."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Build sign-in and protected APIs with [Better Auth](https://better-auth.com/), using ordinary Effect services and layers. Alchemy supplies database bindings, a stable signing secret, and supported schema migrations.
+[Better Auth](https://better-auth.com/) is an open-source authentication framework for TypeScript. It runs inside your own app and keeps users and sessions in your own database.
 
-## Start the tutorial
+It supports email and password, OAuth providers like GitHub and Google, and plugins for two-factor sign-in, passkeys and organizations.
+
+**New to Better Auth?** Start with [What is Better Auth?](better-auth/what-is-better-auth.md).
+
+## A quick example
+
+An Auth service is a Better Auth configuration:
 
 ```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
@@ -19,31 +25,10 @@ const makeAuth = BetterAuth({
 });
 ```
 
-The [six-part tutorial](better-auth/tutorial/part-1.md) turns this into a running application with browser sign-in, session middleware, and GitHub authentication.
+Alchemy binds its database, applies its migrations on deploy, and serves its routes from your Worker or Lambda. Pick a [sign-in provider](better-auth/sign-in-providers/email-password.md) and a [database](better-auth/databases.md) to go with it.
 
-| Part | Build |
-| --- | --- |
-| [1\. Create an Auth service](better-auth/tutorial/part-1.md) | Install the module and provide a database layer |
-| [2\. Mount the HTTP API](better-auth/tutorial/part-2.md) | Serve authentication and application routes |
-| [3\. Build sign-in](better-auth/tutorial/part-3.md) | Sign up, sign in, read sessions, and sign out |
-| [4\. Protect API endpoints](better-auth/tutorial/part-4.md) | Provide the current user through Effect middleware |
-| [5\. Add GitHub sign-in](better-auth/tutorial/part-5.md) | Register an OAuth app and bind its credentials |
-| [6\. Deploy and verify](better-auth/tutorial/part-6.md) | Configure production callbacks and check persistence |
+## Where to start
 
-## Choose a sign-in provider
+**Want to build?** The [tutorial](better-auth/tutorial/part-1.md) builds an app with browser sign-in, session middleware and GitHub sign-in, in six parts.
 
-Use [email/password](better-auth/sign-in-providers/email-password.md), [GitHub](better-auth/sign-in-providers/github.md), [Google](better-auth/sign-in-providers/google.md), [Microsoft](better-auth/sign-in-providers/microsoft.md), or [custom OAuth](better-auth/sign-in-providers/custom-oauth.md). Each guide covers registration, configuration, and browser sign-in.
-
-## Choose a database
-
-Keep the Auth service and change the database layer. The [database guides](better-auth/databases.md) cover D1, Hyperdrive, Neon, Aurora, Postgres, MySQL, Drizzle, SQLite, and memory.
-
-## Extend the application
-
-Use [Config and secrets](better-auth/guides/configuration.md) for deployment bindings, [HTTP API middleware](better-auth/guides/http-api-middleware.md) for Effect handlers, and [secondary storage](better-auth/guides/secondary-storage.md) for custom storage layers.
-
-For Better Auth’s authentication features and options, see the [Better Auth documentation](https://better-auth.com/docs).
-
-## Upgrade an existing installation
-
-The [1.6 → 1.7.5 upgrade guide](better-auth/upgrades/from-1-6-to-1-7.md) separates package and API changes from manual data preparation. [Migrations](better-auth/guides/migrations.md) explains what deployment applies automatically.
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).

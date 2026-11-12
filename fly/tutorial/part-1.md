@@ -2,15 +2,15 @@
 url: https://alchemy.run/fly/tutorial/part-1
 title: "Part 1: Your First Service"
 description: "Install Alchemy, create a Stack, and deploy an Effect HTTP Service to Fly on its own fly.dev hostname."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Install Alchemy and Effect, create a Stack, and deploy a `Fly.Service`: an Effect program running in a Fly Machine. The Service creates its own Fly App, so it gets its own public `https://{name}.fly.dev` URL. Alchemy bundles it, builds a Docker image, and pushes it to `registry.fly.io`. No Dockerfile. No `fly.toml`.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A Fly organization and an API token — see [Setup](../setup.md) if you haven’t created those yet
 - Docker running locally. Alchemy builds `linux/amd64` images and pushes them with an App deploy token.
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/aurora-data-api
 title: "Aurora Data API"
 description: "Deploy a Better Auth Lambda with Aurora PostgreSQL over HTTPS and automatic IAM bindings."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This example creates Aurora PostgreSQL and serves Better Auth through a Lambda Function URL. Aurora needs a VPC, but Lambda reaches the Data API over HTTPS without joining that VPC.
@@ -11,14 +11,14 @@ This example creates Aurora PostgreSQL and serves Better Auth through a Lambda F
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5 kysely @distilled.cloud/aws
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5 kysely @distilled.cloud/aws
 ```
 
-Configure AWS through an [Alchemy profile](../../environments/profiles.md) in a region supporting Aurora PostgreSQL's Data API. No `pg` driver or TCP connection pool is required.
+Configure AWS through an [Alchemy profile](../../environments/profiles.md) in a region supporting Aurora PostgreSQL’s Data API. No `pg` driver or TCP connection pool is required.
 
 ## Define the database and network
 
-```typescript title="src/database.ts"
+```typescript
 import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 
@@ -44,7 +44,7 @@ The Aurora composite creates the cluster, writer, and database-credentials secre
 
 ## Define the auth Lambda
 
-```typescript title="src/function.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import { AuroraDataApi } from "@alchemy.run/better-auth/AuroraDataApi";
 import * as AWS from "@alchemy.run/aws";
@@ -74,7 +74,7 @@ The database layer binds cluster and secret identifiers and grants the function 
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
@@ -93,15 +93,15 @@ export default Alchemy.Stack(
 );
 ```
 
-The auth signing secret is generated and bound automatically, separately from Aurora's database-credentials secret. Preserve and protect local `.alchemy` state across deployments.
+The auth signing secret is generated and bound automatically, separately from Aurora’s database-credentials secret. Preserve and protect local `.alchemy` state across deployments.
 
 ## Deploy and migrate
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
-Automatic migrations wait for the writer and use the Data API with deploy-time AWS credentials. Those credentials need database and secret access too; the function's IAM bindings do not grant permissions to the deployer.
+Automatic migrations wait for the writer and use the Data API with deploy-time AWS credentials. Those credentials need database and secret access too; the function’s IAM bindings do not grant permissions to the deployer.
 
 Set `AUTH_ORIGIN` to the printed Function URL and verify the endpoint:
 
@@ -111,10 +111,10 @@ curl -i "$AUTH_ORIGIN/api/auth/get-session"
 
 ## Cluster and migration options
 
-For a bare `AWS.RDS.DBCluster` resource, provide an `AWS.SecretsManager.Secret` resource through the layer's `secret` option. Passing the Aurora composite, as above, also supplies the writer dependency needed to order migrations.
+For a bare `AWS.RDS.DBCluster` resource, provide an `AWS.SecretsManager.Secret` resource through the layer’s `secret` option. Passing the Aurora composite, as above, also supplies the writer dependency needed to order migrations.
 
 The layer retries transient errors while a Serverless v2 cluster resumes, with bounded retries at deployment and runtime. SQL runs within each invocation without retaining a TCP connection across invocations.
 
-The layer's `migrate: false` option disables automatic migration support; Better Auth's own `migrate: false` also opts out of its migration Action. Automatic migrations are additive and do not move records between databases.
+The layer’s `migrate: false` option disables automatic migration support; Better Auth’s own `migrate: false` also opts out of its migration Action. Automatic migrations are additive and do not move records between databases.
 
 See [configuration](../guides/configuration.md), [migrations](../guides/migrations.md), the [upgrade guide](../upgrades/from-1-6-to-1-7.md), and the [`AuroraDataApi` reference](https://alchemy.run/providers/betterauth/reference/aurora#auroradataapi).

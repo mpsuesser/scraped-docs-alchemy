@@ -1,0 +1,102 @@
+---
+url: https://alchemy.run/daytona
+title: "Daytona"
+description: "Run code you don't fully trust in Daytona sandboxes. Declare snapshots, volumes and secrets in your Stack, and create, drive and delete sandboxes from any Worker or Lambda."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+Daytona runs sandboxes: isolated Linux machines for code you don’t fully trust, like an agent’s tool calls, a user’s code or a test run. Each sandbox boots from a snapshot, with its own filesystem, processes and network. Its toolbox API runs commands, edits files, drives git and terminals, and serves previews of its ports. An idle sandbox stops and keeps its disk, and a stopped one is archived and can later be deleted.
+
+**New to Daytona?** Start with [What is Daytona?](daytona/what-is-daytona.md).
+
+## A quick example
+
+A warm snapshot is built once, at deploy: an image pulled into a snapshot, then a sandbox from it with a repository cloned, captured:
+
+```typescript
+import * as Daytona from "@alchemy.run/daytona";
+
+export const Base = Daytona.Snapshot("Base", { image: "node:22-bookworm", cpu: 1, memory: 1, disk: 3 });
+
+export const Warm = Daytona.Snapshot("Warm", {
+  from: Base,
+  run: ["git clone --depth 1 https://github.com/sindresorhus/is /home/daytona/repo"],
+});
+```
+
+A Worker starts a sandbox from `Warm` on each request, with the repository already there, runs the command it was sent, and deletes the sandbox:
+
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Daytona from "@alchemy.run/daytona";
+import * as Effect from "effect/Effect";
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Warm } from "./Images.ts";
+
+export default class Api extends Cloudflare.Worker<Api>()(
+  "Api",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const sandboxes = yield* Daytona.CreateSandbox(Warm);
+    return {
+      fetch: Effect.gen(function* () {
+        const request = yield* HttpServerRequest;
+        const sandbox = yield* Effect.acquireRelease(sandboxes.create(), (s) =>
+          sandboxes.delete(s.sandboxId).pipe(Effect.ignore),
+        );
+        const result = yield* sandbox.exec(yield* request.text, { cwd: "/home/daytona/repo" });
+        return yield* HttpServerResponse.json(result);
+      }).pipe(Effect.scoped, Effect.orDie),
+    };
+  }).pipe(Effect.provide(Daytona.CreateSandboxHttp)),
+) {}
+```
+
+And the Stack deploys them, giving the Worker its own Daytona API key that can only create and delete sandboxes:
+
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Daytona from "@alchemy.run/daytona";
+import * as Alchemy from "alchemy";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+import Api from "./src/Api.ts";
+import { Warm } from "./src/Images.ts";
+
+export default Alchemy.Stack(
+  "MyApp",
+  {
+    providers: Layer.mergeAll(Cloudflare.providers(), Daytona.providers()),
+    state: Cloudflare.state(),
+  },
+  Effect.gen(function* () {
+    const warm = yield* Warm;
+    const api = yield* Api;
+    return { snapshot: warm.name, url: api.url.as<string>() };
+  }),
+);
+```
+
+## Where to start
+
+**Want to build?** Start with [Setup](daytona/setup.md) to connect your organization, then the [tutorial](daytona/tutorial/part-1.md) goes from a snapshot to a sandbox per user, one step at a time.
+
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).
+
+## The docs
+
+### Accounts & access
+
+- [Organizations & API keys](daytona/organizations-and-keys.md)
+- [Members & roles](daytona/organization/organization.md)
+- [Secrets](daytona/security/secrets.md)
+
+### Networking
+
+- [Network & previews](daytona/networking/network.md)
+
+### Observability
+
+- [Telemetry, webhooks & audit](daytona/observability/telemetry.md)

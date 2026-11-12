@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Fly with Fly.Website.SolidStart — nitro's node preset on a Machine, prerendered pages baked into the image, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Fly.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to Fly. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and client assets plus prerendered pages are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -136,7 +136,7 @@ export const Website = Fly.Website.SolidStart("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs SolidStart’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Fly resources are created. Nitro plays no part in dev. Wrap the site in `Alchemy.remote()` to deploy the live App and Service even during dev:

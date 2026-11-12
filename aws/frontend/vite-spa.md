@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/vite-spa
 title: "React SPA"
 description: "Deploy a React single-page app to AWS with AWS.Website.Vite — the Vite build on S3 + CloudFront, deep links answered by index.html out of the box, and Vite's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This is the walkthrough for a plain React single-page app on [`AWS.Website.Vite`](vite.md): scaffold the project, run its own `vite build`, and serve the output from a private S3 bucket through CloudFront. The composite is assets-only — it never creates a Lambda — and `spa` defaults on, so client-side routes deep-link correctly with nothing to configure. For the resource itself and every prop, see the [Vite resource page](vite.md).
@@ -78,7 +78,7 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Alchemy runs `vite build` in `rootDir`, uploads `dist/` to a private S3 bucket, and serves it through CloudFront. `site.url` is the distribution’s URL (or `https://<your-domain>` once you pass `domain`).
@@ -194,7 +194,7 @@ Setting `include` (or `exclude`) drops the lockfile from the hash — pass `lock
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Vite’s own dev server — native HMR, instant module updates — instead of deploying. `site.url` is the local address and no AWS resources are created at all: no bucket, no distribution.

@@ -2,15 +2,15 @@
 url: https://alchemy.run/aws/tutorial/part-1
 title: "Part 1: Your First Stack"
 description: "Install Alchemy, create a Stack with an AWS S3 Bucket, and deploy it."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In this first part you’ll install Alchemy and Effect, create a Stack with an AWS S3 Bucket, and deploy it — all in under five minutes.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 24.11.1+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - An AWS account and an IAM identity with permission to create the resources you plan to deploy
 
 ## Create a project
@@ -60,7 +60,7 @@ export default Alchemy.Stack(
 
 ## Where state lives
 
-`state: AWS.state()` stores deploy state in an account-regional S3 bucket (`alchemy-state-{accountId}-{region}-an`), created lazily on the first deploy. Because the state lives in your AWS account rather than on disk, the same configuration works locally and in CI with no extra setup.
+`state: AWS.state()` stores deploy state in a DynamoDB table (`alchemy-state`) in your account, created lazily on the first deploy. Because the state lives in your AWS account rather than on disk, the same configuration works locally and in CI.
 
 ## Add a Resource
 
@@ -111,7 +111,7 @@ Run `alchemy deploy` to create the Bucket on AWS:
 pnpm alchemy deploy
 ```
 
-Connect AWS first with `alchemy profile edit --add AWS` and pick a local authentication method: **SSO** (recommended), **console login** (`aws login`), or **stored access keys**. The choice is saved to your **`default`** [profile](../../environments/profiles.md); the region and account come from whichever method you pick, and a deploy with nothing configured fails with that exact command to run. CI instead reads AWS environment credentials directly. See [Setup](../setup.md) for the full walkthrough.
+Connect AWS first with `alchemy profile edit --add AWS` and pick a local authentication method: **console login** (recommended, `aws login`), **SSO** through IAM Identity Center, or **stored access keys**. The choice is saved to your **`default`** [profile](../../environments/profiles.md); the region and account come from whichever method you pick, and a deploy with nothing configured fails with that exact command to run. CI instead reads AWS environment credentials directly. See [Setup](../setup.md) for the full walkthrough.
 
 ```
 Plan: 1 to create
@@ -148,10 +148,10 @@ This is the core loop — declare resources in code, deploy, and Alchemy figures
 The inverse of `deploy` is `destroy` — it plans against an empty desired state and deletes everything the stack created:
 
 ```sh
-bun alchemy destroy
+pnpm alchemy destroy
 ```
 
-Try it if you like, then run `bun alchemy deploy` again to bring the bucket back — we’ll build on it in Part 2.
+Try it if you like, then run `alchemy deploy` again to bring the bucket back — we’ll build on it in Part 2.
 
 ## Recap
 

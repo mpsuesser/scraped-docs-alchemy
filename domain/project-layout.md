@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/project-layout
 title: "Project layout"
 description: "How to lay out an @alchemy.run/domain project. One file per building block, named after its noun and its kind; folders per subdomain; a pure domain package, a server package that hosts it, and a foldkit web package, wired in one stack."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A domain grows into many small pieces: commands, events, rejections, views, policies. Lay them out so a file's name tells you what it holds before you open it, and so the model never depends on how it's hosted.
@@ -20,6 +20,7 @@ TransferExecution.policy.ts
 ExecuteTransfer.saga.ts
 Ledger.projection.ts
 AccountCard.stream.ts
+AccountLedger.query.ts
 FraudCheck.external.ts
 CustomerApi.api.ts
 Bank.model.ts

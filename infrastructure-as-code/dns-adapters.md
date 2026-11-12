@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-code/dns-adapters
 title: "DNS Adapters"
 description: "Publish a custom domain's DNS records in Route 53, Cloudflare, or Hetzner DNS from any platform, and build an adapter for another DNS host."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A custom domain has two parts. The platform that **serves** the hostname (CloudFront, a load balancer, API Gateway, a Worker, a Fly App) issues or attaches a certificate and tells you which DNS records it needs. The DNS host that **publishes** the hostname’s records is often somewhere else: a domain registered with Cloudflare Registrar can point at an AWS website, and a Route 53 zone can point at a Fly App.
@@ -149,7 +149,7 @@ An adapter declares ordinary record resources of its own cloud, so they appear i
 | Adapter | Hostname aliases | Validation and verification records |
 | --- | --- | --- |
 | Cloudflare | `Cloudflare.DNS.Records` (`CNAME`), or `Cloudflare.DNS.RecordList` for addresses | `Cloudflare.DNS.RecordList` |
-| Route 53 | `AWS.Route53.Record` (`A` / `AAAA` alias or `CNAME`), `AWS.Route53.Records` for a Router | `AWS.Route53.RecordList` |
+| Route 53 | `AWS.Route53.Record` (`A` / `AAAA` alias or `CNAME`), `AWS.Route53.Records` (`A` + `AAAA`) for a Router | `AWS.Route53.RecordList` |
 | Hetzner | `Hetzner.DNS.RecordList` | `Hetzner.DNS.RecordList` |
 
 Record ownership follows the rest of Alchemy:
@@ -174,7 +174,7 @@ An adapter is three functions that declare record resources. Each receives the z
 | Function | Declares |
 | --- | --- |
 | `alias(id, { zone, name, target, ipv6? })` | Records pointing one hostname at a hostname target (`CNAME`, or a Route 53 alias when `target.route53Alias` is set) or an address target (`A` / `AAAA`) |
-| `aliasSet(id, { zone, names?, target })` | A record set that other composites add hostnames to by binding `{ names }`, used by `AWS.Website.Router` |
+| `aliasSet(id, { zone, names?, target, ipv6? })` | A record set that other composites add hostnames to by binding `{ names }`, used by `AWS.Website.Router` |
 | `records(id, { zone, records, retain? })` | Explicit records whose values usually come from another resource’s outputs |
 
 ## Build your own adapter

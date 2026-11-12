@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to AWS with AWS.Website.Waku — RSC server on a Lambda Web Function, SSG pages and assets on S3 + CloudFront, and Waku's own dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to AWS. It builds the project programmatically: the RSC server runs on a [Lambda Web Function](../compute/web-functions.md) and streams its responses, and the client output — including SSG-prerendered pages — is served from a private S3 bucket through CloudFront. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -123,7 +123,7 @@ export const Website = AWS.Website.Waku("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Waku’s own dev server (native HMR) instead of deploying; `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

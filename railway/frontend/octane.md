@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/octane
 title: "Octane"
 description: "Deploy an OctaneJS app to Railway with Railway.Website.Octane — SSR plus client assets on one Service, and Octane's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Railway.Website.Octane` deploys an [OctaneJS](https://octanejs.dev/) fullstack app to Railway. Octane wraps Vite, so the resource is deliberately thin: it runs your project’s own `vite build` — Octane’s plugin builds the client bundle and the self-contained SSR server bundle, and the Node deploy target’s finishing pass wraps its fetch handler as a Node HTTP program. The server plus client assets run on one `Railway.Service` from a container image. The live URL is the generated `https://{name}.up.railway.app`. No Dockerfile, no build command to run.
@@ -123,7 +123,7 @@ Octane’s intended setup is asset-first with SSR on miss: exact files in `dist/
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Octane’s own Vite dev server — the plugin’s in-process SSR middleware serves rendering, server routes, and RPC with full HMR. `site.url` is the local address and no Railway resources are created (`service` and `project` are `undefined`; Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

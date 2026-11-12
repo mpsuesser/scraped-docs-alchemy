@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/data/postgres
 title: "Postgres"
 description: "Prisma Postgres as Stack resources — projects, databases, branch attachment, and a zero-config local database under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A `Prisma.Project` owns everything; a `Prisma.Postgres` database
@@ -70,7 +70,7 @@ patterns and default-branch promotion.
 
 ## Local dev
 
-Under `bun alchemy dev`, the database resolves to a local
+Under `alchemy dev`, the database resolves to a local
 `@prisma/dev` Postgres instead of the cloud — same outputs, zero
 provisioning. The `dev` prop tunes it:
 

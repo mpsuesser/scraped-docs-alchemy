@@ -2,13 +2,13 @@
 url: https://alchemy.run/aws/apis/schemaless-rpc
 title: "Schemaless RPC"
 description: "Typed RPC from a Lambda Function into a MicroVM with no schema — declare the image's Shape, connect, get the client."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 The pattern — what a Shape member may be, how the typed client arises, what
-crosses the wire — lives at [Schemaless RPC](../../apis/schemaless.md). This page
-covers the AWS pairings. There is one today: **Lambda → Firecracker MicroVM**,
+crosses the wire — lives at [Schemaless RPC](../../apis/schemaless.md). On AWS
+there is one pairing today: **Lambda → Firecracker MicroVM**,
 riding the generic fetch transport — each call is a
 `POST https://<endpoint>/__rpc__/{name}`.
 

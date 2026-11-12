@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/cloudflare-d1
 title: "Cloudflare D1"
 description: "Deploy a Better Auth Worker with a native D1 database and automatic schema migrations."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This example creates a D1 database and a Worker serving Better Auth at `/api/auth`. It includes the auth configuration, database layer, and stack; no tutorial files are required.
@@ -11,14 +11,14 @@ This example creates a D1 database and a Worker serving Better Auth at `/api/aut
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5 kysely
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5 kysely
 ```
 
 `kysely` is the SQL adapter peer; D1 needs no separate database driver. Configure Cloudflare credentials through an [Alchemy profile](../../environments/profiles.md) before deployment.
 
 ## Define the Worker
 
-```typescript title="src/worker.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
 import * as Cloudflare from "@alchemy.run/cloudflare";
@@ -42,11 +42,11 @@ export default class AuthApi extends Cloudflare.Worker<AuthApi>()(
 ) {}
 ```
 
-`CloudflareD1` registers the native Worker binding and supplies Better Auth's database service. This auth-only Worker forwards every request to Better Auth; endpoints live under `/api/auth`.
+`CloudflareD1` registers the native Worker binding and supplies Better Auth’s database service. This auth-only Worker forwards every request to Better Auth; endpoints live under `/api/auth`.
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -70,16 +70,16 @@ Omitting `secret` provisions and binds a stable signing secret automatically. Pr
 ## Deploy or develop locally
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 Deployment creates D1 and applies the auth schema through its HTTP API before updating the Worker. Requests use the native binding and never run migrations.
 
 ```sh
-bunx alchemy dev
+pnpm alchemy dev
 ```
 
-Development uses the local D1 simulator, including migrations; use the URL printed by Alchemy. The Worker still runs in workerd, so replacing this layer with Bun's `SQLite` is not supported.
+Development uses the local D1 simulator, including migrations; use the URL printed by Alchemy. The Worker still runs in workerd, so replacing this layer with Bun’s `SQLite` is not supported.
 
 ## Verify the endpoint
 

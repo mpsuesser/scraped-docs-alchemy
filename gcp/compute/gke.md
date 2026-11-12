@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/compute/gke
 title: "GKE"
 description: "Run Effect programs as Kubernetes Deployments and Jobs on a GKE Autopilot cluster, with bindings granted through Workload Identity."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 GKE runs your Effect program as a Kubernetes workload. You declare the cluster, then a `Kubernetes.Deployment` or `Kubernetes.Job` on it. Alchemy builds the image, pushes it to Artifact Registry, and applies the objects. No YAML, no `kubectl`.
@@ -23,6 +23,26 @@ providers: Layer.mergeAll(GCP.providers(), Kubernetes.providers()),
 ## Create a cluster
 
 An Autopilot cluster sizes its nodes from your pods, so there are no node pools to manage:
+
+GKE clusterAutopilot · us-central1
+
+API serverthe objects you apply
+
+apiDeployment · 2 replicas
+
+apiService · LoadBalancer
+
+apiKubernetes service account
+
+node 1sized by Autopilot
+
+api-5d8fPod
+
+node 2sized by Autopilot
+
+api-q7w2Pod
+
+You apply objects to the API server. The Deployment keeps two Pods running on nodes Autopilot sizes for them, and the Pods run as the Deployment's Kubernetes service account, which bindings grant roles to.
 
 ```typescript
 import * as GCP from "@alchemy.run/gcp";

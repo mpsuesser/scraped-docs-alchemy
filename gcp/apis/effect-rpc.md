@@ -2,19 +2,15 @@
 url: https://alchemy.run/gcp/apis/effect-rpc
 title: "Effect RPC on Cloud Run"
 description: "Build a typed RPC API with Effect's Rpc module, deploy it to Cloud Run, and call its procedures from a typed client."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Effect RPC gives you procedures instead of URLs, and a typed client
-with no codegen. Every request is checked against a schema, so use it
-where a web app or another service calls into yours. The concept lives
-at [Effect RPC](../../apis/effect-rpc.md). This page wires it onto Cloud Run.
+Effect RPC gives you procedures instead of URLs, and a typed client with no codegen. Every request is checked against a schema, so use it where a web app or another service calls into yours. The concept lives at [Effect RPC](../../apis/effect-rpc.md).
 
 ## Define the schemas
 
 ```typescript
-// src/Job.ts
 import * as Schema from "effect/Schema";
 
 export const JobId = Schema.String;
@@ -40,7 +36,6 @@ The client receives these errors as typed values it can `catchTag`.
 ## Declare the procedures
 
 ```typescript
-// src/JobRpcs.ts
 import * as Schema from "effect/Schema";
 import { Rpc, RpcGroup } from "effect/rpc";
 import { Job, JobId, JobNotFound, PutJobFailed } from "./Job.ts";
@@ -62,12 +57,9 @@ export class JobRpcs extends RpcGroup.make(getJob, createJob) {}
 
 ## Implement it on Cloud Run
 
-`GCP.Run.ServeRpc` turns the group into a `fetch` handler. It serves
-NDJSON, so streaming procedures work, and builds the server once per
-instance:
+`GCP.Run.ServeRpc` turns the group into a `fetch` handler. It serves NDJSON, so streaming procedures work, and builds the server once per instance:
 
 ```typescript
-// src/JobService.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import { Job, JobNotFound, PutJobFailed } from "./Job.ts";
@@ -84,7 +76,7 @@ export default class JobService extends GCP.Function<JobService>()(
 
     const handlersLayer = JobRpcs.toLayer({
       getJob: ({ jobId }) =>
-        db.get(`jobs/${jobId}`).pipe(
+        db.get(\`jobs/${jobId}\`).pipe(
           Effect.orDie,
           Effect.flatMap((doc) =>
             doc
@@ -97,7 +89,7 @@ export default class JobService extends GCP.Function<JobService>()(
       createJob: ({ content }) =>
         Effect.gen(function* () {
           const jobId = crypto.randomUUID();
-          yield* db.set(`jobs/${jobId}`, { content });
+          yield* db.set(\`jobs/${jobId}\`, { content });
           return jobId;
         }).pipe(
           Effect.mapError((error) => new PutJobFailed({ reason: error._tag })),
@@ -111,13 +103,11 @@ export default class JobService extends GCP.Function<JobService>()(
 ) {}
 ```
 
-`getJob` turns Firestore failures into 500s and keeps `JobNotFound`
-for the client. `createJob` maps them to the declared `PutJobFailed`.
+`getJob` turns Firestore failures into 500s and keeps `JobNotFound` for the client. `createJob` maps them to the declared `PutJobFailed`.
 
 ## Add it to the Stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
@@ -134,13 +124,12 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## Call it from a typed client
 
 ```typescript
-// scripts/client.ts
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as FetchHttpClient from "effect/http/FetchHttpClient";
@@ -174,13 +163,9 @@ JOB_RPC_URL=https://<service>.run.app bun scripts/client.ts
 
 ## Call it from another service
 
-Keep the RPC service private (drop `invokerIamDisabled`) and call it
-from another Cloud Run service. `GCP.Run.InvokeService` with
-`schema` grants `roles/run.invoker`, signs each call with an ID token,
-and returns the typed client:
+Keep the RPC service private (drop `invokerIamDisabled`) and call it from another Cloud Run service. `GCP.Run.InvokeService` with `schema` grants `roles/run.invoker`, signs each call with an ID token, and returns the typed client:
 
 ```typescript
-// src/Gateway.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -206,11 +191,9 @@ The client speaks NDJSON, the serialization `GCP.Run.ServeRpc` serves.
 
 ## Run it as a sidecar
 
-The same group can run next to the caller in one instance. Declare it
-as a `GCP.Run.Container` and bind it with `GCP.Run.bindContainer`:
+The same group can run next to the caller in one instance. Declare it as a `GCP.Run.Container` and bind it with `GCP.Run.bindContainer`:
 
 ```typescript
-// src/JobSidecar.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import { JobRpcs } from "./JobRpcs.ts";
@@ -231,18 +214,13 @@ const jobs = yield* GCP.Run.bindContainer(JobSidecar, { schema: JobRpcs });
 const job = yield* jobs.getJob({ jobId });
 ```
 
-Calls go over `localhost` and never leave the instance. Streaming
-procedures return a `Stream` on both clients.
+Calls go over `localhost` and never leave the instance. Streaming procedures return a `Stream` on both clients.
 
 ## Choosing an API style
 
-Use Effect RPC when every caller is Effect. Use
-[Effect HTTP](effect-http-api.md) when callers want plain
-REST. The [RPC overview](../../apis.md) has the full decision.
+Use Effect RPC when every caller is Effect. Use [Effect HTTP](effect-http-api.md) when callers want plain REST. The [RPC overview](../../apis.md) has the full decision.
 
 ## Where next
 
-- [Effect RPC](../../apis/effect-rpc.md) — procedures, streaming, and clients
-  in depth.
-- [Private services](../networking/private-services.md) — keep the RPC
-  service private and call it from another service.
+- [Effect RPC](../../apis/effect-rpc.md) — procedures, streaming, and clients in depth.
+- [Private services](../networking/private-services.md) — keep the RPC service private and call it from another service.

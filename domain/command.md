@@ -2,19 +2,19 @@
 url: https://alchemy.run/domain/command
 title: "Command"
 description: "How a command names its target, carries its data, declares every outcome, and reaches its aggregate exactly once."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A command asks one aggregate instance for a change. It’s a request, so it can be refused, and it’s named as an instruction: `OpenAccount`, `DepositMoney`, `WithdrawMoney`.
 
-A command is also a contract. Before you send one, its declaration tells you which instance it goes to, what data it carries, which events it may record, which refusals it may return, and what you get back. This chapter starts with how to find the commands in a business, then goes through the declaration one part at a time, and follows a command as it’s sent.
+A command is also a contract. Before you send one, its declaration tells you which instance it goes to, what data it carries, which events it may record, which refusals it may return, and what you get back.
 
 ## Find the commands in your business
 
 Commands come from the verbs people use when they describe their work. At a bank, for example, a customer *opens* an account, *deposits* money, *withdraws* cash, *requests* a transfer; a support agent *freezes* an account, *approves* a large transfer. Each of those sentences is a command, named the way the business says it.
 
-<svg viewBox="0 0 700 204" role="img" aria-label="Each command is one thing someone wants, in the words they'd use to ask for it."><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 188 56 C 225 56, 225 56, 262 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 188 148 C 225 148, 225 148, 262 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 432 56 C 469 56, 469 102, 506 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 432 148 C 469 148, 469 102, 506 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g transform="translate(24, 24)"><g style="--hue:#c3ccd6"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><g transform="translate(40.8, 21) scale(0.5833333333333334)"><path fill="none" d="M4 5h16v11H4z"></path><path stroke="currentColor" fill="none" d="M2 19h20"></path></g><text fill="currentColor" x="60.8" y="28" dominant-baseline="middle">Customer</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">who asks</text></g></g> <g transform="translate(24, 116)"><g style="--hue:#c3ccd6"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path fill="none" d="M4 5h16v11H4z"></path><path stroke="currentColor" fill="none" d="M2 19h20"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">Support agent</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">who asks</text></g></g> <g transform="translate(268, 24)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">WithdrawMoney</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">a customer's intent</text></g></g> <g transform="translate(268, 116)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">FreezeAccount</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">an agent's intent</text></g></g> <g transform="translate(512, 70)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="156" height="56" rx="5"></rect><g transform="translate(44.7, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="64.7" y="28" dominant-baseline="middle">Account</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">decides both</text></g></g></svg>
+<svg viewBox="0 0 700 204" style="max-width: 805px" role="img" aria-label="Each command is one thing someone wants, in the words they'd use to ask for it."><defs><marker id="alc-dag-arrow-494a64" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 188 56 C 225 56, 225 56, 262 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-494a64)"></path></g><g><path d="M 188 148 C 225 148, 225 148, 262 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-494a64)"></path></g><g><path d="M 432 56 C 469 56, 469 102, 506 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-494a64)"></path></g><g><path d="M 432 148 C 469 148, 469 102, 506 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-494a64)"></path></g><g transform="translate(24, 24)"><g style="--hue:#c3ccd6"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><g transform="translate(40.8, 21) scale(0.5833333333333334)"><path fill="none" d="M4 5h16v11H4z"></path><path stroke="currentColor" fill="none" d="M2 19h20"></path></g><text fill="currentColor" x="60.8" y="28" dominant-baseline="middle">Customer</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">who asks</text></g></g> <g transform="translate(24, 116)"><g style="--hue:#c3ccd6"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path fill="none" d="M4 5h16v11H4z"></path><path stroke="currentColor" fill="none" d="M2 19h20"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">Support agent</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">who asks</text></g></g> <g transform="translate(268, 24)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">WithdrawMoney</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">a customer's intent</text></g></g> <g transform="translate(268, 116)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">FreezeAccount</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">an agent's intent</text></g></g> <g transform="translate(512, 70)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="156" height="56" rx="5"></rect><g transform="translate(44.7, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="64.7" y="28" dominant-baseline="middle">Account</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">decides both</text></g></g></svg> <svg viewBox="0 0 332 332" style="max-width: 382px" role="img" aria-label="Each command is one thing someone wants, in the words they'd use to ask for it."><defs><marker id="alc-dag-arrow-tjyubw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 81 74 C 81 101, 81 101, 81 128" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-tjyubw)"></path></g><g><path d="M 251 74 C 251 101, 251 101, 251 128" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-tjyubw)"></path></g><g><path d="M 81 198 C 81 225, 166 225, 166 252" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-tjyubw)"></path></g><g><path d="M 251 198 C 251 225, 166 225, 166 252" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-tjyubw)"></path></g><g transform="translate(10, 10)"><g style="--hue:#c3ccd6"><rect stroke="currentColor" fill="none" width="142" height="64" rx="8"></rect><g transform="translate(29.799999999999997, 21) scale(0.5833333333333334)"><path fill="none" d="M4 5h16v11H4z"></path><path stroke="currentColor" fill="none" d="M2 19h20"></path></g><text fill="currentColor" x="49.8" y="28" dominant-baseline="middle">Customer</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">who asks</text></g></g> <g transform="translate(180, 10)"><g style="--hue:#c3ccd6"><rect stroke="currentColor" fill="none" width="142" height="64" rx="8"></rect><g transform="translate(10.300000000000004, 21) scale(0.5833333333333334)"><path fill="none" d="M4 5h16v11H4z"></path><path stroke="currentColor" fill="none" d="M2 19h20"></path></g><text fill="currentColor" x="30.300000000000004" y="28" dominant-baseline="middle">Support agent</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">who asks</text></g></g> <g transform="translate(10, 134)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 130 L 142 32 L 130 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(10.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="30.300000000000004" y="28" dominant-baseline="middle">WithdrawMoney</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">a customer's intent</text></g></g> <g transform="translate(180, 134)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 130 L 142 32 L 130 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(10.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="30.300000000000004" y="28" dominant-baseline="middle">FreezeAccount</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">an agent's intent</text></g></g> <g transform="translate(95, 258)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="142" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="134" height="56" rx="5"></rect><g transform="translate(33.7, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="53.7" y="28" dominant-baseline="middle">Account</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">decides both</text></g></g></svg>
 
 CommandAggregateClient
 
@@ -50,6 +50,24 @@ export class WithdrawMoney extends Domain.Command("WithdrawMoney", {
 ```
 
 The first argument is the command’s name. It’s how the command is identified on the wire and in the aggregate’s handlers, so it must be unique within a model.
+
+## Describe it
+
+A command’s last argument is its [annotations](annotations.md). Its `description` is what a person or an agent reads before sending it: the [MCP](mcp.md) tool’s description, the [CLI](cli.md) subcommand’s help, and the operation’s description in the [OpenAPI document](http-api.md).
+
+```typescript
+export class WithdrawMoney extends Domain.Command(
+  "WithdrawMoney",
+  {
+    target: AccountId,
+    input: { amount: Schema.Int },
+    events: [MoneyWithdrawn],
+    rejects: [NotOpen, InsufficientFunds],
+    reply: { balance: Schema.Int },
+  },
+  { description: "Take money out of an account. The amount is in cents." },
+) {}
+```
 
 ## Keep it with its events and rejections
 
@@ -94,12 +112,14 @@ The target isn’t part of the command’s data. You pass it alongside the comma
 `input` lists the fields the caller provides, each as a schema. You create the command with them, and the aggregate reads them in `decide`.
 
 ```typescript
-WithdrawMoney: (s, cmd) =>
-  s._tag !== "Open"
-    ? new NotOpen()
-    : cmd.amount > s.balance
-      ? new InsufficientFunds({ balance: s.balance, requested: cmd.amount })
-      : [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: s.balance - cmd.amount })],
+decide: {
+  WithdrawMoney: (account, cmd) =>
+    account._tag !== "Open"
+      ? new NotOpen()
+      : cmd.amount > account.balance
+        ? new InsufficientFunds({ balance: account.balance, requested: cmd.amount })
+        : [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: account.balance - cmd.amount })],
+},
 ```
 
 The schemas also decode the command when it arrives from a client, so `decide` only ever sees well-formed input. A command with no input, like a request to close an account, leaves `input` out.
@@ -134,6 +154,8 @@ export class NotOwner extends Domain.Rejection(
   { httpApiStatus: 403, description: "Only the account's owner may do this." },
 ) {}
 ```
+
+These are the rejection’s [annotations](annotations.md) too, so `NotOwner.annotations.description` reads the description back.
 
 `rejects` takes any tagged error class, so a `Schema.TaggedError` of your own, or one of Effect’s `HttpApiError` classes, works as a rejection too:
 
@@ -187,12 +209,10 @@ export class WithdrawMoney extends Domain.Command("WithdrawMoney", {
   events: [MoneyWithdrawn],
   rejects: [NotOpen, NotOwner, Frozen, InsufficientFunds, DailyLimitExceeded],
   reply: { balance: Cents },
-  // Recorded on every span the withdrawal passes through; nothing else from it is.
-  attributes: (cmd) => ({ "bank.amount": cmd.amount }),
 }) {}
 ```
 
-`attributes` chooses what its spans record; see [Observability](observability.md).
+Nothing from its input reaches a trace unless its `decide` annotates it; see [Observability](observability.md).
 
 Middleware runs in order, and any of it can stop the command with its own error, like `Unauthorized`. What it provides, such as who the caller is, travels with the command to the aggregate, where `decide` reads it to authorize the change. See [Sessions and middleware](sessions.md).
 
@@ -233,11 +253,9 @@ Commands sent by a [policy](policy.md) get ids derived from the event that cause
 A command can also be scheduled to arrive at a later time, which is how deadlines work: “expire this transfer if nobody approves it within a day”. Only commands that can’t be refused can be scheduled, because there’s no caller waiting to handle a rejection. See [Deadlines](deadlines.md).
 
 ```typescript
-yield* transfers.schedule(source, new ExpireTransfer(), { after: APPROVAL_WINDOW }).pipe(
-  Effect.catchTag("AlreadyExecuted", () => Effect.void),
-);
+yield* transfers.schedule(source, new ExpireTransfer(), { after: APPROVAL_WINDOW });
 ```
 
-Scheduling fails with `AlreadyExecuted` when the transfer already handled a command with that id.
+Scheduling again under the same command id replaces the earlier command, even one that already ran.
 
 Next, [Event](event.md): what a command records when it succeeds.

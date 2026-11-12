@@ -2,8 +2,8 @@
 url: https://alchemy.run/turso/migrations
 title: "Migrations"
 description: "Run SQL migrations and seed files on every deploy."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Point `migrations` at a folder of `.sql` files. Each deploy runs the new ones, in order.
@@ -22,9 +22,19 @@ const db = yield* Turso.Database("Db", {
 CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
 ```
 
-If any statement in a file fails, none of that file's changes are kept and the deploy fails.
+If any statement in a file fails, none of that file’s changes are kept and the deploy fails.
 
 Alchemy keeps track of which files ran in the `__alchemy_migrations` table.
+
+./migrations · against \_\_alchemy\_migrationsthis deploy runs
+
+| file | in \_\_alchemy\_migrations |
+| --- | --- |
+| 0001\_init.sql | applied · hash a41f… |
+| 0002\_orders.sql | applied · hash 9c07… |
+| 0003\_refunds.sql | new |
+
+Each deploy compares the folder with the tracking table and runs only the new files. Editing an applied file fails the deploy instead of running it again.
 
 ## Make migrations with Drizzle
 
@@ -65,7 +75,7 @@ const db = yield* Turso.Database("Db", {
 
 `importFiles` run after migrations. A file runs again only if you change it.
 
-## Don't edit old migrations
+## Don’t edit old migrations
 
 Changing or deleting a file that already ran makes the deploy fail. Add a new file instead.
 

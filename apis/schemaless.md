@@ -2,8 +2,8 @@
 url: https://alchemy.run/apis/schemaless
 title: "Schemaless RPC"
 description: "The pattern behind typed, schema-free RPC — what an RPC member may be, how the typed client arises, how calls travel over the wire, and where the limits are."
-access_date: 2026-09-09T22:57:45.923Z
-current_date: 2026-09-09T22:57:45.923Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Schemaless RPC is the default for internal communication between the services you deploy together: expose methods on a runtime’s interface, bind it from another resource, and call them through a fully typed client — no schema, no runtime validation, no per-request decode cost.
@@ -27,7 +27,7 @@ export default class Greeter extends Cloudflare.Worker<Greeter>()(
 ) {}
 ```
 
-The host class here happens to be `Cloudflare.Worker`, but the host is incidental — the pattern is identical on every runtime. This page covers what members are allowed, how the typed client arises, what crosses the wire, and where the limits are.
+The host class here happens to be `Cloudflare.Worker`, but the host is incidental — the pattern is identical on every runtime.
 
 ## What a member may be
 

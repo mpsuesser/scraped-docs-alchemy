@@ -2,13 +2,35 @@
 url: https://alchemy.run/cloudflare/compute/containers
 title: "Containers"
 description: "Cloudflare Containers run long-lived processes beside a Durable Object — declare a typed container class, implement its runtime in a separate file, and alchemy builds the image, pushes it, and wires the DO pairing."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A Cloudflare Container is a long-lived process running next to a [Durable Object](durable-objects.md): the DO owns the container’s lifecycle, and callers reach the container through it. In alchemy a container is a class with a typed RPC surface — the same tagged-shape ceremony as a Durable Object — plus a runtime implementation that alchemy bundles into a Docker image and pushes to Cloudflare’s registry for you.
 
 Reach for a container when a [Worker](workers.md) isn’t enough: you need a real OS process — a sandboxed shell, a binary you can’t compile to wasm, an HTTP server listening on a port, a runtime Workers doesn’t offer. If you only need per-entity state and coordination, a plain Durable Object is lighter; if you only need request/response compute, a Worker is.
+
+## How a Container runs
+
+A Container is a Docker image Cloudflare runs on its network, one instance per Durable Object. The Durable Object starts its container on demand, sends it requests, and stops it after a period of inactivity. Callers never reach the container directly. They call the Durable Object by name, which makes each container addressable the same way: one sandbox per user, one build runner per project.
+
+SandboxDurable Object class
+
+user-42Durable Object
+
+containeryour image · running
+
+user-7Durable Object
+
+containerstopped while idle
+
+user-9Durable Object
+
+containeryour image · running
+
+Each Durable Object owns one container. A Worker reaches one by name, like user-42, and that object starts its container when it's needed and lets it stop when idle.
+
+A container’s filesystem lasts only as long as it runs. Keep what must survive in the Durable Object’s storage, or in R2.
 
 ## Declare the container class
 
@@ -139,7 +161,7 @@ export class Echo extends Cloudflare.Container<Echo>()("Echo", {
 }) {}
 ```
 
-Arbitrary images expose no RPC methods — the DO talks to them purely over their TCP port via `getTcpPort`. To build, tag, and push that image as part of the same Stack, see [Build & push images](../../docker/build-and-push.md) in the Docker hub.
+Arbitrary images expose no RPC methods — the DO talks to them purely over their TCP port via `getTcpPort`. To build, tag, and push that image as part of the same Stack, see [Build images](../../docker/build-images.md) in the Docker hub.
 
 When `image` already references Cloudflare’s managed registry — for example a digest reference pushed by CI, like `registry.cloudflare.com/<accountId>/app@sha256:...` — alchemy deploys the reference as-is and skips the docker pull and push entirely.
 
@@ -156,7 +178,7 @@ Build it for `linux/amd64`, the platform Cloudflare runs. When an image can be n
 
 ## Cached builds by default
 
-Dockerfile builds, inline Dockerfiles, and Effect-native `main` builds use registry caching without extra configuration:
+Dockerfile builds, inline Dockerfiles, and Effect-native `main` builds reuse published images without extra configuration:
 
 ```typescript
 export class Web extends Cloudflare.Container<Web>()("Web", {
@@ -181,17 +203,43 @@ export class Web extends Cloudflare.Container<Web>()("Web", {
 
 ```text
 Published build: registry.cloudflare.com/<account-id>/web:<build-hash>
-Build cache:     registry.cloudflare.com/<account-id>/web:buildcache
 Deployed image:  registry.cloudflare.com/<account-id>/web@sha256:<manifest-digest>
 ```
 
-The build hash identifies the inputs; the manifest digest identifies the published artifact. Stages using the same repository and matching build inputs reuse the published image without invoking Docker. Changed inputs produce a new hash tag in that repository and can reuse its shared inline build-layer cache. Each stage still has its own Container application, runtime settings, and running instances; only images and build layers are shared.
-
-All builds targeting a repository import reusable layers from its `:buildcache` tag, even when their complete input hashes differ. That tag points to the latest exported inline cache, not an aggregate of every image ever published to the repository. A finished-image cache hit leaves the layer-cache tag unchanged. The Container deploys the immutable digest, not the mutable `buildcache` tag.
+The build hash identifies the inputs; the manifest digest identifies the published artifact. Stages using the same repository and matching build inputs reuse the published image without invoking Docker. Changed inputs produce a new hash tag in that repository. Each stage still has its own Container application, runtime settings, and running instances; only images are shared.
 
 For an Effect-native Container, put `publish` in the props passed to `.make()`, alongside `main`. Omitting `publish` keeps the default cached, application-specific repository.
 
 For a pre-built external `image`, `publish.repository` chooses where it is re-published, but does not enable finished-image cache reuse. Images already in the target registry keep their existing repository instead of being copied into the requested one.
+
+## Cache build layers
+
+A changed build reuses the layers in the local BuildKit cache of the machine it runs on. A builder that has never built the image, such as a fresh CI runner, has no layers and reruns every step. Keep the layers in the registry with `build.cache`:
+
+```typescript
+export class Agent extends Cloudflare.Container<Agent>()("Agent", {
+  context: \`${import.meta.dirname}/context\`,
+  build: { cache: true },
+}) {}
+```
+
+Builds then import and export a cache at the repository’s `:buildcache` tag. It holds every stage’s layers, so a change late in a multi-stage Dockerfile doesn’t rerun an expensive step in an earlier stage. Exporting a cache needs a builder that supports it: the `docker` driver with the containerd image store, or a `docker-container` builder (what `docker/setup-buildx-action` creates in CI).
+
+For another [cache backend](https://docs.docker.com/build/cache/backends/), pass BuildKit’s own `--cache-from` / `--cache-to` values as `from` and `to`:
+
+```typescript
+export class Agent extends Cloudflare.Container<Agent>()("Agent", {
+  context: \`${import.meta.dirname}/context\`,
+  build: {
+    cache: {
+      from: ["type=gha,scope=agent"],
+      to: ["type=gha,scope=agent,mode=max"],
+    },
+  },
+}) {}
+```
+
+Credentials for `gha` and `s3` come from the environment, as BuildKit documents; the values reach `docker` ’s arguments, so never put secrets in them. The cache isn’t part of the image’s content hash, so changing it never rebuilds an image. Every resource that builds an image takes the same `cache`: `Docker.Image`, `AWS.ECS`, `GCP.Run` and `Kubernetes` workloads under `build`, `AWS.ECR.Image` and Lambda container images next to `buildArgs`.
 
 ## Configure the container with env
 

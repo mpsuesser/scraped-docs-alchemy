@@ -2,17 +2,15 @@
 url: https://alchemy.run/gcp/security/secrets-kms
 title: "Secret Manager & KMS"
 description: "Keep API keys in Secret Manager and read them per request, encrypt data with Cloud KMS, and pass plain config through env."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Plain config goes in `env`. Credentials go in Secret Manager, which the
-service reads while it runs. Data you need to encrypt goes through
-Cloud KMS, so your code never holds a key.
+Plain config goes in `env`. Credentials go in Secret Manager, which the service reads while it runs. Data you need to encrypt goes through Cloud KMS, so your code never holds a key.
 
 ## Plain config
 
-Values that aren't secret go on the service as environment variables:
+Values that aren’t secret go on the service as environment variables:
 
 ```typescript
 { main: import.meta.url, env: { LOG_LEVEL: "info" } }
@@ -20,17 +18,45 @@ Values that aren't secret go on the service as environment variables:
 
 The service reads `process.env.LOG_LEVEL`.
 
+## Values from a secrets manager
+
+Config values, plain or secret, come from your `.env` by default. A Stack’s `secrets` option reads the same `Config` values from a secrets manager instead, like Doppler or Infisical, so production keys never sit in a file on anyone’s machine. Pick the source per stage:
+
+```typescript
+import * as Alchemy from "alchemy";
+import * as GCP from "@alchemy.run/gcp";
+import * as Doppler from "@alchemy.run/doppler";
+import * as Effect from "effect/Effect";
+import Api from "./src/api.ts";
+
+export default Alchemy.Stack(
+  "MyApp",
+  {
+    providers: GCP.providers(),
+    state: GCP.state(),
+    secrets: ({ stage }) =>
+      stage === "prod"
+        ? Doppler.Secrets({ project: "my-app", config: "prd" })
+        : Alchemy.Secrets.DotEnv(),
+  },
+  Effect.gen(function* () {
+    const api = yield* Api;
+    return { url: api.uri };
+  }),
+);
+```
+
+Your code doesn’t change: `Config.Redacted("API_KEY")` reads from whichever source the stage uses. See [Secret providers](../../environments/secret-providers.md) for Doppler, Infisical, ordering several sources, and writing your own.
+
 ## Create a secret
 
 ```typescript
-// src/resources.ts
 import * as GCP from "@alchemy.run/gcp";
 
 export const ApiKey = GCP.SecretManager.Secret("ApiKey", {});
 ```
 
-Alchemy creates the secret, not its value. Add the value yourself, so
-it never passes through your Stack or deploy logs:
+Alchemy creates the secret, not its value. Add the value yourself, so it never passes through your Stack or deploy logs:
 
 ```sh
 printf 'my-key' | gcloud secrets versions add "$SECRET_ID" --data-file=-
@@ -40,11 +66,9 @@ Return `ApiKey.secretId` from your Stack to get `$SECRET_ID`.
 
 ## Read it per request
 
-`ReadSecret` returns `access()`, which reads the latest version as a
-string:
+`ReadSecret` returns `access()`, which reads the latest version as a string:
 
 ```typescript
-// src/Api.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -75,17 +99,23 @@ export default class Api extends GCP.Function<Api>()(
 ) {}
 ```
 
-`access()` returns `undefined` until a version exists, so the service
-can refuse requests instead of letting everyone in. Reading per
-request means a new version takes effect without a redeploy.
+`access()` returns `undefined` until a version exists, so the service can refuse requests instead of letting everyone in. Reading per request means a new version takes effect without a redeploy.
 
-`ReadSecret` grants `roles/secretmanager.secretAccessor` on this secret
-only.
+ApiKey · Secret Manager secretaccess() → latest
+
+| version | state | added |
+| --- | --- | --- |
+| 1 | disabled | 2026-09-02 |
+| 2 | enabled | 2026-10-14 |
+| 3 | enabled | 2026-11-04 |
+
+A secret holds versions. Adding version 3 changes what access() returns on the next request, with no redeploy.
+
+`ReadSecret` grants `roles/secretmanager.secretAccessor` on this secret only.
 
 ## Write versions from code
 
-`WriteSecret` adds, disables, and destroys versions. Use it to rotate a
-value from a job:
+`WriteSecret` adds, disables, and destroys versions. Use it to rotate a value from a job:
 
 ```typescript
 const secret = yield* GCP.SecretManager.WriteSecret(ApiKey);
@@ -100,7 +130,6 @@ yield* secret.addVersion(crypto.randomUUID());
 Create a key ring and a key:
 
 ```typescript
-// src/resources.ts
 export const Keys = GCP.KMS.KeyRing("Keys", {});
 
 export const DataKey = Effect.gen(function* () {
@@ -123,25 +152,18 @@ const { ciphertext } = yield* encrypt({ body: { plaintext: btoa("hello") } });
 const { plaintext } = yield* decrypt({ body: { ciphertext } });
 ```
 
-Provide `GCP.KMS.EncryptHttp` and `GCP.KMS.DecryptHttp`. Each grants
-the matching `cryptoKeyEncrypter` or `cryptoKeyDecrypter` role on this
-key only.
+Provide `GCP.KMS.EncryptHttp` and `GCP.KMS.DecryptHttp`. Each grants the matching `cryptoKeyEncrypter` or `cryptoKeyDecrypter` role on this key only.
 
 ## Destroying keys
 
-Cloud KMS has no delete. `alchemy destroy` schedules every key version
-for destruction and leaves the empty key ring, which costs nothing.
-Deploying a key with the same id again reuses it with a fresh version.
+Cloud KMS has no delete. `alchemy destroy` schedules every key version for destruction and leaves the empty key ring, which costs nothing. Deploying a key with the same id again reuses it with a fresh version.
 
 ## Example
 
-[`examples/gcp-secrets-kms`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-secrets-kms)
-is an encryption API gated by a Secret Manager key.
+[`examples/gcp-secrets-kms`](https://github.com/alchemy-run/alchemy/tree/main/examples/gcp-secrets-kms) is an encryption API gated by a Secret Manager key.
 
 ## Where next
 
-- [IAM & bindings](iam.md) — exactly which role each binding
-  grants.
+- [IAM & bindings](iam.md) — exactly which role each binding grants.
 - [Secrets](../../environments/secrets.md) — `.env` values and Config.
-- [SecretManager reference](https://alchemy.run/providers/gcp/secretmanager#secret) —
-  every prop.
+- [SecretManager reference](https://alchemy.run/providers/gcp/secretmanager#secret) — every prop.

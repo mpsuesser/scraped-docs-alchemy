@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/infisical
 title: "Infisical"
 description: "Load an Infisical environment into your Stack — a machine identity on your machine, the platform's own OIDC token in CI."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 [Infisical](https://infisical.com) keeps secrets in projects, split
@@ -12,8 +12,7 @@ downloads one folder, with
 [secret references](https://infisical.com/docs/documentation/platform/secret-reference)
 expanded on the server, into the stack's
 [secret providers](secret-providers.md). It works exactly
-like [Doppler](doppler.md); this page covers only what
-differs. It ships in the `@alchemy.run/infisical` package.
+like [Doppler](doppler.md), and only its setup differs. It ships in the `@alchemy.run/infisical` package.
 
 ```typescript
 import * as Infisical from "@alchemy.run/infisical";
@@ -32,7 +31,10 @@ Infisical only resolves slugs for machine identities. `environment`
 is the environment slug. Optional `path`, `recursive`, and
 `includeImports` narrow or widen what is read; imports are on by
 default and a secret defined directly in the folder wins over an
-imported one.
+imported one. With a user token, your
+[personal overrides](https://infisical.com/docs/documentation/platform/secrets-mgmt/project#personal-overrides)
+replace the shared values, as with `infisical run`. A machine identity
+has none, so it reads the shared values.
 
 ## Connect your account
 

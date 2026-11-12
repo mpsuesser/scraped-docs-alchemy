@@ -2,11 +2,27 @@
 url: https://alchemy.run/turso/groups
 title: "Groups"
 description: "Turso groups decide where your databases run."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Every Turso database belongs to a group. The group decides where its databases run.
+
+acmeorganization
+
+Analyticsgroup · aws-eu-west-1
+
+eventsdatabase
+
+Tenantsgroup · aws-us-east-1
+
+tenant-acmedatabase
+
+tenant-globexdatabase
+
+tenant-initechdatabase
+
+A group sets the location, and every database in it runs there. Moving a database to another location means another group.
 
 ## Create a group
 
@@ -43,7 +59,7 @@ Pass `"all"` or a list of extension names. Changing `extensions` creates a new g
 const group = yield* Turso.Group("Group", { deleteProtection: true });
 ```
 
-While this is on, you can't destroy the group. Set it to `false` and deploy first.
+While this is on, you can’t destroy the group. Set it to `false` and deploy first.
 
 ## Delete a group
 
@@ -51,7 +67,7 @@ Destroying a group deletes every database in it, including ones your app created
 
 ## Replicas
 
-`replicas` adds read-only copies in other locations. Groups on AWS don't support this. It only works for older groups hosted on Fly.
+`replicas` adds read-only copies in other locations. Groups on AWS don’t support this. It only works for older groups hosted on Fly.
 
 ## Where next
 

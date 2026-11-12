@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/prisma/contracts
 title: "Contracts"
 description: "Author Prisma ORM v8 contracts in Prisma Schema Language or TypeScript, generate optional Effect bindings and row schemas, and connect them to migrations."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A Prisma ORM v8 **contract** defines your models, fields, relations, and
@@ -15,7 +15,7 @@ Choose one authoritative source: **Prisma Schema Language (PSL)** or
 [Alchemy migration resources](migrations.md).
 
 :::caution
-This guide targets Prisma ORM v8 release candidates and PostgreSQL 17+.
+Contracts need Prisma ORM v8 release candidates and PostgreSQL 17+.
 The contract toolchain is different from earlier Prisma versions; expect
 breaking changes between release candidates. See [Postgres](postgres.md)
 for dependencies and the client API, or the [Cloudflare integration](../../cloudflare/data/prisma.md)

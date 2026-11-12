@@ -2,15 +2,15 @@
 url: https://alchemy.run/prisma/tutorial/part-1
 title: "Part 1: Your First Project"
 description: "Install Alchemy, configure Prisma credentials, and deploy your first Project."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Build a full-stack application on Prisma in four parts: a Project, an Effect-native Compute API, a Postgres database, and a Vite frontend. The [complete example](https://github.com/alchemy-run/alchemy/tree/main/examples/prisma-tutorial) contains the final application and its deployment test.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+ installed locally.
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/) installed locally.
 - A Prisma workspace with access to Compute and Postgres.
 - A workspace service token from the [Prisma Console](https://console.prisma.io/).
 

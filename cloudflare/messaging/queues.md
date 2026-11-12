@@ -1,471 +1,153 @@
 ---
 url: https://alchemy.run/cloudflare/messaging/queues
 title: "Queues"
-description: "Cloudflare Queues give you reliable, at-least-once message delivery between Workers — a WriteQueue producer binding on one side and an Effect-style consumeQueueMessages handler with automatic ack/retry on the other."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+description: "How Cloudflare Queues carry messages from producer Workers to a consumer in batches, with retries and dead-letter queues, and how platform events like Workflow completions arrive on a Queue."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-A Cloudflare Queue decouples work from the request that triggered it: a Worker *produces* messages onto the queue, Cloudflare buffers them, and a consumer Worker receives them in batches with **at-least-once** delivery — failed batches are retried and eventually dead-lettered.
+A Queue carries messages from one Worker to another. The **producer** sends a message and returns at once. Cloudflare holds it, and delivers it in a **batch** to the **consumer** Worker, which does the work. A slow job no longer slows the request that asked for it, and a burst of work waits in the Queue instead of overwhelming the consumer.
 
-Reach for a Queue whenever work shouldn’t block a response: sending emails, processing uploads, fanning out webhooks, or smoothing bursty traffic. Both halves live in the same alchemy program: the producer side is the `Cloudflare.Queues.WriteQueue(...)` binding ([reference](https://alchemy.run/providers/cloudflare/queues#queue)), and the consumer side is the Effect-style `Cloudflare.Queues.consumeQueueMessages(queue, handler)` API this page walks through.
+## Delivered at least once, in batches
 
-`consumeQueueMessages(...)` does both halves in one call: it registers a runtime queue listener on the Worker, and it auto-creates the `Cloudflare.Queues.Consumer` resource that tells Cloudflare to dispatch messages from the queue to this Worker. No separate deploy-time wiring is needed.
+The consumer receives messages in batches, a few or a hundred at a time. When it finishes a batch, the messages are **acknowledged** and removed. When it fails, they’re **retried** later. After too many attempts, a message moves to a **dead-letter queue**, if the Queue has one, or is dropped.
 
-By the end you’ll have a Worker that:
+<svg viewBox="-4 28 716.6 200" style="max-width: 824px" role="img" aria-label="A message leaves only when its batch succeeds. A failed batch comes back after a delay, and a message that keeps failing moves to the dead-letter queue."><defs><marker id="alc-sm-arrow-we88bl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><path stroke="currentColor" fill="none" d="M 180.2 63 Q 240.2 63 296.19999999999993 63" marker-end="url(#alc-sm-arrow-we88bl)"></path><path stroke="currentColor" fill="none" d="M 440.4 63 Q 500.4 63 556.4 63" marker-end="url(#alc-sm-arrow-we88bl)"></path><path stroke="currentColor" fill="none" d="M 338.09999999999997 86 Q 279.29999999999995 128 334.84506611517304 167.67504722512362" marker-end="url(#alc-sm-arrow-we88bl)"></path><path stroke="currentColor" fill="none" d="M 402.49999999999994 170 Q 461.29999999999995 128 405.75493388482687 88.32495277487638" marker-end="url(#alc-sm-arrow-we88bl)"></path><path stroke="currentColor" fill="none" d="M 440.4 193 Q 500.4 193 556.4 193" marker-end="url(#alc-sm-arrow-we88bl)"></path><g><g><circle stroke="currentColor" fill="none" cx="14" cy="63" r="6"></circle><line stroke-opacity="0.2" stroke="currentColor" x1="20" y1="63" x2="36" y2="63" marker-end="url(#alc-sm-arrow-we88bl)"></line></g><rect stroke="currentColor" fill="none" x="40" y="40" width="140.2" height="46" rx="23"></rect><text fill="currentColor" x="110.1" y="67" text-anchor="middle">queued</text></g> <g><rect stroke="currentColor" fill="none" x="300.19999999999993" y="40" width="140.2" height="46" rx="23"></rect><text fill="currentColor" x="370.29999999999995" y="61" text-anchor="middle">in a batch</text> <text fill="currentColor" x="370.29999999999995" y="76" text-anchor="middle">with the consumer</text></g> <g><rect stroke="currentColor" fill="none" x="560.4" y="40" width="140.2" height="46" rx="23"></rect><rect stroke="currentColor" fill="none" x="564.4" y="44" width="132.2" height="38" rx="19"></rect><text fill="currentColor" x="630.5" y="61" text-anchor="middle">acknowledged</text> <text fill="currentColor" x="630.5" y="76" text-anchor="middle">removed</text></g> <g><rect stroke="currentColor" fill="none" x="300.19999999999993" y="170" width="140.2" height="46" rx="23"></rect><text fill="currentColor" x="370.29999999999995" y="191" text-anchor="middle">waiting</text> <text fill="currentColor" x="370.29999999999995" y="206" text-anchor="middle">retryDelay</text></g> <g><rect stroke="currentColor" fill="none" x="560.4" y="170" width="140.2" height="46" rx="23"></rect><rect stroke="currentColor" fill="none" x="564.4" y="174" width="132.2" height="38" rx="19"></rect><text fill="currentColor" x="630.5" y="191" text-anchor="middle">DeadLetters</text> <text fill="currentColor" x="630.5" y="206" text-anchor="middle">dead-letter queue</text></g> <g><rect stroke="currentColor" fill="none" x="204.49999999999997" y="53" width="69.4" height="17" rx="4"></rect><text fill="currentColor" x="239.19999999999996" y="66" text-anchor="middle">delivered</text></g> <g><rect stroke="currentColor" fill="none" x="448.2" y="53" width="102.39999999999999" height="17" rx="4"></rect><text fill="currentColor" x="499.4" y="66" text-anchor="middle">batch succeeds</text></g> <g><rect stroke="currentColor" fill="none" x="266.5862665287932" y="117.41876180628091" width="82.6" height="17" rx="4"></rect><text fill="currentColor" x="307.8862665287932" y="130.4187618062809" text-anchor="middle">batch fails</text></g> <g><rect stroke="currentColor" fill="none" x="404.6137334712067" y="118.58123819371909" width="56.199999999999996" height="17" rx="4"></rect><text fill="currentColor" x="432.7137334712067" y="131.5812381937191" text-anchor="middle">retried</text></g> <g><rect stroke="currentColor" fill="none" x="441.59999999999997" y="183" width="115.6" height="17" rx="4"></rect><text fill="currentColor" x="499.4" y="196" text-anchor="middle">after maxRetries</text></g></svg> <svg viewBox="28 -4 397 378" style="max-width: 457px" role="img" aria-label="A message leaves only when its batch succeeds. A failed batch comes back after a delay, and a message that keeps failing moves to the dead-letter queue."><defs><marker id="alc-sm-arrow-n-we88bl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><path stroke="currentColor" fill="none" d="M 110.1 86 Q 110.1 132 110.1 174" marker-end="url(#alc-sm-arrow-n-we88bl)"></path><path stroke="currentColor" fill="none" d="M 110.1 224 Q 110.1 270 110.1 312" marker-end="url(#alc-sm-arrow-n-we88bl)"></path><path stroke="currentColor" fill="none" d="M 120.36785714285713 178 Q 226.5 -59.73599999999993 331.00153949564725 174.34744847024996" marker-end="url(#alc-sm-arrow-n-we88bl)"></path><path stroke="currentColor" fill="none" d="M 332.6321428571428 224 Q 226.5 461.73599999999993 121.99846050435269 227.65255152975004" marker-end="url(#alc-sm-arrow-n-we88bl)"></path><path stroke="currentColor" fill="none" d="M 342.9 224 Q 342.9 270 342.9 312" marker-end="url(#alc-sm-arrow-n-we88bl)"></path><g><g><circle stroke="currentColor" fill="none" cx="110.1" cy="14" r="6"></circle><line stroke-opacity="0.2" stroke="currentColor" x1="110.1" y1="20" x2="110.1" y2="36" marker-end="url(#alc-sm-arrow-n-we88bl)"></line></g><rect stroke="currentColor" fill="none" x="40" y="40" width="140.2" height="46" rx="23"></rect><text fill="currentColor" x="110.1" y="67" text-anchor="middle">queued</text></g> <g><rect stroke="currentColor" fill="none" x="40" y="178" width="140.2" height="46" rx="23"></rect><text fill="currentColor" x="110.1" y="199" text-anchor="middle">in a batch</text> <text fill="currentColor" x="110.1" y="214" text-anchor="middle">with the consumer</text></g> <g><rect stroke="currentColor" fill="none" x="40" y="316" width="140.2" height="46" rx="23"></rect><rect stroke="currentColor" fill="none" x="44" y="320" width="132.2" height="38" rx="19"></rect><text fill="currentColor" x="110.1" y="337" text-anchor="middle">acknowledged</text> <text fill="currentColor" x="110.1" y="352" text-anchor="middle">removed</text></g> <g><rect stroke="currentColor" fill="none" x="272.79999999999995" y="178" width="140.2" height="46" rx="23"></rect><text fill="currentColor" x="342.9" y="199" text-anchor="middle">waiting</text> <text fill="currentColor" x="342.9" y="214" text-anchor="middle">retryDelay</text></g> <g><rect stroke="currentColor" fill="none" x="272.79999999999995" y="316" width="140.2" height="46" rx="23"></rect><rect stroke="currentColor" fill="none" x="276.79999999999995" y="320" width="132.2" height="38" rx="19"></rect><text fill="currentColor" x="342.9" y="337" text-anchor="middle">DeadLetters</text> <text fill="currentColor" x="342.9" y="352" text-anchor="middle">dead-letter queue</text></g> <g><rect stroke="currentColor" fill="none" x="75.39999999999999" y="121" width="69.4" height="17" rx="4"></rect><text fill="currentColor" x="110.1" y="134" text-anchor="middle">delivered</text></g> <g><rect stroke="currentColor" fill="none" x="58.9" y="259" width="102.39999999999999" height="17" rx="4"></rect><text fill="currentColor" x="110.1" y="272" text-anchor="middle">batch succeeds</text></g> <g><rect stroke="currentColor" fill="none" x="143.49234915962612" y="48.21886211756252" width="82.6" height="17" rx="4"></rect><text fill="currentColor" x="221.0923491596261" y="61.21886211756252" text-anchor="end">batch fails</text></g> <g><rect stroke="currentColor" fill="none" x="226.90765084037386" y="333.78113788243746" width="56.199999999999996" height="17" rx="4"></rect><text fill="currentColor" x="231.90765084037386" y="346.78113788243746" text-anchor="start">retried</text></g> <g><rect stroke="currentColor" fill="none" x="285.09999999999997" y="259" width="115.6" height="17" rx="4"></rect><text fill="currentColor" x="342.9" y="272" text-anchor="middle">after maxRetries</text></g></svg>
 
-- Sends a JSON message via `POST /queue/send`.
-- Receives the message in a queue handler registered on the same Worker, persists the body to R2, and acks the batch.
-- Reads the persisted body via `GET /queue/result/:id`.
+A message leaves only when its batch succeeds. A failed batch comes back after a delay, and a message that keeps failing moves to the dead-letter queue.
 
-## Create the Queue and Bucket
+So a message is never lost to a failed consumer, but it can be delivered more than once. Make the work safe to repeat: check whether it’s done already, or write results under a key derived from the message.
 
-Both resources are plain `yield*` calls — no special config.
+## Declare a Queue
 
 ```typescript
-import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Effect from "effect/Effect";
 
-export const Queue = Cloudflare.Queues.Queue("Queue");
-export const Bucket = Cloudflare.R2.Bucket("Bucket");
+export const Jobs = Cloudflare.Queues.Queue("Jobs");
 ```
 
-The Queue’s name is generated from the stack/stage/id. The Bucket will store each consumed message at `/queue/<id>` so the integ test can read it back.
+## Send messages
 
-## Bind the Queue producer
-
-In the Worker’s Construction phase, yield the queue resource and ask `Cloudflare.Queues.WriteQueue` for a typed sender. The sender exposes `send` / `sendBatch` that round-trip through Cloudflare’s runtime.
+Bind `WriteQueue` in the producer to get a sender. A message body is any value that can be serialized:
 
 ```typescript
-import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as Effect from "effect/Effect";
-import { Bucket } from "./Bucket.ts";
-import { Queue } from "./Queue.ts";
-
 export default Cloudflare.Worker(
   "Api",
   { main: import.meta.url },
   Effect.gen(function* () {
-    const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
-    const queueResource = yield* Queue;
-    const queue = yield* Cloudflare.Queues.WriteQueue(queueResource);
+    const jobs = yield* Cloudflare.Queues.WriteQueue(Jobs);
+    return {
+      fetch: jobs.send({ type: "thumbnail", key: "avatars/sam.png" }).pipe(
+        Effect.as(HttpServerResponse.empty({ status: 202 })),
+        Effect.orDie,
+      ),
+    };
+  }).pipe(Effect.provide(Cloudflare.Queues.WriteQueueBinding)),
+);
+```
 
-    return { fetch: Effect.gen(function* () { return new Response("ok"); }) };
-  }).pipe(
-    Effect.provide(Cloudflare.Queues.WriteQueueBinding),
-    Effect.provide(Cloudflare.R2.ReadWriteBucketBinding),
+`sendBatch` sends up to a hundred messages in one call.
+
+## Consume messages
+
+The consumer subscribes from its Construction phase. Each batch arrives as a `Stream` of messages:
+
+```typescript
+export default Cloudflare.Worker(
+  "Consumer",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const jobs = yield* Jobs;
+    yield* Cloudflare.Queues.consumeQueueMessages<Job>(jobs, (messages) =>
+      Stream.runForEach(messages, (message) => Effect.log(message.body.key)),
+    );
+    return {};
+  }).pipe(Effect.provide(Cloudflare.Queues.EventSourceLive)),
+);
+```
+
+Deploy registers the Worker as the Queue’s consumer. When the handler succeeds, every message in the batch is acknowledged. When it fails, every message is retried. To decide per message, call `message.ack()` or `message.retry()` inside the handler.
+
+One Worker can produce to a Queue and consume from it, or consume several Queues.
+
+## Tune batches and retries
+
+Pass settings before the handler:
+
+```typescript
+yield* Cloudflare.Queues.consumeQueueMessages<Job>(
+  jobs,
+  { batchSize: 25, maxWaitTime: "5 seconds", maxRetries: 3, retryDelay: "30 seconds" },
+  handle,
+);
+```
+
+A batch is delivered when it reaches `batchSize` or has waited `maxWaitTime`, whichever comes first. Larger batches mean fewer invocations. A shorter wait means lower latency. `retryDelay` spaces out the retries of a failed batch.
+
+## Catch messages that keep failing
+
+A message that fails `maxRetries` times is dropped, unless the Queue names a **dead-letter queue**. Cloudflare doesn’t alert on a dead-letter queue, so consume it too:
+
+```typescript
+const deadLetters = yield* DeadLetters;
+
+yield* Cloudflare.Queues.consumeQueueMessages<Job>(
+  jobs,
+  { maxRetries: 3, deadLetterQueue: deadLetters },
+  handle,
+);
+
+yield* Cloudflare.Queues.consumeQueueMessages<Job>(deadLetters, (messages) =>
+  Stream.runForEach(messages, (message) =>
+    Effect.logError(\`gave up on ${message.body.key} after ${message.attempts} attempts\`),
   ),
 );
 ```
 
-`queueResource` (the resolved `Queue` resource) is what you pass to `consumeQueueMessages(...)` next — it’s the same handle, not a new one.
+Replace the log with what the failure needs: store the message to replay later, or alert someone. A dead-letter queue owned by another stack can be passed as `yield* Cloudflare.Queues.Queue.ref("DeadLetters", { stack: "shared", stage: "production" })`, and one Alchemy doesn’t manage, by its name.
 
-`Cloudflare.Queues.consumeQueueMessages(queue, handler)` registers a queue event listener on the Worker. The handler receives a `Stream.Stream<Message<Body>>` — one stream per batch — and is expected to return `Effect.Effect<void>`.
+## Send a stream of messages
 
-```typescript
-import * as Stream from "effect/Stream";
-
-interface QueueMessageBody {
-  id: string;
-  text: string;
-  sentAt: number;
-}
-
-Effect.gen(function* () {
-  const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
-  const queueResource = yield* Queue;
-  const queue = yield* Cloudflare.Queues.WriteQueue(queueResource);
-
-  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-    queueResource,
-    (stream) =>
-      Stream.runForEach(stream, (msg) =>
-        bucket
-          .put(\`/queue/${msg.body.id}\`, JSON.stringify(msg.body), {
-            httpMetadata: { contentType: "application/json" },
-          })
-          .pipe(Effect.asVoid),
-      ),
-  );
-```
-
-Acking is automatic: if the handler succeeds, every message in the batch is `ack()` ed; if it fails, every message is `retry()` ed and Cloudflare applies the consumer’s `maxRetries` and `retryDelay` before dead-lettering. For finer control, call `msg.ack()` / `msg.retry()` per message inside the handler.
-
-## Tune batching and backoff
-
-`consumeQueueMessages(queue, props)` accepts a settings object. Time fields are `Duration.Input` — any of these are accepted:
+`QueueSink` turns a Queue into an Effect Sink. Run any `Stream` of message bodies into it, and it sends them in batches:
 
 ```typescript
-maxWaitTime: Duration.seconds(5)   // a Duration value
-maxWaitTime: 5_000                 // a number of milliseconds
-maxWaitTime: "5 seconds"           // a "<number> <unit>" string
-retryDelay: "1 second"             // singular and plural units both work
-```
+const enriched = yield* Cloudflare.Queues.QueueSink(Enriched);
 
-```typescript
-import * as Duration from "effect/Duration";
-
-  Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(queueResource, (stream) =>
-  Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-    queueResource,
-    {
-      batchSize: 25,
-      maxRetries: 3,
-      maxWaitTime: "5 seconds",
-      retryDelay: Duration.seconds(30),
-    },
-    (stream) =>
-```
-
-`maxWaitTime` is rounded up to whole milliseconds and `retryDelay` to whole seconds when forwarded to Cloudflare.
-
-## Consume the dead-letter queue
-
-A message that fails `maxRetries` times moves to the `deadLetterQueue`. Cloudflare does not drain or alert on that queue. Without a consumer, the message waits there until the queue’s retention period expires, and nothing reports the failure.
-
-Create the dead-letter queue as its own resource and pass it to the source queue’s consumer. Then consume it too:
-
-```typescript
-export const DeadLetters = Cloudflare.Queues.Queue("DeadLetters");
-
-Effect.gen(function* () {
-  const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
-  const queueResource = yield* Queue;
-  const deadLetters = yield* DeadLetters;
-
-  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-    queueResource,
-    { maxRetries: 3, deadLetterQueue: deadLetters },
-    (stream) =>
-      Stream.runForEach(stream, (msg) =>
-        bucket.put(\`/queue/${msg.body.id}\`, JSON.stringify(msg.body)).pipe(Effect.asVoid),
-      ),
-  );
-
-  yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-    deadLetters,
-    (stream) =>
-      Stream.runForEach(stream, (msg) =>
-        Effect.logError(\`dead-lettered ${msg.body.id} after ${msg.attempts} attempts\`),
-      ),
-  );
-});
-```
-
-One Worker can consume both queues. Replace the log with whatever should happen to a failed message: persist it for replay, page someone, or send it back to the source queue after a fix.
-
-### Dead-letter to a queue in another stack
-
-If another stack owns the dead-letter queue, pass a reference to it:
-
-```typescript
-yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-  queueResource,
-  {
-    maxRetries: 3,
-    deadLetterQueue: yield* Cloudflare.Queues.Queue.ref("DeadLetters", {
-      stack: "shared",
-      stage: "production",
-    }),
-  },
-  (stream) => Stream.runForEach(stream, (msg) => Effect.log(msg.body.id)),
+yield* Cloudflare.Queues.consumeQueueMessages<Click>(Clicks, (messages) =>
+  messages.pipe(
+    Stream.map((message) => ({ ...message.body, receivedAt: Date.now() })),
+    Stream.run(enriched),
+  ),
 );
 ```
 
-Deploy the `shared` stack first, because a reference reads its persisted state. That stack’s Worker should consume the dead-letter queue.
+This Worker reads one Queue, enriches each message, and writes to another. Provide `Cloudflare.Queues.QueueSinkBinding`.
 
-### Dead-letter to a queue by name
+## Receive events from Cloudflare
 
-For a queue Alchemy doesn’t manage, pass its name:
-
-```typescript
-yield* Cloudflare.Queues.consumeQueueMessages<QueueMessageBody>(
-  queueResource,
-  { maxRetries: 3, deadLetterQueue: "orders-dead-letters" },
-  (stream) => Stream.runForEach(stream, (msg) => Effect.log(msg.body.id)),
-);
-```
-
-A name adds no deploy dependency on that queue, and nothing in this stack consumes it. Make sure something else does.
-
-## Provide the runtime layer
-
-`consumeQueueMessages(...)` is a `Context.Service` call — `EventSourceLive` is the layer that registers the listener with the Worker’s runtime context. Add it to the layer stack alongside the other binding lives.
+Cloudflare can send its own events to a Queue: a Workflow instance completed, a Worker build failed, a bucket was created. A **subscription** connects an event source to a Queue:
 
 ```typescript
-}).pipe(
-  Effect.provide(Cloudflare.Queues.EventSourceLive),
-  Effect.provide(Cloudflare.Queues.WriteQueueBinding),
-  Effect.provide(Cloudflare.R2.ReadWriteBucketBinding),
-),
-```
+const events = yield* Cloudflare.Queues.Queue("WorkflowEvents");
 
-Without the live layer, the `consumeQueueMessages` call fails at deploy with `Service not found: Cloudflare.Queues.EventSource`.
-
-## Add the producer route
-
-`POST /queue/send` enqueues a message and returns the generated id. The integ test uses the id to poll for the consumed result.
-
-```typescript
-return {
-  fetch: Effect.gen(function* () {
-    const request = yield* HttpServerRequest;
-    if (request.url === "/queue/send" && request.method === "POST") {
-      const text = yield* request.text;
-      const msg: QueueMessageBody = {
-        id: crypto.randomUUID(),
-        text,
-        sentAt: Date.now(),
-      };
-      yield* queue.send(msg).pipe(Effect.orDie);
-      return yield* HttpServerResponse.json({ sent: msg }, { status: 202 });
-    }
-    return HttpServerResponse.text("Not Found", { status: 404 });
-  }),
-};
-```
-
-## Add the result-read route
-
-`GET /queue/result/:id` reads `/queue/<id>` from the bucket. The consumer runs asynchronously, so the test polls this route with a short backoff until the object appears.
-
-```typescript
-if (request.url.startsWith("/queue/result/") && request.method === "GET") {
-  const id = request.url.split("/queue/result/")[1];
-  return yield* bucket.get(\`/queue/${id}\`).pipe(
-    Effect.flatMap((object) =>
-      object === null
-        ? Effect.succeed(HttpServerResponse.text("not yet", { status: 404 }))
-        : object.text().pipe(
-            Effect.map((body) =>
-              HttpServerResponse.text(body, {
-                headers: { "content-type": "application/json" },
-              }),
-            ),
-          ),
-    ),
-    Effect.catchTag("R2Error", (e) =>
-      Effect.succeed(HttpServerResponse.text(e.message, { status: 500 })),
-    ),
-  );
-}
-```
-
-## Drain a Stream into the queue
-
-`Cloudflare.Queues.QueueSink(queue)` exposes the queue as an Effect [Sink](../../infrastructure-as-effects/sinks.md). Run any `Stream` of message bodies into it; each stream chunk becomes one `sendBatch` call, split at Cloudflare’s 100-message / 256 KB batch limits.
-
-```typescript
-const sink = yield* Cloudflare.Queues.QueueSink(Clicks);
-yield* Stream.fromIterable(events).pipe(Stream.run(sink));
-```
-
-Combined with `consumeQueueMessages`, a Worker can consume one queue, transform each batch, and drain it into another:
-
-```typescript
-Effect.gen(function* () {
-  const enriched = yield* Cloudflare.Queues.QueueSink(EnrichedClicks);
-
-  yield* Cloudflare.Queues.consumeQueueMessages<Click>(Clicks, (messages) =>
-    messages.pipe(
-      Stream.map((message) => message.body),
-      Stream.map((click) => ({ ...click, receivedAt: Date.now() })),
-      Stream.run(enriched),
-    ),
-  );
-}).pipe(
-  Effect.provide(Cloudflare.Queues.EventSourceLive),
-  Effect.provide(Cloudflare.Queues.QueueSinkBinding),
-);
-```
-
-`QueueSinkBinding` builds on the native `WriteQueueBinding`, so it is the only layer the sink needs. It also works under `alchemy dev`.
-
-## What’s the difference vs. a native queue() handler?
-
-Cloudflare’s runtime delivers queue events to a `queue(batch, env)` export on the worker module. You can write that directly — see [`examples/cloudflare-worker-async`](https://github.com/alchemy-run/alchemy/blob/main/examples/cloudflare-worker-async) for the plain async-handler shape:
-
-```typescript
-export default {
-  async queue(batch, env) {
-    for (const msg of batch.messages) {
-      await env.Bucket.put(\`/queue/${msg.body.id}\`, ...);
-      msg.ack();
-    }
-  },
-};
-```
-
-`Cloudflare.Queues.consumeQueueMessages(queue, handler)` is the same primitive on the Effect side — the Worker bundle’s runtime context routes the dispatch to the registered listener — but you get `Effect.gen` composition, typed errors, automatic batch ack/retry, and the same surface as `AWS.SQS.consumeQueueMessages(queue, handler)`.
-
-## Receive Workflow lifecycle events
-
-A subscription delivers platform events into a Queue. For a Workflow bound to an async Worker, pass the binding directly as the source:
-
-```typescript
-const worker = yield* Cloudflare.Worker("IngestionWorker", {
-  main: "./src/worker.ts",
-  env: {
-    INGESTION: Cloudflare.Workflow("Ingestion", {
-      className: "IngestionWorkflow",
-    }),
-  },
-});
-const queue = yield* Cloudflare.Queues.Queue("WorkflowEventsQueue");
-
-yield* Cloudflare.Queues.Subscription("WorkflowEvents", {
+yield* Cloudflare.Queues.Subscription("IngestionEvents", {
   source: worker.env.INGESTION,
   events: ["instance.completed", "instance.errored"],
-  queueId: queue.queueId,
+  queueId: events.queueId,
 });
 ```
 
-The subscription uses the binding’s deferred physical name, including on the first deployment. Renaming the Workflow replaces the subscription. The Queue still needs a consumer to handle these messages, as above.
+The Queue still needs a consumer. These resources can be a source, directly or through `.ref(...)`:
 
-A `WorkflowResource` or a reference to a deployed Workflow is also a source:
+| Resource | Events about |
+| --- | --- |
+| `Cloudflare.Workflows.WorkflowResource` | Instances of that Workflow |
+| `Cloudflare.Worker` | Workers Builds runs for that Worker |
+| `Cloudflare.AI.Model` | Batch inference for that model |
+| `Cloudflare.KV.Namespace` | Every namespace in the account |
+| `Cloudflare.R2.Bucket` | Every bucket in the account |
+| `Cloudflare.R2.SuperSlurperJob` | Every migration job in the account |
+| `Cloudflare.Vectorize.Index` | Every index in the account |
+| `Cloudflare.Images.Variant` | Every image upload in the account |
 
-```typescript
-yield* Cloudflare.Queues.Subscription("WorkflowEvents", {
-  source: yield* Cloudflare.Workflow.ref("Ingestion", {
-    stack: "workflow-host",
-    stage: "production",
-  }),
-  events: ["instance.completed", "instance.errored"],
-  queueId: queue.queueId,
-});
-```
-
-Use the Workflow’s logical ID, including any namespace. Omit the options for the current stack and stage. References read persisted state, so deploy the host first; deleting the consumer stack does not delete the referenced Workflow.
-
-Explicit sources remain supported, including `{ type: "workflows.workflow", workflowName: "existing-ingestion" }` for a Workflow referenced by name and `{ type: "r2" }` for R2 events. Cloudflare allows at most one subscription per source per account.
-
-## Use resources as event sources
-
-A subscription also accepts these resource values, or their yielded `.ref(...)` references:
-
-| Resource | Cloudflare source | Event scope |
-| --- | --- | --- |
-| `Cloudflare.Images.Variant` | `images` | All Images events in the account |
-| `Cloudflare.KV.Namespace` | `kv` | All namespace events in the account |
-| `Cloudflare.R2.Bucket` | `r2` | All bucket events in the account |
-| `Cloudflare.R2.SuperSlurperJob` | `superSlurper` | All migration job events in the account |
-| `Cloudflare.Vectorize.Index` | `vectorize` | All index events in the account |
-| `Cloudflare.AI.Model` | `workersAi.model` | Batch events for the selected model |
-| `Cloudflare.Worker` | `workersBuilds.worker` | Builds for the selected Worker |
-| `Cloudflare.Workflows.WorkflowResource` | `workflows.workflow` | Instances of the selected Workflow |
-
-The resource’s account must match the subscription’s Cloudflare account. Account metadata remains in Alchemy state and is not sent as an extra Cloudflare source field. A collision with an existing subscription fails rather than changing another stack’s destination Queue.
-
-Event delivery can lag subscription creation or replacement even after the destination Queue accepts messages. Deployment confirms configuration, not delivery readiness. Verify delivery before emitting events that must be observed.
-
-During Vectorize subscription replacement or a destination Queue update, Cloudflare can still route new events to the previous Queue. Replacement events can carry the deleted subscription’s ID; updates retain the same subscription ID. A single early event does not prove that routing has fully propagated. Keep the previous destination available during the transition and verify the receiving Queue, `metadata.eventSubscriptionId`, and the event’s resource identity.
-
-### Account-wide resource events
-
-```typescript
-const cache = yield* Cloudflare.KV.Namespace("Cache");
-
-yield* Cloudflare.Queues.Subscription("NamespaceEvents", {
-  source: cache,
-  events: ["namespace.created", "namespace.deleted"],
-  queueId: queue.queueId,
-});
-```
-
-This receives namespace events for the **entire account**, not just `Cache`. R2, Vectorize, Images, and Super Slurper have the same account-wide behavior. Passing a resource creates a deployment dependency, so its initial creation can precede the subscription and its final deletion can follow subscription removal. Use the explicit `{ type: "kv" }` form if the subscription must be deployed before a namespace is created.
-
-### References from another stack
-
-```typescript
-yield* Cloudflare.Queues.Subscription("BucketEvents", {
-  source: yield* Cloudflare.R2.Bucket.ref("Uploads", {
-    stack: "storage",
-    stage: "production",
-  }),
-  events: ["bucket.created", "bucket.deleted"],
-  queueId: queue.queueId,
-});
-```
-
-All the resource types above support `.ref`. The source must already exist in Alchemy state. Removing this subscription preserves the referenced resource and its source stack.
-
-### Images upload events
-
-```typescript
-yield* Cloudflare.Queues.Subscription("ImageEvents", {
-  source: yield* Cloudflare.Images.Variant.ref("Thumbnail"),
-  events: ["image.uploaded"],
-  queueId: queue.queueId,
-});
-```
-
-The variant selects its Images account. The subscription receives uploads across that account, not only images served with `Thumbnail`.
-
-### Vectorize events
-
-```typescript
-yield* Cloudflare.Queues.Subscription("IndexEvents", {
-  source: yield* Cloudflare.Vectorize.Index.ref("Search"),
-  events: ["index.created", "index.deleted"],
-  queueId: queue.queueId,
-});
-```
-
-These events describe index lifecycle changes, not individual vector writes.
-
-### Super Slurper events
-
-```typescript
-yield* Cloudflare.Queues.Subscription("MigrationEvents", {
-  source: yield* Cloudflare.R2.SuperSlurperJob.ref("Migration"),
-  events: ["job.started", "job.completed", "job.aborted"],
-  queueId: queue.queueId,
-});
-```
-
-`R2.SuperSlurperJob` manages a one-off migration. Destroying an active job cancels it; it does not delete migrated objects or terminal job history. This subscription selects all jobs in the account, not object-level events from one job.
-
-### Workers AI batch events
-
-```typescript
-const model = yield* Cloudflare.AI.Model("Embeddings", {
-  modelName: "@cf/baai/bge-m3",
-});
-
-yield* Cloudflare.Queues.Subscription("BatchEvents", {
-  source: model,
-  events: ["batch.queued", "batch.succeeded", "batch.failed"],
-  queueId: queue.queueId,
-});
-```
-
-`AI.Model` validates a Cloudflare-managed catalog model and persists a non-owning handle. It neither deploys nor invokes the model. `yield* Cloudflare.AI.Model.ref("Embeddings")` can be used in place of `model` after deployment. Batch events require asynchronous batch inference; ordinary synchronous inference does not emit them.
-
-### Workers Builds events
-
-```typescript
-yield* Cloudflare.Queues.Subscription("BuildEvents", {
-  source: yield* Cloudflare.Worker.ref("Website"),
-  events: ["build.started", "build.succeeded", "build.failed"],
-  queueId: queue.queueId,
-});
-```
-
-A direct Worker resource is also accepted. The source uses the Worker’s physical name and follows replacements. The Worker needs a Workers Builds integration to emit these events; an ordinary Alchemy upload is not a Workers Builds run.
-
-## Where next
-
-Related:
-
-- [Workers](../compute/workers.md) — the runtime that produces and consumes queue messages.
-- [Durable Objects](../compute/durable-objects.md) — for stateful coordination instead of fire-and-forget work.
-- [Workflows](../compute/workflows.md) — multi-step orchestration with checkpointed steps when fire-and-forget isn’t enough.
-
-Reference:
-
-- [Queue API reference](https://alchemy.run/providers/cloudflare/queues#queue)
-- [Consumer API reference](https://alchemy.run/providers/cloudflare/queues#consumer)
-- [Subscription API reference](https://alchemy.run/providers/cloudflare/queues#subscription)
-- [Workers AI model handle API reference](https://alchemy.run/providers/cloudflare/ai#model)
-- [Super Slurper migration API reference](https://alchemy.run/providers/cloudflare/r2#superslurperjob)
+The account-wide sources report on every resource of that kind, not just the one you pass. An account allows one subscription per source. Events can take a while to start arriving after a subscription is created, so check that one arrives before relying on it.

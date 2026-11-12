@@ -2,15 +2,15 @@
 url: https://alchemy.run/railway/setup
 title: "Setup"
 description: "Create a Railway workspace, generate an account API token, and store it in a profile."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Everything you need before deploying to Railway: the alchemy package, a Railway workspace, and an account API token stored in a profile.
 
 ## Prerequisites
 
-- [Bun](https://bun.sh/) or Node.js 22+
+- [Node.js](https://nodejs.org/) 24.11.1+ or [Bun](https://bun.sh/)
 - A [Railway](https://railway.com/) account
 - [Docker](https://docs.docker.com/get-docker/) for Effect-native [Services](compute/services.md) (Alchemy builds and pushes an image). Image-based Services (`hashicorp/http-echo`) do not need it.
 

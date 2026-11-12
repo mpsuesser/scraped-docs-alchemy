@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/mysql
 title: "MySQL"
 description: "Provider-neutral MySQL schemas, Effect-native Drizzle queries, and connection configuration."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Drizzle.MySQL` provides typed, Effect-native queries for compatible MySQL databases, independently of where your application runs. Choose a database in [SQL databases](../databases.md) and supply its connection through your runtime’s binding or configuration.
@@ -121,7 +121,7 @@ export default defineConfig({
 ```
 
 ```sh
-bunx drizzle-kit generate
+pnpm drizzle-kit generate
 git add src/schema.ts drizzle.config.ts migrations
 git diff --cached
 git commit -m "Add database migration"

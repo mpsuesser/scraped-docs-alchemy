@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/nuxt
 title: "Nuxt"
 description: "Deploy a Nuxt app to Railway with Railway.Website.Nuxt — nitro's node preset on a Service, and Nuxt's own dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Railway.Website.Nuxt` deploys a [Nuxt](https://nuxt.com/) app to Railway. It builds the app through your project’s own `@nuxt/kit` with nitro’s `node` preset: the nitro Node server plus prerendered assets run on one `Railway.Service`. Omit `project` to create a `Railway.Project`. The URL is `https://{name}.up.railway.app` unless you set `domain`. There is no `nitro.preset` to edit and no build command to run.
@@ -112,7 +112,7 @@ Nitro’s `isr` route rule is implemented only by the Vercel and Netlify presets
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Nuxt’s own dev server (nitro dev, full HMR) instead of deploying; `site.url` is the local address and no Railway resources are created. Wrap the site in `Alchemy.remote()` to deploy the live Project and Service even during dev.

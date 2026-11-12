@@ -2,17 +2,15 @@
 url: https://alchemy.run/gcp/data/storage
 title: "Cloud Storage"
 description: "Create Cloud Storage buckets, read and write objects from Cloud Run with Read, Write, and ReadWrite bindings, and hand out signed download URLs."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Cloud Storage holds files. Declare a Bucket, bind it to your service,
-and `get`, `put`, `list`, and `delete` objects.
+Cloud Storage holds files. Declare a Bucket, bind it to your service, and `get`, `put`, `list`, and `delete` objects.
 
 ## Create a Bucket
 
 ```typescript
-// src/resources.ts
 import * as GCP from "@alchemy.run/gcp";
 
 export const Uploads = GCP.Storage.Bucket("Uploads", {});
@@ -31,7 +29,6 @@ Ask for the least access you need:
 | `ReadWriteBucket` | all of the above | `roles/storage.objectUser` |
 
 ```typescript
-// src/Api.ts
 import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -72,8 +69,7 @@ export default class Api extends GCP.Function<Api>()(
 
 ## Read objects
 
-`get` returns the bytes and content type, or `undefined` when the
-object is missing:
+`get` returns the bytes and content type, or `undefined` when the object is missing:
 
 ```typescript
 const object = yield* files.get("reports/2026.json");
@@ -101,6 +97,17 @@ const { objects, prefixes, nextPageToken } = yield* files.list({
 });
 ```
 
+Uploads · Bucketlist({ prefix: "reports/" })
+
+| name | size |
+| --- | --- |
+| avatars/ana.png | 48 KB |
+| reports/2025.json | 12 KB |
+| reports/2026.json | 14 KB |
+| uploads/scan-0412.pdf | 2.1 MB |
+
+A Bucket stores objects flat, by name. A folder is only a shared prefix, and listing one reads the names that start with it.
+
 ## Signed download URLs
 
 `SignGetObjectUrl` gives a browser a link to a private object:
@@ -111,13 +118,11 @@ const sign = yield* GCP.Storage.SignGetObjectUrl(Uploads);
 const url = yield* sign({ object: "reports/2026.pdf", expiresIn: 3600 });
 ```
 
-The URL is signed with the service's own identity. There's no key
-file. Provide `GCP.Storage.SignGetObjectUrlHttp`.
+The URL is signed with the service’s own identity. There’s no key file. Provide `GCP.Storage.SignGetObjectUrlHttp`.
 
 ## Destroying a Bucket with objects
 
-Cloud Storage won't delete a Bucket that still has objects. Set
-`forceDestroy` on Buckets whose contents you can lose:
+Cloud Storage won’t delete a Bucket that still has objects. Set `forceDestroy` on Buckets whose contents you can lose:
 
 ```typescript
 export const Cache = GCP.Storage.Bucket("Cache", { forceDestroy: true });
@@ -127,17 +132,13 @@ Leave it off for user data.
 
 ## Upload files at deploy time
 
-`Storage.Files` uploads a local directory, one object per file, and
-only re-uploads what changed. See
-[Static sites](../frontend/static-site.md#from-a-cloud-storage-bucket).
+`Storage.Files` uploads a local directory, one object per file, and only re-uploads what changed. See [Static sites](../frontend/static-site.md#from-a-cloud-storage-bucket).
 
 ## React to uploads
 
-Run code when an object lands with
-[Storage events](../messaging/storage-events.md).
+Run code when an object lands with [Storage events](../messaging/storage-events.md).
 
 ## Where next
 
 - [Storage events](../messaging/storage-events.md) — index every upload.
-- [Storage reference](https://alchemy.run/providers/gcp/storage#bucket) — every prop and
-  attribute.
+- [Storage reference](https://alchemy.run/providers/gcp/storage#bucket) — every prop and attribute.

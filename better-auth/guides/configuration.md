@@ -2,14 +2,13 @@
 url: https://alchemy.run/better-auth/guides/configuration
 title: "Config and secrets"
 description: "Bind Effect Config into an Alchemy host, compose database layers, and preserve generated signing secrets."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Keep configuration in a typed service
 
 ```typescript
-// auth.ts
 import { BetterAuth } from "@alchemy.run/better-auth";
 import * as Config from "effect/Config";
 import * as Context from "effect/Context";
@@ -41,7 +40,6 @@ export class Auth extends Context.Service<
 ## Supply the database at the host
 
 ```typescript
-// worker.ts
 import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -73,12 +71,11 @@ export default class AuthApi extends Cloudflare.Worker<AuthApi>()(
 ) {}
 ```
 
-This host creates its own D1 database, registers migrations, and forwards Better Auth's complete HTTP responses. The Auth service itself has no Cloudflare dependency.
+This host creates its own D1 database, registers migrations, and forwards Better Auth’s complete HTTP responses. The Auth service itself has no Cloudflare dependency.
 
 ## Run the standalone stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -97,7 +94,7 @@ export default Alchemy.Stack(
 These three files use Bun, matching releases of `alchemy` and `@alchemy.run/better-auth`, Better Auth 1.7.5, Effect 4, and `kysely`. Configure Cloudflare credentials for deployment; preserve the local Alchemy state directory across runs.
 
 ```sh
-bunx alchemy dev
+pnpm alchemy dev
 ```
 
 Alchemy selects an available port and prints the origin. With `AUTH_BASE_URL` unset, Better Auth derives its origin from the incoming request, so no fixed port is needed.
@@ -107,17 +104,17 @@ Alchemy selects an available port and prints the origin. With `AUTH_BASE_URL` un
 ```sh
 read -r AUTH_BASE_URL
 export AUTH_BASE_URL
-bunx alchemy deploy --stage prod
+pnpm alchemy deploy --stage prod
 ```
 
 Enter the actual origin serving this Worker, without a path or trailing slash. `baseURL` does not provision DNS or attach a custom domain; configure that routing separately before sending traffic there.
 
-A gitignored env file can supply the same value through `--env-file .env.production`. Pass the file explicitly on subsequent deployments, and update any local override if Alchemy's printed origin changes.
+A gitignored env file can supply the same value through `--env-file .env.production`. Pass the file explicitly on subsequent deployments, and update any local override if Alchemy’s printed origin changes.
 
 `--stage prod` selects the stack instance; `--profile prod` selects cloud credentials. Neither option implicitly loads an env file or selects an application URL; keep local development on a separate stage.
 
 ## Preserve the signing identity
 
-Omit `secret` for a new application: Alchemy provisions a random signing secret once and preserves it across deployments. Keep the auth instance's `id`, resource namespace, stage, and state stable.
+Omit `secret` for a new application: Alchemy provisions a random signing secret once and preserves it across deployments. Keep the auth instance’s `id`, resource namespace, stage, and state stable.
 
 When importing an existing installation, preserve its existing signing identity through protected configuration rather than generating a replacement. Preserving a secret alone does not migrate users, sessions, or cookies; follow the [upgrade guidance](../upgrades/from-1-6-to-1-7.md) before moving an existing database.

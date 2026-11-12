@@ -1,0 +1,95 @@
+---
+url: https://alchemy.run/cluster/docker
+title: "Docker"
+description: "Run an Effect Cluster's database and runners on a Docker swarm, on your machine or a server."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+Run the whole cluster on Docker: Postgres and the pool are swarm services on one overlay network. Use it on your machine, or on a server you run.
+
+```typescript
+import * as ClusterDocker from "@alchemy.run/effect-cluster/Docker";
+import * as Layer from "effect/Layer";
+
+export const Database = ClusterDocker.Database("Cluster");
+
+export const Default = ClusterDocker.SwarmPool("Default", { replicas: 2 }).pipe(
+  Layer.provide(Database),
+);
+```
+
+Install `@alchemy.run/docker`, and turn swarm mode on once with `docker swarm init`.
+
+Docker swarmyour machine
+
+overlay network
+
+Databaseswarm service
+
+data
+
+named volume
+
+DefaultSwarmPool · service
+
+task 1runner
+
+task 2runner
+
+ApiDocker Service
+
+The database, the pool's tasks and the Api share one overlay network. The Api reaches the gateway by the pool's name.
+
+## The database
+
+`ClusterDocker.Database` runs Postgres as a one-replica swarm service, with its data on a named volume. Publish it on a host port to look inside:
+
+```typescript
+import * as ClusterDocker from "@alchemy.run/effect-cluster/Docker";
+
+export const Database = ClusterDocker.Database("Cluster", { port: 5433 });
+```
+
+## The pool
+
+`ClusterDocker.SwarmPool` runs a swarm service with `replicas` tasks. Each finds its own address among the service’s tasks, and they talk on the overlay network.
+
+## Call it from a container
+
+Services on the database’s network reach the gateway by the pool’s name:
+
+```typescript
+import * as Cluster from "@alchemy.run/effect-cluster";
+import * as Docker from "@alchemy.run/docker";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Database } from "./Cluster.ts";
+import { Room } from "./Room.ts";
+
+export default class Api extends Docker.Service<Api>()(
+  "Api",
+  Effect.gen(function* () {
+    const database = yield* Cluster.Database.Database;
+    return {
+      main: import.meta.url,
+      port: 3000,
+      ports: [{ external: 8080, internal: 3000 }],
+      networks: database.network?.kind === "docker" ? [{ name: database.network.name }] : [],
+    };
+  }).pipe(Effect.provide(Database)),
+  Effect.gen(function* () {
+    const rooms = yield* Room;
+    return {
+      fetch: Effect.gen(function* () {
+        const lobby = yield* rooms.getByName("lobby");
+        return yield* HttpServerResponse.json({ members: yield* lobby.Join({ name: "sam" }) });
+      }).pipe(Effect.orDie),
+    };
+  }),
+) {}
+```
+
+To call it from your machine instead, publish the gateway with `gatewayPort` on the pool.
+
+Every option, with its default, is in the reference: [Database](https://alchemy.run/providers/cluster/docker#database) and [SwarmPool](https://alchemy.run/providers/cluster/docker#swarmpool).

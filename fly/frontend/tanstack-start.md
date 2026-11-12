@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Fly with Fly.Website.TanStackStart — SSR on a Machine, client assets baked into the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Fly.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Fly. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -143,7 +143,7 @@ The build runs through your project’s own `vite.config.ts` — the `tanstackSt
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs TanStack Start’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Fly resources are created. Wrap the site in `Alchemy.remote()` to deploy the live App and Service even during dev:

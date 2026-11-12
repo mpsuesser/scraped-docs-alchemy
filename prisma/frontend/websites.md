@@ -2,26 +2,17 @@
 url: https://alchemy.run/prisma/frontend/websites
 title: "Websites"
 description: "Deploy Vite, Astro, Next.js, Nuxt, React Router, SolidStart, SvelteKit, TanStack Start, Waku, Octane, Foldkit, Vocs, or any static build to Prisma Compute."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-`Prisma.Website` builds your frontend with its own framework and deploys
-it to [Prisma Compute](../compute/apps.md). The shared
-`@alchemy.run/frontend-frameworks` Node targets produce the server and
-assets; **Prisma runs that output on Bun**, uploaded as a `tar.gz`
-artifact. There is no Docker build, registry, or container image to manage.
+`Prisma.Website` builds your frontend with its own framework and deploys it to [Prisma Compute](../compute/apps.md). The shared `@alchemy.run/frontend-frameworks` Node targets produce the server and assets; **Prisma runs that output on Bun**, uploaded as a `tar.gz` artifact. There is no Docker build, registry, or container image to manage.
 
-Even fully static sites run a static-file server on Compute. These
-resources do not publish an assets-only deployment to a global CDN.
+Even fully static sites run a static-file server on Compute. These resources do not publish an assets-only deployment to a global CDN.
 
-Omit `project` and the live deployment creates a `Prisma.Project` with
-`createDatabase: false`. Pass an existing project to put the site next to
-other apps or a database. `alchemy dev` runs the framework's native dev
-server instead; the Website creates no Prisma project, database, app, or
-domain in that mode.
+Omit `project` and the live deployment creates a `Prisma.Project` with `createDatabase: false`. Pass an existing project to put the site next to other apps or a database. `alchemy dev` runs the framework’s native dev server instead; the Website creates no Prisma project, database, app, or domain in that mode.
 
-## What's supported
+## What’s supported
 
 | Framework | Resource | Guide |
 | --- | --- | --- |
@@ -42,50 +33,29 @@ domain in that mode.
 
 ## How to choose
 
-Use the resource named after your framework. It understands the
-framework's config, output layout, build, and dev server. Config files
-load natively; deploy-specific overrides belong in option bags such as
-`astro`, `nuxt`, `kit`, or `vite`.
+Use the resource named after your framework. It understands the framework’s config, output layout, build, and dev server. Config files load natively; deploy-specific overrides belong in option bags such as `astro`, `nuxt`, `kit`, or `vite`.
 
-Use `Vite` for client-only SPAs and multi-page HTML apps. SSR frameworks
-that use Vite still need their own resources. Use `StaticSite` for a
-shell command that emits a directory of files.
+Use `Vite` for client-only SPAs and multi-page HTML apps. SSR frameworks that use Vite still need their own resources. Use `StaticSite` for a shell command that emits a directory of files.
 
-Shared props are `rootDir`, `memo`, `env`, `assets`, `dev`, `domain`,
-and `project`. Framework-specific configuration belongs in the named
-option bags, not in a Dockerfile or Compute build command.
+Shared props are `rootDir`, `memo`, `env`, `assets`, `dev`, `domain`, and `project`. Framework-specific configuration belongs in the named option bags, not in a Dockerfile or Compute build command.
 
-The framework guides explain the adapter requirements: Astro and
-SvelteKit get injected adapters; Nuxt and SolidStart use the managed
-Nitro Node preset; Octane requires the shared `node()` marker adapter.
-Next.js runs a normal Next server on Bun, not OpenNext.
+The framework guides explain the adapter requirements: Astro and SvelteKit get injected adapters; Nuxt and SolidStart use the managed Nitro Node preset; Octane requires the shared `node()` marker adapter. Next.js runs a normal Next server on Bun, not OpenNext.
 
-Runtime dependencies are traced from the installed application into the archive;
-Prisma does not run a package installation after upload. Native addons must be
-built for Prisma's Linux runtime. A deployment from macOS does not cross-compile
-native dependencies, so use a compatible Linux build environment for applications
-that require them.
+Runtime dependencies are traced from the installed application into the archive; Prisma does not run a package installation after upload. Native addons must be built for Prisma’s Linux runtime. A deployment from macOS does not cross-compile native dependencies, so use a compatible Linux build environment for applications that require them.
 
 ## Install
 
-[Set up Prisma credentials](../setup.md) for live deployments. Install
-the build integration in your frontend project:
+[Set up Prisma credentials](../setup.md) for live deployments. Install the build integration in your frontend project:
 
 ```sh
-bun add -d @alchemy.run/frontend-frameworks @vercel/nft
+pnpm add -D @alchemy.run/frontend-frameworks@latest @vercel/nft
 ```
 
-Keep the framework's own dependencies and config. The integration is
-loaded from your project at build time; `@vercel/nft` traces the runtime
-dependencies for Prisma's artifact. Both are build-time dependencies.
-In a monorepo, make the integration available to the frontend project
-and the tracing peer available to the deployment workspace.
-Each framework guide includes equivalent npm, pnpm, and yarn commands.
+Keep the framework’s own dependencies and config. The integration is loaded from your project at build time; `@vercel/nft` traces the runtime dependencies for Prisma’s artifact. Both are build-time dependencies. In a monorepo, make the integration available to the frontend project and the tracing peer available to the deployment workspace. Each framework guide includes equivalent npm, pnpm, and yarn commands.
 
 ## Declare a Website
 
 ```typescript
-// alchemy.run.ts
 import * as Prisma from "@alchemy.run/prisma";
 
 export const Website = Prisma.Website.Vite("Website", {
@@ -93,13 +63,11 @@ export const Website = Prisma.Website.Vite("Website", {
 });
 ```
 
-`rootDir` defaults to `"."`. Builds are memoized from input content;
-`memo` controls which changes trigger a rebuild.
+`rootDir` defaults to `"."`. Builds are memoized from input content; `memo` controls which changes trigger a rebuild.
 
 ## Add it to the Stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Effect from "effect/Effect";
 
@@ -113,14 +81,7 @@ export default Alchemy.Stack(
 );
 ```
 
-The result is `{ url, compute, project, domain }`. `site.url` is the
-Compute endpoint on deploy and the local dev-server address during
-`alchemy dev`; the three backing resources are undefined during native
-dev. `domain` is also undefined when no custom hostname is requested.
-`Alchemy.localState()` keeps state on this machine; keep that state
-available for subsequent deploys and teardown.
-
-## Share a project
+The result is `{ url, compute, project, domain }`. `site.url` is the Compute endpoint on deploy and the local dev-server address during `alchemy dev`; the three backing resources are undefined during native dev. `domain` is also undefined when no custom hostname is requested. `Alchemy.localState()` keeps state on this machine; keep that state available for subsequent deploys and teardown.
 
 Declare a project Effect when several sites should share one:
 
@@ -134,16 +95,11 @@ Pass that Effect to the Website; it is resolved only on the live path:
 export const Website = Prisma.Website.Vite("Website", { project: Site });
 ```
 
-You can also pass an existing project ID. The Website does not create
-or own a project supplied by ID.
+You can also pass an existing project ID. The Website does not create or own a project supplied by ID.
 
 ## Environment variables
 
-Top-level `env` is applied before build and dev, and passed to Compute
-for the live runtime. It is process environment, not Worker bindings.
-Server code reads `process.env`; browser inlining follows the framework's
-rules (`VITE_*`, `NEXT_PUBLIC_*`, or `PUBLIC_*`). Never put secrets in
-client-visible keys.
+Top-level `env` is applied before build and dev, and passed to Compute for the live runtime. It is process environment, not Worker bindings. Server code reads `process.env`; browser inlining follows the framework’s rules (`VITE_*`, `NEXT_PUBLIC_*`, or `PUBLIC_*`). Never put secrets in client-visible keys.
 
 ```typescript
 const site = yield* Prisma.Website.Vite("Web", {
@@ -151,22 +107,15 @@ const site = yield* Prisma.Website.Vite("Web", {
 });
 ```
 
-A Website's automatically created project has no database. For a project
-with its default database, Prisma supplies `DATABASE_URL` and
-`DATABASE_URL_POOLED` to Compute; leave those system-managed keys out of
-`env`. For an independently managed database, use a
-[Connection](../data/connections.md) and pass its outputs explicitly.
+A Website’s automatically created project has no database. For a project with its default database, Prisma supplies `DATABASE_URL` and `DATABASE_URL_POOLED` to Compute; leave those system-managed keys out of `env`. For an independently managed database, use a [Connection](../data/connections.md) and pass its outputs explicitly.
 
 ## Local development
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
-Framework resources run their native dev servers with HMR. `dev` options
-configure the local server; the Website does not create cloud resources.
-`StaticSite` can run a supplied `dev.command`, or build and serve files
-locally. Sibling resources in the Stack retain their own lifecycle.
+Framework resources run their native dev servers with HMR. `dev` options configure the local server; the Website does not create cloud resources. `StaticSite` can run a supplied `dev.command`, or build and serve files locally. Sibling resources in the Stack retain their own lifecycle.
 
 Opt a Website into live deployment during dev explicitly:
 
@@ -184,13 +133,9 @@ const site = yield* Prisma.Website.Astro("Web", {
 });
 ```
 
-`domain` creates a [`Prisma.CustomDomain`](https://alchemy.run/providers/prisma/reference/compute#customdomain)
-and changes `site.url` to `https://app.example.com`.
+`domain` creates a [`Prisma.CustomDomain`](https://alchemy.run/providers/prisma/reference/compute#customdomain) and changes `site.url` to `https://app.example.com`.
 
-Domain provisioning is asynchronous. `site.domain` is the created
-CustomDomain resource. Configure its `dnsRecords` with your DNS provider
-and inspect `status`, `foundryStatus`, and `failureReason` before
-sending production traffic.
+Domain provisioning is asynchronous. `site.domain` is the created CustomDomain resource. Configure its `dnsRecords` with your DNS provider and inspect `status`, `foundryStatus`, and `failureReason` before sending production traffic.
 
 To publish `dnsRecords` automatically, pass the DNS host as `dns`:
 
@@ -200,11 +145,7 @@ const site = yield* Prisma.Website.Astro("Web", {
 });
 ```
 
-`AWS.Route53.Adapter()` and `Hetzner.DNS.Adapter()` work the same way. See
-[DNS Adapters](../../infrastructure-as-code/dns-adapters.md). Changing an existing
-domain's hostname or app is rejected; add a second domain, verify DNS
-and TLS, cut traffic over, then remove the old one. See
-[Compute custom domains](../compute/apps.md#custom-domains).
+`AWS.Route53.Adapter()` and `Hetzner.DNS.Adapter()` work the same way. See [DNS Adapters](../../infrastructure-as-code/dns-adapters.md). Changing an existing domain’s hostname or app is rejected; add a second domain, verify DNS and TLS, cut traffic over, then remove the old one. See [Compute custom domains](../compute/apps.md#custom-domains).
 
 ## Where next
 

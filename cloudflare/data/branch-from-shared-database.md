@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/data/branch-from-shared-database
 title: "Branch from a shared database"
 description: "Have ephemeral PR-preview stages reference a long-lived Neon or PlanetScale database from a staging stage instead of provisioning their own — fast previews, cheap branches, no extra clusters."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In the [Hyperdrive](hyperdrive.md) tutorial you provisioned a `Neon.Project` and a `Neon.Branch`, then [Drizzle](drizzle.md) layered automatic migrations on top. Both work fine with a single stage — but the moment you start deploying PR previews (`pr-147`, `pr-148`, …) the default flow becomes painful:
@@ -71,7 +71,7 @@ export const NeonDb = Effect.gen(function* () {
   });
 ```
 
-`stage` is whatever was passed to `bun alchemy deploy --stage <name>` — `dev_sam`, `staging`, `prod`, or `pr-147`. We’ll branch on `stage.startsWith("pr-")` to decide whether to create a project or reference one.
+`stage` is whatever was passed to `alchemy deploy --stage <name>` — `dev_sam`, `staging`, `prod`, or `pr-147`. We’ll branch on `stage.startsWith("pr-")` to decide whether to create a project or reference one.
 
 ## Reference the shared project for PR stages
 
@@ -155,7 +155,7 @@ export const Hyperdrive = Effect.gen(function* () {
 PR stages can only reference what `staging` has already deployed, so `staging` has to go first:
 
 ```sh
-bun alchemy deploy --stage staging
+pnpm alchemy deploy --stage staging
 ```
 
 This runs the full path — creates `app-db` (the project), `app-branch` against it, and `app-hyperdrive` in front. The state for `Neon.Project("app-db")` lands in the `staging` state file, which is what PR stages will read against.
@@ -165,7 +165,7 @@ This runs the full path — creates `app-db` (the project), `app-branch` against
 Now deploy a PR-preview stage. The same code, different stage flag:
 
 ```sh
-bun alchemy deploy --stage pr-147
+pnpm alchemy deploy --stage pr-147
 ```
 
 The plan is noticeably shorter:
@@ -180,7 +180,7 @@ The PR stage has its own isolated branch, its own Hyperdrive, its own Worker —
 ## Tear it down
 
 ```sh
-bun alchemy destroy --stage pr-147
+pnpm alchemy destroy --stage pr-147
 ```
 
 Destroy removes the per-stage resources — the branch, the Hyperdrive, the Worker — but leaves the referenced project untouched. Alchemy doesn’t own `app-db` from this stage’s perspective, so it can’t delete it. The shared project keeps serving every other PR stage and `staging` itself.

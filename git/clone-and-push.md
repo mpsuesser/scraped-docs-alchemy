@@ -2,12 +2,11 @@
 url: https://alchemy.run/git/clone-and-push
 title: "Cloning & pushing"
 description: "Standard git clients over smart HTTP. What the wire supports, where credentials go, and what to do when something hangs."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-The host speaks git's smart HTTP protocol. Standard clients work
-unmodified, with no extensions and no wrapper CLI:
+The host speaks git’s smart HTTP protocol. Standard clients work unmodified, with no extensions and no wrapper CLI:
 
 ```sh
 git clone "https://$HOST/acme/web.git"
@@ -15,8 +14,7 @@ git clone "https://$HOST/acme/web.git"
 
 ## Credentials
 
-`git` sends HTTP Basic. The credential goes in the password field of
-the remote URL and the username is ignored:
+`git` sends HTTP Basic. The credential goes in the password field of the remote URL and the username is ignored:
 
 ```sh
 git remote add origin "https://x:$TOKEN@$HOST/acme/web.git"
@@ -26,20 +24,17 @@ What `$TOKEN` is depends on the middleware the host runs.
 
 ### The starter secret
 
-The host from [Getting Started](getting-started.md) accepts one
-secret, an `Alchemy.Random` the stack outputs. `alchemy deploy` prints
-it:
+The host from [Getting Started](getting-started.md) accepts one secret, an `Alchemy.Random` the stack outputs. `alchemy deploy` prints it:
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 # { url: "https://…workers.dev", secret: "9f2c…" }
 export TOKEN=9f2c…
 ```
 
 ### A Better Auth API key
 
-The host from [Part 4](tutorial/part-4.md) verifies API keys. A
-signed-in user mints one; it is shown once:
+The host from [Part 4](tutorial/part-4.md) verifies API keys. A signed-in user mints one; it is shown once:
 
 ```sh
 curl -s -b jar -X POST "$HOST/api/auth/api-key/create" \
@@ -51,9 +46,7 @@ The example app has a settings page that does the same.
 
 ### Your own
 
-The token is whatever your middleware accepts. The one
-[Part 4](tutorial/part-4.md) put in front of the host decodes the
-Basic password and asks Better Auth whose key it is:
+The token is whatever your middleware accepts. The one [Part 4](tutorial/part-4.md) put in front of the host decodes the Basic password and asks Better Auth whose key it is:
 
 ```typescript
 const { password } = yield* HttpApiBuilder.securityDecode(
@@ -68,15 +61,11 @@ if (key !== "") {
 }
 ```
 
-A token issued by anything else is verified the same way: read it
-from the request, run the route or refuse. [Auth](blocks/auth.md)
-has the pattern.
+A token issued by anything else is verified the same way: read it from the request, run the route or refuse. [Auth](blocks/auth.md) has the pattern.
 
-### Keeping it out of `.git/config`
+### Keeping it out of.git/config
 
-Leave the credential out of the URL and let a credential helper
-supply it. A middleware that answers an anonymous request with `401`
-and `WWW-Authenticate` makes `git` prompt:
+Leave the credential out of the URL and let a credential helper supply it. A middleware that answers an anonymous request with `401` and `WWW-Authenticate` makes `git` prompt:
 
 ```sh
 git config credential.helper osxkeychain   # or store, or your manager
@@ -84,8 +73,7 @@ git clone "https://$HOST/acme/web.git"
 Password for 'https://x@…': <paste $TOKEN>
 ```
 
-A middleware that honors `public` serves reads of a public repository
-with no credential at all; the tutorial's does.
+A middleware that honors `public` serves reads of a public repository with no credential at all; the tutorial’s does.
 
 ## What is supported
 
@@ -100,29 +88,18 @@ with no credential at all; the tutorial's does.
 | Tags | lightweight and annotated, with peeled advertisement |
 | Status | `report-status`, `report-status-v2`, side-band |
 
-Every push runs a full connectivity check. The objects it references
-must already exist or arrive in the same pack, so a repository is never
-left with dangling references.
+Every push runs a full connectivity check. The objects it references must already exist or arrive in the same pack, so a repository is never left with dangling references.
 
 Protocol v0 only. Clients that prefer v2 negotiate down on their own.
 
 ## Large pushes
 
-Push size is not capped. The body streams through the Worker and into
-the blob store as it arrives, and the repository's Durable Object
-receives rows rather than the pack. Peak memory is a fixed window,
-whatever the push size. [Hasher](blocks/hasher.md) has the path and
-[Scaling](recipes/scaling.md) the numbers.
+Push size is not capped. The body streams through the Worker and into the blob store as it arrives, and the repository’s Durable Object receives rows rather than the pack. Peak memory is a fixed window, whatever the push size. [Hasher](blocks/hasher.md) has the path and [Scaling](recipes/scaling.md) the numbers.
 
 ## Troubleshooting
 
-**A credential prompt in a script.** Set `GIT_TERMINAL_PROMPT=0` so a
-missing credential fails at once instead of hanging.
+**A credential prompt in a script.** Set `GIT_TERMINAL_PROMPT=0` so a missing credential fails at once instead of hanging.
 
-**A push rejected with a ref message.** That is the protocol working:
-a non-fast-forward, a stale compare-and-swap, or a read-only
-repository. The message names the ref.
+**A push rejected with a ref message.** That is the protocol working: a non-fast-forward, a stale compare-and-swap, or a read-only repository. The message names the ref.
 
-**A hung clone behind a proxy.** The wire endpoints must be forwarded
-verbatim, with the request body streamed and the `Host` header kept.
-A proxy that buffers bodies breaks streaming pushes.
+**A hung clone behind a proxy.** The wire endpoints must be forwarded verbatim, with the request body streamed and the `Host` header kept. A proxy that buffers bodies breaks streaming pushes.

@@ -2,15 +2,15 @@
 url: https://alchemy.run/infrastructure-as-code/outputs
 title: "Inputs & Outputs"
 description: "Output<T> is alchemy's lazy reference type — the lazy values that flow between resources, get composed with .pipe, mapped, interpolated, and resolved during deploy."
-access_date: 2026-09-16T06:33:56.799Z
-current_date: 2026-09-16T06:33:56.799Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A [Resource](resource.md) ’s **inputs** are the props you pass in. Its **outputs** are the attributes the cloud returns after creation. The catch: outputs don’t exist when you write the code. They only exist after the resource is deployed.
 
 Alchemy bridges this with **`Output<T>`** — a lazy, typed reference that resolves once the upstream resource has run. You can read properties off it, transform it with `pipe`, combine it with other outputs, and feed it as input to the next resource. The resource graph is built from these dependencies.
 
-This page is a reference for every operator. For the bigger picture of how the graph deploys, see [Resource Lifecycle](resource-lifecycle.md).
+For the bigger picture of how the graph deploys, see [Resource Lifecycle](resource-lifecycle.md).
 
 ## What an Output is
 

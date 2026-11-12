@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/mysql
 title: "MySQL"
 description: "Deploy Better Auth on Lambda with an existing MySQL database and a request-scoped mysql2 pool."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This example connects a Better Auth Lambda to an existing MySQL database over TCP with TLS. The database, credentials, and network access must already exist.
@@ -11,14 +11,14 @@ This example connects a Better Auth Lambda to an existing MySQL database over TC
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5 kysely mysql2
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5 kysely mysql2
 ```
 
 Configure AWS through an [Alchemy profile](../../environments/profiles.md) and set `DATABASE_URL` in the deploying environment. Both the deployer and Lambda must be able to reach that URL.
 
 ## Define the database layer
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { MySQL } from "@alchemy.run/better-auth/MySQL";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
@@ -34,11 +34,11 @@ export const AuthDatabase = Layer.unwrap(
 );
 ```
 
-The URL is bound during host construction; the `mysql2` pool opens per invocation and closes when it settles. The TLS configuration suits hosted services such as PlanetScale; provide your database's CA when it is not covered by the system trust store.
+The URL is bound during host construction; the `mysql2` pool opens per invocation and closes when it settles. The TLS configuration suits hosted services such as PlanetScale; provide your database’s CA when it is not covered by the system trust store.
 
 ## Define the auth Lambda
 
-```typescript title="src/function.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import * as AWS from "@alchemy.run/aws";
 import * as Duration from "effect/Duration";
@@ -68,7 +68,7 @@ The function exposes Better Auth at `/api/auth` through a public Function URL. T
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
@@ -92,7 +92,7 @@ Preserve and protect the local `.alchemy` state directory across deployments. Th
 ## Deploy and migrate
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 Automatic migrations use the resolved URL and the same pool options before updating the function. The deployer needs schema-changing permissions; migrations create auth tables inside the existing database.
@@ -107,7 +107,7 @@ curl -i "$AUTH_ORIGIN/api/auth/get-session"
 
 Set `DATABASE_MIGRATION_URL` alongside the runtime URL and replace `src/auth-database.ts` with this file:
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { MySQL } from "@alchemy.run/better-auth/MySQL";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";

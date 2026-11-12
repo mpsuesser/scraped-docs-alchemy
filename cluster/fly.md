@@ -1,0 +1,83 @@
+---
+url: https://alchemy.run/cluster/fly
+title: "Fly"
+description: "Run an Effect Cluster's database and runners on Fly.io, on a private network, with the gateway at the pool's fly.dev address."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+Host your cluster on Fly.io: Postgres runs on a Fly Machine with a volume, and the runners run as a Fly Service, all on a private network for your stack. The runners serve their gateway at `https://{name}.fly.dev`.
+
+```typescript
+import * as ClusterFly from "@alchemy.run/effect-cluster/Fly";
+import * as Layer from "effect/Layer";
+
+export const Database = ClusterFly.Database("Cluster");
+
+export const Default = ClusterFly.MachinePool("Default", { replicas: 2 }).pipe(
+  Layer.provide(Database),
+);
+```
+
+Install `@alchemy.run/fly` and finish [Fly setup](../fly/setup.md).
+
+Fly organizationyour profile's organization
+
+private networkIPv6
+
+DatabaseApp · one Machine
+
+data
+
+volume
+
+DefaultFly Service
+
+Machinerunner
+
+Machinerunner
+
+Runners reach Postgres and each other over the private network. Nothing outside it reaches the database; callers reach the pool at its fly.dev address.
+
+## The database
+
+`ClusterFly.Database` runs Postgres on one Machine with a volume, in an App on the stack’s private network. Nothing outside the network reaches it. For Fly’s Managed Postgres, which Fly bills separately, pass its URL to `Cluster.Database.fromUrl`.
+
+```typescript
+import * as ClusterFly from "@alchemy.run/effect-cluster/Fly";
+
+export const Database = ClusterFly.Database("Cluster", {
+  region: "fra",
+  guest: { cpus: 2, memoryMb: 4096 },
+  diskSize: 40,
+});
+```
+
+## The pool
+
+`ClusterFly.MachinePool` runs a Fly Service with `replicas` Machines. Runners reach each other at their Machines’ private addresses, over Fly’s IPv6 network.
+
+## Call it from a Fly Service
+
+```typescript
+import * as Fly from "@alchemy.run/fly";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Room } from "./Room.ts";
+
+export default class Api extends Fly.Service<Api>()(
+  "Api",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const rooms = yield* Room;
+    return {
+      fetch: Effect.gen(function* () {
+        const lobby = yield* rooms.getByName("lobby");
+        return yield* HttpServerResponse.json({ members: yield* lobby.Join({ name: "sam" }) });
+      }).pipe(Effect.orDie),
+    };
+  }),
+) {}
+```
+
+Every option, with its default, is in the reference: [Database](https://alchemy.run/providers/cluster/fly#database) and [MachinePool](https://alchemy.run/providers/cluster/fly#machinepool).

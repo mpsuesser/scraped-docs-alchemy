@@ -2,15 +2,15 @@
 url: https://alchemy.run/aws/apis/effect-http-api
 title: "Effect HTTP API on Lambda"
 description: "Build a schema-validated HTTP API with Effect's HttpApi module and deploy it as an AWS Lambda Function behind a Function URL."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Effect HTTP defines real REST endpoints — URLs, path params, query strings, typed bodies — behind an RPC-like typed interface, which makes it the natural fit when your consumers aren’t Effect (or aren’t TypeScript at all) and want a plain HTTP client. This page is the Lambda wiring; the concept lives at [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the RPC styles.
+Effect HTTP defines real REST endpoints — URLs, path params, query strings, typed bodies — behind an RPC-like typed interface, which makes it the natural fit when your consumers aren’t Effect (or aren’t TypeScript at all) and want a plain HTTP client. The concept lives at [Effect HTTP](../../apis/effect-http.md), and [RPC](../../apis.md) covers choosing between the RPC styles.
 
 The [Lambda](../compute/lambda.md) page serves HTTP with a hand-rolled `fetch` handler — raw request parsing, manual routing. That works, but as your API grows you lose type safety at the boundary: request payloads aren’t validated, response shapes aren’t enforced, and errors slip through untyped.
 
-Effect’s `HttpApi` module solves this. You declare endpoints with schemas for payloads, responses, and errors, then implement handlers against those schemas. The result is an `HttpEffect` — the same type a Lambda’s `fetch` expects — so it plugs in directly. It’s the exact same module used in the [Workers version of this guide](../../cloudflare/apis/effect-http-api.md); the spec and handlers are portable, only the host changes.
+Effect’s `HttpApi` module solves this. You declare endpoints with schemas for payloads, responses, and errors, then implement handlers against those schemas. The result is an `HttpEffect` — the same type a Lambda’s `fetch` expects — so it plugs in directly. It’s the exact same module used in the [Workers version](../../cloudflare/apis/effect-http-api.md); the spec and handlers are portable, only the host changes.
 
 The mental model:
 
@@ -78,7 +78,7 @@ export const JobApi = HttpApi.make("JobApi").add(
 );
 ```
 
-Nothing executes yet — `JobApi` is purely a value-level description. The same constant is what we’ll hand to the client at the end of this guide.
+Nothing executes yet — `JobApi` is purely a value-level description. The same constant is what we’ll hand to the client at the end.
 
 ## 3\. Build the Function
 
@@ -310,7 +310,7 @@ Yielding `JobFunction` deploys the function *and* everything it declared inside 
 ## 5\. Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Hit the URL from the deploy output with `curl`:

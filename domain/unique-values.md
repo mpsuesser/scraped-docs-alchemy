@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/unique-values
 title: "Unique values"
 description: "Keep a value unique across every customer by making the value itself an aggregate."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Usernames must be unique across all customers, but each customer is its own aggregate and can't see the others. Make the rule its own aggregate, keyed by the value it protects.
@@ -34,10 +34,10 @@ export class UsernameClaim extends Domain.Aggregate("UsernameClaim", {
   initial: { _tag: "Free" },
   commands: [ClaimUsername],
   decide: {
-    ClaimUsername: (s, cmd) =>
-      s._tag === "Free"
+    ClaimUsername: (usernameClaim, cmd) =>
+      usernameClaim._tag === "Free"
         ? [new UsernameClaimed({ customerId: cmd.customerId })]
-        : s.customerId === cmd.customerId
+        : usernameClaim.customerId === cmd.customerId
           ? []
           : new UsernameTaken(),
   },

@@ -2,8 +2,8 @@
 url: https://alchemy.run/git
 title: "Git"
 description: "A pluggable, embeddable, self-hostable git server on Cloudflare Workers, Durable Objects, and R2. Smart HTTP for any client, a typed REST plane with pull requests, and a GitHub-compatible API."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `@alchemy.run/git` is a pluggable, embeddable, self-hostable git server. It speaks git’s smart HTTP to any client, serves a typed REST plane with pull requests, and answers the GitHub REST v3 API for `gh` and Octokit. It runs on Cloudflare Workers, Durable Objects, and R2, embeds in your own `HttpApi`, and each part of it is an Effect Layer you can replace:
@@ -62,6 +62,8 @@ Bytes now live in S3. Application authorization stays in your HTTP handlers.
 The engine holds no users, no credentials, and no policy. Who may call a route is the middleware applied to its route layer, so the same host runs behind a shared secret, behind Better Auth, or behind any other authentication. Your handler decodes the push, authorizes its proposed changes, then calls `Git.Engine.preparePush` and `commitPush`. Endpoints use Effect’s `HttpApiEndpoint`; implementations use `HttpApiBuilder.group` and `handleAll`. Add your own groups or replace a handler in a Git group before registering it. [git.alchemy.run](https://git.alchemy.run/) runs this file. The alchemy monorepo, 44,051 objects in a 67 MiB pack, is hosted on it and clones back byte-identical under `git fsck --strict`.
 
 ## Build one
+
+New to hosting git? [What is a git host?](git/what-is-git.md) walks through objects, refs, packs, smart HTTP, push verification, names and pull requests, and how each becomes a Layer here.
 
 [Getting Started](git/getting-started.md) is a complete shared-credential quickstart. The tutorial starts with a Git push and builds one behavior at a time. Every part ends with a deployment and a check you can run:
 

@@ -2,30 +2,46 @@
 url: https://alchemy.run/cloudflare/data/iceberg-tables
 title: "Iceberg tables"
 description: "Turn an R2 bucket into an Apache Iceberg warehouse with Cloudflare's catalog, manage tables with schema evolution and maintenance, and query them from Spark, DuckDB, or PyIceberg."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Cloudflare's **catalog** (formerly R2 Data Catalog) turns an R2 bucket into an
-Apache Iceberg warehouse. Iceberg stores a table as data files plus metadata,
-so any engine that speaks the Iceberg REST protocol can read and write it:
-Spark, DuckDB, PyIceberg, Snowflake, Trino, and others.
+Cloudflare’s **catalog** (formerly R2 Data Catalog) turns an R2 bucket into an Apache Iceberg warehouse. Iceberg stores a table as data files plus metadata, so any engine that speaks the Iceberg REST protocol can read and write it: Spark, DuckDB, PyIceberg, Snowflake, Trino, and others.
 
-The catalog is part of **Basin**, Cloudflare's analytics stack on R2. Tables
-get into it in two ways:
+The catalog is part of **Basin**, Cloudflare’s analytics stack on R2. Tables get into it in two ways:
 
-- A [Pipelines](pipelines.md) catalog sink creates a table and
-  writes events into it.
-- `Cloudflare.Basin.Table` creates and manages a table directly, for tables
-  your own code or engines write.
+- A [Pipelines](pipelines.md) catalog sink creates a table and writes events into it.
+- `Cloudflare.Basin.Table` creates and manages a table directly, for tables your own code or engines write.
 
-This page covers enabling the catalog, managing tables, and connecting query
-engines.
+LakeR2 bucket · catalog enabled
+
+salesnamespace
+
+OrdersIceberg table
+
+data
+
+Parquet files
+
+metadata
+
+schema, snapshots
+
+RefundsIceberg table
+
+data
+
+Parquet files
+
+metadata
+
+schema, snapshots
+
+The catalog organizes a bucket into namespaces and tables. Each table is data files plus metadata, so Spark, DuckDB or Snowflake can read it through the catalog's Iceberg REST endpoint.
 
 ## Enable the catalog on a bucket
 
 ```typescript
-// alchemy.run.ts
 const lake = yield* Cloudflare.R2.Bucket("Lake");
 
 const catalog = yield* Cloudflare.Basin.Catalog("Catalog", {
@@ -33,17 +49,14 @@ const catalog = yield* Cloudflare.Basin.Catalog("Catalog", {
 });
 ```
 
-`Basin.Catalog` is the same resource as `Cloudflare.R2.DataCatalog`. It
-outputs:
+`Basin.Catalog` is the same resource as `Cloudflare.R2.DataCatalog`. It outputs:
 
-- `catalogUri`: the Iceberg REST endpoint, for example
-  `https://catalog.cloudflarestorage.com/<account>/<bucket>`.
+- `catalogUri`: the Iceberg REST endpoint, for example `https://catalog.cloudflarestorage.com/<account>/<bucket>`.
 - `name`: the warehouse name, `<account>_<bucket>`.
 
 ## Turn on catalog maintenance
 
-Iceberg tables accumulate small files and old snapshots. The catalog can
-compact files and expire snapshots for every table in the warehouse:
+Iceberg tables accumulate small files and old snapshots. The catalog can compact files and expire snapshots for every table in the warehouse:
 
 ```typescript
 const catalog = yield* Cloudflare.Basin.Catalog("Catalog", {
@@ -54,14 +67,11 @@ const catalog = yield* Cloudflare.Basin.Catalog("Catalog", {
 });
 ```
 
-The maintenance jobs run with `token`, a Cloudflare API token with access to R2
-and the catalog. They stay pending until a token is set. Only the fields you
-set are enforced; the rest keep Cloudflare's defaults.
+The maintenance jobs run with `token`, a Cloudflare API token with access to R2 and the catalog. They stay pending until a token is set. Only the fields you set are enforced; the rest keep Cloudflare’s defaults.
 
 ## Create a table
 
-`Cloudflare.Basin.Table` creates a namespace and table through the catalog's
-Iceberg REST API, with columns from an Effect Schema:
+`Cloudflare.Basin.Table` creates a namespace and table through the catalog’s Iceberg REST API, with columns from an Effect Schema:
 
 ```typescript
 import * as Schema from "effect/Schema";
@@ -82,40 +92,31 @@ const orders = yield* Cloudflare.Basin.Table("Orders", {
 });
 ```
 
-The table name is generated from the stack, stage, and logical ID unless you
-set `name`. The table outputs `identifier` (for example `sales.orders`),
-`tableUuid`, `location`, and `metadataLocation`.
+The table name is generated from the stack, stage, and logical ID unless you set `name`. The table outputs `identifier` (for example `sales.orders`), `tableUuid`, `location`, and `metadataLocation`.
 
-`partitionBy` takes Iceberg transforms: a column name, `day(at)`, `month(at)`,
-`bucket[16](orderId)`, and so on. `properties` are Iceberg table properties,
-updated in place.
+`partitionBy` takes Iceberg transforms: a column name, `day(at)`, `month(at)`, `bucket[16](orderId)`, and so on. `properties` are Iceberg table properties, updated in place.
 
-The table authenticates with your deploying Cloudflare credentials. Pass `token`
-to use a different one.
+The table authenticates with your deploying Cloudflare credentials. Pass `token` to use a different one.
 
 ## Evolve the schema
 
-Adding an optional column evolves the table in place. Existing data stays, and
-the new column reads as empty for old rows:
+Adding an optional column evolves the table in place. Existing data stays, and the new column reads as empty for old rows:
 
-```diff lang="typescript"
- const Order = Schema.Struct({
-   orderId: Schema.String,
-   amountCents: Schema.Number,
-   at: Schema.Date,
-   note: Schema.optional(Schema.String),
-+  coupon: Schema.optional(Schema.String),
- });
+```typescript
+const Order = Schema.Struct({
+  orderId: Schema.String,
+  amountCents: Schema.Number,
+  at: Schema.Date,
+  note: Schema.optional(Schema.String),
+  coupon: Schema.optional(Schema.String),
+});
 ```
 
-A change that would lose data fails the plan before anything is applied:
-dropping or narrowing a column, or adding a required one. Changing `namespace`,
-`name`, or `partitionBy` also fails the plan, because each would mean dropping
-the table.
+A change that would lose data fails the plan before anything is applied: dropping or narrowing a column, or adding a required one. Changing `namespace`, `name`, or `partitionBy` also fails the plan, because each would mean dropping the table.
 
 ## Tune maintenance per table
 
-`maintenance` overrides the catalog's settings for one table:
+`maintenance` overrides the catalog’s settings for one table:
 
 ```typescript
 const orders = yield* Cloudflare.Basin.Table("Orders", {
@@ -129,13 +130,11 @@ const orders = yield* Cloudflare.Basin.Table("Orders", {
 });
 ```
 
-Per-table snapshot expiration only works after snapshot expiration is enabled
-on the catalog.
+Per-table snapshot expiration only works after snapshot expiration is enabled on the catalog.
 
 ## Choose what happens on destroy
 
-Destroying a `Table` resource leaves the table and its data in place by
-default, so removing it from your program never deletes data:
+Destroying a `Table` resource leaves the table and its data in place by default, so removing it from your program never deletes data:
 
 ```typescript
 Cloudflare.Basin.Table("Orders", { catalog, namespace: "sales", schema: Order, delete: "retain" }); // default
@@ -145,9 +144,7 @@ Cloudflare.Basin.Table("Orders", { catalog, namespace: "sales", schema: Order, d
 
 ## Query from other engines
 
-Any Iceberg REST client connects with the catalog's URI, the warehouse name,
-and a Cloudflare API token with access to R2 and the catalog. Export the
-first two from your stack:
+Any Iceberg REST client connects with the catalog’s URI, the warehouse name, and a Cloudflare API token with access to R2 and the catalog. Export the first two from your stack:
 
 ```typescript
 return {
@@ -171,8 +168,7 @@ orders = catalog.load_table(("sales", "orders"))
 print(orders.scan().to_pandas())
 ```
 
-From Effect code, `@distilled.cloud/iceberg` is a typed client for the same
-API:
+From Effect code, `@distilled.cloud/iceberg` is a typed client for the same API:
 
 ```typescript
 import * as Iceberg from "@distilled.cloud/iceberg";
@@ -187,8 +183,7 @@ const table = yield* Iceberg.loadTable({ namespace: "sales", table: "orders" }).
 
 Related:
 
-- [Pipelines](pipelines.md): ingest events into a table with a
-  catalog sink.
+- [Pipelines](pipelines.md): ingest events into a table with a catalog sink.
 - [R2](r2.md): the bucket under the warehouse.
 
 Reference:

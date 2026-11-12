@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Cloudflare with Cloudflare.Website.Vite — SSR, typed Worker bindings, and HMR dev with real cloud resources."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 [TanStack Start](https://tanstack.com/start) is pure Vite — `tanstackStart()` and `viteReact()` are ordinary plugins in `vite.config.ts`, so [`Cloudflare.Website.Vite`](vite.md) builds the client assets and the SSR server bundle in a single `vite build` pass, no adapter or Wrangler config required. Support is verified: the [examples/cloudflare-website-tanstack-start](https://github.com/alchemy-run/alchemy/tree/main/examples/cloudflare-website-tanstack-start) example is checked in, and a live test deploys it in dev mode with real Alchemy-managed R2 bindings.
@@ -114,13 +114,13 @@ const res = await env.BACKEND.fetch(
 ## Deploy and dev
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 For local development:
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` boots TanStack Start’s Vite dev server with HMR while the bindings stay attached to the **real** Alchemy-managed cloud resources — this exact combination (TanStack Start dev mode + live R2 binding) is covered by a live test in the Alchemy repo, so `env.BUCKET.get(key)` hits the same bucket in dev as in production.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/testing/test-harness
 title: "Test harness"
 description: "Reference for @alchemy.run/test — every helper, hook, and option exposed by Test.make, and how to run it with alchemy-test, bun test, or Vitest."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Test.make` is the same Effect-aware harness on three runners: [`alchemy-test`, `bun test`, and Vitest](#runners). For the end-to-end walkthrough, see [Testing a Stack](testing-a-stack.md); for provider-lifecycle testing, see [Testing Providers](testing-providers.md).
@@ -224,7 +224,7 @@ The implementation comes from `effect/http/FetchHttpClient` — same client the 
 [`@alchemy.run/test`](https://www.npmjs.com/package/@alchemy.run/test) holds `Test.make` for every runner. Install it once, whichever runner you use:
 
 ```sh
-bun add -d @alchemy.run/test@latest
+pnpm add -D @alchemy.run/test@latest
 ```
 
 Each runner has its own adapter in the package. The `Test.make` API is identical on all three; only the import and the command change.
@@ -243,14 +243,17 @@ import { expect } from "@alchemy.run/test";
 Run it with the `alchemy-test` binary. It picks up every `*.test.ts` under `./test`, or the paths you pass.
 
 ```sh
-bunx alchemy-test
-bunx alchemy-test test/integ.test.ts -t "serves the url"
+pnpm alchemy-test
+```
+
+```sh
+pnpm alchemy-test test/integ.test.ts -t "serves the url"
 ```
 
 Flags set the environment before any test file is imported: `--profile <name>` sets `ALCHEMY_PROFILE`, `--stage <name>` sets `ALCHEMY_TEST_STAGE`, and `--fast` sets `FAST=1`.
 
 ```sh
-bunx alchemy-test --profile testing --stage test_sam_feat-x
+pnpm alchemy-test --profile testing --stage test_sam_feat-x
 ```
 
 Passing tests stay quiet; a failing test prints its error and captured output inline. Every test’s output goes to a per-run log under `.alchemy/log/test/`, whose path is printed at the end. Add `--tui` for a live view in an interactive terminal.
@@ -288,7 +291,7 @@ import { expect } from "@effect/vitest";
 Every `test(...)` runs as an `@effect/vitest` `it.live` test, with the same 120s default hook timeout.
 
 ```sh
-npx vitest run test/integ.test.ts
+pnpm vitest run test/integ.test.ts
 ```
 
 ### Setting the stage from the command line
@@ -296,9 +299,9 @@ npx vitest run test/integ.test.ts
 The default stage is `test_$USER` on every runner. `ALCHEMY_TEST_STAGE` replaces it for the whole run. `alchemy-test` sets it with `--stage`; with `bun test` or Vitest, set the variable yourself.
 
 ```sh
-bunx alchemy-test --stage ci-pr-42
+pnpm alchemy-test --stage ci-pr-42
 ALCHEMY_TEST_STAGE=ci-pr-42 bun test
-ALCHEMY_TEST_STAGE=ci-pr-42 npx vitest run
+ALCHEMY_TEST_STAGE=ci-pr-42 pnpm vitest run
 ```
 
 A `stage` passed to `Test.make` or to a single `deploy` still wins over the variable.

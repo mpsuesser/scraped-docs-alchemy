@@ -2,31 +2,24 @@
 url: https://alchemy.run/stripe/guides/webhooks
 title: "React to Stripe events"
 description: "consumeEvents provisions the webhook endpoint and runs one Effect per delivery. When to use it, which events to listen for, and how to manage the endpoint yourself."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Stripe tells you what happened asynchronously. A payment succeeded, a
-renewal was declined, a merchant finished onboarding — none of these
-come back on the request that started them. Anything your app needs to
-*know* about billing state, it learns from webhooks.
+Stripe tells you what happened asynchronously. A payment succeeded, a renewal was declined, a merchant finished onboarding — none of these come back on the request that started them. Anything your app needs to *know* about billing state, it learns from webhooks.
+
+Stripe retries a delivery, further apart each time, until your endpoint answers 2xx. The same event can arrive more than once, so check its signature and skip an event id you've already handled.
 
 There are two levels:
 
-1. **`WebhookEndpoint`** — the Stack resource. Owns the Stripe
-   endpoint: URL, enabled event types, signing secret.
-2. **`consumeEvents`** — the event source. One handler, one typed
-   `Effect` per delivery.
+1. **`WebhookEndpoint`** — the Stack resource. Owns the Stripe endpoint: URL, enabled event types, signing secret.
+2. **`consumeEvents`** — the event source. One handler, one typed `Effect` per delivery.
 
-For the common case you only write level 2. `consumeEvents` creates
-the `WebhookEndpoint` pointed at the Worker it runs on, enables exactly
-the events you listed, and binds the minted signing secret so every
-delivery is verified before your handler sees it.
+For the common case you only write level 2. `consumeEvents` creates the `WebhookEndpoint` pointed at the Worker it runs on, enables exactly the events you listed, and binds the minted signing secret so every delivery is verified before your handler sees it.
 
 ## On a Worker
 
 ```typescript
-// src/Api.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Stripe from "@alchemy.run/stripe";
 import * as Effect from "effect/Effect";
@@ -48,10 +41,10 @@ export default class Api extends Cloudflare.Worker<Api>()(
         // event: CustomerSubscriptionCreated | CustomerSubscriptionDeleted
         switch (event.type) {
           case "customer.subscription.created":
-            yield* Effect.log(`new subscription ${event.object.id}`);
+            yield* Effect.log(\`new subscription ${event.object.id}\`);
             return;
           case "customer.subscription.deleted":
-            yield* Effect.log(`canceled ${event.object.id}`);
+            yield* Effect.log(\`canceled ${event.object.id}\`);
             return;
         }
       }),
@@ -66,29 +59,16 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Pass event **classes**, not `"customer.subscription.created"` strings.
-The class is both the subscription key and the type of `event` inside
-the handler, so `event.object` is a `Subscription` in the first case
-and the switch is exhaustive.
+Pass event **classes**, not `"customer.subscription.created"` strings. The class is both the subscription key and the type of `event` inside the handler, so `event.object` is a `Subscription` in the first case and the switch is exhaustive.
 
-Deliveries arrive at `/webhooks/stripe` on the Worker (override with
-`path`). The listener verifies `Stripe-Signature`; a bad signature is a
-`401` and never reaches your handler. A defect in your handler is a
-`500`, which makes Stripe retry.
-
-:::note[Handlers must be idempotent]
-Stripe retries on any non-2xx and may deliver an event more than once.
-Write your handler so running it twice for the same event is harmless —
-upserting a row keyed by customer or account id, as both examples do,
-is the usual shape.
-:::
+Deliveries arrive at `/webhooks/stripe` on the Worker (override with `path`). The listener verifies `Stripe-Signature`; a bad signature is a `401` and never reaches your handler. A defect in your handler is a `500`, which makes Stripe retry.
 
 ## Which events
 
 The classes exported from `@alchemy.run/stripe`:
 
-| Class | Event | You'll want it when |
-|---|---|---|
+| Class | Event | You’ll want it when |
+| --- | --- | --- |
 | `CheckoutSessionCompleted` | `checkout.session.completed` | A buyer paid on hosted Checkout |
 | `CustomerSubscriptionCreated` | `customer.subscription.created` | A subscription started (any path) |
 | `CustomerSubscriptionUpdated` | `customer.subscription.updated` | Renewal, plan change, `past_due` recovery |
@@ -99,33 +79,27 @@ The classes exported from `@alchemy.run/stripe`:
 | `CustomerCreated` / `Updated` / `Deleted` | `customer.*` | Mirror customer records |
 | `AccountUpdated` | `account.updated` | A Connect merchant finished onboarding |
 
-[Sell a subscription](subscriptions.md) shows the first six
-driving an entitlement record. [Connect](connect.md) shows
-`AccountUpdated` driving a merchant table.
+[Sell a subscription](subscriptions.md) shows the first six driving an entitlement record. [Connect](connect.md) shows `AccountUpdated` driving a merchant table.
 
 ## Managing the endpoint yourself
 
-Declare a `WebhookEndpoint` directly when the delivery URL is not a
-Worker alchemy deploys — an existing service, a different cloud:
+Declare a `WebhookEndpoint` directly when the delivery URL is not a Worker alchemy deploys — an existing service, a different cloud:
 
 ```typescript
-// alchemy.run.ts
 const webhook = yield* Stripe.WebhookEndpoint("Events", {
   url: "https://api.example.com/stripe",
   enabledEvents: ["customer.subscription.created"],
 });
 ```
 
-`webhook.secret` is the signing secret; get it to that service however
-you get secrets there.
+`webhook.secret` is the signing secret; get it to that service however you get secrets there.
 
-If the target *is* an alchemy Worker but you want the endpoint declared
-in the Stack rather than inside the Worker, bind the secret explicitly:
+If the target *is* an alchemy Worker but you want the endpoint declared in the Stack rather than inside the Worker, bind the secret explicitly:
 
 ```typescript
 const api = yield* Api;
 const webhook = yield* Stripe.WebhookEndpoint("Events", {
-  url: Output.interpolate`${api.url}/webhooks/stripe`,
+  url: Output.interpolate\`${api.url}/webhooks/stripe\`,
   enabledEvents: [Stripe.CustomerSubscriptionCreated],
 });
 yield* Stripe.bindWebhookSecret(api, webhook.secret);
@@ -133,5 +107,4 @@ yield* Stripe.bindWebhookSecret(api, webhook.secret);
 
 ## Reference
 
-[WebhookEndpoint](https://alchemy.run/providers/stripe/reference/webhook#webhookendpoint) ·
-[consumeEvents](https://alchemy.run/providers/stripe/reference/webhook#consumeeventslive)
+[WebhookEndpoint](https://alchemy.run/providers/stripe/reference/webhook#webhookendpoint) · [consumeEvents](https://alchemy.run/providers/stripe/reference/webhook#consumeeventslive)

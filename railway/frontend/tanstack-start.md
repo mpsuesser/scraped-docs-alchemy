@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Railway with Railway.Website.TanStackStart — SSR on a container Service, client assets in the image, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Railway.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to Railway. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server plus client assets run on one [`Railway.Service`](../compute/services.md). Alchemy creates a [`Railway.Project`](../compute/projects.md) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No adapter.
@@ -143,7 +143,7 @@ The build runs through your project’s own `vite.config.ts` — the `tanstackSt
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs TanStack Start’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Railway resources are created. Wrap the site in `Alchemy.remote()` to deploy the live Service even during dev:

@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/cloudflare-hyperdrive
 title: "Cloudflare Hyperdrive"
 description: "Deploy a Better Auth Worker with an uncached Hyperdrive connection to a Neon Postgres origin."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This example provisions a Neon Postgres database, a Hyperdrive connection, and a Better Auth Worker. Hyperdrive provides pooled access to the origin; it does not create the origin database itself.
@@ -11,14 +11,14 @@ This example provisions a Neon Postgres database, a Hyperdrive connection, and a
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5 kysely pg
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5 kysely pg
 ```
 
 Configure Cloudflare and Neon through [Alchemy profiles](../../environments/profiles.md), or supply `NEON_API_KEY` for Neon. If you only need direct Neon access, the [Neon serverless layer](neon.md) avoids Hyperdrive and `pg`.
 
 ## Define the database layer
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { CloudflareHyperdrive } from "@alchemy.run/better-auth/CloudflareHyperdrive";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Neon from "@alchemy.run/neon";
@@ -41,11 +41,11 @@ export const AuthDatabase = Layer.unwrap(
 );
 ```
 
-Keep Hyperdrive caching disabled so session and verification reads cannot return stale data. Migrations connect directly to the origin URL because Hyperdrive's runtime connection string exists only inside the Worker.
+Keep Hyperdrive caching disabled so session and verification reads cannot return stale data. Migrations connect directly to the origin URL because Hyperdrive’s runtime connection string exists only inside the Worker.
 
 ## Define the auth Worker
 
-```typescript title="src/worker.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -67,11 +67,11 @@ export default class AuthApi extends Cloudflare.Worker<AuthApi>()(
 ) {}
 ```
 
-The layer registers Hyperdrive's native binding and opens a driver pool inside each request, never during Worker construction. Better Auth's signing secret is generated and bound automatically.
+The layer registers Hyperdrive’s native binding and opens a driver pool inside each request, never during Worker construction. Better Auth’s signing secret is generated and bound automatically.
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Neon from "@alchemy.run/neon";
@@ -97,7 +97,7 @@ Preserve and protect the local `.alchemy` state directory so later deployments r
 ## Deploy and migrate through the origin
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 The deployer must reach the origin with schema-changing permissions; the migration completes before the Worker is updated. Set `AUTH_ORIGIN` to the printed URL and verify the endpoint:
@@ -106,16 +106,16 @@ The deployer must reach the origin with schema-changing permissions; the migrati
 curl -i "$AUTH_ORIGIN/api/auth/get-session"
 ```
 
-Omitting the database layer's `migrate` source disables automatic migration support. In that case, leave Better Auth's `migrate` unset or false and manage the schema yourself; explicitly requesting `migrate: true` fails.
+Omitting the database layer’s `migrate` source disables automatic migration support. In that case, leave Better Auth’s `migrate` unset or false and manage the schema yourself; explicitly requesting `migrate: true` fails.
 
 ## MySQL origins
 
 For an existing MySQL origin, install its driver instead of `pg`:
 
 ```sh
-bun add mysql2
+pnpm add mysql2
 ```
 
-Configure the Hyperdrive resource with that MySQL origin, select `dialect: "mysql"` in `CloudflareHyperdrive`, and supply the origin's deploy-resolvable URL as `migrate`. Keep caching disabled; changing the dialect alone neither converts the Neon origin above nor moves existing auth records.
+Configure the Hyperdrive resource with that MySQL origin, select `dialect: "mysql"` in `CloudflareHyperdrive`, and supply the origin’s deploy-resolvable URL as `migrate`. Keep caching disabled; changing the dialect alone neither converts the Neon origin above nor moves existing auth records.
 
 The `pool` option passes through to the selected driver, and migration credentials may come from a resource Output without binding them to the Worker. See [configuration](../guides/configuration.md), [migrations](../guides/migrations.md), the [upgrade guide](../upgrades/from-1-6-to-1-7.md), and the [`CloudflareHyperdrive` reference](https://alchemy.run/providers/betterauth/reference/hyperdrive#cloudflarehyperdrive).

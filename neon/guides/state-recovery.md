@@ -2,8 +2,8 @@
 url: https://alchemy.run/neon/guides/state-recovery
 title: "State and recovery"
 description: "Preserve Neon ownership and reveal-once secrets, recover interrupted deployments, and clean up without discarding state."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Alchemy state records resource ownership, physical IDs, secrets, and the original
@@ -98,8 +98,8 @@ When the original state cannot be recovered:
 cannot recover it, and the provider refuses silent rotation. If both the state
 and approved secret backup are unavailable, the organization admin must explicitly
 plan replacement/revocation and update consumers. Coordinate any exceptional
-manual action with the Alchemy state owner before resuming automation; this guide
-does not prescribe fabricating resource state or bypassing ownership checks.
+manual action with the Alchemy state owner before resuming automation. Never
+fabricate resource state or bypass ownership checks.
 
 The same caution applies to an interrupted credential creation whose cloud result
 was never persisted. Broad account deletion, guessed adoption, and deleting state

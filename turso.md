@@ -2,20 +2,21 @@
 url: https://alchemy.run/turso
 title: "Turso"
 description: "Create Turso SQLite databases and query them from your Workers."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Turso hosts SQLite databases for you. Create them in the same Stack as your Workers, and query them with Effect SQL or Drizzle.
+Turso is a database platform built on libSQL, its open-source fork of SQLite. Its databases are cheap enough to have thousands, one per customer, user or pull request, and can sync to replicas embedded in your app.
 
-New here? [Set up credentials](turso/setup.md) first, then [build the tutorial](turso/tutorial/part-1.md).
+**New to Turso?** Start with [What is Turso?](turso/what-is-turso.md).
 
-## Create a database
+## A quick example
 
 Every database lives in a group. The group decides where its databases run.
 
 ```typescript
 import * as Turso from "@alchemy.run/turso";
+import * as Effect from "effect/Effect";
 
 export const Group = Turso.Group("Group", { location: "aws-us-east-1" });
 
@@ -30,8 +31,6 @@ export const Db = Effect.gen(function* () {
 
 Each deploy runs any new migrations. See [Migrations](turso/migrations.md).
 
-## Query it from a Worker
-
 `Turso.Connect` gives the Worker the database’s URL and a token. Pass it to [Drizzle](sql/drizzle/libsql.md) or [Effect SQL](sql/effect-sql/libsql.md):
 
 ```typescript
@@ -41,8 +40,6 @@ const db = yield* Drizzle.LibSQL(conn);
 
 See [Connections](turso/connections.md).
 
-## One database per tenant
-
 Turso databases are cheap, so you can give each customer their own. `Turso.ManageDatabases` lets a Worker create, query, and delete databases in one group:
 
 ```typescript
@@ -51,11 +48,17 @@ const acme = yield* tenants.create("acme");
 const sql = yield* SQL.LibSQL(tenants.connect(acme.name));
 ```
 
-The [tutorial](turso/tutorial/part-1.md) builds this step by step. The [Database per tenant](turso/database-per-tenant.md) guide has the details.
+See [Database per tenant](turso/database-per-tenant.md).
 
-## Where next
+## Where to start
 
-- [Groups](turso/groups.md) and [Databases](turso/databases.md)
-- [Tokens](turso/tokens.md) for apps outside your Stack
-- [Preview databases](turso/preview-databases.md), one copy per pull request
-- [Team & organization](turso/organization.md): invites, members, and settings
+**Want to build?** The [tutorial](turso/tutorial/part-1.md) builds a database per tenant, step by step. Start with [Setup](turso/setup.md) to connect your organization.
+
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).
+
+## The docs
+
+### Accounts & access
+
+- [Team & organization](turso/organization.md)
+- [Tokens](turso/tokens.md)

@@ -2,8 +2,8 @@
 url: https://alchemy.run/railway/frontend/waku
 title: "Waku"
 description: "Deploy a Waku app to Railway with Railway.Website.Waku — RSC server on a container Service, SSG pages in the image, and Waku's own dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Railway.Website.Waku` deploys a [Waku](https://waku.gg/) app (React Server Components) to Railway. It builds the project programmatically: the RSC server plus SSG pages run on one [`Railway.Service`](../compute/services.md). Alchemy creates a [`Railway.Project`](../compute/projects.md) if you omit `project`. The URL is the generated `*.up.railway.app` hostname. No `waku.config.ts` edits are required — if you have one it loads natively — and there is no adapter to configure and no build command to run.
@@ -104,7 +104,7 @@ export const getConfig = async () => ({ render: "dynamic" }) as const;
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs Waku’s own dev server (native HMR) instead of deploying; `site.url` is the local address and no Railway resources are created. Wrap the site in `Alchemy.remote()` to deploy the live Service even during dev:

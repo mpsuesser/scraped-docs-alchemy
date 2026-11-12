@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-5
 title: "Part 5: CI/CD"
 description: "Set up GitHub Actions for automated AWS deployments and PR previews — with OIDC credentials provisioned as code."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In [Part 4](part-4.md) you deployed isolated stages by
@@ -22,8 +22,8 @@ assumes the role at runtime and no secret ever exists to leak.
 CI needs to share state across runs, so a local `.alchemy/` directory
 won't cut it. You already configured `AWS.state()` back in
 [Part 1](part-1.md#where-state-lives), which stores state
-in an account-regional S3 bucket. Every deploy — local or from CI —
-reads and writes state through that bucket.
+in a DynamoDB table in your account. Every deploy — local or from CI —
+reads and writes state through that table.
 
 Double-check it's still wired up in `alchemy.run.ts`:
 

@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/tutorial/part-3
 title: "Part 3: React with a policy"
 description: "Register customers, and open a main account for each one with a policy."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Every new customer should get a main account. Model customers, then add a policy that opens the account whenever a customer registers.
@@ -58,8 +58,8 @@ export class Customer extends Domain.Aggregate("Customer", {
   initial: { name: null },
   commands: [RegisterCustomer],
   decide: {
-    RegisterCustomer: (s, cmd) =>
-      s.name !== null ? new AlreadyRegistered() : [new CustomerRegistered({ name: cmd.name })],
+    RegisterCustomer: (customer, cmd) =>
+      customer.name !== null ? new AlreadyRegistered() : [new CustomerRegistered({ name: cmd.name })],
   },
   evolve: {
     CustomerRegistered: (_, e) => ({ name: e.name }),

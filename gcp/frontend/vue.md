@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/frontend/vue
 title: "Vue"
 description: "Deploy a Vue single-page app to Cloud Run with GCP.Website.Vite — scaffold with create-vue, deep links answered by index.html."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A Vue app is a Vite app, so it deploys with [`GCP.Website.Vite`](vite.md). Vue Router’s history mode works out of the box: unknown paths answer with `index.html`.
@@ -45,7 +45,7 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 When you add [Vue Router](https://router.vuejs.org/) in history mode, deep links work as they are: the server answers unknown paths with `index.html`.

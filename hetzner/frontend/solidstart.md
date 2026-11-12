@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/solidstart
 title: "SolidStart"
 description: "Deploy a SolidStart app to Hetzner with Hetzner.Website.SolidStart — nitro's node preset as a systemd unit on port 3000, prerendered pages baked into the unit, and SolidStart's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Hetzner.Website.SolidStart` deploys a [SolidStart](https://start.solidjs.com/) app to a Hetzner Cloud Server. It runs your project’s own `vite build` and appends nitro’s `node` preset: the SSR server runs as a systemd [`Hetzner.Service`](../compute/services.md) on port 3000, and client assets plus prerendered pages are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
@@ -136,7 +136,7 @@ export const Website = Hetzner.Website.SolidStart("Website", {
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs SolidStart’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Hetzner resources are created. Nitro plays no part in dev. Wrap the site in `Alchemy.remote()` to deploy the live Server and Service even during dev:

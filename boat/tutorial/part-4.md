@@ -1,0 +1,38 @@
+---
+url: https://alchemy.run/boat/tutorial/part-4
+title: "Part 4: Update the Snapshot"
+description: "Change the Golden snapshot, redeploy, and see new sandboxes start from the new disk while existing ones keep theirs."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
+---
+
+## Add a command
+
+Install pnpm into the snapshot:
+
+```typescript
+export const Golden = Boat.Snapshot("Golden", {
+  run: ["git clone --depth 1 https://github.com/sindresorhus/is ~/repo"],
+  run: ["git clone --depth 1 https://github.com/sindresorhus/is ~/repo", "npm install -g pnpm"],
+});
+```
+
+## Deploy the new base
+
+```sh
+pnpm alchemy deploy
+```
+
+The commands changed, so Alchemy runs them all again in a fresh sandbox and saves the result under the same name. The Worker is unchanged and isn’t redeployed.
+
+```sh
+curl -X POST "$URL/run" -d 'pnpm --version'
+```
+
+## Running sandboxes keep their disk
+
+A sandbox has its own copy of the disk it started from. Users who already have a sandbox keep it, with their changes and without pnpm. Sandboxes started after the deploy get the new base. To move a user onto it, delete their sandbox; their next request starts a new one from `Golden`.
+
+## Next
+
+[Part 5](part-5.md) tests it.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/vinext
 title: "Vinext"
 description: "Deploy vinext to Prisma Compute with the shared Website API, native local development, and traced runtime dependencies."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Prisma.Website.Vinext` builds with the Vinext Vite API, then hosts vinext’s production Node server on **Bun in Prisma Compute**. Alchemy packages `dist/`, public assets, and locally installed runtime dependencies into a `tar.gz` artifact. There is no Dockerfile, registry, Wrangler configuration, or OpenNext build.
@@ -88,7 +88,7 @@ The injected cache adapter uses Redis when `REDIS_URL` is set and memory otherwi
 ## Local development
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 The Website runs `vinext dev` with native HMR without creating a Prisma project, Compute service, or custom domain. Other resources declared in the Stack retain their own provider behavior. Apply `.pipe(Alchemy.remote())` to deploy the Website to Compute during development.

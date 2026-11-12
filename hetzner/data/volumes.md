@@ -2,14 +2,21 @@
 url: https://alchemy.run/hetzner/data/volumes
 title: "Volumes"
 description: "Durable network block storage for Hetzner Servers — attach with props or VolumeAttachment, mount into Services with the MountVolume binding."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-A [`Volume`](https://alchemy.run/providers/hetzner/reference/volume#volume) is Hetzner's network block
-storage: a durable disk (10 GB minimum) with its own lifecycle,
-attachable to one Server at a time in the same location. Servers
-come and go; Volumes keep the data.
+A [`Volume`](https://alchemy.run/providers/hetzner/reference/volume#volume) is Hetzner’s network block storage: a durable disk (10 GB minimum) with its own lifecycle, attachable to one Server at a time in the same location. Servers come and go; Volumes keep the data.
+
+fsn1location
+
+web-1Server
+
+dataVolume · 10 GB · attached
+
+web-2Server · replacement
+
+A Volume attaches to one Server at a time, in its own location. Replace the Server, and the Volume moves to the new one with its data.
 
 ## Create a Volume
 
@@ -23,17 +30,9 @@ export const Data = Hetzner.Volume("data", {
 });
 ```
 
-`size` is in GB and can **grow in place** on a later deploy —
-shrinking is impossible. `format` (`ext4` or `xfs`) and `location`
-are create-only: changing either **replaces the Volume and destroys
-its data**. The location must match the Server's.
+`size` is in GB and can **grow in place** on a later deploy — shrinking is impossible. `format` (`ext4` or `xfs`) and `location` are create-only: changing either **replaces the Volume and destroys its data**. The location must match the Server’s.
 
-## Mount into a Service (recommended)
-
-The `MountVolume` binding is the highest-level path: inside a
-[Service](../compute/services.md)'s constructor, bind the Volume to a
-path and use it as a plain directory at runtime. Pass the `Data`
-declaration directly — no yielding required:
+The `MountVolume` binding is the highest-level path: inside a [Service](../compute/services.md) ’s constructor, bind the Volume to a path and use it as a plain directory at runtime. Pass the `Data` declaration directly — no yielding required:
 
 ```typescript
 export default class Api extends Hetzner.Service<Api>()(
@@ -45,7 +44,7 @@ export default class Api extends Hetzner.Service<Api>()(
     return {
       fetch: Effect.gen(function* () {
         const fs = yield* FileSystem.FileSystem;
-        const text = yield* fs.readFileString(`${mount.path}/hello.txt`);
+        const text = yield* fs.readFileString(\`${mount.path}/hello.txt\`);
         // ...
       }),
     };
@@ -53,22 +52,13 @@ export default class Api extends Hetzner.Service<Api>()(
 ) {}
 ```
 
-At deploy time the binding attaches the Volume to the Service's
-Server, creates the directory, mounts the device, and appends an
-`/etc/fstab` entry (`defaults,nofail`) so the mount survives
-reboots. At runtime it hands you the resolved `mount.path` and
-`mount.device`. Every step is idempotent, and two Services binding
-the same `(volume, path)` on the same Server share one attach and
-one mount.
+At deploy time the binding attaches the Volume to the Service’s Server, creates the directory, mounts the device, and appends an `/etc/fstab` entry (`defaults,nofail`) so the mount survives reboots. At runtime it hands you the resolved `mount.path` and `mount.device`. Every step is idempotent, and two Services binding the same `(volume, path)` on the same Server share one attach and one mount.
 
-If the Server is ever replaced, the Volume is detached from the old
-machine and re-attached to the new one on the next deploy — the
-data rides along.
+If the Server is ever replaced, the Volume is detached from the old machine and re-attached to the new one on the next deploy — the data rides along.
 
 ## Attach without a Service
 
-For servers that manage their own filesystems, attach declaratively
-instead. Either from the Volume side:
+For servers that manage their own filesystems, attach declaratively instead. Either from the Volume side:
 
 ```typescript
 export const Data = Hetzner.Volume("data", {
@@ -79,9 +69,7 @@ export const Data = Hetzner.Volume("data", {
 });
 ```
 
-Or as a standalone
-[`VolumeAttachment`](https://alchemy.run/providers/hetzner/reference/volume#volumeattachment) — useful
-when the Volume and Server are declared far apart:
+Or as a standalone [`VolumeAttachment`](https://alchemy.run/providers/hetzner/reference/volume#volumeattachment) — useful when the Volume and Server are declared far apart:
 
 ```typescript
 yield* Hetzner.VolumeAttachment("data-on-box", {
@@ -91,15 +79,10 @@ yield* Hetzner.VolumeAttachment("data-on-box", {
 });
 ```
 
-With `automount: true` Hetzner mounts the disk under
-`/mnt/HC_Volume_<id>`; otherwise mount `volume.linuxDevice`
-yourself (e.g. via cloud-init or `Hetzner.Ssh`).
+With `automount: true` Hetzner mounts the disk under `/mnt/HC_Volume_<id>`; otherwise mount `volume.linuxDevice` yourself (e.g. via cloud-init or `Hetzner.Ssh`).
 
 ## Where next
 
-- [Tutorial part 3](../tutorial/part-3.md) — mount a Volume into
-  a Service step by step.
-- [Services](../compute/services.md) — the platform doing the
-  mounting.
-- [`Volume` reference](https://alchemy.run/providers/hetzner/reference/volume#volume) — every prop and
-  attribute.
+- [Tutorial part 3](../tutorial/part-3.md) — mount a Volume into a Service step by step.
+- [Services](../compute/services.md) — the platform doing the mounting.
+- [`Volume` reference](https://alchemy.run/providers/hetzner/reference/volume#volume) — every prop and attribute.

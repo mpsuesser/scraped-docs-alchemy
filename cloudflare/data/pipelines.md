@@ -2,31 +2,33 @@
 url: https://alchemy.run/cloudflare/data/pipelines
 title: "Pipelines"
 description: "Ingest events into R2 with Cloudflare Pipelines — a typed stream, a SQL pipeline, and a sink that writes JSON or Parquet files, or Apache Iceberg tables."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-**Cloudflare Pipelines** ingests events into R2. Producers send JSON events to a
-**stream**. A **pipeline** filters or reshapes them with SQL and writes them to
-a **sink**: plain JSON or Parquet files in a bucket, or rows in an Apache
-Iceberg table.
+**Cloudflare Pipelines** ingests events into R2. Producers send JSON events to a **stream**. A **pipeline** filters or reshapes them with SQL and writes them to a **sink**: plain JSON or Parquet files in a bucket, or rows in an Apache Iceberg table.
 
-Pipelines is part of **Basin**, Cloudflare's analytics stack on R2, and its
-resources are also exported as `Cloudflare.Basin.*`. Reach for Pipelines when
-events should land as files or tables you query later. Reach for
-[K2](../messaging/k2.md) or [Queues](../messaging/queues.md) when
-your own code consumes the events.
+Pipelines is part of **Basin**, Cloudflare’s analytics stack on R2, and its resources are also exported as `Cloudflare.Basin.*`. Reach for Pipelines when events should land as files or tables you query later. Reach for [K2](../messaging/k2.md) or [Queues](../messaging/queues.md) when your own code consumes the events.
 
-By the end of this page, a Worker sends page views to a stream, and a pipeline
-writes them to an Iceberg table.
+Take a Worker that sends page views to a stream, and a pipeline that writes them to an Iceberg table.
+
+PageViews stream → PageViewEtl → PageViewTableWHERE path NOT LIKE '/health%'
+
+| userId | path | at |
+| --- | --- | --- |
+| anon | / | 09:12:04 |
+| u\_17 | /pricing | 09:12:09 |
+| anon | /health | 09:12:10 |
+| u\_17 | /checkout | 09:12:31 |
+| anon | /healthz | 09:12:40 |
+
+Producers send every event to the stream. The pipeline's SQL keeps the highlighted rows and commits them to the Iceberg table in batches. The health checks never land.
 
 ## Create a typed stream
 
-Declare the stream with an Effect Schema. Alchemy converts it into the stream's
-field list, which Cloudflare enforces.
+Declare the stream with an Effect Schema. Alchemy converts it into the stream’s field list, which Cloudflare enforces.
 
 ```typescript
-// src/Events.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Schema from "effect/Schema";
 
@@ -42,22 +44,15 @@ export const PageViews = Cloudflare.Pipelines.Stream("PageViews", {
 });
 ```
 
-Arrays become `list` fields, nested structs become `struct` fields, and
-`Schema.optional` fields are not required. A schema with no stream
-representation, such as a union, fails when the program is built.
+Arrays become `list` fields, nested structs become `struct` fields, and `Schema.optional` fields are not required. A schema with no stream representation, such as a union, fails when the program is built.
 
-A stream's schema can't change after it is created. Changing it replaces the
-stream, which drops events it hasn't processed yet and deletes the pipelines
-that read from it. Writing the same schema as an Effect Schema or as an
-explicit `{ fields }` list is the same stream and causes no change.
+A stream’s schema can’t change after it is created. Changing it replaces the stream, which drops events it hasn’t processed yet and deletes the pipelines that read from it. Writing the same schema as an Effect Schema or as an explicit `{ fields }` list is the same stream and causes no change.
 
 ## Send events from a Worker
 
-`Cloudflare.Pipelines.WriteStream` is typed by the stream's schema. The client
-encodes each value with the schema before sending it.
+`Cloudflare.Pipelines.WriteStream` is typed by the stream’s schema. The client encodes each value with the schema before sending it.
 
 ```typescript
-// src/Api.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
@@ -81,11 +76,9 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Cloudflare accepts events that don't match a stream's schema and drops them
-later during processing, so the client-side encoding is the only validation.
+Cloudflare accepts events that don’t match a stream’s schema and drops them later during processing, so the client-side encoding is the only validation.
 
-To drain an Effect `Stream` into the pipeline, use
-`Cloudflare.Pipelines.StreamSink`. It packs events into requests of up to 5 MB:
+To drain an Effect `Stream` into the pipeline, use `Cloudflare.Pipelines.StreamSink`. It packs events into requests of up to 5 MB:
 
 ```typescript
 const sink = yield* Cloudflare.Pipelines.StreamSink(PageViews);
@@ -98,15 +91,11 @@ Provide `Cloudflare.Pipelines.StreamSinkBinding` alongside `WriteStreamBinding`.
 
 The producer code stays the same on every host. Only the layer changes:
 
-- `WriteStreamBinding` and `StreamSinkBinding` run in Cloudflare Workers and
-  send through the native `pipelines` binding.
-- `WriteStreamHttp` and `StreamSinkHttp` run on any host. They send to the
-  stream's HTTP endpoint with a scoped "Pipelines Send" token that Alchemy mints
-  at deploy.
-- `WriteStreamLocal` and `StreamSinkLocal` run in scripts and Actions. They
-  send to the stream's HTTP endpoint with your current Cloudflare credentials.
+- `WriteStreamBinding` and `StreamSinkBinding` run in Cloudflare Workers and send through the native `pipelines` binding.
+- `WriteStreamHttp` and `StreamSinkHttp` run on any host. They send to the stream’s HTTP endpoint with a scoped “Pipelines Send” token that Alchemy mints at deploy.
+- `WriteStreamLocal` and `StreamSinkLocal` run in scripts and Actions. They send to the stream’s HTTP endpoint with your current Cloudflare credentials.
 
-The HTTP and local layers need the stream's HTTP endpoint turned on.
+The HTTP and local layers need the stream’s HTTP endpoint turned on.
 
 ## Turn on the HTTP endpoint
 
@@ -119,23 +108,11 @@ Cloudflare.Pipelines.Stream("PageViews", {
 });
 ```
 
-:::caution
-Earlier versions of Alchemy left a stream declared without `http` with
-Cloudflare's default, a public endpoint that anyone can write to. The next
-deploy now closes that endpoint in place, without replacing the stream. If
-external producers post to it, keep it public with
-`http: { enabled: true, authentication: false }`.
-:::
-
 ## Write events to an Iceberg table
 
-A catalog sink writes the pipeline's output to an
-[Iceberg table](iceberg-tables.md). It needs a bucket with the
-catalog enabled. Declare them in your stack's Effect, and pass the catalog
-resource to the sink so it is created after the catalog is enabled:
+A catalog sink writes the pipeline’s output to an [Iceberg table](iceberg-tables.md). It needs a bucket with the catalog enabled. Declare them in your stack’s Effect, and pass the catalog resource to the sink so it is created after the catalog is enabled:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Config from "effect/Config";
@@ -165,41 +142,30 @@ export default Alchemy.Stack(
 );
 ```
 
-The sink creates the namespace and table on its first write. The `token` is a
-Cloudflare API token with access to R2 and the catalog. Rotating it updates the
-sink without replacing it.
-
-:::caution
-A catalog sink can't be created for a table that already exists. Changing the
-sink's other settings replaces the sink, and the replacement fails once the
-table exists. Choose the table and format before the first deploy.
-:::
+The sink creates the namespace and table on its first write. The `token` is a Cloudflare API token with access to R2 and the catalog. Rotating it updates the sink without replacing it.
 
 ## Connect the stream and sink with SQL
 
 Add the pipeline in the same Effect:
 
-```diff lang="typescript"
-// alchemy.run.ts
-+import * as Output from "alchemy/Output";
+```typescript
+import * as Output from "alchemy/Output";
 
     const table = yield* Cloudflare.Pipelines.Sink("PageViewTable", { /* ... */ });
-+
-+    yield* Cloudflare.Pipelines.Pipeline("PageViewEtl", {
-+      sql: Output.interpolate`
-+        INSERT INTO ${table.name}
-+        SELECT userId, path, at FROM ${views.name}
-+        WHERE path NOT LIKE '/health%'`,
-+    });
+
+    yield* Cloudflare.Pipelines.Pipeline("PageViewEtl", {
+      sql: Output.interpolate\`
+        INSERT INTO ${table.name}
+        SELECT userId, path, at FROM ${views.name}
+        WHERE path NOT LIKE '/health%'\`,
+    });
 ```
 
-Alchemy validates the SQL with Cloudflare during plan, so a bad statement fails
-before anything is replaced. Reformatting the SQL is not a change.
+Alchemy validates the SQL with Cloudflare during plan, so a bad statement fails before anything is replaced. Reformatting the SQL is not a change.
 
 ## Write files instead of a table
 
-An `r2` sink writes events to a bucket as JSON or Parquet files, without a
-catalog:
+An `r2` sink writes events to a bucket as JSON or Parquet files, without a catalog:
 
 ```typescript
 const archive = yield* Cloudflare.Pipelines.Sink("EventArchive", {
@@ -217,27 +183,20 @@ const archive = yield* Cloudflare.Pipelines.Sink("EventArchive", {
 });
 ```
 
-`rollingPolicy` decides when the sink closes a file and starts the next one:
-after `intervalSeconds`, after `inactivitySeconds` without new events, or when
-the file reaches `fileSizeBytes`. Point a pipeline at it the same way, with `${archive.name}` in
-the SQL. Unlike a catalog sink, an `r2` sink can be replaced freely.
+`rollingPolicy` decides when the sink closes a file and starts the next one: after `intervalSeconds`, after `inactivitySeconds` without new events, or when the file reaches `fileSizeBytes`. Point a pipeline at it the same way, with `${archive.name}` in the SQL. Unlike a catalog sink, an `r2` sink can be replaced freely.
 
 ## React to new files
 
-Pipelines has no event source of its own, because its consumer is the sink. To
-process the files a sink writes, listen for object events on the bucket with
-`Cloudflare.R2.BucketEventNotification`.
+Pipelines has no event source of its own, because its consumer is the sink. To process the files a sink writes, listen for object events on the bucket with `Cloudflare.R2.BucketEventNotification`.
 
 ## Where next
 
 Related:
 
-- [Iceberg tables](iceberg-tables.md): manage the tables a
-  catalog sink writes, and query them.
+- [Iceberg tables](iceberg-tables.md): manage the tables a catalog sink writes, and query them.
 - [R2](r2.md): the bucket a sink writes to.
 - [K2 streams](../messaging/k2.md): a durable log your own code consumes.
 
 Reference:
 
-- [Pipelines API reference](https://alchemy.run/providers/cloudflare/pipelines): `Stream`, `Sink`,
-  `Pipeline`, `WriteStream`, and `StreamSink`.
+- [Pipelines API reference](https://alchemy.run/providers/cloudflare/pipelines): `Stream`, `Sink`, `Pipeline`, `WriteStream`, and `StreamSink`.

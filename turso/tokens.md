@@ -2,13 +2,23 @@
 url: https://alchemy.run/turso/tokens
 title: "Tokens"
 description: "Create tokens for apps that run outside your Stack."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Turso has two kinds of tokens. A database token lets an app run SQL. An API token lets an app create and delete databases.
 
 Workers that use [Connect](connections.md) or [ManageDatabases](database-per-tenant.md) get their tokens for you. Create one yourself when an app outside your Stack needs access.
+
+TenantsgroupGroupToken: every database, even later ones
+
+tenant-acmedatabase
+
+tenant-globexdatabase
+
+tenant-newdatabase · created later
+
+A database token reaches one database. A group token reaches every database in its group, including ones created after it.
 
 ## A token for one database
 
@@ -16,7 +26,7 @@ Workers that use [Connect](connections.md) or [ManageDatabases](database-per-ten
 const token = yield* Turso.DatabaseToken("Token", { database: db.name });
 ```
 
-Give `db.url` and `token.token` to your app. `token.token` is `Redacted`, so it doesn't show up in logs.
+Give `db.url` and `token.token` to your app. `token.token` is `Redacted`, so it doesn’t show up in logs.
 
 ## A read-only token that expires
 
@@ -38,9 +48,9 @@ const token = yield* Turso.GroupToken("Token", { group: group.name });
 
 A group token works for every database in the group, even ones created later.
 
-## You can't cancel one database token
+## You can’t cancel one database token
 
-Changing a token makes a new one, but the old one keeps working until it expires. Destroying it doesn't stop it either.
+Changing a token makes a new one, but the old one keeps working until it expires. Destroying it doesn’t stop it either.
 
 So give tokens you share an `expiration`. To cancel every token for a database at once, run `turso db tokens invalidate <database>`.
 

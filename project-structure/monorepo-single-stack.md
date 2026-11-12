@@ -2,8 +2,8 @@
 url: https://alchemy.run/project-structure/monorepo-single-stack
 title: "Single Stack"
 description: "One alchemy.run.ts at the workspace root deploys every app in the monorepo — one plan, one state file, and every path anchored to the file that declares it."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 One `alchemy.run.ts` at the workspace root deploys every app in the monorepo
@@ -58,8 +58,8 @@ export default Alchemy.Stack(
 ```
 
 Run `alchemy deploy` (or `alchemy dev`) from the workspace root and both apps
-go up in one plan, tracked in one state file. The rest of this page explains
-the two lines that make the monorepo shape work: `main: import.meta.url` and
+go up in one plan, tracked in one state file. Two lines make the monorepo shape
+work: `main: import.meta.url` and
 `rootDir`.
 
 ## Anchor every path

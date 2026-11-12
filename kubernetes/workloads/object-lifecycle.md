@@ -2,8 +2,8 @@
 url: https://alchemy.run/kubernetes/workloads/object-lifecycle
 title: "How objects are managed"
 description: "How Alchemy applies, orders, prunes, and deletes Kubernetes objects, including server-side apply and field ownership, drift, replacement, unreachable clusters, and adoption."
-access_date: 2026-10-02T14:04:57.255Z
-current_date: 2026-10-02T14:04:57.255Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Every Kubernetes resource in Alchemy turns into one or more
@@ -11,8 +11,8 @@ Kubernetes objects. That includes
 [`Deployment`](deployments.md),
 [`Job`](jobs.md),
 [`Manifest`](../objects/manifests.md), and
-[`HelmChart`](../objects/helm-charts.md). This page describes
-what happens to those objects across deploys.
+[`HelmChart`](../objects/helm-charts.md). Here is what happens to
+those objects across deploys.
 
 - `Deployment` creates a ServiceAccount, a Deployment, and a Service.
 - `Job` creates a ServiceAccount and a Job or CronJob.

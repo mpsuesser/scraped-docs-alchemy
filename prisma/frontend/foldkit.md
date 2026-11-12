@@ -2,8 +2,8 @@
 url: https://alchemy.run/prisma/frontend/foldkit
 title: "Foldkit"
 description: "Deploy Foldkit SPA, SSR, SSG, and hybrid applications to Prisma Compute with native local development."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Prisma.Website.Foldkit` deploys a [Foldkit](https://foldkit.dev/) app to Prisma Compute. It supports browser-only SPAs, server-side rendering (SSR), static site generation (SSG), and hybrid rendering. Foldkit’s Vite plugin generates the handler and assets; Alchemy packages them for deployment.
@@ -149,7 +149,7 @@ export const Website = Prisma.Website.Foldkit("Website", {
 
 ## Local dev
 
-`bun alchemy dev` runs Vite with Foldkit live reload and devtools. The Website creates no Prisma resources. `.pipe(Alchemy.remote())` selects the live path during dev. Pin the local address when running several apps:
+`alchemy dev` runs Vite with Foldkit live reload and devtools. The Website creates no Prisma resources. `.pipe(Alchemy.remote())` selects the live path during dev. Pin the local address when running several apps:
 
 ```typescript
 export const Website = Prisma.Website.Foldkit("Website", {

@@ -2,8 +2,8 @@
 url: https://alchemy.run/sql/drizzle/migrations
 title: "Migrations"
 description: "Generate migrations when your schema changes, review and commit the SQL and snapshots, then deploy from Git."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Migration files belong in Git alongside your schema. Generate and review them
@@ -50,6 +50,21 @@ pnpm alchemy deploy
 
 This resource applies pending SQL from `./drizzle`. CI should deploy the
 committed files, not generate a new migration history.
+
+## Merge migrations from two branches
+
+drizzle-kit names each migration with the time it was generated. When
+two branches each add one, the older migration can merge after the
+newer one has already been deployed. That deploy fails with
+`NonLinearMigrationHistoryError`, because a fresh database would run the
+two in the other order. Rename the late directory so it sorts last:
+
+```sh
+git mv drizzle/20260919000000_add_tags drizzle/20260921000000_add_tags
+```
+
+A database that already ran it keeps it applied under the new name. See
+[Change migration history safely](../effect-sql/migrations.md#change-migration-history-safely).
 
 For optional schema-generation automation, see the
 [`Drizzle.Schema` reference](https://alchemy.run/providers/drizzle/schema). The workflow above

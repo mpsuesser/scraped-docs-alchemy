@@ -2,8 +2,8 @@
 url: https://alchemy.run/gcp/frontend/vite-spa
 title: "React SPA"
 description: "Deploy a React single-page app to Cloud Run with GCP.Website.Vite — scaffold with Vite, deep links answered by index.html, Vite's dev server under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This walks a plain React single-page app onto Cloud Run with [`GCP.Website.Vite`](vite.md). Client-side routes work out of the box: unknown paths answer with `index.html`.
@@ -49,7 +49,7 @@ export default Alchemy.Stack(
 ```
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 ## Add client-side routes

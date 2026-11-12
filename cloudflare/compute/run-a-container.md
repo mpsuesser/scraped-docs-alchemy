@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/compute/run-a-container
 title: "Run a Container"
 description: "Run a long-lived container alongside a Durable Object, expose RPC methods, and proxy HTTP requests to ports inside the container."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Some workloads need a long-lived process — a sandboxed shell, a database client, a binary you can’t compile to wasm. In this part you’ll add a **Cloudflare Container** that runs alongside a Durable Object instance, and call into it to execute shell commands.
@@ -286,10 +286,10 @@ export default Cloudflare.Worker(
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
-The first deploy uploads the container image to Cloudflare and provisions the registry — expect it to take a minute or two longer than usual. The image here is built for you from the `main` entrypoint; to run a pre-built image instead, see [Bring your own image](containers.md#bring-your-own-image) and [Build & push images](../../docker/build-and-push.md) in the Docker hub.
+The first deploy uploads the container image to Cloudflare and provisions the registry — expect it to take a minute or two longer than usual. The image here is built for you from the `main` entrypoint; to run a pre-built image instead, see [Bring your own image](containers.md#bring-your-own-image) and [Build images](../../docker/build-images.md) in the Docker hub.
 
 ## Verify
 

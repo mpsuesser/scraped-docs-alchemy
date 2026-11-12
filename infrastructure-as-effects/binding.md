@@ -2,8 +2,8 @@
 url: https://alchemy.run/infrastructure-as-effects/binding
 title: "Bindings"
 description: "A Binding connects a Resource to a Worker or Lambda. One line declares the capability and generates the permissions, the configuration, and a typed client."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 A **Binding** connects a [Resource](../infrastructure-as-code/resource.md)
@@ -88,6 +88,12 @@ Bind several tables at once and the statement lists each of their ARNs:
 ```typescript
 const batchGet = yield* AWS.DynamoDB.BatchGetItem(Jobs, Audit);
 ```
+
+A Runtime on another cloud binds the same way. A Cloud Run service
+binding the table has no IAM role of its own, so the binding creates
+one that trusts the service's Google identity, and puts the statement
+there. No access key is created. See
+[Identity Federation](identity-federation.md).
 
 ## Configuration
 
@@ -300,6 +306,8 @@ environment minimal.
 
 - [Layers](layers.md) — hide bindings behind a
   service interface. Next page.
+- [Identity Federation](identity-federation.md)
+  — bindings that cross clouds without long-lived keys.
 - [Event Sources](event-sources.md) — bindings
   that trigger your Function.
 - [Sinks](sinks.md) — bindings you write

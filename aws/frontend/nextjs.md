@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/frontend/nextjs
 title: "Next.js"
 description: "Deploy a Next.js app to AWS with AWS.Website.Nextjs — Next's own server on a Lambda Web Function with a shared S3 cache, S3 assets behind CloudFront, and next dev under alchemy dev."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `AWS.Website.Nextjs` deploys a [Next.js](https://nextjs.org/) app to AWS. Next runs as its own standalone server on a [Lambda Web Function](../compute/web-functions.md), the way it runs under `next start`: each environment serves many requests, responses stream, and ISR revalidation and `/_next/image` happen in the server. Static assets are served from S3 through CloudFront’s edge router, and an S3 bucket holds the cache every environment shares.
@@ -113,7 +113,7 @@ An `open-next.config.ts` is optional; without one Alchemy generates a default wi
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs `next dev` (native HMR, Turbopack) instead of deploying; `site.url` is the local address and no AWS resources are created. Wrap the site in `Alchemy.remote()` to deploy the real infrastructure even during dev.

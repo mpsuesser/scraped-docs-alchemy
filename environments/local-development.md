@@ -2,13 +2,13 @@
 url: https://alchemy.run/environments/local-development
 title: "Local development"
 description: "How alchemy dev provides hot reloading, local execution, and local emulation with per-resource opt-in to real cloud services."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `alchemy dev` runs your stack on your machine. Your compute runs locally (Workers in workerd, Lambda and ECS in Docker containers), the services around it are emulated, and code changes hot reload in milliseconds. `Alchemy.remote()` runs any resource against the real cloud when you need it.
 
-This page covers the concepts shared by every cloud. For what each cloud emulates and how, see the dedicated guides:
+For what each cloud emulates and how, see the dedicated guides:
 
 - **[Cloudflare local development](../cloudflare/local-development.md)** — Workers in workerd; simulators for KV, R2, D1, Queues, Hyperdrive, Workflows, Containers, and the Worker binding surface (browser rendering, images, email, cron, Stream, …).
 - **[AWS local development](../aws/local-development.md)** — Lambda and ECS in Docker containers with close to 40 emulated services (S3, DynamoDB, SQS, SNS, EventBridge, API Gateway, …), no AWS account required.

@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/tutorial/part-5
 title: "Part 5: Deploy to Cloudflare"
 description: "Host the bank on Durable Objects behind a Worker, run it locally, deploy it, and watch a balance change live."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Put the bank on Cloudflare. Every account, customer, view and policy becomes a Durable Object, and a Worker serves the Api. You need a [configured Cloudflare profile](../../cloudflare/setup.md).
@@ -11,15 +11,14 @@ Put the bank on Cloudflare. Every account, customer, view and policy becomes a D
 ## Install the Cloudflare provider
 
 ```sh
-bun add @alchemy.run/cloudflare
+pnpm add @alchemy.run/cloudflare@latest
 ```
 
 ## Serve the Api from a Worker
 
 ```typescript
-// src/BankWorker.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as DomainCloudflare from "@alchemy.run/cloudflare/Domain";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import { Bank, BankHandlers } from "./Bank.model.ts";
@@ -41,20 +40,24 @@ export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
 ) {}
 ```
 
-`DomainCloudflare.layerDurableObjects()` hosts the model: every aggregate, view and policy becomes a Durable Object class on this Worker, with no bindings to write. `SessionLive` is the middleware the Api's entries declare. `yield* BankApi` serves the Api, and its `fetch` becomes the Worker's.
+`DomainCloudflare.layerDurableObjects()` hosts the model: every aggregate, view and policy becomes a Durable Object class on this Worker, with no bindings to write. `SessionLive` is the middleware the Api’s entries declare. `yield* BankApi` serves the Api, and its `fetch` becomes the Worker’s.
 
 ## Declare the stack
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
 import BankWorker from "./src/BankWorker.ts";
 
 export default Alchemy.Stack(
   "Bank",
-  { providers: Cloudflare.providers(), state: Cloudflare.state() },
+  {
+    providers: Layer.mergeAll(Cloudflare.providers(), DomainCloudflare.providers()),
+    state: Cloudflare.state(),
+  },
   Effect.gen(function* () {
     const bank = yield* BankWorker;
     return { url: bank.url.as<string>() };
@@ -62,12 +65,12 @@ export default Alchemy.Stack(
 );
 ```
 
-The stack deploys the Worker and returns its URL.
+The stack deploys the Worker and returns its URL. `DomainCloudflare.providers()` lets a deploy that adds a view wait until the view has caught up on the events recorded before it.
 
 ## Run it locally
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs the Worker and its Durable Objects on your machine and prints the URL, such as `http://localhost:1337`.
@@ -75,7 +78,6 @@ bun alchemy dev
 ## Call it
 
 ```typescript
-// scripts/try.ts
 import * as Domain from "@alchemy.run/domain";
 import * as Effect from "effect/Effect";
 import * as FetchHttpClient from "effect/http/FetchHttpClient";
@@ -87,7 +89,7 @@ import { CustomerId } from "../src/Customer.id.ts";
 import { sessionClient } from "../src/Session.middleware.ts";
 
 const [url, customerId = "c-1"] = process.argv.slice(2);
-const accountId = AccountId.make(`${customerId}-main`);
+const accountId = AccountId.make(\`${customerId}-main\`);
 
 const program = Effect.gen(function* () {
   const bank = yield* BankApi.client;
@@ -102,7 +104,7 @@ const program = Effect.gen(function* () {
   yield* Stream.runHead(summaries);
   // Print the balance now and after every change, in the background.
   yield* summaries.pipe(
-    Stream.runForEach((summary) => Effect.log(`balance: ${summary?.balance}`)),
+    Stream.runForEach((summary) => Effect.log(\`balance: ${summary?.balance}\`)),
     Effect.forkChild,
   );
   yield* Effect.sleep("1 second");
@@ -125,7 +127,7 @@ The script registers a customer and waits for the policy to open their account, 
 bun scripts/try.ts http://localhost:1337
 ```
 
-```
+```plaintext
 [12:00:01.402] INFO (#9): balance: 0
 [12:00:02.613] INFO (#9): balance: 100
 [12:00:03.804] INFO (#9): balance: 70
@@ -136,17 +138,13 @@ The watch prints the balance each time it changes. Over HTTP it checks for chang
 ## Deploy
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
-The deploy prints the Worker's `url`. Run the same script against it.
+The deploy prints the Worker’s `url`. Run the same script against it.
 
 ```sh
 bun scripts/try.ts https://bank-bankworker-….workers.dev
 ```
 
 The bank now runs on Cloudflare, with one Durable Object per account.
-
-:::note
-Next, [build the browser app](part-6.md). How the model maps onto Durable Objects is in [Cloudflare Durable Objects](../cloudflare.md).
-:::

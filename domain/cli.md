@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/cli
 title: "CLI"
 description: "Run an Api's calls from a terminal, as a person or an agent, against the deployed Api."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 An Api's typed client works from Effect code. A person at a terminal, a shell script or a coding agent wants a command line instead. `toCli` from `@alchemy.run/domain/Cli` builds an [Effect CLI](https://effect.website) command from the Api you already have. It calls the deployed Api over its HTTP protocol, so the server runs the same middleware and checks as for every other client.
@@ -24,6 +24,8 @@ import { CustomerApi } from "@bank/domain/CustomerApi.api";
 
 const bank = toCli(CustomerApi, {
   name: "bank",
+  // Only these calls get a subcommand.
+  expose: ["DepositMoney", "WithdrawMoney", "AccountLedger", "AccountSummary.get", "Statement.list"],
   // The session middleware runs on the server; the CLI sends its token.
   headers: Config.redacted("BANK_TOKEN").pipe(
     Effect.map((token) => ({ authorization: `Bearer ${Redacted.value(token)}` })),
@@ -42,6 +44,29 @@ Command.run(bank, { version: "1.0.0" }).pipe(
 ```
 
 `toCli` is its own module, so an app that builds no CLI never loads `effect/cli`.
+
+## Describe its help
+
+Each subcommand's help is the `description` in the [annotations](annotations.md) of the declaration it calls. The root help is the Api's own description, unless you pass `toCli` a `description` of its own.
+
+```typescript title="packages/domain/src/CustomerApi.api.ts"
+export class CustomerApi extends Domain.Api(
+  "CustomerApi",
+  { model: Bank, commands: ["DepositMoney", "WithdrawMoney"], views: ["AccountSummary", "Statement"] },
+  { description: "The bank, as a customer reaches it." },
+) {}
+```
+
+```shellsession
+$ bank --help
+The bank, as a customer reaches it.
+  deposit-money    Put money into an account. The amount is in cents.
+  withdraw-money   Take money out of an account. The amount is in cents.
+  account-summary  An account's balance and owner.
+  statement        Read the Statement view.
+```
+
+A declaration without a description gets a generated sentence, like `statement` here.
 
 ## Send a command
 
@@ -79,6 +104,20 @@ $ bank statement list --key a-1 --order desc --take 20
 ```
 
 `watch` and `events` stream, so they aren't commands.
+
+## Ask a query
+
+A query is a subcommand, like a command. Its input fields are flags, next to `--after`, `--take` and `--at-least`:
+
+```sh
+$ bank account-ledger --account a-1 --take 20
+{
+  "entries": [{ "id": "…", "amount": 1000 }],
+  "cursor": null
+}
+```
+
+Pass the `cursor` back as `--after` for the next page.
 
 ## Pass structured values
 
@@ -118,4 +157,4 @@ class Reserved extends Domain.Command("Reserved", {
 // bank reserved ... -> DefinitionError: field `json` would be the flag --json, which the CLI reserves
 ```
 
-To give a terminal fewer calls, give it its own Api, as in [Give each kind of client its own Api](api.md#give-each-kind-of-client-its-own-api).
+A call that `expose` leaves out has no subcommand.

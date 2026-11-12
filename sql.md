@@ -2,9 +2,13 @@
 url: https://alchemy.run/sql
 title: "SQL"
 description: "Choose a database, connect with Effect SQL, Drizzle, or Prisma ORM, and deploy committed migrations."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
+
+`@alchemy.run/sql` is how Alchemy apps use SQL databases, on every cloud. You declare the database, its migrations run on deploy, and your code queries it with Effect SQL, Drizzle or Prisma ORM over a connection that lasts one request.
+
+**New here?** [How SQL works in Alchemy](sql/what-is-sql.md) walks through databases, clients, connections, pools and migrations, once each.
 
 ## Choose a database
 

@@ -2,13 +2,11 @@
 url: https://alchemy.run/domain/aggregate
 title: "Aggregate"
 description: "How an aggregate holds state, decides commands, applies events, and keeps its rules consistent."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 An aggregate is the part of a model that makes decisions. Each instance, one bank account for example, holds the state its rules need, takes one command at a time, and answers with events or a refusal.
-
-This chapter starts with what an aggregate is for and how to find one, then builds the account from the [tutorial](tutorial/part-1.md) piece by piece: its state, how it decides, how it applies what it decided, and what makes it safe under concurrent use. It ends with how to draw an aggregate’s boundary.
 
 ## What an aggregate protects
 
@@ -16,7 +14,7 @@ Every business has rules that must never be broken, not even for a moment. An ac
 
 To find the invariants, ask the business what must never happen. Then ask which commands could make it happen. A withdrawal could overdraw an account, so `WithdrawMoney` has to be decided by something that knows the balance. That something is the `Account` aggregate: it holds the balance, and every command that could break the rule about it goes through it.
 
-<svg viewBox="0 0 456 204" role="img" aria-label="Every command that touches the balance goes through the one thing that guards it."><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 188 56 C 225 56, 225 102, 262 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 188 148 C 225 148, 225 102, 262 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g transform="translate(24, 24)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(25.200000000000003, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="45.2" y="28" dominant-baseline="middle">DepositMoney</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">changes the balance</text></g></g> <g transform="translate(24, 116)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">WithdrawMoney</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">could overdraw</text></g></g> <g transform="translate(268, 70)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="156" height="56" rx="5"></rect><g transform="translate(44.7, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="64.7" y="28" dominant-baseline="middle">Account</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">balance ≥ 0</text></g></g></svg>
+<svg viewBox="0 0 456 204" style="max-width: 524px" role="img" aria-label="Every command that touches the balance goes through the one thing that guards it."><defs><marker id="alc-dag-arrow-4alaui" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 188 56 C 225 56, 225 102, 262 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-4alaui)"></path></g><g><path d="M 188 148 C 225 148, 225 102, 262 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-4alaui)"></path></g><g transform="translate(24, 24)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(25.200000000000003, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="45.2" y="28" dominant-baseline="middle">DepositMoney</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">changes the balance</text></g></g> <g transform="translate(24, 116)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(21.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="41.300000000000004" y="28" dominant-baseline="middle">WithdrawMoney</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">could overdraw</text></g></g> <g transform="translate(268, 70)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="156" height="56" rx="5"></rect><g transform="translate(44.7, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="64.7" y="28" dominant-baseline="middle">Account</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">balance ≥ 0</text></g></g></svg> <svg viewBox="0 0 332 208" style="max-width: 382px" role="img" aria-label="Every command that touches the balance goes through the one thing that guards it."><defs><marker id="alc-dag-arrow-dtprjr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 81 74 C 81 101, 166 101, 166 128" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-dtprjr)"></path></g><g><path d="M 251 74 C 251 101, 166 101, 166 128" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-dtprjr)"></path></g><g transform="translate(10, 10)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 130 L 142 32 L 130 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(14.200000000000003, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="34.2" y="28" dominant-baseline="middle">DepositMoney</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">changes the balance</text></g></g> <g transform="translate(180, 10)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 130 L 142 32 L 130 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(10.300000000000004, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="30.300000000000004" y="28" dominant-baseline="middle">WithdrawMoney</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">could overdraw</text></g></g> <g transform="translate(95, 134)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="142" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="134" height="56" rx="5"></rect><g transform="translate(33.7, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="53.7" y="28" dominant-baseline="middle">Account</text> <text fill="currentColor" x="71" y="46" text-anchor="middle" dominant-baseline="middle">balance ≥ 0</text></g></g></svg>
 
 CommandAggregate
 
@@ -62,12 +60,14 @@ Keep the statement, the transaction count and the monthly totals out of here. Th
 `decide` has one handler per command in `commands`. A handler receives the current state and the command, and returns the events to record or a rejection.
 
 ```typescript
-WithdrawMoney: (s, cmd) =>
-  s._tag !== "Open"
-    ? new NotOpen()
-    : cmd.amount > s.balance
-      ? new InsufficientFunds({ balance: s.balance, requested: cmd.amount })
-      : [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: s.balance - cmd.amount })],
+decide: {
+  WithdrawMoney: (account, cmd) =>
+    account._tag !== "Open"
+      ? new NotOpen()
+      : cmd.amount > account.balance
+        ? new InsufficientFunds({ balance: account.balance, requested: cmd.amount })
+        : [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: account.balance - cmd.amount })],
+},
 ```
 
 Read it as the business rule it is: an account that isn’t open can’t be withdrawn from; a withdrawal can’t exceed the balance; otherwise, the money is withdrawn and here’s the new balance.
@@ -91,10 +91,12 @@ const openFor = (s: State): Open | NotOpen => (s._tag === "Open" ? s : new NotOp
 Each handler starts from it. After the check, `o` is an `Open` account, so the rest of the rule reads its balance without another test.
 
 ```typescript
-DepositMoney: (s, cmd) => {
-  const o = openFor(s);
-  if (o._tag !== "Open") return o;
-  return [new MoneyDeposited({ amount: cmd.amount, balanceAfter: o.balance + cmd.amount })];
+decide: {
+  DepositMoney: (account, cmd) => {
+    const o = openFor(account);
+    if (o._tag !== "Open") return o;
+    return [new MoneyDeposited({ amount: cmd.amount, balanceAfter: o.balance + cmd.amount })];
+  },
 },
 ```
 
@@ -172,16 +174,18 @@ Optics are optional. They give the same states as the plain checks, with less re
 Some commands undo a step another process already took, like refunding a transfer whose credit failed. Refusing one would strand the money, so its handler records a fact for every state instead of rejecting.
 
 ```typescript
-RefundTransfer: (s, cmd) =>
-  s._tag === "Open"
-    ? [
-        new TransferRefunded({
-          transferId: cmd.transferId,
-          amount: cmd.amount,
-          balanceAfter: s.balance + cmd.amount,
-        }),
-      ]
-    : [new RefundStranded({ transferId: cmd.transferId, amount: cmd.amount })],
+decide: {
+  RefundTransfer: (account, cmd) =>
+    account._tag === "Open"
+      ? [
+          new TransferRefunded({
+            transferId: cmd.transferId,
+            amount: cmd.amount,
+            balanceAfter: account.balance + cmd.amount,
+          }),
+        ]
+      : [new RefundStranded({ transferId: cmd.transferId, amount: cmd.amount })],
+},
 ```
 
 `RefundStranded` tells a policy or a person that the account closed before the money came back. The [saga](saga.md) that sent the refund never has to handle a refusal it can do nothing about.
@@ -193,8 +197,8 @@ Some rules need more than the state and the command. Only the account’s owner 
 A command’s [middleware](sessions.md) can provide that. When it does, the handler can be an `Effect.fn` and read it. In the example bank, the withdrawal handler first checks that the current actor may act on the account.
 
 ```typescript
-const authorized = Effect.fn(function* (s: AccountState) {
-  const o = openFor(s, yield* CurrentActor);
+const authorized = Effect.fn(function* (account: AccountState) {
+  const o = openFor(account, yield* CurrentActor);
   if (o._tag !== "Open") return yield* o;
   return o;
 });
@@ -214,7 +218,7 @@ if (used + cmd.amount > DAILY_LIMIT)
 
 Each instance processes one command at a time. When two withdrawals for the same account arrive together, the second is decided against the state the first one left. Both can’t pass the balance check on the same money.
 
-<svg viewBox="0 0 700 204" role="img" aria-label="The second withdrawal is decided against the balance the first one left."><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 188 56 C 225 56, 225 102, 262 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 188 148 C 225 148, 225 102, 262 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 432 102 C 469 102, 469 56, 506 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g><path d="M 432 102 C 469 102, 469 148, 506 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path></g><g transform="translate(24, 24)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(9.599999999999994, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="29.599999999999994" y="28" dominant-baseline="middle">WithdrawMoney 80</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">arrives first</text></g></g> <g transform="translate(24, 116)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 152 L 164 32 L 152 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(9.599999999999994, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="29.599999999999994" y="28" dominant-baseline="middle">WithdrawMoney 80</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">arrives second</text></g></g> <g transform="translate(268, 70)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="156" height="56" rx="5"></rect><g transform="translate(29.1, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="49.1" y="28" dominant-baseline="middle">Account a-1</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">balance: 100</text></g></g> <g transform="translate(512, 24)"><g style="--hue:#f0782f"><path fill="none" d="M 4 0 H 151 L 164 13 V 60 Q 164 64 160 64 H 4 Q 0 64 0 60 V 4 Q 0 0 4 0 Z"></path><path stroke="currentColor" fill="none" d="M 151 0 V 13 H 164"></path><g transform="translate(17.400000000000006, 21) scale(0.5833333333333334)"><path fill="none" d="M13 2L4 14h7l-1 8 9-12h-7z"></path></g><text fill="currentColor" x="37.400000000000006" y="28" dominant-baseline="middle">MoneyWithdrawn</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">balance: 20</text></g></g> <g transform="translate(512, 116)"><g style="--hue:#e5484d"><rect stroke="currentColor" fill="none" width="164" height="64" rx="8"></rect><g transform="translate(5.700000000000003, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z"></path><path stroke="currentColor" fill="none" d="M9 9l6 6"></path><path stroke="currentColor" fill="none" d="M15 9l-6 6"></path></g><text fill="currentColor" x="25.700000000000003" y="28" dominant-baseline="middle">InsufficientFunds</text> <text fill="currentColor" x="82" y="46" text-anchor="middle" dominant-baseline="middle">balance: 20</text></g></g></svg>
+<svg viewBox="0 0 751 204" style="max-width: 864px" role="img" aria-label="The second withdrawal is decided against the balance the first one left."><defs><marker id="alc-dag-arrow-mvy7kc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 205 56 C 242 56, 242 102, 279 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-mvy7kc)"></path></g><g><path d="M 205 148 C 242 148, 242 102, 279 102" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-mvy7kc)"></path></g><g><path d="M 466 102 C 503 102, 503 56, 540 56" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-mvy7kc)"></path></g><g><path d="M 466 102 C 503 102, 503 148, 540 148" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-mvy7kc)"></path></g><g transform="translate(24, 24)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 169 L 181 32 L 169 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(18.099999999999994, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="38.099999999999994" y="28" dominant-baseline="middle">WithdrawMoney 80</text> <text fill="currentColor" x="90.5" y="46" text-anchor="middle" dominant-baseline="middle">arrives first</text></g></g> <g transform="translate(24, 116)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 169 L 181 32 L 169 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(18.099999999999994, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="38.099999999999994" y="28" dominant-baseline="middle">WithdrawMoney 80</text> <text fill="currentColor" x="90.5" y="46" text-anchor="middle" dominant-baseline="middle">arrives second</text></g></g> <g transform="translate(285, 70)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="181" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="173" height="56" rx="5"></rect><g transform="translate(37.6, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="57.6" y="28" dominant-baseline="middle">Account a-1</text> <text fill="currentColor" x="90.5" y="46" text-anchor="middle" dominant-baseline="middle">balance: 100</text></g></g> <g transform="translate(546, 24)"><g style="--hue:#f0782f"><path fill="none" d="M 4 0 H 168 L 181 13 V 60 Q 181 64 177 64 H 4 Q 0 64 0 60 V 4 Q 0 0 4 0 Z"></path><path stroke="currentColor" fill="none" d="M 168 0 V 13 H 181"></path><g transform="translate(25.900000000000006, 21) scale(0.5833333333333334)"><path fill="none" d="M13 2L4 14h7l-1 8 9-12h-7z"></path></g><text fill="currentColor" x="45.900000000000006" y="28" dominant-baseline="middle">MoneyWithdrawn</text> <text fill="currentColor" x="90.5" y="46" text-anchor="middle" dominant-baseline="middle">balance: 20</text></g></g> <g transform="translate(546, 116)"><g style="--hue:#e5484d"><rect stroke="currentColor" fill="none" width="181" height="64" rx="8"></rect><g transform="translate(14.200000000000003, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z"></path><path stroke="currentColor" fill="none" d="M9 9l6 6"></path><path stroke="currentColor" fill="none" d="M15 9l-6 6"></path></g><text fill="currentColor" x="34.2" y="28" dominant-baseline="middle">InsufficientFunds</text> <text fill="currentColor" x="90.5" y="46" text-anchor="middle" dominant-baseline="middle">balance: 20</text></g></g></svg> <svg viewBox="0 0 394 332" style="max-width: 453px" role="img" aria-label="The second withdrawal is decided against the balance the first one left."><defs><marker id="alc-dag-arrow-k1qd8k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 96.5 74 C 96.5 101, 197 101, 197 128" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-k1qd8k)"></path></g><g><path d="M 297.5 74 C 297.5 101, 197 101, 197 128" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-k1qd8k)"></path></g><g><path d="M 197 198 C 197 225, 96.5 225, 96.5 252" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-k1qd8k)"></path></g><g><path d="M 197 198 C 197 225, 297.5 225, 297.5 252" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow-k1qd8k)"></path></g><g transform="translate(10, 10)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 161 L 173 32 L 161 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(14.099999999999994, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="34.099999999999994" y="28" dominant-baseline="middle">WithdrawMoney 80</text> <text fill="currentColor" x="86.5" y="46" text-anchor="middle" dominant-baseline="middle">arrives first</text></g></g> <g transform="translate(211, 10)"><g style="--hue:#4f9fd8"><path fill="none" d="M 6 0 H 161 L 173 32 L 161 64 H 6 Q 0 64 0 58 V 6 Q 0 0 6 0 Z"></path><g transform="translate(14.099999999999994, 21) scale(0.5833333333333334)"><path stroke="currentColor" fill="none" d="M21 3L10 14"></path><path fill="none" d="M21 3l-6.5 18-4.5-7-7-4.5z"></path></g><text fill="currentColor" x="34.099999999999994" y="28" dominant-baseline="middle">WithdrawMoney 80</text> <text fill="currentColor" x="86.5" y="46" text-anchor="middle" dominant-baseline="middle">arrives second</text></g></g> <g transform="translate(110.5, 134)"><g style="--hue:#e3b341"><rect stroke="currentColor" fill="none" width="173" height="64" rx="8"></rect><rect stroke="currentColor" fill="none" x="4" y="4" width="165" height="56" rx="5"></rect><g transform="translate(33.6, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"></path><path stroke="currentColor" fill="none" d="M4 7.5l8 4.5 8-4.5"></path><path stroke="currentColor" fill="none" d="M12 12v9"></path></g><text fill="currentColor" x="53.6" y="28" dominant-baseline="middle">Account a-1</text> <text fill="currentColor" x="86.5" y="46" text-anchor="middle" dominant-baseline="middle">balance: 100</text></g></g> <g transform="translate(10, 258)"><g style="--hue:#f0782f"><path fill="none" d="M 4 0 H 160 L 173 13 V 60 Q 173 64 169 64 H 4 Q 0 64 0 60 V 4 Q 0 0 4 0 Z"></path><path stroke="currentColor" fill="none" d="M 160 0 V 13 H 173"></path><g transform="translate(21.900000000000006, 21) scale(0.5833333333333334)"><path fill="none" d="M13 2L4 14h7l-1 8 9-12h-7z"></path></g><text fill="currentColor" x="41.900000000000006" y="28" dominant-baseline="middle">MoneyWithdrawn</text> <text fill="currentColor" x="86.5" y="46" text-anchor="middle" dominant-baseline="middle">balance: 20</text></g></g> <g transform="translate(211, 258)"><g style="--hue:#e5484d"><rect stroke="currentColor" fill="none" width="173" height="64" rx="8"></rect><g transform="translate(10.200000000000003, 21) scale(0.5833333333333334)"><path fill="none" d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18z"></path><path stroke="currentColor" fill="none" d="M9 9l6 6"></path><path stroke="currentColor" fill="none" d="M15 9l-6 6"></path></g><text fill="currentColor" x="30.200000000000003" y="28" dominant-baseline="middle">InsufficientFunds</text> <text fill="currentColor" x="86.5" y="46" text-anchor="middle" dominant-baseline="middle">balance: 20</text></g></g></svg>
 
 CommandAggregateEventRejection
 
@@ -242,10 +246,10 @@ export class UsernameClaim extends Domain.Aggregate("UsernameClaim", {
   initial: { _tag: "Free" },
   commands: [ClaimUsername],
   decide: {
-    ClaimUsername: (s, cmd) =>
-      s._tag === "Free"
+    ClaimUsername: (usernameClaim, cmd) =>
+      usernameClaim._tag === "Free"
         ? [new UsernameClaimed({ customerId: cmd.customerId })]
-        : s.customerId === cmd.customerId
+        : usernameClaim.customerId === cmd.customerId
           ? []
           : new UsernameTaken(),
   },
@@ -272,6 +276,37 @@ ExpireTransfer: (s, _, { id }) =>
 
 The money itself still moves through the two accounts, each guarding its own balance. A [saga](saga.md) carries out the steps, and reports each outcome back to the `Transfer`, so there’s one place that knows how every transfer ended.
 
+## Describe it
+
+An aggregate’s last argument is its [annotations](annotations.md). When an [Api](api.md) lets clients read the aggregate, its read tools, CLI subcommand and OpenAPI operations show the `description` after the sentence that says what the call does.
+
+```typescript
+export class UsernameClaim extends Domain.Aggregate(
+  "UsernameClaim",
+  {
+    id: Username,
+    state: Schema.Union([
+      Schema.TaggedStruct("Free", {}),
+      Schema.TaggedStruct("Claimed", { customerId: CustomerId }),
+    ]),
+    initial: { _tag: "Free" },
+    commands: [ClaimUsername],
+    decide: {
+      ClaimUsername: (usernameClaim, cmd) =>
+        usernameClaim._tag === "Free"
+          ? [new UsernameClaimed({ customerId: cmd.customerId })]
+          : usernameClaim.customerId === cmd.customerId
+            ? []
+            : new UsernameTaken(),
+    },
+    evolve: {
+      UsernameClaimed: (_, e) => ({ _tag: "Claimed" as const, customerId: e.customerId }),
+    },
+  },
+  { description: "Who holds a username. Each username has at most one holder." },
+) {}
+```
+
 ## Send it commands
 
 Inside a hosted model, the aggregate is a service. `yield* Account` gives you its client, and `send` takes an instance id and a command.
@@ -282,8 +317,8 @@ yield* accounts
   .pipe(Effect.catchTag("AlreadyOpen", () => Effect.void));
 ```
 
-The same client reads an instance’s current state with `accounts.state(id)`, schedules a command for later with `accounts.schedule(id, command, { after })`, which returns the command id and when it’s due, and cancels a pending one with `accounts.unschedule(id, commandId)`. Both fail with `AlreadyExecuted` when that command already ran, and `unschedule` fails with `AlreadyCancelled` or `NotScheduled` when there’s nothing pending to cancel. See [Deadlines](deadlines.md).
+The same client reads an instance’s current state, as of its latest commit, with `accounts.get(id)`, schedules a command for later with `accounts.schedule(id, command, { after })`, which returns the command id and when it’s due, and cancels a pending one with `accounts.unschedule(id, commandId)`. Scheduling again under the same command id replaces the earlier command, even one that already ran. `unschedule` fails with `AlreadyExecuted`, `AlreadyCancelled` or `NotScheduled` when there’s nothing pending to cancel. See [Deadlines](deadlines.md).
 
-Clients outside the model send commands through an [Api](api.md). An aggregate with a `read` contract can also be read through one, so a client can fetch an account, watch it change, and follow its events.
+Clients outside the model send commands through an [Api](api.md). They never read an aggregate’s state directly: a [view](view.md) projects what they may see of it, so the aggregate’s state stays free to change with its rules.
 
 Next, [View](view.md): the query side, built from the events aggregates record.

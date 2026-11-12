@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/databases/neon
 title: "Neon"
 description: "Deploy a Better Auth Worker with a Neon project and the serverless database driver."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 This example provisions Neon and serves Better Auth from a Cloudflare Worker. The serverless driver uses WebSockets, so it needs neither Hyperdrive nor `pg`.
@@ -11,14 +11,14 @@ This example provisions Neon and serves Better Auth from a Cloudflare Worker. Th
 ## Install
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@^1.7.5 kysely @neondatabase/serverless
+pnpm add @alchemy.run/better-auth@latest better-auth@^1.7.5 kysely @neondatabase/serverless
 ```
 
 Configure Cloudflare and Neon through [Alchemy profiles](../../environments/profiles.md), or supply `NEON_API_KEY` for Neon. You provide account credentials; the project resource creates the database, not the API key.
 
 ## Define the database layer
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { Neon as NeonDatabase } from "@alchemy.run/better-auth/Neon";
 import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
@@ -31,11 +31,11 @@ export const AuthDatabase = Layer.unwrap(
 );
 ```
 
-The project's `connectionUri` Output is bound into the host environment and also supplies deploy-time migrations. The driver acquires one pool per request and closes it when that request settles.
+The project’s `connectionUri` Output is bound into the host environment and also supplies deploy-time migrations. The driver acquires one pool per request and closes it when that request settles.
 
 ## Define the auth Worker
 
-```typescript title="src/worker.ts"
+```typescript
 import { BetterAuth } from "@alchemy.run/better-auth";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -61,7 +61,7 @@ This is an auth-only endpoint, with no frontend or application routes. Alchemy g
 
 ## Define the stack
 
-```typescript title="alchemy.run.ts"
+```typescript
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Neon from "@alchemy.run/neon";
@@ -87,7 +87,7 @@ Keep the local `.alchemy` state directory protected and persistent so subsequent
 ## Deploy and verify
 
 ```sh
-bunx alchemy deploy
+pnpm alchemy deploy
 ```
 
 The deployer must reach Neon with schema-changing permissions; migrations complete before the Worker is updated. Set `AUTH_ORIGIN` to the printed URL to check the endpoint:
@@ -100,7 +100,7 @@ curl -i "$AUTH_ORIGIN/api/auth/get-session"
 
 To use an existing Neon URL, replace only `src/auth-database.ts` with this complete file:
 
-```typescript title="src/auth-database.ts"
+```typescript
 import { Neon } from "@alchemy.run/better-auth/Neon";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
@@ -120,6 +120,6 @@ Set `DATABASE_URL` in the deploying environment; it is read and bound during hos
 
 The same database layer supports Lambda, where the pool is scoped to each invocation. For stage isolation, a `Neon.Branch` connection URI can replace the project URI; register `Neon.providers()` whenever the stack provisions Neon resources.
 
-The layer's `migrate` option accepts a separate deploy-resolvable connection source, or `false` to disable its migration support. Configuration read during host construction is bound to the host, so use a resource Output for migration credentials that must remain deploy-only.
+The layer’s `migrate` option accepts a separate deploy-resolvable connection source, or `false` to disable its migration support. Configuration read during host construction is bound to the host, so use a resource Output for migration credentials that must remain deploy-only.
 
 Automatic migrations do not move existing auth records between databases. See [configuration](../guides/configuration.md), [migrations](../guides/migrations.md), the [upgrade guide](../upgrades/from-1-6-to-1-7.md), and the [`Neon` reference](https://alchemy.run/providers/betterauth/reference/neon#neon).

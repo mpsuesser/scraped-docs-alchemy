@@ -1,201 +1,162 @@
 ---
 url: https://alchemy.run/aws/data/dynamodb
 title: "DynamoDB"
-description: "Add a DynamoDB Table, bind GetItem and PutItem to your Lambda, and serve a typed key/value HTTP API backed by DynamoDB."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+description: "How DynamoDB Tables store items under partition and sort keys, how to design keys and indexes for the reads you need, and how runtimes read, write and react to items through bindings."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-**DynamoDB** is AWS's serverless key/value store — structured
-records looked up by partition (and optional sort) key, with no
-capacity to manage. In Alchemy it's the `Table` resource plus a
-binding per operation: `GetItem`, `PutItem`, `UpdateItem`,
-`DeleteItem`, `Query`, `Scan`, and the batch/transact variants.
-Each binding attaches a least-privilege IAM statement scoped to
-the table's ARN. Tables are also an event source: enable
-**DynamoDB Streams** and consume change records in a Lambda with
-`DynamoDB.consumeTableChanges` (see the
-[DynamoDB Streams guide](../messaging/dynamodb-streams.md)).
+DynamoDB is a database of **items** looked up by **key**. A read or write by key takes a few milliseconds whether the table holds a hundred items or a billion, and you never size a server for it: by default you pay per request.
 
-The walkthrough below builds on the [Lambda](../compute/lambda.md) and
-[S3](s3.md) pages: it adds a **Table** and binds `GetItem` +
-`PutItem` to the function — same pattern as S3, different
-storage.
+That speed comes from one rule: you can only look items up by their keys. So designing a table starts from the questions you’ll ask it.
 
-## Define the table
+## A table is items under keys
 
-DynamoDB tables need a partition key (and optionally a sort key)
-declared up-front. Yield the `Table` resource in the function's
-constructor, mirroring how you added the bucket:
+An item is a set of attributes, like a row without a fixed schema. Every item has a **partition key**, and DynamoDB stores items by it: all items with the same partition key live together, and different partition keys spread across many machines.
 
-```diff lang="typescript"
-// src/api.ts
-import * as AWS from "@alchemy.run/aws";
-+import * as DynamoDB from "@alchemy.run/aws/DynamoDB";
-import * as S3 from "@alchemy.run/aws/S3";
-import { Stack } from "alchemy/Stack";
-import * as Effect from "effect/Effect";
-// ...
+A table can also have a **sort key**. Then the partition key and the sort key together identify an item, and the items in one partition are kept in order by the sort key.
 
-Effect.gen(function* () {
-  const bucket = yield* S3.Bucket("Blobs");
-+  const table = yield* DynamoDB.Table("Items", {
-+    partitionKey: "id",
-+    attributes: {
-+      id: "S",
-+    },
-+  });
+Orders · DynamoDB TableQuery pk = "user#sam", sk begins\_with "order#"
 
-  // ... existing bindings + handler ...
-});
-```
+| pk | sk | total |
+| --- | --- | --- |
+| user#ana | order#0301 | $8 |
+| user#ana | profile | · |
+| user#sam | order#0104 | $20 |
+| user#sam | order#0211 | $35 |
+| user#sam | profile | · |
 
-`attributes` only needs to list the attributes used by keys (and
-secondary indexes) — DynamoDB itself is schemaless on the rest of
-the row. `"S"` is the AWS shorthand for "string"; `"N"` is number
-and `"B"` is binary.
+Items with the same partition key live together, sorted by sort key. Sam's orders are one query: one partition, a range of sort keys.
 
-## Bind GetItem and PutItem
+Two kinds of read are fast. **Get** one item by its full key. **Query** one partition, optionally narrowing by a range of sort keys: “Sam’s orders in 2026”. Anything else means a **scan**, which reads the whole table. So list the reads your app needs before you choose the keys, and pick keys that turn each one into a get or a query.
 
-Same shape as the S3 bindings — `PutItem(table)` returns a callable
-Effect and quietly attaches a least-privilege IAM policy scoped to
-this table's ARN:
+## Declare a table
 
-```diff lang="typescript"
-Effect.gen(function* () {
-  const bucket = yield* S3.Bucket("Blobs");
-  const table = yield* DynamoDB.Table("Items", { /* ... */ });
-
-  const putObject = yield* S3.PutObject(bucket);
-  const getObject = yield* S3.GetObject(bucket);
-+  const putItem = yield* DynamoDB.PutItem(table);
-+  const getItem = yield* DynamoDB.GetItem(table);
-
-  return { fetch: /* ... */ };
-});
-```
-
-## Write items with `PUT /items/:id`
-
-Add a branch to `fetch` that writes a row keyed by the URL
-segment. DynamoDB takes attribute values in their native typed
-form — `{ S: "..." }` for strings, `{ N: "42" }` for numbers —
-and Alchemy bindings deliberately **don't** auto-marshal so you
-stay on the raw SDK shape:
-
-```diff lang="typescript"
-fetch: Effect.gen(function* () {
-  const request = yield* HttpServerRequest;
-  const url = new URL(request.url);
-  const path = url.pathname;
-
-+  if (path.startsWith("/items/") && request.method === "PUT") {
-+    const id = path.slice("/items/".length);
-+    const content = yield* request.text;
-+    yield* putItem({
-+      Item: {
-+        id: { S: id },
-+        content: { S: content },
-+      },
-+    });
-+    return HttpServerResponse.empty({ status: 204 });
-+  }
-
-  // ... existing /:key blob routes ...
-}).pipe(Effect.orDie),
-```
-
-Skipping marshalling keeps the binding tiny and avoids a
-debate over which marshalling layer to use. If you want a
-typed-object API across your codebase, build it as a thin
-wrapper around `putItem` — the binding won't fight you.
-
-## Read items with `GET /items/:id`
-
-The read path uses `getItem` with the same `{ S: id }` key
-shape:
-
-```diff lang="typescript"
-if (path.startsWith("/items/") && request.method === "PUT") {
-  // ... unchanged ...
-}
-
-+if (path.startsWith("/items/") && request.method === "GET") {
-+  const id = path.slice("/items/".length);
-+  const result = yield* getItem({ Key: { id: { S: id } } });
-+  if (!result.Item) {
-+    return HttpServerResponse.text("Not found", { status: 404 });
-+  }
-+  return yield* HttpServerResponse.json({
-+    id: result.Item.id?.S,
-+    content: result.Item.content?.S,
-+  });
-+}
-```
-
-`getItem` returns `result.Item` as `undefined` when the row
-doesn't exist — no need for a typed `catchTag` like S3's
-`NoSuchKey`. Map the AWS attribute-value shape back to a plain
-object at the response boundary.
-
-## Provide the runtime layers
-
-Add the DynamoDB lives next to the S3 ones:
-
-```diff lang="typescript"
-}).pipe(
-  Effect.provide(
-    Layer.mergeAll(
-      AWS.Lambda.BucketEventSource,
-+      DynamoDB.GetItemHttp,
-+      DynamoDB.PutItemHttp,
-      S3.PutObjectHttp,
-      S3.GetObjectHttp,
-    ),
-  ),
-),
-```
-
-## Deploy and verify
-
-```sh
-bun alchemy deploy
-```
-
-Add a round-trip test that exercises the new routes:
+Name the key attributes and their types. `"S"` is a string, `"N"` a number, `"B"` binary:
 
 ```typescript
-// test/integ.test.ts
-test(
-  "DynamoDB round-trip",
-  Effect.gen(function* () {
-    const { url } = yield* stack;
+import * as AWS from "@alchemy.run/aws";
 
-    yield* HttpClient.put(`${url}/items/abc`, {
-      body: HttpBody.text("hello dynamo"),
-    });
-
-    const get = yield* HttpClient.get(`${url}/items/abc`);
-    expect(yield* get.json).toEqual({ id: "abc", content: "hello dynamo" });
-  }),
-);
+export const Orders = AWS.DynamoDB.Table("Orders", {
+  partitionKey: "pk",
+  sortKey: "sk",
+  attributes: { pk: "S", sk: "S" },
+});
 ```
 
-```sh
-bun test test/integ.test.ts
+`attributes` lists only the attributes used in keys and indexes. Every other attribute of an item is free-form.
+
+The table is created on-demand: there’s no capacity to set, and you pay per read and write. Alchemy names it from your app, stage and id, so each stage gets its own table.
+
+## Write items
+
+Bind `DynamoDB.PutItem` in a runtime. Its role gets `dynamodb:PutItem` on this table only:
+
+```typescript
+const putItem = yield* AWS.DynamoDB.PutItem(Orders);
 ```
 
-The IAM policy attached to your function role now includes
-`dynamodb:GetItem` and `dynamodb:PutItem` — both scoped to this
-specific table — alongside the S3 grants.
+An item is written in DynamoDB’s own attribute format, where each value says its type:
 
-## Where next
+```typescript
+yield* putItem({
+  Item: {
+    pk: { S: "user#sam" },
+    sk: { S: "order#2026-02-11" },
+    total: { N: "42" },
+  },
+});
+```
 
-- [Process DynamoDB Streams](../messaging/dynamodb-streams.md) —
-  fan table changes out into a Lambda-side `Stream` you can
-  react to.
-- [SQS](../messaging/sqs.md) — a general-purpose queue for background
-  work, fed from the same Lambda.
-- [`Table` reference](https://alchemy.run/providers/aws/dynamodb#table) — every
-  prop and attribute, including secondary indexes, TTL, and
-  point-in-time recovery.
+The bindings pass this format through unchanged, so what you write is exactly what the API receives. If you’d rather work with plain objects, wrap the client in a function that converts them.
+
+A put replaces any item with the same key. To change some attributes and keep the rest, use `DynamoDB.UpdateItem`. To write only if the item doesn’t exist yet, add a `ConditionExpression`, and catch `ConditionalCheckFailedException` when it does.
+
+## Read an item
+
+Bind `DynamoDB.GetItem` and read by the full key:
+
+```typescript
+const getItem = yield* AWS.DynamoDB.GetItem(Orders);
+const { Item } = yield* getItem({
+  Key: { pk: { S: "user#sam" }, sk: { S: "profile" } },
+});
+```
+
+A missing item isn’t an error: `Item` is just `undefined`.
+
+Each binding has a client Layer named after it. Provide the ones you bind to the runtime, merged into one:
+
+```typescript
+Effect.provide(Layer.mergeAll(AWS.DynamoDB.GetItemHttp, AWS.DynamoDB.PutItemHttp))
+```
+
+## Query a partition
+
+Bind `DynamoDB.Query` to read many items from one partition. The key condition names the partition and, optionally, a range of sort keys:
+
+```typescript
+const query = yield* AWS.DynamoDB.Query(Orders);
+const { Items } = yield* query({
+  KeyConditionExpression: "pk = :pk AND begins_with(sk, :prefix)",
+  ExpressionAttributeValues: {
+    ":pk": { S: "user#sam" },
+    ":prefix": { S: "order#2026" },
+  },
+});
+```
+
+Items come back in sort-key order, a page at a time. This is why the sort key above starts with `order#` and a date: one query returns a user’s orders for a year, already sorted.
+
+## Add an index for another question
+
+Some reads don’t fit the table’s keys: “every order placed today”, across all users. A **global secondary index** answers them. It’s a copy of the table, kept in sync for you, with its own partition and sort key:
+
+```typescript
+export const Orders = AWS.DynamoDB.Table("Orders", {
+  partitionKey: "pk",
+  sortKey: "sk",
+  attributes: { pk: "S", sk: "S", day: "S" },
+  globalSecondaryIndexes: [
+    { indexName: "byDay", partitionKey: "day", sortKey: "sk", projection: { ProjectionType: "ALL" } },
+  ],
+});
+```
+
+Query it by passing `IndexName: "byDay"` to the same `query` client. An index is updated shortly after each write, so a query on it may briefly miss the newest items.
+
+Each index costs storage and a write for every item it covers. Add one per question that needs it, not one per attribute.
+
+## Expire items with TTL
+
+Sessions, caches and one-time codes should disappear on their own. Name an attribute that holds an expiry time, in seconds since 1970, and DynamoDB deletes each item some time after it passes:
+
+```typescript
+export const Sessions = AWS.DynamoDB.Table("Sessions", {
+  partitionKey: "id",
+  attributes: { id: "S" },
+  timeToLiveSpecification: { AttributeName: "expiresAt", Enabled: true },
+});
+```
+
+Deletion can lag the expiry by a while, so check `expiresAt` when you read too.
+
+## React to changes
+
+A table can publish every change to its items, in order per item, as a **stream**. A Function consumes it to keep a search index current, send notifications or update totals. See [DynamoDB Streams](../messaging/dynamodb-streams.md).
+
+## Deploy changes to a table
+
+Most settings change in place: indexes, TTL, tags, streams and recovery are updated on the existing table. Changing the partition key, the sort key or a local secondary index replaces the table, because DynamoDB can’t change them, and replacing a table loses its items.
+
+Protect a table that holds data you can’t recreate. Turn on point-in-time recovery to restore it to any second in the last 35 days, and deletion protection to refuse a delete until you turn it off:
+
+```typescript
+export const Orders = AWS.DynamoDB.Table("Orders", {
+  partitionKey: "pk",
+  sortKey: "sk",
+  attributes: { pk: "S", sk: "S" },
+  pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
+  deletionProtectionEnabled: true,
+});
+```

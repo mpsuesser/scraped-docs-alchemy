@@ -1,80 +1,83 @@
 ---
 url: https://alchemy.run/aws
 title: "AWS"
-description: "Build AWS applications with Alchemy — a runtime (usually Lambda) plus typed resources, wired together by bindings that mint least-privilege IAM policies."
-access_date: 2026-08-06T07:23:05.654Z
-current_date: 2026-08-06T07:23:05.654Z
+description: "Build on AWS with Alchemy. Declare Lambda Functions, containers, tables, buckets and queues in TypeScript, and let bindings write each runtime's IAM policy from the calls its code makes."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-An Alchemy app on AWS is one **runtime** — usually a Lambda Function — plus the **resources** it talks to: tables, buckets, queues, streams. You wire them together with typed **bindings**: call `S3.PutObject(bucket)` in your code and Alchemy attaches the matching least-privilege IAM statement to the function’s role. The code is the policy.
+Amazon Web Services is a cloud platform with services for compute, storage, databases, networking, analytics, machine learning and security, in regions around the world.
 
-New here? [Set up credentials](aws/setup.md) first, then deploy your first [Lambda](aws/compute/lambda.md).
+**New to AWS?** Start with [What is AWS?](aws/what-is-aws.md).
 
-## Pick your runtime
+## A quick example
 
-- **[Lambda](aws/compute/lambda.md)** — serverless, event-driven functions with public Function URLs. The primary documented path: every resource and event source in this section is shown running on Lambda.
-- **[ECS](aws/compute/ecs.md)** — long-running containers on Fargate. Alchemy bundles your Effect program into a Docker image and runs it as a Cluster + Service + Task.
-- **[EKS](aws/compute/eks.md)** — managed Kubernetes (Auto Mode). Deployments, Jobs, raw manifests, and Helm charts in the same TypeScript program as the cluster — no YAML, no kubectl.
-- **[EC2](aws/compute/ec2.md)** — full-control virtual machines, with the complete VPC networking toolkit around them.
+A Queue is a declaration:
 
-Not sure which? See [Choosing a runtime](aws/compute/choosing-a-runtime.md).
+```typescript
+import * as AWS from "@alchemy.run/aws";
 
-## Data
+export const Jobs = AWS.SQS.Queue("Jobs");
+```
 
-- **[DynamoDB](aws/data/dynamodb.md)** — key/value tables with `GetItem` / `PutItem` bindings and change-data-capture Streams.
-- **[S3](aws/data/s3.md)** — object storage with `GetObject` / `PutObject` bindings and bucket event notifications.
-- **[RDS & Aurora](aws/data/rds.md)** — managed Postgres/MySQL: the `Aurora` helper stands up the whole cluster in one call, with a `Connect` binding or the Data API at runtime.
+A Lambda Function binds it and sends to it. The binding gives the Function `sqs:SendMessage` on that one Queue, and `SendMessageHttp` is the client that makes the call:
 
-## Messaging & events
+```typescript
+import * as AWS from "@alchemy.run/aws";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Jobs } from "./jobs.ts";
 
-- **[SQS](aws/messaging/sqs.md)** — queues with a `SendMessage` binding and a `Stream` -shaped Lambda consumer.
-- **[SNS](aws/messaging/sns.md)** — pub/sub topics with a `Publish` binding and fan-out to queues and functions.
-- **[EventBridge & Scheduler](aws/messaging/eventbridge.md)** — event buses, rules, and cron/rate schedules that invoke your functions.
-- **[Kinesis](aws/messaging/kinesis.md)** — ordered, sharded data streams with a `PutRecord` binding and the same `Stream` consumer surface.
+export default class Api extends AWS.Lambda.Function<Api>()(
+  "Api",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const send = yield* AWS.SQS.SendMessage(Jobs);
+    return {
+      fetch: send({ MessageBody: "hello" }).pipe(
+        Effect.as(HttpServerResponse.text("queued")),
+        Effect.orDie,
+      ),
+    };
+  }).pipe(Effect.provide(AWS.SQS.SendMessageHttp)),
+) {}
+```
 
-## Email
+And the Stack deploys it to the account your profile signs in to:
 
-- **[Sending & managing email](aws/email/sending.md)** — verify an SES identity, send from a Lambda with the `SendEmail` binding, and manage identity policies, contact lists, dedicated IP pools, tenants, account settings, and deliverability insights.
-- **[Receiving inbound email](aws/email/receiving.md)** — SES receipt rule sets and rules that store mail in S3, fan out to SNS, invoke a Lambda, or bounce it. Region-limited to `us-east-1`, `us-west-2`, and `eu-west-1`.
+```typescript
+import * as Alchemy from "alchemy";
+import * as AWS from "@alchemy.run/aws";
+import * as Effect from "effect/Effect";
+import Api from "./src/api.ts";
 
-## Security & secrets
+export default Alchemy.Stack(
+  "MyApp",
+  { providers: AWS.providers(), state: AWS.state() },
+  Effect.gen(function* () {
+    const api = yield* Api;
+    return { url: api.functionUrl };
+  }),
+);
+```
 
-- **[Secrets & env](aws/security/secrets-env.md)** —.env values via Config, Secrets Manager when the secret is shared, generated, or rotated.
+## Where to start
 
-## Observability
+**Want to build?** Connect your account in [Setup](aws/setup.md), then follow the [tutorial](aws/tutorial/part-1.md) from a single Bucket to a Lambda Function with tests and CI.
 
-- **[CloudWatch](aws/observability/cloudwatch.md)** — dashboards and metric alarms, declared in the same Stack as the resources they watch.
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).
 
-## Frontend & networking
+## The docs
 
-- **[Websites](aws/frontend/websites.md)** — the frontend block: static sites and built Vite apps on S3 + CloudFront as a single `StaticSite` resource.
-- **[VPC & networking](aws/networking.md)** — the `Network` helper and the VPC primitives, for when ECS, EKS, or EC2 needs explicit networking.
+### Networking & edge
 
-## What are you building?
+- [VPC & networking](aws/networking.md)
+- [Custom domains](aws/networking/custom-domains.md)
 
-| You’re building | Reach for |
-| --- | --- |
-| An HTTP API | [Lambda](aws/compute/lambda.md) + Function URL + [DynamoDB](aws/data/dynamodb.md) |
-| A typed HTTP API | [Effect HTTP API on Lambda](aws/apis/effect-http-api.md) |
-| A typed API for external clients | [Effect RPC on Lambda](aws/apis/effect-rpc.md) |
-| Drive a MicroVM from a Lambda (internal RPC) | [MicroVMs](aws/compute/microvms.md) + [Schemaless RPC](apis/schemaless.md) |
-| An ML training fleet | [HyperPod](aws/compute/hyperpod.md) — Slurm or EKS orchestrated, with task governance |
-| A REST API with stages/custom domains | [API Gateway](aws/apis/api-gateway.md) |
-| Your own domain on a site or API | [Custom domains with Route53 + ACM](aws/networking/custom-domains.md) |
-| A static site | [Deploy a static site](aws/frontend/static-site.md) on S3 + CloudFront |
-| An event pipeline | [Kinesis](aws/messaging/kinesis.md) → Lambda |
-| Background jobs | [SQS](aws/messaging/sqs.md) + Lambda |
-| Scheduled jobs | [EventBridge Scheduler](aws/messaging/eventbridge.md) → Lambda |
-| A Postgres database | [RDS & Aurora](aws/data/rds.md) |
-| Kubernetes workloads or Helm charts | [EKS](aws/compute/eks.md) |
-| Object processing | [S3 events](aws/messaging/s3-events.md) |
-| Sending transactional email | [SES sending](aws/email/sending.md) — identity + `SendEmail` binding |
-| Inbound email pipelines | [SES email receiving](aws/email/receiving.md) → S3 / SNS / Lambda |
-| Change data capture | [DynamoDB Streams](aws/messaging/dynamodb-streams.md) |
-| API keys or credentials for a function | [Secrets & env](aws/security/secrets-env.md) |
+### Observability
 
-## Where next
+- [CloudWatch](aws/observability/cloudwatch.md)
 
-- [Setup](aws/setup.md) — install Alchemy and connect your AWS account.
-- [Deploy a static site](aws/frontend/static-site.md) and [Effect HTTP API on Lambda](aws/apis/effect-http-api.md) — end-to-end guides for the two most common app shapes.
-- [Providers reference](https://alchemy.run/providers) — generated API docs for every AWS resource Alchemy ships, well beyond the blocks documented here (CloudFront, Route53, IAM, and more).
+### AI
+
+- [Bedrock & Effect AI](aws/ai/bedrock.md)

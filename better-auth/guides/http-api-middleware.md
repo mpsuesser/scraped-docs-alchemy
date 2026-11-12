@@ -2,14 +2,13 @@
 url: https://alchemy.run/better-auth/guides/http-api-middleware
 title: "HTTP API middleware"
 description: "Authenticate each request and provide a typed current user to Effect HTTP API handlers."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 ## Define the service, middleware, and protected API
 
 ```typescript
-// worker.ts
 import { BetterAuth } from "@alchemy.run/better-auth";
 import { CloudflareD1 } from "@alchemy.run/better-auth/CloudflareD1";
 import { RuntimeContext } from "alchemy";
@@ -132,7 +131,7 @@ export default class AuthApi extends Cloudflare.Worker<AuthApi>()(
 ) {}
 ```
 
-The layer captures `Auth` once, but reads the session inside each returned request effect. It provides only that request's user to the handler; never construct a process-wide user layer or accept identity from a request body.
+The layer captures `Auth` once, but reads the session inside each returned request effect. It provides only that request’s user to the handler; never construct a process-wide user layer or accept identity from a request body.
 
 `auth.getSession()` reads headers from the ambient Effect HTTP request. Outside that boundary, `auth.getSession(headers)` accepts a web `Headers` object.
 
@@ -140,14 +139,13 @@ Only `null` becomes `Unauthorized` with HTTP `401`; typed lookup failures and un
 
 For diagnostics, `BetterAuthApiError.statusCode` is numeric and `body.code` identifies the upstream error. Log those fields rather than the complete error, whose headers and cause can contain credentials.
 
-`RuntimeContext.phantom` adapts Alchemy's runtime marker to the native HTTP middleware boundary. It does not authenticate a request or provide a session.
+`RuntimeContext.phantom` adapts Alchemy’s runtime marker to the native HTTP middleware boundary. It does not authenticate a request or provide a session.
 
 The private group requires authentication, while the health group and Better Auth routes remain public. Dispatching to `auth.fetch` first preserves status, redirects, and `Set-Cookie` headers, including cookies written during session refresh.
 
 ## Deploy the standalone example
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
@@ -166,7 +164,7 @@ export default Alchemy.Stack(
 Use Bun, matching `alchemy` and `@alchemy.run/better-auth` releases, Better Auth 1.7.5, Effect 4, and `kysely`, with Cloudflare credentials configured. This stack owns its D1 database, migrations, and stable signing secret; preserve its local state.
 
 ```sh
-bunx alchemy dev
+pnpm alchemy dev
 ```
 
 Alchemy selects an available port and prints the origin. In another shell, enter that origin without a trailing slash after `read`:
@@ -183,4 +181,4 @@ The first request returns `401` with `{"_tag":"Unauthorized"}`; the second retur
 
 An intentionally public endpoint can call `auth.getSession()` within its request effect and treat only `null` as anonymous. Keep lookup failures in the error channel or map them to a declared server error; do not attach required-auth middleware merely to obtain optional identity.
 
-Authentication identifies the caller; authorization still needs server-side ownership or permission checks. For session lifetime, revocation, and cookie-cache behavior, see [Better Auth's session documentation](https://better-auth.com/docs/concepts/session-management).
+Authentication identifies the caller; authorization still needs server-side ownership or permission checks. For session lifetime, revocation, and cookie-cache behavior, see [Better Auth’s session documentation](https://better-auth.com/docs/concepts/session-management).

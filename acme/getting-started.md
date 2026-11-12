@@ -2,11 +2,11 @@
 url: https://alchemy.run/acme/getting-started
 title: "Getting started"
 description: "Issue a staging TLS certificate with Let's Encrypt and an existing Cloudflare DNS zone."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-This guide issues a certificate for a domain you control. It uses Let's Encrypt
+Issue a certificate for a domain you control from Let's Encrypt
 staging, so you can validate the deployment without consuming production issuance
 limits. The resulting certificate is deliberately **not trusted by browsers**.
 
@@ -18,7 +18,7 @@ You need an active Cloudflare DNS zone, its zone ID, and credentials that can re
 create, and delete DNS records in that zone. The domain's authoritative nameservers
 must already point to Cloudflare.
 
-Use a domain you own wherever this guide says `example.com`. Set
+Use a domain you own wherever the examples say `example.com`. Set
 `CLOUDFLARE_ZONE_ID` in your project's `.env` to the zone ID from its Cloudflare
 dashboard. This example references the existing zone by ID; it does not create,
 adopt, modify the settings of, or delete the zone itself.

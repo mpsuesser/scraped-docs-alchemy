@@ -2,23 +2,17 @@
 url: https://alchemy.run/stripe
 title: "Stripe"
 description: "Sell subscriptions and onboard merchants from a Cloudflare Worker — catalog, Checkout, the Billing Portal, Connect, and webhooks declared next to the code that uses them."
-access_date: 2026-09-24T22:45:48.980Z
-current_date: 2026-09-24T22:45:48.980Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Stripe with alchemy means your billing lives in the same TypeScript program as the app that does the billing. The `Product` and `Price` are declared on the Worker that sells them. The Worker calls Stripe through typed bindings that carry their own permissions. Webhooks are one function call that provisions the endpoint and hands your handler a typed event. `bun alchemy deploy` ships all of it; `alchemy destroy` takes it down without leaving orphans in the Dashboard.
+Stripe is financial infrastructure for the internet: payments, subscriptions and billing, invoicing, tax, fraud prevention and payouts to other businesses.
 
-New here? [Set up credentials](stripe/setup.md), then pick the guide that matches what you’re building.
+It keeps what you sell, products and their prices, who buys it, and the record of every payment and subscription. Its hosted pages, Checkout and the Billing Portal, collect card details so you never touch them, and webhooks tell your app what happened.
 
-## What are you building?
+**New to Stripe?** Start with [What is Stripe?](stripe/what-is-stripe.md).
 
-- **A SaaS that charges monthly** → [Sell a subscription](stripe/guides/subscriptions.md). Hosted Checkout, the Billing Portal, and an entitlement record kept current by webhooks. One Worker, one KV namespace.
-- **A platform that pays other businesses** → [Onboard merchants with Connect](stripe/guides/connect.md). Express accounts, hosted onboarding with link refresh, and `account.updated` driving a D1 merchant table.
-- **Anything that needs to know what Stripe did** → [React to Stripe events](stripe/guides/webhooks.md). Which events, how `consumeEvents` works, when to declare the endpoint yourself.
-
-Both guides walk a runnable example under `examples/` end to end and end with the full source.
-
-## What it looks like
+## A quick example
 
 ```typescript
 export default class Api extends Cloudflare.Worker<Api>()(
@@ -71,14 +65,16 @@ export default class Api extends Cloudflare.Worker<Api>()(
 ) {}
 ```
 
-Three ideas carry the whole integration:
+Resources like `Product`, `Price`, `Coupon` and `WebhookEndpoint` are managed by the Stack: Alchemy creates, updates and deletes them, and deactivates the ones Stripe won’t delete. Bindings like `CreateCustomer` and `CreateCheckoutSession` are what the Worker calls while it runs. Each one adds the permission it needs to a [`RestrictedApiKey`](stripe/accounts-and-keys.md), and you provide its `*Http` Layer once. And an output like `price.id` is yielded in Construction to get an accessor, then yielded again inside a handler, which is how a resource’s id reaches the running Worker.
 
-- **Resources** (`Product`, `Price`, `Coupon`, `WebhookEndpoint`, `BillingPortalConfiguration`, …) are Stack-managed. Alchemy creates, updates, and deletes them. Objects Stripe won’t hard-delete are deactivated instead.
-- **Bindings** (`CreateCustomer`, `CreateCheckoutSession`, `RetrieveProduct`, …) are what a Worker calls at runtime. Yielding one registers the permission it needs on a [`RestrictedApiKey`](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey) and returns a callable. Provide the matching `*Http` layer once at the end.
-- **Outputs** like `price.id` are yielded at plan time to get an accessor, then yielded again inside a route. That’s how a resource id reaches runtime.
+## Where to start
 
-## Reference
+**Want to build?** Connect your account in [Setup](stripe/setup.md), then [Sell a subscription](stripe/guides/subscriptions.md) builds Checkout, the Billing Portal and webhooks in one Worker. Paying other businesses? [Onboard merchants with Connect](stripe/guides/connect.md).
 
-[Product](https://alchemy.run/providers/stripe/reference/product#product) · [Price](https://alchemy.run/providers/stripe/reference/product#price) · [Coupon](https://alchemy.run/providers/stripe/reference/product#coupon) · [Customer](https://alchemy.run/providers/stripe/reference/customer#customer) · [BillingPortalConfiguration](https://alchemy.run/providers/stripe/reference/billing#billingportalconfiguration) · [WebhookEndpoint](https://alchemy.run/providers/stripe/reference/webhook#webhookendpoint) · [RestrictedApiKey](https://alchemy.run/providers/stripe/reference/secrets#restrictedapikey)
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).
 
-The full list is under **Resources** in the sidebar.
+## The docs
+
+### Accounts & access
+
+- [Accounts and API keys](stripe/accounts-and-keys.md)

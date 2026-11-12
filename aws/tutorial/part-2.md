@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/tutorial/part-2
 title: "Part 2: Add a Lambda"
 description: "Create an AWS Lambda Function with a public URL, bind the S3 Bucket, and implement GET/PUT routes."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 In [Part 1](part-1.md) you deployed an S3 Bucket. Now you’ll create a Lambda Function with a public URL that reads and writes objects in that bucket over HTTP.
@@ -112,7 +112,7 @@ Effect.gen(function* () {
 }),
 ```
 
-Both capability calls return a callable Effect: `putObject` takes a `PutObjectRequest` (the AWS SDK shape, minus the `Bucket` field Alchemy fills in for you) and `getObject` takes a `GetObjectRequest`. Each call is 1:1 with an IAM statement on the execution role — delete a capability call and the matching statement disappears next deploy. See [S3 → One binding, one IAM statement](../data/s3.md#one-binding-one-iam-statement) for the exact mapping.
+Both capability calls return a callable Effect: `putObject` takes a `PutObjectRequest` (the AWS SDK shape, minus the `Bucket` field Alchemy fills in for you) and `getObject` takes a `GetObjectRequest`. Each call is 1:1 with an IAM statement on the execution role — delete a capability call and the matching statement disappears next deploy. See [IAM and bindings](../iam.md#bindings-write-the-policy) for the exact mapping.
 
 ## Write objects with PUT /:key
 

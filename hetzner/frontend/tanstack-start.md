@@ -2,8 +2,8 @@
 url: https://alchemy.run/hetzner/frontend/tanstack-start
 title: "TanStack Start"
 description: "Deploy TanStack Start (React or Solid) to Hetzner with Hetzner.Website.TanStackStart — SSR as a systemd unit on port 3000, client assets baked into the unit, and TanStack Start's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Hetzner.Website.TanStackStart` deploys a [TanStack Start](https://tanstack.com/start) app to a Hetzner Cloud Server. TanStack Start is pure Vite, so Alchemy runs your project’s own `vite build`: the SSR server runs as a systemd [`Hetzner.Service`](../compute/services.md) on port 3000, and client assets are baked into the unit and served first. Omit `server` and Alchemy creates a `cpx12` Ubuntu 24.04 box in `fsn1`. The live URL is `http://{ipv4}:3000` — the Service has no TLS. No adapter.
@@ -143,7 +143,7 @@ The build runs through your project’s own `vite.config.ts` — the `tanstackSt
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs TanStack Start’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Hetzner resources are created. Wrap the site in `Alchemy.remote()` to deploy the live Server and Service even during dev:

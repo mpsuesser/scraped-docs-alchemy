@@ -1,82 +1,72 @@
 ---
 url: https://alchemy.run/cloudflare
 title: "Cloudflare"
-description: "Build and deploy full applications on Cloudflare with Alchemy — one Worker runtime plus resources like Durable Objects, D1, R2, Queues, and Hyperdrive, wired together by typed bindings."
-access_date: 2026-10-12T23:40:29.259Z
-current_date: 2026-10-12T23:40:29.259Z
+description: "Build on Cloudflare with Alchemy. Declare Workers, Durable Objects, R2, D1, KV and Queues in TypeScript, and bind each one into the Worker that uses it with a typed client."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-An alchemy app on Cloudflare is one **Worker** runtime plus the resources it talks to — databases, object storage, queues, stateful objects — all declared in the same TypeScript program and wired together by typed bindings. Deploy the whole thing with `bun alchemy deploy`; Alchemy figures out what changed.
+Cloudflare runs the largest network on the internet, in more than 340 cities. It serves DNS, caches and protects websites, blocks attacks, and connects offices and devices.
 
-New here? [Set up your account](cloudflare/setup.md), then start the [tutorial](cloudflare/tutorial/part-1.md).
+It also runs the Workers developer platform, which runs your code at the edge in every one of those cities, next to storage, databases, queues, AI inference and containers. Its Durable Objects add globally unique, stateful objects that live close to their users, which makes them ideal for agents, WebSockets and real-time coordination.
 
-## Compute
+**New to Cloudflare?** Start with [What is Cloudflare?](cloudflare/what-is-cloudflare.md).
 
-- [Workers](cloudflare/compute/workers.md) — the compute runtime; every app has at least one.
-- [Durable Objects](cloudflare/compute/durable-objects.md) — globally-unique stateful instances with transactional storage and typed RPC.
-- [Containers](cloudflare/compute/containers.md) — long-lived processes and arbitrary runtimes, paired with a Durable Object for typed RPC.
-- [Workflows](cloudflare/compute/workflows.md) — durable multi-step jobs with checkpointed, replayable steps.
+## A quick example
 
-## Frontend
+A Bucket is a declaration:
 
-- [Vite](cloudflare/frontend/vite.md) — deploy any pure-Vite app (SPAs, TanStack Start, React Router, SolidStart) as a Worker with assets.
-- [Static sites](cloudflare/frontend/static-site.md) — any build command’s static output, including frameworks Vite doesn’t cover yet.
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
-## Data
+export const Uploads = Cloudflare.R2.Bucket("Uploads");
+```
 
-- [D1](cloudflare/data/d1.md) — serverless SQLite with migrations managed as part of the deploy.
-- [KV](cloudflare/data/kv.md) — edge key-value storage for config, sessions, and cached lookups.
-- [R2](cloudflare/data/r2.md) — object storage with read/write-scoped bindings.
-- [Hyperdrive](cloudflare/data/hyperdrive.md) — edge connection pooling for external Postgres and MySQL.
-- [Pipelines](cloudflare/data/pipelines.md) — ingest events into R2 as files or Iceberg tables.
-- [Iceberg tables](cloudflare/data/iceberg-tables.md) — an Apache Iceberg warehouse on R2 that Spark, DuckDB, and PyIceberg can query.
+A Worker binds it and reads from it. The binding is in the Worker’s own code, and its access level is in the name:
 
-## Messaging
+```typescript
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+import { Uploads } from "./uploads.ts";
 
-- [Queues](cloudflare/messaging/queues.md) — at-least-once message delivery between Workers.
-- [K2 streams](cloudflare/messaging/k2.md) — a durable, replayable log with independent subscriptions.
+export default Cloudflare.Worker(
+  "Worker",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const uploads = yield* Cloudflare.R2.ReadBucket(Uploads);
+    return {
+      fetch: Effect.gen(function* () {
+        const object = yield* uploads.get("hello.txt");
+        return object
+          ? HttpServerResponse.text(yield* object.text())
+          : HttpServerResponse.text("Not found", { status: 404 });
+      }).pipe(Effect.orDie),
+    };
+  }).pipe(Effect.provide(Cloudflare.R2.ReadBucketBinding)),
+);
+```
 
-## Networking
+And the Stack deploys it to the account your profile names:
 
-- [Domains & DNS](cloudflare/networking/domains.md) — zones, DNS records, and zone settings as resources; adopt the domains you already own.
+```typescript
+import * as Alchemy from "alchemy";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Effect from "effect/Effect";
+import Worker from "./src/worker.ts";
 
-## Email
+export default Alchemy.Stack(
+  "MyApp",
+  { providers: Cloudflare.providers(), state: Cloudflare.state() },
+  Effect.gen(function* () {
+    const worker = yield* Worker;
+    return { url: worker.url };
+  }),
+);
+```
 
-- [Email](cloudflare/email.md) — route inbound mail on a zone you own and send from Workers.
+## Where to start
 
-## Security & secrets
+**Want to build?** The [tutorial](cloudflare/tutorial/part-1.md) goes from an empty directory to a Worker with storage, tests, local development and CI, one step at a time. Start with [Setup](cloudflare/setup.md) to connect your account.
 
-- [Secrets & env](cloudflare/security/secrets-env.md) — bind `.env` values and secrets into your Workers.
-- [Protect a Worker with Access](cloudflare/security/access.md) — put a login wall in front of a Worker and read the authenticated identity from `ctx.access`.
-
-## What are you building?
-
-| App shape | Stack |
-| --- | --- |
-| HTTP API | [Worker](cloudflare/compute/workers.md) + [D1](cloudflare/data/d1.md) — see [Effect HTTP API](cloudflare/apis/effect-http-api.md) |
-| Call one Worker from another (internal RPC) | [Worker](cloudflare/compute/workers.md) — see [Schemaless RPC](cloudflare/compute/workers.md#call-another-worker) and the [concept](apis/schemaless.md) |
-| Typed API for external clients | [Effect RPC](cloudflare/apis/effect-rpc.md) for Effect clients, [Effect HTTP API](cloudflare/apis/effect-http-api.md) for plain HTTP |
-| Real-time / WebSockets | [Durable Objects](cloudflare/compute/durable-objects.md) — see [Accept WebSockets](cloudflare/compute/hibernatable-websockets.md) |
-| Full-stack app | [Worker](cloudflare/compute/workers.md) + a React SPA — see [Add a React SPA](cloudflare/frontend/vite-spa.md) or [Frontend frameworks](cloudflare/frontend/frontends.md) |
-| Background jobs | [Queues](cloudflare/messaging/queues.md) |
-| Event log with replay | [K2 streams](cloudflare/messaging/k2.md) |
-| Analytics events as tables | [Pipelines](cloudflare/data/pipelines.md) → [Iceberg tables](cloudflare/data/iceberg-tables.md) |
-| Postgres-backed API | [Hyperdrive](cloudflare/data/hyperdrive.md) + [Drizzle](cloudflare/data/drizzle.md) |
-| Durable multi-step jobs | [Workflows](cloudflare/compute/workflows.md) |
-| AI apps | [AI Gateway](cloudflare/ai/ai-gateway.md), [Effect AI](cloudflare/ai/effect-ai.md), [AI Search](cloudflare/ai/ai-search.md) |
-| App on your own domain | [Domains & DNS](cloudflare/networking/domains.md) — see [Custom domains & routes](cloudflare/networking/custom-domains.md) |
-| Production observability | [Ship Worker telemetry to Axiom](cloudflare/observability/axiom-observability.md) |
-
-For frontends, alchemy is Workers-first: Pages resources exist, but static assets served from a [Worker](cloudflare/compute/workers.md) is the recommended path.
-
-## Where next
-
-- [Setup](cloudflare/setup.md) — install alchemy and connect your Cloudflare account.
-- [Tutorial](cloudflare/tutorial/part-1.md) — from empty directory to a deployed Worker with tests, stages, and CI.
-- [Custom domains & routes](cloudflare/networking/custom-domains.md) — put your Worker on a domain you own.
-- [Ship Worker telemetry to Axiom](cloudflare/observability/axiom-observability.md) — datasets, ingest tokens, and monitors in the same Stack as the Worker.
-- [API reference](https://alchemy.run/providers) — every Cloudflare resource and binding.
-
-## Everything else
-
-The blocks above are what most apps are built from, but coverage goes much further: the zero-trust and zone-security long tail — roughly 60 more services, produced by the resource factory — ships as reference-only documentation in the [API reference](https://alchemy.run/providers).
+**Looking for something specific?** Every section of these docs is listed below, and every resource is in the generated [API reference](https://alchemy.run/providers).

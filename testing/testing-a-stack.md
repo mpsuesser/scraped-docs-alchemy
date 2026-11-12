@@ -2,11 +2,11 @@
 url: https://alchemy.run/testing/testing-a-stack
 title: "Testing a Stack"
 description: "Deploy your real Stack once per suite, drive it over HTTP, tear it down."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don't) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
+This is the end-to-end pattern for integration-testing a deployed Stack against the real cloud: deploy once in `beforeAll`, drive the live URL from Effect-aware tests, destroy (or don’t) in `afterAll`. The harness API is documented at [Test harness](test-harness.md), the model at [Testing](../testing.md), and the cloud-specific step-by-steps are [Cloudflare Tutorial Part 3](../cloudflare/tutorial/part-3.md) and [AWS Tutorial Part 3](../aws/tutorial/part-3.md).
 
 ## Set up the harness
 
@@ -68,8 +68,8 @@ Run the suite with your runner:
 
 ```sh
 bun test test/integ.test.ts            # @alchemy.run/test/Bun
-bunx alchemy-test test/integ.test.ts   # @alchemy.run/test/Alchemy
-npx vitest run test/integ.test.ts      # @alchemy.run/test/Vitest
+pnpm alchemy-test test/integ.test.ts   # @alchemy.run/test/Alchemy
+pnpm vitest run test/integ.test.ts      # @alchemy.run/test/Vitest
 ```
 
 The first run deploys; re-runs diff and skip unchanged Resources, and tests default to the isolated `test_$USER` [stage](../environments/stages.md) so they never clobber your `live_$USER` / `dev_$USER` deployments.
@@ -100,12 +100,12 @@ test(
   Effect.gen(function* () {
     const { url } = yield* stack;
 
-    const put = yield* HttpClient.put(`${url}/hello.txt`, {
+    const put = yield* HttpClient.put(\`${url}/hello.txt\`, {
       body: HttpBody.text("Hello, World!"),
     });
     expect(put.status).toBe(201);
 
-    const get = yield* HttpClient.get(`${url}/hello.txt`);
+    const get = yield* HttpClient.get(\`${url}/hello.txt\`);
     expect(yield* get.text).toBe("Hello, World!");
   }),
 );
@@ -131,12 +131,12 @@ test(
 );
 ```
 
-`getWhenReady` (and `executeWhenReady` for arbitrary requests) retries only 404/5xx — 20 attempts by default, exponential from 500ms — so deliberate `400`/`401`/`403` assertions observe those statuses immediately. For arbitrary effects, use a bounded manual retry:
+`getWhenReady` (and `executeWhenReady` for arbitrary requests) retries only 404/5xx — 20 attempts by default, exponential from 500ms — so deliberate `400` / `401` / `403` assertions observe those statuses immediately. For arbitrary effects, use a bounded manual retry:
 
 ```typescript
 import * as Schedule from "effect/Schedule";
 
-const response = yield* HttpClient.get(`${url}/health`).pipe(
+const response = yield* HttpClient.get(\`${url}/health\`).pipe(
   Effect.retry({ schedule: Schedule.exponential("500 millis"), times: 10 }),
 );
 ```
@@ -148,7 +148,7 @@ A Cloudflare Durable Object that stayed busy through a redeploy can answer with 
 Queues drain, workflows complete, and crons fire asynchronously — poll with a bounded declarative schedule, never a deadline loop:
 
 ```typescript
-const status = yield* HttpClient.get(`${url}/workflow/status/${instanceId}`).pipe(
+const status = yield* HttpClient.get(\`${url}/workflow/status/${instanceId}\`).pipe(
   Effect.flatMap((res) => res.json),
   Effect.map((body) => body as { status: string }),
   Effect.repeat({
@@ -161,7 +161,7 @@ const status = yield* HttpClient.get(`${url}/workflow/status/${instanceId}`).pip
 
 Bounded `times` fails fast instead of leaking into the runner timeout; `while (Date.now() < deadline)` loops ignore interruption.
 
-## Tear down — or don't
+## Tear down — or don’t
 
 Destroy on CI, keep the Stack alive locally for fast iteration:
 
@@ -184,9 +184,7 @@ const stack = beforeAll(
 );
 ```
 
-## Share one Stack across files
-
-Give every file's `Test.make` the same remote state and the same stage — identical state + stage means the second file's `deploy(Stack)` is a no-op diff. The default `test_$USER` stage already does this for a single developer; pin an explicit stage when files must share a stack across users or CI jobs:
+Give every file’s `Test.make` the same remote state and the same stage — identical state + stage means the second file’s `deploy(Stack)` is a no-op diff. The default `test_$USER` stage already does this for a single developer; pin an explicit stage when files must share a stack across users or CI jobs:
 
 ```typescript
 // test/api.integ.test.ts AND test/queue.integ.test.ts
@@ -206,11 +204,11 @@ Give every PR its own stage so suites run in parallel against one account:
 ```typescript
 const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
   providers: Cloudflare.providers(),
-  stage: `pr-${process.env.PR_NUMBER}`,
+  stage: \`pr-${process.env.PR_NUMBER}\`,
 });
 ```
 
-Harness `deploy`/`destroy` never prompt for approval — `--yes` is only for CI workflows invoking the CLI (`alchemy deploy --stage pr-42 --yes`); see [Stage](test-harness.md#stage) and the [CI guide](../environments/ci.md) for full workflow YAML.
+Harness `deploy` / `destroy` never prompt for approval — `--yes` is only for CI workflows invoking the CLI (`alchemy deploy --stage pr-42 --yes`); see [Stage](test-harness.md#stage) and the [CI guide](../environments/ci.md) for full workflow YAML.
 
 ## Where next
 

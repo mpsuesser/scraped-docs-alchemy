@@ -2,8 +2,8 @@
 url: https://alchemy.run/fly/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v8 (framework mode) to Fly with Fly.Website.ReactRouter — SSR on a Machine, client assets baked into the image, and React Router's own Vite dev server under alchemy dev."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `Fly.Website.ReactRouter` deploys a [React Router](https://reactrouter.com/) v8 app in framework mode to Fly. React Router builds through Vite, so Alchemy runs your project’s own build: the SSR server runs as a Node [`Fly.Service`](../compute/services.md) on a Machine, and client assets are baked into the image and served first. Omit `app` and Alchemy creates a [`Fly.App`](../compute/apps.md) plus a shared IPv4 so `https://{app}.fly.dev` answers. No adapter, no `fly.toml`.
@@ -150,7 +150,7 @@ The build runs through your project’s own `vite.config.ts` and `react-router.c
 ## Local dev
 
 ```sh
-bun alchemy dev
+pnpm alchemy dev
 ```
 
 `alchemy dev` runs React Router’s own Vite dev server (native HMR) instead of deploying; `site.url` is the local address and no Fly resources are created. Wrap the site in `Alchemy.remote()` to deploy the live App and Service even during dev:

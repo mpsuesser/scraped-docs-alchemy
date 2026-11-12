@@ -2,8 +2,8 @@
 url: https://alchemy.run/cloudflare/apis/effect-rpc
 title: "Effect RPC"
 description: "Build a typed RPC API with Effect's Rpc module and deploy it as a Cloudflare Worker."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Effect RPC exposes a typed, schema-validated surface across a **trust boundary** — a web app or an external service calling into your Worker. For internal Worker-to-Worker or Worker-to-DO calls, use [Schemaless RPC](../../apis/schemaless.md) instead; for choosing between the modalities, see [RPC](../../apis.md).
@@ -609,7 +609,7 @@ In-flight calls and streams are not replayed. If the instance is reconstructed w
 
 ## Under the hood: the manual DO bridge
 
-`RpcDurableObject.getByName(id)` above returns a wired `RpcClient` directly — you rarely need more. This section shows what it does internally, and doubles as the escape hatch when the `RpcServer` runs inside a plain `Cloudflare.DurableObject` and you build the bridge yourself: `Cloudflare.toHttpClient(stub)` turns the DO stub into an `HttpClient` that plugs into `RpcClient.layerProtocolHttp`.
+`RpcDurableObject.getByName(id)` above returns a wired `RpcClient` directly — you rarely need more. Underneath, it does the following, which is also the escape hatch when the `RpcServer` runs inside a plain `Cloudflare.DurableObject` and you build the bridge yourself: `Cloudflare.toHttpClient(stub)` turns the DO stub into an `HttpClient` that plugs into `RpcClient.layerProtocolHttp`.
 
 ### Split the RPCs into two groups
 
@@ -752,7 +752,7 @@ countTasksDO: (payload) =>
 ## Choosing a modality
 
 - **Internal calls** (Worker-to-Worker, Worker-to-DO) — [Schemaless RPC](../../apis/schemaless.md): typed clients with no schema and no per-request validation cost.
-- **External Effect/TypeScript consumers** — this page.
+- **External Effect/TypeScript consumers** — Effect RPC, with a typed client.
 - **External plain-HTTP consumers** — [Effect HTTP](effect-http-api.md): the same typed interface over real REST endpoints.
 
 The full decision guide lives at [RPC](../../apis.md).

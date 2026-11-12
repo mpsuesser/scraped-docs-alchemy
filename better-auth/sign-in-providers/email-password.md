@@ -2,8 +2,8 @@
 url: https://alchemy.run/better-auth/sign-in-providers/email-password
 title: "Email and password"
 description: "Add D1-backed registration, real email verification, and password recovery to an Alchemy project."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Start with an existing Alchemy project and a [configured Cloudflare profile](../../cloudflare/setup.md). This standalone walkthrough uses a Worker, D1, and Resend; every local module and browser file is introduced here.
@@ -13,7 +13,7 @@ Create each named file when it first appears, append snippets only where instruc
 ## Add the authentication dependencies
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@1.7.5 kysely
+pnpm add @alchemy.run/better-auth@latest better-auth@1.7.5 kysely
 ```
 
 Keep `@alchemy.run/better-auth` aligned with your existing Alchemy release.
@@ -87,7 +87,7 @@ export const makeSendMail = mailConfig.pipe(
 );
 ```
 
-Each call sends one bounded request and rejects on a non-success response, without retaining an in-flight request between Worker events. `Effect.runPromise` bridges the mail operation to Better Auth's Promise-based hooks, while errors avoid exposing provider responses or credentials.
+Each call sends one bounded request and rejects on a non-success response, without retaining an in-flight request between Worker events. `Effect.runPromise` bridges the mail operation to Better Auth’s Promise-based hooks, while errors avoid exposing provider responses or credentials.
 
 ## Construct verified email authentication
 
@@ -113,7 +113,7 @@ const makeAuth = Effect.gen(function* () {
       sendOnSignUp: true,
       autoSignInAfterVerification: false,
       sendVerificationEmail: ({ user, url }) =>
-        sendMail(user.email, "Verify your email", `Verify your email: ${url}`),
+        sendMail(user.email, "Verify your email", \`Verify your email: ${url}\`),
     },
   });
 });
@@ -125,18 +125,18 @@ Options live directly in `BetterAuth`, with verification required before sign-in
 
 Apply this diff to `src/auth.ts`, replacing its `emailAndPassword` property:
 
-```diff lang="typescript"
--    emailAndPassword: { enabled: true, requireEmailVerification: true },
-+    emailAndPassword: {
-+      enabled: true,
-+      requireEmailVerification: true,
-+      revokeSessionsOnPasswordReset: true,
-+      sendResetPassword: ({ user, url }) =>
-+        sendMail(user.email, "Reset your password", `Reset your password: ${url}`),
-+    },
+```typescript
+emailAndPassword: { enabled: true, requireEmailVerification: true },
+emailAndPassword: {
+  enabled: true,
+  requireEmailVerification: true,
+  revokeSessionsOnPasswordReset: true,
+  sendResetPassword: ({ user, url }) =>
+    sendMail(user.email, "Reset your password", \`Reset your password: ${url}\`),
+},
 ```
 
-Recovery sends Better Auth's generated reset link and revokes existing sessions after a successful password reset. Keep server-side password validation and rate limiting enabled; see upstream [email/password policy](https://www.better-auth.com/docs/authentication/email-password) for additional controls.
+Recovery sends Better Auth’s generated reset link and revokes existing sessions after a successful password reset. Keep server-side password validation and rate limiting enabled; see upstream [email/password policy](https://www.better-auth.com/docs/authentication/email-password) for additional controls.
 
 ## Expose Auth as an Effect service
 
@@ -242,7 +242,7 @@ export default Alchemy.Stack(
 );
 ```
 
-Preserve the stack's state between runs so resource identities and the signing secret remain stable. If using this local state backend, protect and retain its state directory rather than treating it as disposable output.
+Preserve the stack’s state between runs so resource identities and the signing secret remain stable. If using this local state backend, protect and retain its state directory rather than treating it as disposable output.
 
 ## Create the browser form
 
@@ -300,7 +300,7 @@ const status = document.querySelector<HTMLParagraphElement>("#status")!;
 form.addEventListener("submit", (event) => event.preventDefault());
 ```
 
-`createAuthClient()` uses this page's origin and `/api/auth`, with no server imports or credentials. Every remaining browser snippet is appended to this same file in page order.
+`createAuthClient()` uses this page’s origin and `/api/auth`, with no server imports or credentials. Every remaining browser snippet is appended to this same file in page order.
 
 ## Display action results safely
 
@@ -347,13 +347,11 @@ Append to `src/client.ts`:
 async function readAccount(): Promise<string> {
   const { data, error } = await authClient.getSession();
   if (error) return "Could not check your session. Try again.";
-  return data ? `Signed in as ${data.user.name}.` : "Verify your email, then sign in.";
+  return data ? \`Signed in as ${data.user.name}.\` : "Verify your email, then sign in.";
 }
 ```
 
 Read the actual session rather than assuming a successful request authenticated the user. This is browser feedback, not authorization: private server endpoints must independently check the session and application permissions.
-
-## Register an account
 
 Append to `src/client.ts`:
 
@@ -371,9 +369,7 @@ button("Register", async () => {
 });
 ```
 
-Registration sends the verification message through Resend. The link passes through Better Auth's verification endpoint and returns to `/`; users must then sign in because automatic sign-in after verification is disabled.
-
-## Sign in with verified credentials
+Registration sends the verification message through Resend. The link passes through Better Auth’s verification endpoint and returns to `/`; users must then sign in because automatic sign-in after verification is disabled.
 
 Append to `src/client.ts`:
 
@@ -411,7 +407,7 @@ button("Resend verification", async () => {
 });
 ```
 
-Use a neutral response instead of displaying whether the address exists. This cooldown is only a UI convenience; keep Better Auth's server [rate limiting](https://www.better-auth.com/docs/concepts/rate-limit) enabled.
+Use a neutral response instead of displaying whether the address exists. This cooldown is only a UI convenience; keep Better Auth’s server [rate limiting](https://www.better-auth.com/docs/concepts/rate-limit) enabled.
 
 ## Request a password reset
 
@@ -442,7 +438,7 @@ const invalidEmailLink = query.has("error");
 window.history.replaceState(null, "", window.location.pathname);
 ```
 
-Capture Better Auth's standard email-link parameters, then remove them from the address bar; the token stays only in memory, so reloading requires reopening the email link. This handles the email flow's own redirect parameters, not a custom OAuth callback error page.
+Capture Better Auth’s standard email-link parameters, then remove them from the address bar; the token stays only in memory, so reloading requires reopening the email link. This handles the email flow’s own redirect parameters, not a custom OAuth callback error page.
 
 ## Save the replacement password
 
@@ -515,7 +511,7 @@ This produces the `/client.js` referenced by the HTML page. Re-run it whenever y
 ## Start local development
 
 ```sh
-bunx alchemy dev --stage email-guide --env-file .env.local
+pnpm alchemy dev --stage email-guide --env-file .env.local
 ```
 
 Open the URL Alchemy prints, register with an inbox you control, and keep the server running while following verification or recovery links. No fixed port or OAuth application is required; if the origin changes, request fresh messages instead of reusing old links.
@@ -524,7 +520,7 @@ Open the URL Alchemy prints, register with an inbox you control, and keep the se
 
 Register, open the verification email, return to the page, and sign in; **Check session** should now show your name. Request a password reset, open its email, save a replacement password, and confirm that the old session and password no longer work before signing in again.
 
-For missing mail, inspect Resend's delivery status without logging message bodies or generated links. Also try an expired or already-used reset link and confirm it cannot reset the password again.
+For missing mail, inspect Resend’s delivery status without logging message bodies or generated links. Also try an expired or already-used reset link and confirm it cannot reset the password again.
 
 ## Configure the production origin
 
@@ -543,7 +539,7 @@ Replace the origin with the actual HTTPS Worker origin, without a trailing slash
 After bundling the browser module, deploy from the project root:
 
 ```sh
-bunx alchemy deploy --stage production --env-file .env.production
+pnpm alchemy deploy --stage production --env-file .env.production
 ```
 
 Keep production state and credentials separate from development, and test delivery against the deployed origin. This walkthrough serves the page and API together; a separate browser origin requires explicit trusted origins, credentialed CORS, and compatible cookie settings—never disable origin or CSRF checks to work around a mismatch.

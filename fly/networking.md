@@ -2,24 +2,21 @@
 url: https://alchemy.run/fly/networking
 title: "IPs & certificates"
 description: "Public and private Fly Services, App addresses, and certificates for your own hostname."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-A [Service](compute/services.md) owns its App and manages that
-App's addresses. It is public by default and reachable only inside
-your organization with `public: false`. Fly's proxy load-balances
-`{app}.fly.dev` across Machines that publish a proxy service.
+A [Service](compute/services.md) owns its App and manages that App’s addresses. It is public by default and reachable only inside your organization with `public: false`. Fly’s proxy load-balances `{app}.fly.dev` across Machines that publish a proxy service.
 
-IPs and certificates you declare yourself attach to a
-[`Fly.App`](compute/apps.md): use them for Machines, for Services
-grouped in one App, and for your own domain.
+IPs and certificates you declare yourself attach to a [`Fly.App`](compute/apps.md): use them for Machines, for Services grouped in one App, and for your own domain.
+
+<svg viewBox="0 0 766.1999999999999 312" style="max-width: 881px" role="img" aria-label="Public traffic enters through Fly's proxy, which balances it across the App's Machines. A private Service has only a Flycast address on the organization's network, so only its neighbours reach it."><defs><marker id="alc-bd-arrow-f0esgc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><rect stroke="currentColor" fill="none" x="535.1999999999999" y="24" width="215" height="272" rx="12"></rect></g><g><line stroke-opacity="0.2" stroke="currentColor" x1="152.2" y1="78" x2="280.59999999999997" y2="78" marker-end="url(#alc-bd-arrow-f0esgc)"></line><text fill="currentColor" x="218.39999999999998" y="70" text-anchor="middle">GET</text></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="420.79999999999995" y1="78" x2="549.1999999999999" y2="78" marker-end="url(#alc-bd-arrow-f0esgc)"></line><text fill="currentColor" x="486.99999999999994" y="70" text-anchor="middle">balanced</text></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="621.3" y1="102" x2="621.3" y2="182" marker-end="url(#alc-bd-arrow-f0esgc)"></line><text fill="currentColor" x="631.3" y="148">orders.flycast</text></g> <g><path stroke="currentColor" fill="none" d="M 84.1 102 V 148 H 531.1999999999999"></path><path stroke="currentColor" fill="none" d="M 526.1999999999999 141 l 12 14 m 0 -14 l -12 14"></path><text fill="currentColor" x="309.65" y="140" text-anchor="middle">no public address</text></g> <text fill="currentColor" x="547.1999999999999" y="43" text-anchor="start">organization <tspan fill="currentColor" dx="8">private network</tspan></text> <g><rect stroke="currentColor" fill="none" x="16" y="54" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="84.1" y="83" text-anchor="middle">visitor</text></g> <g><rect stroke="currentColor" fill="none" x="284.59999999999997" y="54" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="352.69999999999993" y="75" text-anchor="middle">Fly proxy</text> <text fill="currentColor" x="352.69999999999993" y="91" text-anchor="middle">api.fly.dev · TLS</text></g> <g><rect stroke="currentColor" fill="none" x="553.1999999999999" y="54" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="621.3" y="75" text-anchor="middle">api</text> <text fill="currentColor" x="621.3" y="91" text-anchor="middle">Machines</text></g> <g><rect stroke="currentColor" fill="none" x="553.1999999999999" y="186" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="621.3" y="207" text-anchor="middle">orders</text> <text fill="currentColor" x="621.3" y="223" text-anchor="middle">Flycast only</text></g></svg> <svg viewBox="0 0 340.4 542" style="max-width: 391px" role="img" aria-label="Public traffic enters through Fly's proxy, which balances it across the App's Machines. A private Service has only a Flycast address on the organization's network, so only its neighbours reach it."><defs><marker id="alc-bd-arrow-e9q0u2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><rect stroke="currentColor" fill="none" x="16" y="268" width="172.2" height="258" rx="12"></rect></g><g><line stroke-opacity="0.2" stroke="currentColor" x1="102.1" y1="64" x2="102.1" y2="160" marker-end="url(#alc-bd-arrow-e9q0u2)"></line><text fill="currentColor" x="112.1" y="118">GET</text></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="102.1" y1="212" x2="102.1" y2="308" marker-end="url(#alc-bd-arrow-e9q0u2)"></line><text fill="currentColor" x="112.1" y="266">balanced</text></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="102.1" y1="360" x2="102.1" y2="456" marker-end="url(#alc-bd-arrow-e9q0u2)"></line><text fill="currentColor" x="112.1" y="414">orders.flycast</text></g> <g><path stroke="currentColor" fill="none" d="M 170.2 40 H 204.2 V 290 H 192.2"></path><path stroke="currentColor" fill="none" d="M 181.2 283 l 14 14 m 0 -14 l -14 14"></path><text fill="currentColor" x="212.2" y="169">no public address</text></g> <text fill="currentColor" x="28" y="287" text-anchor="start">organization <tspan fill="currentColor" x="28" dy="14">private network</tspan></text> <g><rect stroke="currentColor" fill="none" x="34" y="16" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="102.1" y="45" text-anchor="middle">visitor</text></g> <g><rect stroke="currentColor" fill="none" x="34" y="164" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="102.1" y="185" text-anchor="middle">Fly proxy</text> <text fill="currentColor" x="102.1" y="201" text-anchor="middle">api.fly.dev · TLS</text></g> <g><rect stroke="currentColor" fill="none" x="34" y="312" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="102.1" y="333" text-anchor="middle">api</text> <text fill="currentColor" x="102.1" y="349" text-anchor="middle">Machines</text></g> <g><rect stroke="currentColor" fill="none" x="34" y="460" width="136.2" height="48" rx="8"></rect><text fill="currentColor" x="102.1" y="481" text-anchor="middle">orders</text> <text fill="currentColor" x="102.1" y="497" text-anchor="middle">Flycast only</text></g></svg>
+
+Public traffic enters through Fly's proxy, which balances it across the App's Machines. A private Service has only a Flycast address on the organization's network, so only its neighbours reach it.
 
 ## Public Services
 
-A Service with `port` listens inside the Machine. Alchemy publishes
-HTTP 80 and HTTPS 443 on the Fly proxy in front of it, and allocates
-a shared IPv4 and an IPv6 on the Service's App. Both are free.
+A Service with `port` listens inside the Machine. Alchemy publishes HTTP 80 and HTTPS 443 on the Fly proxy in front of it, and allocates a shared IPv4 and an IPv6 on the Service’s App. Both are free.
 
 ```typescript
 export default class Api extends Fly.Service<Api>()(
@@ -33,8 +30,7 @@ export default class Api extends Fly.Service<Api>()(
 ) {}
 ```
 
-Yield the Service in the Stack. `api.url` is
-`https://{appName}.fly.dev`.
+Yield the Service in the Stack. `api.url` is `https://{appName}.fly.dev`.
 
 ```typescript
 export default Alchemy.Stack(
@@ -47,60 +43,32 @@ export default Alchemy.Stack(
 );
 ```
 
-Fly's proxy terminates TLS on 443. The Service still listens on
-`port` inside the Machine.
+Fly’s proxy terminates TLS on 443. The Service still listens on `port` inside the Machine.
 
 ## Private Services with Flycast
 
-`public: false` keeps a Service off the internet. Its App gets only a
-free Flycast address, which Fly's proxy serves inside your
-organization's private network.
+`public: false` keeps a Service off the internet. Its App gets only a free Flycast address, which Fly’s proxy serves inside your organization’s private network.
 
-```diff lang="typescript"
+```typescript
 export default class Api extends Fly.Service<Api>()(
   "Api",
--  { main: import.meta.url, region: "iad", port: 3000 },
-+  { main: import.meta.url, region: "iad", port: 3000, public: false },
+  { main: import.meta.url, region: "iad", port: 3000 },
+  { main: import.meta.url, region: "iad", port: 3000, public: false },
 ```
 
-Fly issues no TLS certificate for `.flycast`, so a private Service
-publishes plain HTTP on port 80. `url` is `undefined` and
-`privateUrl` is `http://{appName}.flycast`.
+Fly issues no TLS certificate for `.flycast`, so a private Service publishes plain HTTP on port 80. `url` is `undefined` and `privateUrl` is `http://{appName}.flycast`.
 
-Other Services call it by binding it with `Fly.bindService`, which
-returns a typed client for its methods — see
-[Call one Service from another](compute/services.md#call-one-service-from-another).
-Bound calls go to `privateUrl` through Fly's proxy, so service checks,
-`autostart`, and the traffic switch of a
-[blue/green deployment](compute/deployments.md) apply. Only Services
-that bind the target receive its caller token, and the target checks
-Fly's `Fly-Src` signature, so a method answers only bound callers on
-Fly's private network. The traffic is plain HTTP inside Fly's
-WireGuard-encrypted network.
+Other Services call it by binding it with `Fly.bindService`, which returns a typed client for its methods — see [Call one Service from another](compute/services.md#call-one-service-from-another). Bound calls go to `privateUrl` through Fly’s proxy, so service checks, `autostart`, and the traffic switch of a [blue/green deployment](compute/deployments.md) apply. The target checks Fly’s `Fly-Src` signature, which names the calling App, so a method answers only the Apps that bind it on Fly’s private network. The traffic is plain HTTP inside Fly’s WireGuard-encrypted network.
 
-Turning `public` on or off updates the Service in place. Its App and
-hostname stay the same.
+Turning `public` on or off updates the Service in place. Its App and hostname stay the same.
 
 ## Restrict private Services to the stack
 
-Fly's default private network spans the organization, so every App in
-the org can call a private Service. Set `network: yield* Fly.stackNetwork`
-on each Service to put them on a network unique to the stack and
-stage. Services on it bind each other; Apps on any other network,
-including the default one, get `bad address` for the `.flycast` and
-`.internal` names, and binding across networks fails the caller's
-deploy with `Fly.ServiceUnreachable`. A public Service on the network
-still serves `url`, so it becomes the stack's single entry point.
-[Connect Services](compute/connecting-services.md) walks through it.
+Fly’s default private network spans the organization, so every App in the org can call a private Service. Set `network: yield* Fly.stackNetwork` on each Service to put them on a network unique to the stack and stage. Services on it bind each other; Apps on any other network, including the default one, get `bad address` for the `.flycast` and `.internal` names, and binding across networks fails the caller’s deploy with `Fly.ServiceUnreachable`. A public Service on the network still serves `url`, so it becomes the stack’s single entry point. [Connect Services](compute/connecting-services.md) walks through it.
 
 ## Addresses for a shared App
 
-A [Machine](compute/machines.md), or a Service that joins a
-`Fly.App` with [`app`](compute/services.md#group-services-in-one-app),
-uses the addresses on that App. Alchemy manages none for it.
-`{app}.fly.dev` does not answer over IPv4 until the App has an
-[`IpAssignment`](https://alchemy.run/providers/fly/reference/app#ipassignment). Allocate a shared
-Anycast IPv4:
+A [Machine](compute/machines.md), or a Service that joins a `Fly.App` with [`app`](compute/services.md#group-services-in-one-app), uses the addresses on that App. Alchemy manages none for it. `{app}.fly.dev` does not answer over IPv4 until the App has an [`IpAssignment`](https://alchemy.run/providers/fly/reference/app#ipassignment). Allocate a shared Anycast IPv4:
 
 ```typescript
 export const Site = Fly.App("Site");
@@ -113,20 +81,17 @@ export const PublicIp = Fly.IpAssignment("Shared", {
 
 Yield it next to the resources in the App.
 
-```diff lang="typescript"
+```typescript
 Effect.gen(function* () {
   const api = yield* Api;
-+  const ip = yield* PublicIp;
+  const ip = yield* PublicIp;
   return { url: api.url, ip: ip.ip };
 }),
 ```
 
-`v6` is free dedicated IPv6. `v4` is billed dedicated IPv4 and may
-400 if the org has no quota. Prefer `shared_v4` or `v6` in tests.
+`v6` is free dedicated IPv6. `v4` is billed dedicated IPv4 and may 400 if the org has no quota. Prefer `shared_v4` or `v6` in tests.
 
-`private_v6` is a free Flycast address that is not reachable from the
-internet. Allocate only `private_v6` on an App to keep everything in
-it private:
+`private_v6` is a free Flycast address that is not reachable from the internet. Allocate only `private_v6` on an App to keep everything in it private:
 
 ```typescript
 export const Backend = Fly.App("Backend");
@@ -137,8 +102,7 @@ export const BackendIp = Fly.IpAssignment("Flycast", {
 });
 ```
 
-Resources in the App still publish a port for the proxy to forward
-to. Publish plain HTTP on port 80 without `forceHttps`:
+Resources in the App still publish a port for the proxy to forward to. Publish plain HTTP on port 80 without `forceHttps`:
 
 ```typescript
 export default class Worker extends Fly.Service<Worker>()(
@@ -157,22 +121,13 @@ export default class Worker extends Fly.Service<Worker>()(
 ) {}
 ```
 
-Other Apps on the App's network reach it at `http://{appName}.flycast`.
-A Service in the App is also [bindable](compute/services.md#bind-a-service-in-a-shared-app):
-its deploy adds the Flycast address itself.
+Other Apps on the App’s network reach it at `http://{appName}.flycast`. A Service in the App is also [bindable](compute/services.md#bind-a-service-in-a-shared-app): its deploy adds the Flycast address itself.
 
-`network` places the address on a named private network instead of the
-organization default. The network must already exist: an App created with
-the same `network` creates it, and an unknown name fails with
-`NetworkNotFound`. Changing `network` replaces the assignment.
+`network` places the address on a named private network instead of the organization default. The network must already exist: an App created with the same `network` creates it, and an unknown name fails with `NetworkNotFound`. Changing `network` replaces the assignment.
 
 ## Use your own hostname
 
-A Certificate covers a hostname on a `Fly.App`. It cannot target a
-Service's own App yet, so run the Service in that App with
-[`app: Site`](compute/services.md#group-services-in-one-app) and
-allocate its addresses there. Default `kind` is `"acme"` (Let's
-Encrypt).
+A Certificate covers a hostname on a `Fly.App`. It cannot target a Service’s own App yet, so run the Service in that App with [`app: Site`](compute/services.md#group-services-in-one-app) and allocate its addresses there. Default `kind` is `"acme"` (Let’s Encrypt).
 
 ```typescript
 export const V6 = Fly.IpAssignment("V6", {
@@ -187,21 +142,15 @@ export const Www = Fly.Certificate("Www", {
 });
 ```
 
-Yield `Www` in the Stack. Point DNS at the App. An A record for
-`www` to `PublicIp.ip`. An AAAA record to `V6.ip`. Plus whatever
-`Www.dnsRequirements` lists for the ACME challenge.
+Yield `Www` in the Stack. Point DNS at the App. An A record for `www` to `PublicIp.ip`. An AAAA record to `V6.ip`. Plus whatever `Www.dnsRequirements` lists for the ACME challenge.
 
-Fly's proxy terminates TLS on 443 once the certificate is
-`configured`.
+Fly’s proxy terminates TLS on 443 once the certificate is `configured`.
 
-`"custom"` uploads a PEM (`fullchain` + `privateKey`). Hostname is
-the identity. Changing `app`, `hostname`, or `kind` replaces.
+`"custom"` uploads a PEM (`fullchain` + `privateKey`). Hostname is the identity. Changing `app`, `hostname`, or `kind` replaces.
 
 ## Issue a certificate independently
 
-Use `@alchemy.run/acme` when you want to choose the certificate authority or
-issue a wildcard with DNS-01. The account and certificate are independent
-of Fly; this example uploads the result to a Fly App.
+Use `@alchemy.run/acme` when you want to choose the certificate authority or issue a wildcard with DNS-01. The account and certificate are independent of Fly; this example uploads the result to a Fly App.
 
 ```typescript
 import * as ACME from "@alchemy.run/acme";
@@ -216,8 +165,7 @@ const providers = Layer.mergeAll(
 );
 ```
 
-Use `providers` in the Stack configuration. Inside the Stack's Effect,
-resolve your existing Cloudflare `Zone` and Fly `Site`, then issue and upload:
+Use `providers` in the Stack configuration. Inside the Stack’s Effect, resolve your existing Cloudflare `Zone` and Fly `Site`, then issue and upload:
 
 ```typescript
 const zone = yield* Zone;
@@ -241,41 +189,18 @@ yield* Fly.Certificate("WildcardUpload", {
 });
 ```
 
-The DNS solver publishes and removes the challenge TXT records. Cloudflare's
-solver waits 60 seconds before validation so cached challenge values can expire.
-Start with `ACME.LetsEncryptStaging` while developing; its certificates are not
-trusted by browsers.
+The DNS solver publishes and removes the challenge TXT records. Cloudflare’s solver waits 60 seconds before validation so cached challenge values can expire. Start with `ACME.LetsEncryptStaging` while developing; its certificates are not trusted by browsers.
 
-Renewal is evaluated when you deploy, with a default threshold of 30 days before
-expiry. Schedule deployments if you need automatic renewal. Account and
-certificate private keys are persisted in stack state as redacted values;
-protect the state backend as secret material. Redaction alone is not encryption.
+Renewal is evaluated when you deploy, with a default threshold of 30 days before expiry. Schedule deployments if you need automatic renewal. Account and certificate private keys are persisted in stack state as redacted values; protect the state backend as secret material. Redaction alone is not encryption.
 
 ## Manage certificates at runtime
 
-A Service can bind `Fly.WriteCertificates(Site)` to request, upload, inspect,
-check, and remove certificates without redeploying. Provide
-`Fly.WriteCertificatesHttp` on the Service Effect. For runtime issuance,
-`ACME.IssueCertificate` and `ACME.IssueCertificateHttp` bind an existing account;
-pass a runtime DNS solver to each issuance call.
+A Service can bind `Fly.WriteCertificates(Site)` to request, upload, inspect, check, and remove certificates without redeploying. Provide `Fly.WriteCertificatesHttp` on the Service Effect. For runtime issuance, `ACME.IssueCertificate` and `ACME.IssueCertificateHttp` bind an existing account; pass a runtime DNS solver to each issuance call.
 
-Runtime operations do not become stack resources. Your application owns renewal
-scheduling, revocation, and removal of certificates it creates this way. Verify
-that the chosen certificate authority is reachable from your runtime.
+Runtime operations do not become stack resources. Your application owns renewal scheduling, revocation, and removal of certificates it creates this way. Verify that the chosen certificate authority is reachable from your runtime.
 
-Follow [Runtime issuance](../acme/runtime.md) for an authenticated Worker example,
-[Using certificates](../acme/using-certificates.md) for Fly uploads, and
-[Renewal & revocation](../acme/renewal.md) for scheduling and deletion policies.
-The [`IssueCertificate`](https://alchemy.run/providers/acme/reference/certificate#issuecertificate) and
-[`WriteCertificates`](https://alchemy.run/providers/fly/reference/certificate#writecertificates) references document the
-binding methods.
+Follow [Runtime issuance](../acme/runtime.md) for an authenticated Worker example, [Using certificates](../acme/using-certificates.md) for Fly uploads, and [Renewal & revocation](../acme/renewal.md) for scheduling and deletion policies. The [`IssueCertificate`](https://alchemy.run/providers/acme/reference/certificate#issuecertificate) and [`WriteCertificates`](https://alchemy.run/providers/fly/reference/certificate#writecertificates) references document the binding methods.
 
 ## Where next
 
-The [tutorial](tutorial/part-1.md) deploys a public Service.
-[Connect Services](compute/connecting-services.md) binds private
-Services to each other on a stack network.
-[Services](compute/services.md) covers private Services and grouping
-Services in one [App](compute/apps.md). See the
-[`IpAssignment`](https://alchemy.run/providers/fly/reference/app#ipassignment) and
-[`Certificate`](https://alchemy.run/providers/fly/reference/certificate#certificate) references.
+The [tutorial](tutorial/part-1.md) deploys a public Service. [Connect Services](compute/connecting-services.md) binds private Services to each other on a stack network. [Services](compute/services.md) covers private Services and grouping Services in one [App](compute/apps.md). See the [`IpAssignment`](https://alchemy.run/providers/fly/reference/app#ipassignment) and [`Certificate`](https://alchemy.run/providers/fly/reference/certificate#certificate) references.

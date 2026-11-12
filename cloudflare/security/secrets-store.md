@@ -2,13 +2,27 @@
 url: https://alchemy.run/cloudflare/security/secrets-store
 title: "Secrets Store & auth tokens"
 description: "Store secrets in Cloudflare's account-level Secrets Store, generate stable tokens with Alchemy.Random, and read them in a Worker through the ReadSecret binding."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Cloudflare’s Secrets Store is an account-level container for secrets. Unlike a plain env var, a stored secret is shared across Workers, redacted in the dashboard, and read live at runtime — bound Workers see the current value without a redeploy.
 
-In this guide you’ll build a bearer-token-protected Worker: a `Store`, a token minted with `Alchemy.Random`, a `Secret` holding it, and a `ReadSecret` binding that checks it on every request.
+Take a bearer-token-protected Worker: a `Store`, a token minted with `Alchemy.Random`, a `Secret` holding it, and a `ReadSecret` binding that checks it on every request.
+
+my-companyaccount
+
+ApiWorker
+
+AdminWorker
+
+AuthSecretsSecrets Store
+
+AuthTokensecret
+
+StripeKeysecret
+
+Secrets live once in the account's store, and any Worker bound to a secret reads its current value. Changing it needs no redeploy.
 
 ## Create the store
 
@@ -178,8 +192,8 @@ export default class Api extends Cloudflare.Worker<Api>()(
 
 Both end up as bindings on the Worker — pick based on where the value lives and who shares it:
 
-- **Env vars** ([`Config.Redacted`](../../environments/secrets.md)) — the value comes from *your* environment (`.env`, CI secrets) at deploy time and is baked into that one Worker. Right for third-party API keys and per-app config. See [Secrets & env](secrets-env.md) for the step-by-step.
-- **Secrets Store** — the value lives in *Cloudflare’s* account-level store. One secret can be bound into many Workers, reads happen at runtime so a rotation propagates without redeploying every consumer, and the dashboard redacts it. Right for shared credentials and tokens your infrastructure owns — like the bearer token in this guide.
+- **Env vars** ([`Config.Redacted`](../../environments/secrets.md)) — the value comes from *your* environment (`.env`, CI secrets, or a [secret provider](../../environments/secret-providers.md) like Doppler) at deploy time and is baked into that one Worker. Right for third-party API keys and per-app config. See [Secrets & env](secrets-env.md) for the step-by-step.
+- **Secrets Store** — the value lives in *Cloudflare’s* account-level store. One secret can be bound into many Workers, reads happen at runtime so a rotation propagates without redeploying every consumer, and the dashboard redacts it. Right for shared credentials and tokens your infrastructure owns — like a bearer token.
 
 ## Where next
 

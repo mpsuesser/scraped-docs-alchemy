@@ -2,13 +2,31 @@
 url: https://alchemy.run/turso/organization
 title: "Team & organization"
 description: "Invite teammates and change your Turso organization's settings."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-These work on the organization your [token](setup.md) belongs to.
+These work on the organization your [profile](setup.md) names, or your token’s organization when it names none.
 
-Invites and members need a team organization on a paid plan. The free plan doesn't allow them.
+Invites and members need a team organization on a paid plan. The free plan doesn’t allow them.
+
+acmeorganization
+
+anamember · admin
+
+sammember · viewer
+
+Tenantsgroup
+
+acmedatabase
+
+globexdatabase
+
+Analyticsgroup
+
+eventsdatabase
+
+An organization holds the groups and their databases, and the members who can see or change them. Your profile or token decides which organization Alchemy deploys into.
 
 ## Invite a teammate
 
@@ -43,7 +61,7 @@ yield* Turso.OrganizationSettings("Org", {
 
 Alchemy only touches the settings you list. Destroying it puts them back the way they were.
 
-`overages` lets Turso bill you for usage past your plan's limits. Only turn it on if you mean to.
+`overages` lets Turso bill you for usage past your plan’s limits. Only turn it on if you mean to.
 
 ## Where next
 

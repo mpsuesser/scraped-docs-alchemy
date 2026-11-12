@@ -1,229 +1,137 @@
 ---
 url: https://alchemy.run/aws/messaging/eventbridge
 title: "EventBridge & Scheduler"
-description: "Route application and AWS events through EventBridge buses and rules, consume them in Lambda as typed streams, and run cron/rate schedules against Lambda, SQS, and ECS with EventBridge Scheduler."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+description: "How EventBridge buses route events to targets by matching their content, how runtimes publish and consume events, and how EventBridge Scheduler runs Functions, Queues and tasks on a schedule."
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-**EventBridge** is AWS’s event router — producers publish events onto a bus, rules match them by pattern, and targets receive them. **EventBridge Scheduler** is its time-based sibling: fire an invocation on a `rate(...)`, `cron(...)`, or one-time `at(...)` expression. In Alchemy the surface is:
+EventBridge routes **events**. A producer puts an event on a **bus**, and **rules** on the bus look at its content and send it to whichever **targets** match. Producers don’t know the targets, and targets don’t know each other, so new reactions to an event are added as new rules.
 
-- `EventBridge.EventBus` and `EventBridge.Rule` — the raw resources.
-- `EventBridge.PutEvents` — a producer binding that grants `events:PutEvents` on the bus you publish to.
-- `EventBridge.consumeBusEvents` — subscribe a Lambda to a pattern as a typed `Stream`, creating the rule and invoke permission for you.
-- `EventBridge.events(bus, pattern).toLambda/.toQueue/.toEcsTask` — route matching events to a target with no handler code.
-- `Scheduler.every/cron/at` — chainable schedule builders that synthesize the target’s IAM role.
-- `ECS.every` — run a Fargate task on a schedule.
+AWS services publish their own events to every account’s default bus: an object created, an instance stopped, a task that failed. **EventBridge Scheduler** is the same idea driven by time: it invokes a target on a rate, a cron expression or a single date.
 
-## Create an event bus
+## Rules match events by content
 
-An event bus is a one-line resource. Declare it in a shared module so producers and consumers can reference the same handle:
+Every event has a `source`, a `detail-type` and a JSON `detail`. A rule’s **event pattern** lists the values it matches, and a matching event goes to the rule’s targets:
+
+<svg viewBox="0 0 763 242" style="max-width: 877px" role="img" aria-label="Each rule on the bus tests the event against its pattern. This OrderPlaced event matches two rules, so both of their targets get it, and the third rule ignores it."><defs><marker id="alc-fan-arrow-x62i0t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><rect stroke="currentColor" fill="none" x="270" y="8" width="282" height="226" rx="10"></rect><text fill="currentColor" x="280" y="26">Orders · event bus</text></g> <rect stroke="currentColor" fill="none" x="8" y="81.5" width="210" height="79" rx="8"></rect><text fill="currentColor" x="20" y="101.5">event</text> <text fill="currentColor" x="20" y="121.5" xml:space="preserve">"source": "shop.orders"</text> <text fill="currentColor" x="20" y="136.5" xml:space="preserve">"detail-type": "OrderPlaced"</text> <text fill="currentColor" x="20" y="151.5" xml:space="preserve">"detail": { "total": 120 }</text> <g><path stroke="currentColor" fill="none" d="M 218 121 C 249 121, 249 64, 280 64" marker-end="url(#alc-fan-arrow-x62i0t)"></path><g><rect stroke="currentColor" fill="none" x="282" y="38" width="258" height="52" rx="7"></rect><text fill="currentColor" x="294" y="55">rule</text> <text fill="currentColor" x="294" y="72.5" xml:space="preserve">{ "detail-type": ["OrderPlaced"] }</text> <line stroke-opacity="0.2" stroke="currentColor" x1="540" y1="64" x2="626" y2="64" marker-end="url(#alc-fan-arrow-x62i0t)"></line></g><rect stroke="currentColor" fill="none" x="628" y="41" width="127" height="46" rx="8" opacity="1"></rect><text fill="currentColor" x="691.5" y="61" text-anchor="middle" opacity="1">Worker</text> <text fill="currentColor" x="691.5" y="77" text-anchor="middle">Lambda Function</text></g> <g><path stroke="currentColor" fill="none" d="M 218 121 C 249 121, 249 130, 280 130" marker-end="url(#alc-fan-arrow-x62i0t)"></path><g><rect stroke="currentColor" fill="none" x="282" y="104" width="258" height="52" rx="7"></rect><text fill="currentColor" x="294" y="121">rule</text> <text fill="currentColor" x="294" y="138.5" xml:space="preserve">{ "source": ["shop.orders"] }</text> <line stroke-opacity="0.2" stroke="currentColor" x1="540" y1="130" x2="626" y2="130" marker-end="url(#alc-fan-arrow-x62i0t)"></line></g><rect stroke="currentColor" fill="none" x="628" y="107" width="127" height="46" rx="8" opacity="1"></rect><text fill="currentColor" x="691.5" y="127" text-anchor="middle" opacity="1">Audit</text> <text fill="currentColor" x="691.5" y="143" text-anchor="middle">SQS Queue</text></g> <g><path stroke="currentColor" fill="none" d="M 218 121 C 249 121, 249 196, 280 196"></path><g><rect stroke="currentColor" fill="none" x="282" y="170" width="258" height="52" rx="7"></rect><text fill="currentColor" x="294" y="187">rule</text> <text fill="currentColor" x="294" y="204.5" xml:space="preserve">{ "detail-type": ["OrderRefunded"] }</text> <text fill="currentColor" x="552" y="200">no match</text></g> <rect stroke="currentColor" fill="none" x="628" y="173" width="127" height="46" rx="8" opacity="0.6"></rect><text fill="currentColor" x="691.5" y="193" text-anchor="middle" opacity="0.6">Refunds</text> <text fill="currentColor" x="691.5" y="209" text-anchor="middle">Lambda Function</text></g></svg> <svg viewBox="0 0 318 561" style="max-width: 366px" role="img" aria-label="Each rule on the bus tests the event against its pattern. This OrderPlaced event matches two rules, so both of their targets get it, and the third rule ignores it."><defs><marker id="alc-fan-arrow-n-x62i0t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><rect stroke="currentColor" fill="none" x="14" y="93" width="304" height="466" rx="10"></rect><text fill="currentColor" x="24" y="111">Orders · event bus</text></g> <rect stroke="currentColor" fill="none" x="0" y="0" width="210" height="79" rx="8"></rect><text fill="currentColor" x="12" y="20">event</text> <text fill="currentColor" x="12" y="40" xml:space="preserve">"source": "shop.orders"</text> <text fill="currentColor" x="12" y="55" xml:space="preserve">"detail-type": "OrderPlaced"</text> <text fill="currentColor" x="12" y="70" xml:space="preserve">"detail": { "total": 120 }</text> <line stroke-opacity="0.2" stroke="currentColor" x1="8" y1="79" x2="8" y2="449"></line><g><line stroke-opacity="0.2" stroke="currentColor" x1="8" y1="157" x2="20" y2="157" marker-end="url(#alc-fan-arrow-n-x62i0t)"></line><g><rect stroke="currentColor" fill="none" x="22" y="131" width="288" height="52" rx="7"></rect><text fill="currentColor" x="34" y="148">rule</text> <text fill="currentColor" x="34" y="165.5" xml:space="preserve">{ "detail-type": ["OrderPlaced"] }</text> <line stroke-opacity="0.2" stroke="currentColor" x1="166" y1="183" x2="166" y2="211" marker-end="url(#alc-fan-arrow-n-x62i0t)"></line></g><rect stroke="currentColor" fill="none" x="102.5" y="213" width="127" height="46" rx="8" opacity="1"></rect><text fill="currentColor" x="166" y="233" text-anchor="middle" opacity="1">Worker</text> <text fill="currentColor" x="166" y="249" text-anchor="middle">Lambda Function</text></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="8" y1="303" x2="20" y2="303" marker-end="url(#alc-fan-arrow-n-x62i0t)"></line><g><rect stroke="currentColor" fill="none" x="22" y="277" width="288" height="52" rx="7"></rect><text fill="currentColor" x="34" y="294">rule</text> <text fill="currentColor" x="34" y="311.5" xml:space="preserve">{ "source": ["shop.orders"] }</text> <line stroke-opacity="0.2" stroke="currentColor" x1="166" y1="329" x2="166" y2="357" marker-end="url(#alc-fan-arrow-n-x62i0t)"></line></g><rect stroke="currentColor" fill="none" x="102.5" y="359" width="127" height="46" rx="8" opacity="1"></rect><text fill="currentColor" x="166" y="379" text-anchor="middle" opacity="1">Audit</text> <text fill="currentColor" x="166" y="395" text-anchor="middle">SQS Queue</text></g> <g><line stroke-opacity="0.2" stroke="currentColor" x1="8" y1="449" x2="20" y2="449"></line><g><rect stroke="currentColor" fill="none" x="22" y="423" width="288" height="52" rx="7"></rect><text fill="currentColor" x="34" y="440">rule</text> <text fill="currentColor" x="34" y="457.5" xml:space="preserve">{ "detail-type": ["OrderRefunded"] }</text> <text fill="currentColor" x="166" y="494" text-anchor="middle">no match</text></g> <rect stroke="currentColor" fill="none" x="102.5" y="505" width="127" height="46" rx="8" opacity="0.6"></rect><text fill="currentColor" x="166" y="525" text-anchor="middle" opacity="0.6">Refunds</text> <text fill="currentColor" x="166" y="541" text-anchor="middle">Lambda Function</text></g></svg>
+
+Each rule on the bus tests the event against its pattern. This OrderPlaced event matches two rules, so both of their targets get it, and the third rule ignores it.
+
+A pattern can match on any field of the event, including fields inside `detail`, so a rule can take only the orders over a certain amount, or only the ones from one region. Events that match no rule are dropped.
+
+## Declare a bus
 
 ```typescript
 import * as AWS from "@alchemy.run/aws";
 
-export const Events = AWS.EventBridge.EventBus("Events", {});
+export const Orders = AWS.EventBridge.EventBus("Orders", {});
 ```
 
-No name required — Alchemy generates one from the app, stage, and logical ID. The name `default` is reserved: to target the account’s **default bus** (where AWS service events land), simply omit the bus argument in the APIs below.
+Your own events go on a bus of your own. The account’s **default bus**, where AWS services publish, needs no declaration: leave the bus out of the calls below to use it.
 
-## Publish events from a Lambda
+## Publish events
 
-`EventBridge.PutEvents(bus)` returns a callable Effect and quietly attaches an `events:PutEvents` policy statement scoped to the bus ARN (or the default bus, if you pass nothing):
+Bind `EventBridge.PutEvents` to the bus. Its role gets `events:PutEvents` on that bus only:
 
 ```typescript
-import * as AWS from "@alchemy.run/aws";
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/http/HttpServerResponse";
-import { Events } from "./bus.ts";
+const bus = yield* Orders;
+const putEvents = yield* AWS.EventBridge.PutEvents(bus);
 
-export default class Api extends AWS.Lambda.Function<Api>()(
-  "Api",
-  { main: import.meta.url, functionUrl: true },
-  Effect.gen(function* () {
-    const bus = yield* Events;
-    const putEvents = yield* AWS.EventBridge.PutEvents(bus);
-
-    return {
-      fetch: Effect.gen(function* () {
-        yield* putEvents({
-          Entries: [
-            {
-              Source: "app.orders",
-              DetailType: "OrderPlaced",
-              Detail: JSON.stringify({ orderId: "o-1" }),
-            },
-          ],
-        }).pipe(Effect.orDie);
-        return HttpServerResponse.empty({ status: 202 });
-      }),
-    };
-  }).pipe(Effect.provide(AWS.EventBridge.PutEventsHttp)),
-) {}
+yield* putEvents({
+  Entries: [{ Source: "app.orders", DetailType: "OrderPlaced", Detail: JSON.stringify({ orderId }) }],
+});
 ```
 
-Entries carry a `Source`, a `DetailType`, and a JSON-encoded `Detail` — the three fields rules match on. The `EventBusName` is filled in from the bus you bound, so entries never repeat it. `AWS.EventBridge.PutEventsHttp` is the runtime layer that implements the binding over the EventBridge API.
+Provide `AWS.EventBridge.PutEventsHttp` to the runtime. The bus name is filled in from the binding.
 
-## Consume events in a Lambda
+## Consume events in a Function
 
-`consumeBusEvents` subscribes a Lambda to a bus: pass the bus, an event pattern, and a handler that receives matching events as a typed `Stream`:
+Subscribe a Lambda Function to a pattern from Construction. Matching events arrive as a `Stream`:
 
 ```typescript
-import * as AWS from "@alchemy.run/aws";
-import * as Effect from "effect/Effect";
-import * as Stream from "effect/Stream";
-import { Events } from "./bus.ts";
-
 export default class Worker extends AWS.Lambda.Function<Worker>()(
-  "OrdersWorker",
+  "Worker",
   { main: import.meta.url, functionUrl: false },
   Effect.gen(function* () {
-    const bus = yield* Events;
-
+    const bus = yield* Orders;
     yield* AWS.EventBridge.consumeBusEvents(
       bus,
       { source: ["app.orders"], "detail-type": ["OrderPlaced"] },
-      (events) =>
-        Stream.runForEach(events, (event) =>
-          Effect.log(\`order placed: ${JSON.stringify(event.detail)}\`),
-        ),
+      (events) => Stream.runForEach(events, (event) => Effect.log(event.detail)),
     );
-
     return {};
   }).pipe(Effect.provide(AWS.Lambda.EventSource)),
 ) {}
 ```
 
-That single call does the infrastructure work at deploy time — an EventBridge `Rule` with the pattern targeting this function, plus the Lambda permission that lets `events.amazonaws.com` invoke it — and at runtime filters incoming invocations against the same pattern before feeding them into your stream. Omit the `bus` argument to subscribe to the default bus, which is where AWS service events (S3, EC2, ECS state changes, …) arrive.
+Deploy creates the rule and the Lambda permission that lets EventBridge invoke the Function. Each event’s `detail` is `unknown` until you narrow the stream to the type you expect, `AWS.EventBridge.EventRecord<OrderPlaced>`.
 
-`AWS.Lambda.EventSource` is the Lambda runtime implementation of the EventBridge event source — provide it at the bottom of the function like any other event source layer.
+## Route events without code
 
-### Type the event detail
-
-Events are `EventRecord<Detail>` with `Detail` defaulting to `unknown`. Narrow the stream when you know the payload shape:
+Some targets need no handler of your own: a Queue to buffer events, an ECS task to process them. `EventBridge.events` builds the rule and sends matches straight to the target:
 
 ```typescript
-type OrderPlaced = { orderId: string };
+yield* AWS.EventBridge.events(bus, { source: ["app.orders"] }).toQueue(audit);
+```
 
+`.toQueue` adds a statement to the Queue’s policy letting this rule send to it. `.toLambda` adds the invoke permission, and `.toEcsTask` creates a role that may run the task. Each grant is limited to the one rule.
+
+For input transformers, retry policies, dead-letter queues or several targets on one rule, declare an `AWS.EventBridge.Rule` yourself. A raw rule grants nothing, so give its targets a role or a resource policy.
+
+## React to AWS’s own events
+
+AWS services publish to the default bus whenever something happens in your account. Match their `source` to react to them, leaving the bus out:
+
+```typescript
 yield* AWS.EventBridge.consumeBusEvents(
-  bus,
-  { source: ["app.orders"], "detail-type": ["OrderPlaced"] },
-  (events) =>
-    Stream.runForEach(
-      events as Stream.Stream<AWS.EventBridge.EventRecord<OrderPlaced>>,
-      (event) => Effect.log(\`order: ${event.detail.orderId}\`),
-    ),
+  { source: ["aws.ecs"], "detail-type": ["ECS Task State Change"] },
+  (events) => Stream.runForEach(events, (event) => Effect.log(event.detail)),
 );
 ```
 
-## Route events without a handler
+This is how you watch for failed tasks, stopped instances or new objects without polling anything.
 
-Not every consumer is code you own. `EventBridge.events(bus, pattern)` builds a route — chain `.toLambda`, `.toQueue`, or `.toEcsTask` to deliver matching events to a target resource, permissions included:
+## Run things on a schedule
+
+EventBridge Scheduler invokes a target on a schedule. `Scheduler.every` takes a plain duration:
 
 ```typescript
-yield* AWS.EventBridge.events(bus, { source: ["app.orders"] })
-  .toQueue(auditQueue);
+const report = yield* Report;
+yield* AWS.Scheduler.every("5 minutes").toLambda(report);
 ```
 
-Each target wires its own access: `.toQueue` attaches a queue policy allowing `events.amazonaws.com` to `sqs:SendMessage` (conditioned on the rule’s ARN), `.toLambda` adds the invoke permission, and `.toEcsTask` creates an IAM role with `ecs:RunTask` and `iam:PassRole` for the task’s roles. Pass a string as the first argument to name the backing rule deterministically instead of deriving it from the pattern hash.
+The schedule needs a role that Scheduler can assume and that may invoke the Function. The builder creates it, with `lambda:InvokeFunction` on that Function only.
 
-## Rules directly
-
-The helpers above all bottom out in the `Rule` resource. Reach for it directly when you need full control — input transformers, dead-letter queues, retry policies, or up to five targets per rule:
+For a time of day, use `cron` with a timezone, and pass an input:
 
 ```typescript
-const rule = yield* AWS.EventBridge.Rule("ObjectCreated", {
-  eventPattern: {
-    source: ["aws.s3"],
-    "detail-type": ["Object Created"],
-  },
-  targets: [{ Id: "Jobs", Arn: queue.queueArn }],
-});
-```
-
-A rule needs an `eventPattern` or a `scheduleExpression` (rules also accept `rate(...)` / `cron(...)` expressions, though Scheduler below is the better tool for time-based work). Omitting `eventBusName` puts the rule on the default bus. Unlike the `events(...)` helpers, a raw `Rule` does **not** grant the target-side permissions — supply a target `RoleArn` or resource policy yourself.
-
-## Scheduled jobs with Scheduler
-
-`AWS.Scheduler` exposes chainable builders. The simplest form invokes a Lambda on a fixed rate:
-
-```typescript
-const api = yield* Api;
-
-yield* AWS.Scheduler.every("5 minutes").toLambda(api);
-```
-
-`every` accepts a plain-English duration (normalized to `rate(5 minutes)`) or a full `rate(...)` / `cron(...)` expression as-is. The builder synthesizes the piece Scheduler always demands — an execution role assumable by `scheduler.amazonaws.com` with `lambda:InvokeFunction` on exactly that function — then creates the `Scheduler.Schedule` resource.
-
-Cron schedules take an options object with a timezone, and `.named` pins the schedule’s name:
-
-```typescript
-yield* AWS.Scheduler
-  .cron("cron(0 3 * * ? *)", { timezone: "America/New_York" })
+yield* AWS.Scheduler.cron("cron(0 3 * * ? *)", { timezone: "America/New_York" })
   .named("nightly-report")
-  .toLambda(api, { input: { job: "nightly-report" } });
+  .toLambda(report, { input: { job: "nightly-report" } });
 ```
 
-`input` is delivered as the invocation payload (objects are JSON-stringified for you); `retryPolicy` and `deadLetterConfig` are also accepted per target.
-
-One-time schedules use `at(date)`, and `.toQueue` sends a payload to SQS instead of invoking a function:
+For a single moment, use `at`. Schedules can target Queues too:
 
 ```typescript
-yield* AWS.Scheduler
-  .at(new Date("2026-08-01T09:00:00Z"))
-  .toQueue(queue, { type: "launch.reminder" });
+yield* AWS.Scheduler.at(new Date("2026-08-01T09:00:00Z")).toQueue(reminders, { type: "launch" });
 ```
 
-Builder options cover the rest of the Scheduler feature set — `group` (a `Scheduler.ScheduleGroup`), `startDate` / `endDate`, `flexibleTimeWindow`, `state`, `kmsKeyArn`, and `actionAfterCompletion` for one-time schedules.
+## Schedule containers
 
-### The Schedule resource directly
-
-The builders materialize `Scheduler.Schedule` under the hood. Use it directly when you bring your own role:
-
-```typescript
-const schedule = yield* AWS.Scheduler.Schedule("Poll", {
-  scheduleExpression: "rate(1 hour)",
-  flexibleTimeWindow: { Mode: "OFF" },
-  target: {
-    Arn: queue.queueArn,
-    RoleArn: role.roleArn,
-  },
-});
-```
-
-The `RoleArn` must trust `scheduler.amazonaws.com`. Alchemy retries the creation while the freshly-created IAM role propagates, so a role declared in the same deploy just works.
-
-## ECS scheduled tasks
-
-For jobs too heavy for Lambda, `AWS.ECS.every` runs a Fargate task on a schedule — cron-as-a-container:
-
-```typescript
-yield* AWS.ECS.every("HourlyJob", "1 hour", {
-  cluster,
-  task: jobTask,
-  subnets: [privateSubnet1.subnetId, privateSubnet2.subnetId],
-  securityGroups: [jobSecurityGroup.groupId],
-});
-```
-
-`cluster` and `task` are the outputs of `AWS.ECS.Cluster` and `AWS.ECS.Task` (see [ECS](../compute/ecs.md) for standing those up). Under the hood this is `Scheduler.every(...).named("HourlyJob").toEcsTask(...)`: a schedule plus an execution role with `ecs:RunTask` on the task definition and `iam:PassRole` for its task and execution roles. Plain durations normalize to `rate(...)`; full `cron(...)` expressions pass through unchanged:
+A job that runs too long for Lambda runs as an ECS task on a schedule instead:
 
 ```typescript
 yield* AWS.ECS.every("NightlyJob", "cron(0 3 * * ? *)", {
   cluster,
   task: nightlyTask,
-  subnets: [privateSubnet1.subnetId, privateSubnet2.subnetId],
+  subnets: network.privateSubnetIds,
   securityGroups: [jobSecurityGroup.groupId],
-  taskCount: 3,
-  input: JSON.stringify({ source: "scheduler" }),
 });
 ```
 
-Tasks launch as Fargate with no public IP by default (`assignPublicIp: true` to change that), `taskCount` copies per tick, and an optional static `input` forwarded to the task.
+The schedule gets a role that may run the task and pass its roles. See [ECS](../compute/ecs.md).
 
-## Where next
+## EventBridge, SNS or SQS
 
-- [Lambda](../compute/lambda.md) — the runtime both the consumer and scheduled targets above deploy to.
-- [SNS](sns.md) — pub/sub fan-out when you want subscriptions rather than pattern-matching rules.
-- [ECS](../compute/ecs.md) — the cluster, task, and networking that `ECS.every` schedules onto.
-- [`EventBus`](https://alchemy.run/providers/aws/eventbridge#eventbus), [`Rule`](https://alchemy.run/providers/aws/eventbridge#rule), and [`Schedule`](https://alchemy.run/providers/aws/scheduler#schedule) references — every prop and attribute.
+Use EventBridge when many kinds of events share one bus and different parts of the app care about different ones, or when you react to AWS’s own events and schedules. Use an [SNS Topic](sns.md) for one channel whose every message goes to every subscriber. Use an [SQS Queue](sqs.md) to buffer work for one consumer.

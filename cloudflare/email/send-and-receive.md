@@ -2,15 +2,15 @@
 url: https://alchemy.run/cloudflare/email/send-and-receive
 title: "Send & receive email"
 description: "Enable Email Routing on a zone, verify destination addresses, forward inbound mail with rules and a catch-all, and send email from a Worker with the send_email binding."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Cloudflare Email Routing turns a zone you own into a mail endpoint:
 inbound mail to any address on the domain is matched by rules and
 forwarded, dropped, or handed to a Worker — and once routing is
 enabled, Workers can also *send* mail from that domain through a
-`send_email` binding. This guide wires up both directions. For the
+`send_email` binding. For the
 full Email surface — sending subdomains, Email Security — see
 [Email](../email.md).
 
@@ -38,7 +38,7 @@ export default Alchemy.Stack(
 ## Enable Email Routing on the zone
 
 `Email.Routing` flips Email Routing on for a zone. It's the
-prerequisite for everything else on this page — receiving mail
+prerequisite for both directions — receiving mail
 through rules *and* sending mail from a Worker:
 
 ```typescript

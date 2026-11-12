@@ -2,8 +2,8 @@
 url: https://alchemy.run/environments/secrets
 title: "Secrets & Config"
 description: "Use effect/Config to read env vars at Construction time and have Alchemy automatically bind them onto the deploy target."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Alchemy integrates with [effect/Config](https://effect.website/docs/configuration)
@@ -15,8 +15,7 @@ Where those values come from is the stack's business. By default
 that is `.env` plus the shell; a stack can instead read them from
 [Doppler](doppler.md) or [Infisical](infisical.md),
 and layer several sources in a chosen order.
-See [Secret providers](secret-providers.md). This page is
-about what happens after a value is read.
+See [Secret providers](secret-providers.md).
 
 ## Bind a secret to your Worker
 
@@ -50,6 +49,8 @@ export default Cloudflare.Worker(
 :::tip
 See [Phases](../infrastructure-as-effects/phases.md) for why Construction and Runtime run separately.
 :::
+
+`Config.Redacted` gives a `Redacted<string>`, which prints as `<redacted>` in logs, errors and traces. Unwrap it with `Redacted.value` where you hand it to a client. Putting it straight into a template literal sends the literal text: `` `Bearer ${apiKey}` `` is `Bearer <redacted>`.
 
 ## Use the value during Construction
 

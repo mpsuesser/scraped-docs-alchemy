@@ -2,16 +2,15 @@
 url: https://alchemy.run/neon/guides/drizzle
 title: "Drizzle ORM with Neon"
 description: "Configure Neon projects, branches, committed Drizzle migrations, and direct or pooled connections."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Use the portable [Drizzle Postgres client](../../sql/drizzle/postgres.md) with Neon; this page configures the database and its connections. For Worker deployment, follow [Add Drizzle ORM](../../cloudflare/data/drizzle.md).
+Use the portable [Drizzle Postgres client](../../sql/drizzle/postgres.md) with Neon. For Worker deployment, follow [Add Drizzle ORM](../../cloudflare/data/drizzle.md).
 
 ## Configure migration generation
 
 ```typescript
-// drizzle.config.ts
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
@@ -26,7 +25,7 @@ Use a `pg-core` schema as shown in [Drizzle Postgres](../../sql/drizzle/postgres
 ## Generate and review migrations
 
 ```sh
-bunx drizzle-kit generate
+pnpm drizzle-kit generate
 git diff -- src/schema.ts migrations
 git status --short
 git add src/schema.ts drizzle.config.ts migrations
@@ -36,10 +35,9 @@ git commit -m "Add database migration"
 
 Run this when the schema changes, then review and commit the schema, generated SQL, and snapshots together before deploying. The optional [`Drizzle.Schema` resource](https://alchemy.run/providers/drizzle/schema) is a separate integration, not required for this workflow.
 
-## Feed `migrations` from the schema
+## Feed migrations from the schema
 
 ```typescript
-// src/Db.ts
 import * as Neon from "@alchemy.run/neon";
 import * as Effect from "effect/Effect";
 
@@ -60,7 +58,7 @@ With `Neon.providers()` registered in your Stack, `Neon.Branch` applies the comm
 ## Iterate
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Deploy the committed files; this configuration does not generate SQL during deployment. If you already use `drizzle-kit migrate`, keep that application workflow unless you deliberately choose Alchemy-managed migrations; see [migration ownership](../../sql/drizzle/migrations.md).

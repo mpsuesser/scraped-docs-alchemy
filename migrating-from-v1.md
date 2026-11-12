@@ -2,8 +2,8 @@
 url: https://alchemy.run/migrating-from-v1
 title: "Migrating from v1"
 description: "Migrate your Alchemy v1 (async/await) project to Alchemy v2."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Alchemy v1 uses `async/await` with top-level `await` for orchestration. Alchemy v2 replaces this with Effect generators for type-safe error handling, composable retries, and declarative resource wiring. The v1 documentation lives at [v1.alchemy.run](https://v1.alchemy.run/).
@@ -118,7 +118,7 @@ When you didn’t set `name` explicitly, v1 derived it as:
 - `{id}` — the resource’s logical ID, e.g. `await Bucket("bucket")`
 - `{stage}` — the `--stage` value; defaults to `$ALCHEMY_STAGE`, then your OS username (`$USER`), then `dev`
 
-So the v1 example at the top of this page, deployed with `--stage prod`, created a bucket named `my-app-bucket-prod` and a worker named `my-app-worker-prod`. (Resources created inside a nested scope get the scope names between `{app}` and `{id}`, and Worker names are lowercased.)
+So the v1 example at the top, deployed with `--stage prod`, created a bucket named `my-app-bucket-prod` and a worker named `my-app-worker-prod`. (Resources created inside a nested scope get the scope names between `{app}` and `{id}`, and Worker names are lowercased.)
 
 Set the `name` prop on each v2 resource to that **exact** name:
 

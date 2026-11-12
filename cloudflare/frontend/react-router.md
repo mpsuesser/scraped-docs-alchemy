@@ -2,11 +2,11 @@
 url: https://alchemy.run/cloudflare/frontend/react-router
 title: "React Router"
 description: "Deploy React Router v8 — including React Server Components — to Cloudflare with Cloudflare.Website.Vite and viteEnvironments."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-[React Router](https://reactrouter.com/) v8 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. The configuration on this page is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
+[React Router](https://reactrouter.com/) v8 builds through Vite, so [`Cloudflare.Website.Vite`](vite.md) deploys it — one resource, no Wrangler config, no manual entrypoint. In React Server Components mode the build emits **multiple server environments** (`rsc` and `ssr`) instead of the single `ssr` environment most SSR frameworks produce, and `viteEnvironments` is the prop that tells Alchemy how those environments assemble into one Worker. This configuration is a supported, live-tested shape: Alchemy’s test suite deploys it to real Cloudflare and asserts that server-rendered HTML and client routes both serve.
 
 ## Project layout
 
@@ -185,7 +185,7 @@ The `entry` environment produces the chunk the Worker boots from, every environm
 ## Deploy and verify
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 This exact shape is exercised by Alchemy’s live test suite (“Vite: React Router RSC deploys from a distilled manifest”): the test deploys the app to real Cloudflare and asserts the home route serves server-rendered HTML, the `/about` client route resolves, and a `/worker-render` route returns HTML rendered through the `ssr` environment’s chunk — server rendering and client navigation are both verified against the deployed Worker.

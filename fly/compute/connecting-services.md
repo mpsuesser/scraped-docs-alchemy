@@ -2,37 +2,31 @@
 url: https://alchemy.run/fly/compute/connecting-services
 title: "Connect Services"
 description: "Build several Fly Services that call each other's methods over a private network, behind one public entry point."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Each [Service](services.md) is its own Fly App. One Service
-calls another by **binding** it: `Fly.bindService(Users)` returns a
-typed client for the methods `Users` returns, and the calls travel over
-Fly's private network to `Users`'s `privateUrl`.
+Each [Service](services.md) is its own Fly App. One Service calls another by **binding** it: `Fly.bindService(Users)` returns a typed client for the methods `Users` returns, and the calls travel over Fly’s private network to `Users` ’s `privateUrl`.
 
-Two things decide who can call a Service:
+Two things decide who can call a Service. The first is the **network**. Every App in the organization joins Fly’s default private network unless told otherwise. Set `network: yield* Fly.stackNetwork` on each Service to put a stack’s Services on a network of their own, unique to the stack and stage, which Apps on any other network can’t resolve. The second is the **binding**. Fly signs every private request with the calling App’s name, and a Service answers method calls only from the Apps that bind it.
 
-- **The network.** Every App in the organization joins Fly's default
-  private network unless told otherwise. Set
-  `network: yield* Fly.stackNetwork` on each Service to put a stack's
-  Services on a network unique to its stack and stage. Apps on any
-  other network cannot resolve them.
-- **The binding.** Each Service has a caller token. Only Services that
-  bind it receive the token, so only they can call its methods.
+my-app-prodstack network · private
 
-This guide builds the
-[fly-microservices example](https://github.com/alchemy-run/alchemy/tree/main/examples/fly-microservices):
-a private `Users` Service, a private `Orders` Service that calls
-`Users`, and a public `Gateway` that calls both.
+Gatewaypublic · gateway.fly.dev
+
+Ordersprivate · Flycast
+
+Usersprivate · Flycast
+
+All three Services sit on the stack's own network. Only the Gateway has a public address, and a Service can call another's methods only if it binds it.
+
+Take the [fly-microservices example](https://github.com/alchemy-run/alchemy/tree/main/examples/fly-microservices): a private `Users` Service, a private `Orders` Service that calls `Users`, and a public `Gateway` that calls both.
 
 ## Create the Users Service
 
-`Users` returns two methods, `list` and `get`. It returns no `fetch`;
-bound callers call the methods directly.
+`Users` returns two methods, `list` and `get`. It returns no `fetch`; bound callers call the methods directly.
 
 ```typescript
-// src/users.ts
 import * as Fly from "@alchemy.run/fly";
 import * as Effect from "effect/Effect";
 
@@ -63,41 +57,29 @@ export default class Users extends Fly.Service<Users>()(
 ) {}
 ```
 
-`public: false` gives the Service's App a private Flycast address and
-no internet address. The props are an Effect so the next step can
-`yield*` inside them.
+`public: false` gives the Service’s App a private Flycast address and no internet address. The props are an Effect so the next step can `yield*` inside them.
 
-## Put Users on the stack's network
+## Put Users on the stack’s network
 
-Add `network` so only this stage's Services can reach `Users`:
+Add `network` so only this stage’s Services can reach `Users`:
 
-```diff lang="typescript"
+```typescript
 Effect.gen(function* () {
   return {
     main: import.meta.url,
     public: false,
-+    network: yield* Fly.stackNetwork,
+    network: yield* Fly.stackNetwork,
   };
 }),
 ```
 
-`Fly.stackNetwork` yields a network name built from the stack and
-stage, such as `flymicroservices-dev`. Fly creates the network with the
-first App that names it.
-
-:::caution[Changing `network` replaces the Service]
-Fly cannot move an App between networks. Alchemy creates the Service
-on the new network, then deletes the old App. `network` only applies
-when the Service owns its App; combining it with `app` fails with
-`Fly.InvalidServiceProps`.
-:::
+`Fly.stackNetwork` yields a network name built from the stack and stage, such as `flymicroservices-dev`. Fly creates the network with the first App that names it.
 
 ## Create the Orders Service
 
 `Orders` is a second private Service on the same network:
 
 ```typescript
-// src/orders.ts
 import * as Fly from "@alchemy.run/fly";
 import * as Effect from "effect/Effect";
 
@@ -125,50 +107,43 @@ export default class Orders extends Fly.Service<Orders>()(
 
 Bind `Users` in the Orders program:
 
-```diff lang="typescript"
-// src/orders.ts
-+import Users from "./users.ts";
+```typescript
+import Users from "./users.ts";
 // ...
 Effect.gen(function* () {
-+  const users = yield* Fly.bindService(Users);
+  const users = yield* Fly.bindService(Users);
   return {};
 }),
 ```
 
-`users` is a typed client with `list` and `get`. Binding also makes
-`Orders` deploy after `Users` and hands `Orders` the address and caller
-token of `Users`.
+`users` is a typed client with `list` and `get`. Binding also makes `Orders` deploy after `Users`, hands `Orders` the address of `Users`, and adds `Orders` to the Apps `Users` answers.
 
 ## Call Users from Orders
 
-Return a `list` method that looks up each order's user:
+Return a `list` method that looks up each order’s user:
 
-```diff lang="typescript"
+```typescript
 Effect.gen(function* () {
   const users = yield* Fly.bindService(Users);
--  return {};
-+  return {
-+    list: () =>
-+      Effect.forEach(ORDERS, (order) =>
-+        users
-+          .get(order.userId)
-+          .pipe(Effect.map((user) => ({ ...order, user }))),
-+      ),
-+  };
+  return {};
+  return {
+    list: () =>
+      Effect.forEach(ORDERS, (order) =>
+        users
+          .get(order.userId)
+          .pipe(Effect.map((user) => ({ ...order, user }))),
+      ),
+  };
 }),
 ```
 
-`users.get(order.userId)` is a call over the private network. The
-result is typed as `User | undefined`, the return type of `get` in
-`Users`.
+`users.get(order.userId)` is a call over the private network. The result is typed as `User | undefined`, the return type of `get` in `Users`.
 
 ## Create the public Gateway
 
-`Gateway` joins the same network and leaves out `public: false`, so it
-is public:
+`Gateway` joins the same network and leaves out `public: false`, so it is public:
 
 ```typescript
-// src/gateway.ts
 import * as Fly from "@alchemy.run/fly";
 import * as Effect from "effect/Effect";
 
@@ -186,19 +161,17 @@ export default class Gateway extends Fly.Service<Gateway>()(
 ) {}
 ```
 
-A public Service on the network still serves `url`, so `Gateway` is
-the stack's single entry point from the internet.
+A public Service on the network still serves `url`, so `Gateway` is the stack’s single entry point from the internet.
 
 ## Bind Users and Orders from the Gateway
 
-```diff lang="typescript"
-// src/gateway.ts
-+import Orders from "./orders.ts";
-+import Users from "./users.ts";
+```typescript
+import Orders from "./orders.ts";
+import Users from "./users.ts";
 // ...
 Effect.gen(function* () {
-+  const users = yield* Fly.bindService(Users);
-+  const orders = yield* Fly.bindService(Orders);
+  const users = yield* Fly.bindService(Users);
+  const orders = yield* Fly.bindService(Orders);
   return {};
 }),
 ```
@@ -209,28 +182,27 @@ Effect.gen(function* () {
 
 Call the bound methods from `fetch`:
 
-```diff lang="typescript"
-// src/gateway.ts
-+import { HttpServerRequest } from "effect/http/HttpServerRequest";
-+import * as HttpServerResponse from "effect/http/HttpServerResponse";
+```typescript
+import { HttpServerRequest } from "effect/http/HttpServerRequest";
+import * as HttpServerResponse from "effect/http/HttpServerResponse";
 // ...
 Effect.gen(function* () {
   const users = yield* Fly.bindService(Users);
   const orders = yield* Fly.bindService(Orders);
--  return {};
-+  return {
-+    fetch: Effect.gen(function* () {
-+      const request = yield* HttpServerRequest;
-+      const path = new URL(request.url, "http://gateway").pathname;
-+      if (path === "/users") {
-+        return yield* HttpServerResponse.json(yield* users.list());
-+      }
-+      if (path === "/orders") {
-+        return yield* HttpServerResponse.json(yield* orders.list());
-+      }
-+      return HttpServerResponse.text("try /users or /orders");
-+    }).pipe(Effect.orDie),
-+  };
+  return {};
+  return {
+    fetch: Effect.gen(function* () {
+      const request = yield* HttpServerRequest;
+      const path = new URL(request.url, "http://gateway").pathname;
+      if (path === "/users") {
+        return yield* HttpServerResponse.json(yield* users.list());
+      }
+      if (path === "/orders") {
+        return yield* HttpServerResponse.json(yield* orders.list());
+      }
+      return HttpServerResponse.text("try /users or /orders");
+    }).pipe(Effect.orDie),
+  };
 }),
 ```
 
@@ -239,7 +211,6 @@ Effect.gen(function* () {
 Yield the three Services and return their URLs:
 
 ```typescript
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Fly from "@alchemy.run/fly";
 import * as Effect from "effect/Effect";
@@ -271,8 +242,7 @@ export default Alchemy.Stack(
 alchemy deploy
 ```
 
-Alchemy deploys `Users`, then `Orders`, then `Gateway`, and prints the
-outputs:
+Alchemy deploys `Users`, then `Orders`, then `Gateway`, and prints the outputs:
 
 ```text
 url: "https://flymicroservices-gateway-dev-a1b2c3d4.fly.dev"
@@ -291,74 +261,41 @@ curl https://flymicroservices-gateway-dev-a1b2c3d4.fly.dev/orders
 # → [{"id":"o1","userId":"u1","item":"keyboard","user":{"id":"u1","name":"Ada"}}, ...]
 ```
 
-The second request crosses two private calls: Gateway → Orders →
-Users.
+The second request crosses two private calls: Gateway → Orders → Users.
 
 ## How deploy order works
 
-`Fly.bindService(Users)` makes the caller depend on `Users`. `Orders`
-binds `Users`, and `Gateway` binds both, so Alchemy deploys `Users`,
-then `Orders`, then `Gateway`. The caller's deploy writes the bound
-Service's private address and caller token onto the caller's Machines;
-the client reads them at runtime.
+`Fly.bindService(Users)` makes the caller depend on `Users`. `Orders` binds `Users`, and `Gateway` binds both, so Alchemy deploys `Users`, then `Orders`, then `Gateway`. The caller’s deploy writes the bound Service’s private address onto the caller’s Machines, and the bound Service’s deploy records the caller’s App as allowed to call it.
 
-The order of `yield*` in the Stack does not matter. The bindings
-decide it.
+The order of `yield*` in the Stack does not matter. The bindings decide it.
 
-## Public `url` and private `privateUrl`
+## Public url and private privateUrl
 
-| Service   | `url`                           | `privateUrl`                       |
-| --------- | ------------------------------- | ---------------------------------- |
-| `Users`   | `undefined`                     | `http://{users-app}.flycast`       |
-| `Orders`  | `undefined`                     | `http://{orders-app}.flycast`      |
+| Service | `url` | `privateUrl` |
+| --- | --- | --- |
+| `Users` | `undefined` | `http://{users-app}.flycast` |
+| `Orders` | `undefined` | `http://{orders-app}.flycast` |
 | `Gateway` | `https://{gateway-app}.fly.dev` | `http://{gateway-app}.flycast:7780` |
 
-`url` is the internet endpoint and is set only for a public Service.
-`privateUrl` is where bound callers reach the Service. A private
-Service serves plain HTTP on port 80, so its `privateUrl` has no port.
-A public Service's default ports are an HTTPS redirect (80) and HTTPS
-(443), so Alchemy publishes an extra plain-HTTP port for bound callers,
-`bindingPort` (default `7780`).
+`url` is the internet endpoint and is set only for a public Service. `privateUrl` is where bound callers reach the Service. A private Service serves plain HTTP on port 80, so its `privateUrl` has no port. A public Service’s default ports are an HTTPS redirect (80) and HTTPS (443), so Alchemy publishes an extra plain-HTTP port for bound callers, `bindingPort` (default `7780`).
 
-You rarely use `privateUrl` directly. `Fly.bindService` resolves it
-for you.
+You rarely use `privateUrl` directly. `Fly.bindService` resolves it for you.
 
 ## Security model
 
-A method call from `Orders` to `Users` is accepted only when all of
-these hold:
+A method call from `Orders` to `Users` is accepted only when two checks pass. Neither uses a secret.
 
-- **Same network.** `Users` is on the stack's network, so only Apps on
-  that network can resolve `{users-app}.flycast`. Binding a Service on
-  another network fails the caller's deploy with
-  `Fly.ServiceUnreachable`, before the caller's App is created.
-- **Caller token.** Each Service has its own caller token, generated
-  by Alchemy. A Service receives the token only for the Services it
-  binds, and sends it with every method call. A Service on the same
-  network that did not bind `Users` gets `401` from its methods.
-- **Fly-Src signature.** Fly's proxy signs every request that arrives
-  over Flycast with an ed25519 `Fly-Src` header naming the calling App
-  and organization. `Users` verifies the signature with Fly's public
-  key and checks the caller is in the same organization. A request
-  from the internet carries no valid signature, so a public Service's
-  methods answer `401` to it, and the extra `bindingPort` answers only
-  private-network requests.
+The caller must be on the **same network**. `Users` is on the stack’s network, so only Apps on that network can resolve `{users-app}.flycast`. Binding a Service on another network fails the caller’s deploy with `Fly.ServiceUnreachable`, before the caller’s App is created.
 
-Fly issues no certificate for `.flycast`, so calls are plain HTTP.
-They travel inside Fly's private network, which Fly encrypts with
-WireGuard.
+The caller must be an **App that binds the Service**, named by a valid **Fly-Src signature**. Fly’s proxy signs every request that arrives over Flycast with an ed25519 `Fly-Src` header naming the calling App and organization, and the time it was sent. `Users` checks the signature with Fly’s public key, that the caller is in the same organization, that the header is under 30 seconds old, and that the App is one that binds `Users`. A Service on the same network that didn’t bind `Users` gets `401` from its methods. A request from the internet carries no valid signature, so a public Service’s methods answer `401` to it, and the extra `bindingPort` answers only private-network requests.
 
-:::caution[`fetch` routes are not token-protected]
-The caller token guards methods. A Service's `fetch` routes answer any
-request that reaches them: anything on the Service's network for a
-private Service, and the internet for a public one. Put operations
-that only bound Services should call in methods.
-:::
+The same signed identity lets a Service reach AWS and GCP without a key. See [Federated identity](../federated-identity.md).
+
+Fly issues no certificate for `.flycast`, so calls are plain HTTP. They travel inside Fly’s private network, which Fly encrypts with WireGuard.
 
 ## What an outside App sees
 
-An App that is not on the stack's network cannot resolve the private
-names. From a Machine in an App on the org's default network:
+An App that is not on the stack’s network cannot resolve the private names. From a Machine in an App on the org’s default network:
 
 ```sh
 wget -qO- http://flymicroservices-users-dev-e5f6a7b8.flycast
@@ -368,13 +305,11 @@ wget -qO- http://flymicroservices-users-dev-e5f6a7b8.internal
 # wget: bad address 'flymicroservices-users-dev-e5f6a7b8.internal'
 ```
 
-Other stages of the same stack get their own `Fly.stackNetwork`, so
-`dev` and `prod` Services cannot call each other either.
+Other stages of the same stack get their own `Fly.stackNetwork`, so `dev` and `prod` Services cannot call each other either.
 
-## Call HTTP routes with `client.fetch`
+## Call HTTP routes with client.fetch
 
-A bound client also forwards requests to the Service's `fetch`
-handler. A relative URL resolves against the Service's `privateUrl`:
+A bound client also forwards requests to the Service’s `fetch` handler. A relative URL resolves against the Service’s `privateUrl`:
 
 ```typescript
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
@@ -384,14 +319,11 @@ const response = yield* users.fetch(HttpClientRequest.get("/hello"));
 const text = yield* response.text;
 ```
 
-Use it for a Service that serves HTTP routes, such as a framework
-server. These requests carry no caller token; see the
-[caution above](#security-model).
+Use it for a Service that serves HTTP routes, such as a framework server. Its `fetch` routes don’t check the caller; see the [caution above](#security-model).
 
 ## Stream results from a method
 
-A method can return a `Stream`. The bound client returns the same
-`Stream`, delivered element by element:
+A method can return a `Stream`. The bound client returns the same `Stream`, delivered element by element:
 
 ```typescript
 // in Users
@@ -401,12 +333,9 @@ streamAll: () => Stream.fromIterable(USERS),
 const all = yield* users.streamAll().pipe(Stream.runCollect);
 ```
 
-## Bind one port with `Fly.bindEndpoint`
+## Bind one port with Fly.bindEndpoint
 
-`Fly.bindEndpoint` binds a single published port of a Service, for a
-port other than its main HTTP port. Publish the port on the target.
-Here both ports forward to the Service's `fetch` on 3000, which reads
-Fly's `fly-forwarded-port` header to tell them apart:
+`Fly.bindEndpoint` binds a single published port of a Service, for a port other than its main HTTP port. Publish the port on the target. Here both ports forward to the Service’s `fetch` on 3000, which reads Fly’s `fly-forwarded-port` header to tell them apart:
 
 ```typescript
 services: [
@@ -422,22 +351,15 @@ const admin = yield* Fly.bindEndpoint(Users, { port: 9000 });
 const stats = yield* admin.client.get("/stats");
 ```
 
-`admin.client` is an `HttpClient` whose relative URLs go to
-`http://{users-app}.flycast:9000`. For a raw TCP port, open your own
-connection to `yield* admin.host` (`{users-app}.flycast`) and
-`admin.port`. `yield* admin.url` is the full plain-HTTP URL.
+`admin.client` is an `HttpClient` whose relative URLs go to `http://{users-app}.flycast:9000`. For a raw TCP port, open your own connection to `yield* admin.host` (`{users-app}.flycast`) and `admin.port`. `yield* admin.url` is the full plain-HTTP URL.
 
-`bindEndpoint` sends no caller token. It relies on the network and
-whatever the port itself checks.
+`bindEndpoint` adds no caller check. It relies on the network and whatever the port itself checks.
 
 ## Two Services that bind each other
 
-A class can only bind a Service that already exists as a value. For
-two Services that bind each other, declare each as a tag class with the
-shape of its methods:
+A class can only bind a Service that already exists as a value. For two Services that bind each other, declare each as a tag class with the shape of its methods:
 
 ```typescript
-// src/services.ts
 interface Named {
   name: () => Effect.Effect<string>;
 }
@@ -446,11 +368,9 @@ export class Ping extends Fly.Service<Ping, Named>()("Ping") {}
 export class Pong extends Fly.Service<Pong, Named>()("Pong") {}
 ```
 
-Implement each in its own file with `.make`, binding the other. The
-file's default export is the implementation the Machine runs:
+Implement each in its own file with `.make`, binding the other. The file’s default export is the implementation the Machine runs:
 
 ```typescript
-// src/ping.ts
 import { Ping, Pong } from "./services.ts";
 
 export default Ping.make(
@@ -460,7 +380,7 @@ export default Ping.make(
     return {
       name: () => Effect.succeed("ping"),
       fetch: Effect.gen(function* () {
-        return HttpServerResponse.text(`ping hears ${yield* pong.name()}`);
+        return HttpServerResponse.text(\`ping hears ${yield* pong.name()}\`);
       }).pipe(Effect.orDie),
     };
   }),
@@ -469,7 +389,7 @@ export default Ping.make(
 
 `src/pong.ts` is the same with the roles swapped.
 
-Provide both implementations to the Stack's Effect:
+Provide both implementations to the Stack’s Effect:
 
 ```typescript
 import PingLive from "./src/ping.ts";
@@ -482,25 +402,19 @@ Effect.gen(function* () {
 }).pipe(Effect.provide(Layer.mergeAll(PingLive, PongLive)));
 ```
 
-Alchemy creates a stub of each Service first, then wires the bindings.
-Only Services that own their App can be part of such a cycle. A
-Service placed in a shared App with `app` cannot.
+Alchemy creates a stub of each Service first, then wires the bindings. Only Services that own their App can be part of such a cycle. A Service placed in a shared App with `app` cannot.
 
 ## Errors
 
-| Error                       | When                                                                                      | Fix                                                                 |
-| --------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `Fly.ServiceUnreachable`    | The caller and the bound Service are on different networks. Fails before the caller's App is created. | Give both the same `network`, usually `Fly.stackNetwork`.         |
-| `Fly.ServiceNotBindable`    | The bound Service publishes no ports (`services: []`), so it has no private address.      | Publish a port, or stop binding it.                                  |
-| `Fly.EndpointNotPublished`  | `Fly.bindEndpoint` names a port the Service does not publish.                             | Add the port to the Service's `services`, or bind a published port. |
+| Error | When | Fix |
+| --- | --- | --- |
+| `Fly.ServiceUnreachable` | The caller and the bound Service are on different networks. Fails before the caller’s App is created. | Give both the same `network`, usually `Fly.stackNetwork`. |
+| `Fly.ServiceNotBindable` | The bound Service publishes no ports (`services: []`), so it has no private address. | Publish a port, or stop binding it. |
+| `Fly.EndpointNotPublished` | `Fly.bindEndpoint` names a port the Service does not publish. | Add the port to the Service’s `services`, or bind a published port. |
 
 ## Where next
 
-- [Services](services.md) — private Services, `bindingPort`,
-  and grouping Services in one App.
-- [IPs & certificates](../networking.md) — public and private
-  Services, and addresses on your own App.
-- [Blue/green deployments](deployments.md) — replace a
-  Service without dropping calls from its callers.
-- The [fly-microservices example](https://github.com/alchemy-run/alchemy/tree/main/examples/fly-microservices)
-  and the [`Service` reference](https://alchemy.run/providers/fly/reference/service#service).
+- [Services](services.md) — private Services, `bindingPort`, and grouping Services in one App.
+- [IPs & certificates](../networking.md) — public and private Services, and addresses on your own App.
+- [Blue/green deployments](deployments.md) — replace a Service without dropping calls from its callers.
+- The [fly-microservices example](https://github.com/alchemy-run/alchemy/tree/main/examples/fly-microservices) and the [`Service` reference](https://alchemy.run/providers/fly/reference/service#service).

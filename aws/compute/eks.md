@@ -2,21 +2,43 @@
 url: https://alchemy.run/aws/compute/eks
 title: "EKS"
 description: "Stand up an EKS Auto Mode cluster on a Network and run containers on it — Deployments for servers, Jobs for run-to-completion work, Manifests for everything else. No YAML, no kubectl."
-access_date: 2026-10-24T00:47:37.929Z
-current_date: 2026-10-24T00:47:37.929Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-**EKS** (Elastic Kubernetes Service) is AWS’s managed Kubernetes: AWS runs the Kubernetes control plane, and your containers run on it as Kubernetes objects. Alchemy targets **Auto Mode**, where AWS also manages the nodes, storage, and load-balancer integration — no machines to operate.
+EKS is AWS’s managed Kubernetes. AWS runs the Kubernetes control plane, and your containers run on it as Kubernetes objects. In **Auto Mode**, AWS also manages the nodes, their storage and their load balancers, so there are no machines to operate.
 
-The Kubernetes primitives you’ll meet here:
+Choose EKS when you want Kubernetes itself: Helm charts, operators, raw manifests, or a team that already runs on it. For containers without Kubernetes, [ECS](ecs.md) has less to learn and less to pay for.
 
-- A **Cluster** is one Kubernetes installation: the API server plus the Nodes that run your containers.
-- A **Pod** is one or more containers running together — the unit Kubernetes schedules onto Nodes.
-- A **Deployment** keeps a set number of identical Pods running, replacing ones that fail. A **Service** gives them one stable address — and, as type `LoadBalancer`, a public one.
-- A **Job** runs a Pod to completion; a **CronJob** does that on a schedule.
-- Everything in Kubernetes is an object described by a **manifest** you apply to the Cluster.
+## Clusters, Pods, Deployments and Jobs
 
-Alchemy models these directly: [`Cluster`](https://alchemy.run/providers/aws/eks#cluster) with `compute: "auto"` stands up the control plane from a VPC, and the cluster-agnostic `@alchemy.run/kubernetes` workloads target it by passing the cluster resource as their `cluster` prop: [`Kubernetes.Deployment`](https://alchemy.run/providers/kubernetes/reference/workloads#deployment) synthesizes a Kubernetes `Deployment` + `Service`; [`Kubernetes.Job`](https://alchemy.run/providers/kubernetes/reference/workloads#job) a `Job` or `CronJob`; and [`Kubernetes.Manifest`](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) applies any raw Kubernetes object. The workloads live in the same TypeScript program as the cluster, with no YAML and no `kubectl apply` step — and the same workloads run on any other cluster your kubeconfig can reach (`Kubernetes.KubeConfig(...)`).
+A **cluster** is one Kubernetes installation: an API server and the **nodes** that run containers. A **Pod** is one or more containers scheduled together onto a node. A **Deployment** keeps a number of identical Pods running and replaces any that fail, and a **Service** gives them one stable address, public if it’s a `LoadBalancer`. A **Job** runs a Pod until it finishes, and a **CronJob** runs one on a schedule.
+
+EKS clusterAuto Mode
+
+API serverthe objects you apply
+
+webDeployment · 2 replicas
+
+webService · LoadBalancer
+
+migrateJob
+
+node 1added by Auto Mode
+
+web-7f9cPod · app=web
+
+node 2added by Auto Mode
+
+web-k2p4Pod · app=web
+
+migrate-x8Pod · completed
+
+You apply objects to the API server, and Kubernetes makes them real. The Deployment keeps two web Pods running, the Service sends traffic to every Pod labelled app=web, and the Job's Pod ran once and finished. Auto Mode adds nodes as the Pods need room.
+
+Every one of these is an object, described by a **manifest** and applied to the cluster.
+
+In Alchemy, `AWS.EKS.Cluster` creates the cluster from a VPC. The workloads come from `@alchemy.run/kubernetes`: `Kubernetes.Deployment` creates a Deployment and its Service, `Kubernetes.Job` a Job or CronJob, and `Kubernetes.Manifest` any other object. Each takes the cluster as its `cluster` prop, in the same program, with no YAML and no `kubectl`. The same workloads run on any cluster your kubeconfig reaches.
 
 The workload providers ship in `Kubernetes.providers()` — compose it with `AWS.providers()` in the Stack:
 
@@ -231,6 +253,40 @@ const internal = yield* Kubernetes.Deployment("Internal", {
 
 The ECR repository and Pod Identity role outlive the cluster’s own objects. On destroy Alchemy deletes the in-cluster objects if the cluster is still reachable, then deletes the repository and role whether or not the cluster still exists, so destroying a cluster and its workloads together leaves nothing behind in AWS.
 
+## Run each pod in its own VM
+
+Pods on the same node share its kernel. To run code you don’t trust, give each pod its own [Nitro Sandbox](nitro-sandboxes.md): a lightweight VM that the Nitro hypervisor isolates from the node and from every other pod on it. Set `runtimeClassName` on a Deployment or a Job:
+
+```typescript
+const agent = yield* Kubernetes.Deployment("Agent", {
+  cluster,
+  image: "ghcr.io/acme/agent:1",
+  port: 8080,
+  runtimeClassName: "isolated-sandbox",
+});
+```
+
+On Auto Mode, that’s all it takes. Auto Mode provides the `isolated-sandbox` and `confidential-sandbox` RuntimeClasses, launches a node type that supports sandboxes, and starts each pod in its own. Sandboxes need Kubernetes 1.36 or later, so set `version` on an older cluster. Containers in one pod share its sandbox.
+
+`isolated-sandbox` protects the node and other pods from what runs inside, and keeps `kubectl exec` and logs working. `confidential-sandbox` also hides the pod’s memory from the node, and needs a policy that pins its images and arguments. See [Isolated or confidential](nitro-sandboxes.md#isolated-or-confidential).
+
+For code that must not reach the network at all, add the `network-isolated` annotation through `podTemplate`. The sandbox then boots with no network device:
+
+```typescript
+yield* Kubernetes.Job("RunGeneratedCode", {
+  cluster,
+  image: "ghcr.io/acme/runner:1",
+  runtimeClassName: "isolated-sandbox",
+  podTemplate: {
+    metadata: { annotations: { "sandbox.amazonaws.com/network-isolated": "true" } },
+  },
+});
+```
+
+A network-isolated pod can’t serve traffic or pass HTTP probes, so it suits Jobs better than Deployments.
+
+Outside Auto Mode, nodes need an AMI with the Nitro Sandbox runtime and Nitro Enclaves turned on in their launch template, with `enclaveOptions: { enabled: true }` on [`AWS.AutoScaling.LaunchTemplate`](https://alchemy.run/providers/aws/autoscaling#launchtemplate). See [Run a pod in isolated mode](https://docs.aws.amazon.com/eks/latest/userguide/sandboxing-isolated-setup.html).
+
 ## Target an EKS cluster you don’t manage
 
 To deploy onto a cluster created elsewhere, name it in a connection. The adapter looks up the endpoint and certificate authority from the cluster name:
@@ -291,6 +347,7 @@ See [HyperPod](hyperpod.md) for the fleet’s prerequisites (lifecycle scripts, 
 
 - [Kubernetes](../../kubernetes.md) — the full guide to `Kubernetes.*` workloads, manifests, and Helm charts, with a [tutorial](../../kubernetes/tutorial/part-1.md) you can run on a local cluster before deploying to EKS.
 - [VPC & networking](../networking.md) — what the `Network` helper builds under the cluster.
+- [Nitro Sandboxes](nitro-sandboxes.md) — the same VM isolation on ECS and EC2.
 - [HyperPod](hyperpod.md) — run training fleets on this cluster’s nodes.
 - [Choosing a runtime](choosing-a-runtime.md) — when Lambda or ECS is the better fit than running your own Kubernetes workloads.
 - [`Cluster` reference](https://alchemy.run/providers/aws/eks#cluster), [`Deployment` reference](https://alchemy.run/providers/kubernetes/reference/workloads#deployment), [`Job` reference](https://alchemy.run/providers/kubernetes/reference/workloads#job), [`Manifest` reference](https://alchemy.run/providers/kubernetes/reference/manifest#manifest) — every prop and attribute.

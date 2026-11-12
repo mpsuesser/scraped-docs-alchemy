@@ -2,16 +2,16 @@
 url: https://alchemy.run/better-auth/sign-in-providers/github
 title: "GitHub"
 description: "Add GitHub sign-in to a D1-backed Alchemy Worker, one step at a time."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-Start in an existing Alchemy project with [Bun](https://bun.sh) and a [configured Cloudflare profile](../../cloudflare/setup.md). This page supplies every application file; paths are relative to your project root.
+Start in an existing Alchemy project on [Node.js](https://nodejs.org/) or [Bun](https://bun.sh/) and a [configured Cloudflare profile](../../cloudflare/setup.md). Paths are relative to your project root.
 
 ## Add the auth dependencies
 
 ```sh
-bun add @alchemy.run/better-auth better-auth@1.7.5 kysely
+pnpm add @alchemy.run/better-auth@latest better-auth@1.7.5 kysely
 ```
 
 Use an integration release matching your installed Alchemy version.
@@ -111,7 +111,7 @@ export const AuthLive = Auth.layer.pipe(
 );
 ```
 
-`CloudflareD1` supplies the native Worker binding and supported automatic schema migrations. Alchemy also provisions Better Auth's stable signing secret automatically; do not create a manual secret or migration script.
+`CloudflareD1` supplies the native Worker binding and supported automatic schema migrations. Alchemy also provisions Better Auth’s stable signing secret automatically; do not create a manual secret or migration script.
 
 ## Host the auth endpoints
 
@@ -159,7 +159,7 @@ export default Alchemy.Stack(
 );
 ```
 
-This standalone stack exports the Worker's URL. Preserve the local state directory and use the same stage across restarts so resource identities and the signing secret remain stable.
+This standalone stack exports the Worker’s URL. Preserve the local state directory and use the same stage across restarts so resource identities and the signing secret remain stable.
 
 ## Add the HTML controls
 
@@ -228,7 +228,7 @@ document.querySelector<HTMLButtonElement>("#sign-in")!
   .addEventListener("click", () => void run(signIn));
 ```
 
-The button requests an authorization URL and navigates to GitHub only if initiation succeeds. `callbackURL: "/"` is the successful return page, not the provider's registered callback endpoint.
+The button requests an authorization URL and navigates to GitHub only if initiation succeeds. `callbackURL: "/"` is the successful return page, not the provider’s registered callback endpoint.
 
 ## Read the session
 
@@ -238,7 +238,7 @@ Append to `src/client.ts`:
 async function readSession(): Promise<string> {
   const { data, error } = await authClient.getSession();
   if (error) return "Could not read your session. Try again.";
-  return data ? `Signed in as ${data.user.name}` : "Not signed in.";
+  return data ? \`Signed in as ${data.user.name}\` : "Not signed in.";
 }
 
 document.querySelector<HTMLButtonElement>("#session")!
@@ -275,18 +275,16 @@ This creates `public/client.js` for the HTML script tag. Rebuild it after editin
 ## Discover the local origin
 
 ```sh
-bunx alchemy dev --stage github-guide
+pnpm alchemy dev --stage github-guide
 ```
 
 Alchemy allocates an available port and prints the URL; open that exact URL, but leave sign-in alone until GitHub is configured. Keep `GITHUB_ENABLED` and `AUTH_BASE_URL` unset on this first run so OAuth remains disabled and no origin is guessed.
-
-## Register the OAuth App
 
 ```text
 /api/auth/callback/github
 ```
 
-In GitHub **Settings → Developer settings → OAuth Apps → New OAuth App**, use the printed origin for **Homepage URL** and append the path above for **Authorization callback URL**. Leave device flow disabled for this browser authorization-code flow; GitHub's [registration guide](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) covers the form.
+In GitHub **Settings → Developer settings → OAuth Apps → New OAuth App**, use the printed origin for **Homepage URL** and append the path above for **Authorization callback URL**. Leave device flow disabled for this browser authorization-code flow; GitHub’s [registration guide](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) covers the form.
 
 ## Save the server credentials
 
@@ -298,17 +296,17 @@ GITHUB_CLIENT_ID=replace-with-your-client-id
 GITHUB_CLIENT_SECRET=replace-with-your-client-secret
 ```
 
-Copy the OAuth App's **Client ID**, generate a **Client secret**, and replace the template values. Keep this file gitignored; never put the secret in `VITE_*`, browser code, source control, or logs.
+Copy the OAuth App’s **Client ID**, generate a **Client secret**, and replace the template values. Keep this file gitignored; never put the secret in `VITE_*`, browser code, source control, or logs.
 
 ## Enable GitHub locally
 
 Stop the first dev process, then run:
 
 ```sh
-bunx alchemy dev --stage github-guide --env-file .env.local
+pnpm alchemy dev --stage github-guide --env-file .env.local
 ```
 
-If the printed origin changed, update the OAuth App's homepage and exact callback URL before signing in. An optional `AUTH_BASE_URL` override must equal that origin without a trailing slash or `/api/auth`; leaving it unset avoids pinning an old dev port.
+If the printed origin changed, update the OAuth App’s homepage and exact callback URL before signing in. An optional `AUTH_BASE_URL` override must equal that origin without a trailing slash or `/api/auth`; leaving it unset avoids pinning an old dev port.
 
 ## Try the sign-in flow
 

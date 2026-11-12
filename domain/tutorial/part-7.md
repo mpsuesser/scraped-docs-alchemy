@@ -2,11 +2,11 @@
 url: https://alchemy.run/domain/tutorial/part-7
 title: "Part 7: Observe it"
 description: "Send the bank's traces and logs to Axiom, follow a deposit through every Durable Object it reaches, and trace clicks from the browser."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
-The bank already records a span for every command, event, view and policy. Nothing receives them yet. In this part you send them to [Axiom](../../axiom.md), then add the browser's spans, so one trace runs from a click to every Durable Object it reaches.
+The bank already records a span for every command, event, view and policy. Nothing receives them yet. In this part you send them to [Axiom](../../axiom.md), then add the browser’s spans, so one trace runs from a click to every Durable Object it reaches.
 
 ```text
 the bank's Worker and Durable Objects ──────────────────────────▶ Axiom
@@ -18,27 +18,31 @@ You need a [configured Axiom profile](../../axiom/setup.md).
 ## Install the Axiom provider
 
 ```sh
-bun add @alchemy.run/axiom
+pnpm add @alchemy.run/axiom@latest
 ```
 
 ## Let the stack create Axiom resources
 
-```diff lang="typescript"
-// alchemy.run.ts
+```typescript
 import * as Alchemy from "alchemy";
-+import * as Axiom from "@alchemy.run/axiom";
+import * as Axiom from "@alchemy.run/axiom";
 import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Effect from "effect/Effect";
-+import * as Layer from "effect/Layer";
+import * as Layer from "effect/Layer";
 import BankWorker from "./src/BankWorker.ts";
 
 export default Alchemy.Stack(
   "Bank",
--  { providers: Cloudflare.providers(), state: Cloudflare.state() },
-+  {
-+    providers: Layer.mergeAll(Cloudflare.providers(), Axiom.providers()),
-+    state: Cloudflare.state(),
-+  },
+  {
+    providers: Layer.mergeAll(Cloudflare.providers(), DomainCloudflare.providers()),
+    providers: Layer.mergeAll(
+      Cloudflare.providers(),
+      DomainCloudflare.providers(),
+      Axiom.providers(),
+    ),
+    state: Cloudflare.state(),
+  },
   Effect.gen(function* () {
     const bank = yield* BankWorker;
     const app = yield* Cloudflare.Website.Foldkit("BankApp", {
@@ -56,7 +60,6 @@ export default Alchemy.Stack(
 ## Create the datasets and an ingest token
 
 ```typescript
-// src/Observability.ts
 import * as Axiom from "@alchemy.run/axiom";
 
 // Where spans go.
@@ -83,35 +86,30 @@ export const Ingest = Axiom.ApiToken("Ingest", {
 
 These are three Axiom resources. The stack creates them the first time a Worker uses them.
 
-:::note
-Dataset names are global to your Axiom org. If you deploy more than one stage, give each its own datasets: see [per-stage datasets](../../axiom/data/ingest.md#per-stage-datasets).
-:::
+## Send the bank’s telemetry to Axiom
 
-## Send the bank's telemetry to Axiom
-
-```diff lang="typescript"
-// src/BankWorker.ts
-+import * as Axiom from "@alchemy.run/axiom";
+```typescript
+import * as Axiom from "@alchemy.run/axiom";
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as DomainCloudflare from "@alchemy.run/cloudflare/Domain";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as Layer from "effect/Layer";
 import { Bank, BankHandlers } from "./Bank.model.ts";
 import { BankApi } from "./BankApi.api.ts";
-+import { Ingest, Logs, Traces } from "./Observability.ts";
+import { Ingest, Logs, Traces } from "./Observability.ts";
 import { SessionLive, sessionRoute } from "./Session.middleware.ts";
 
--const BankLive = SessionLive.pipe(
-+// Export every span and log to Axiom.
-+const TelemetryLive = Axiom.Telemetry({
-+  token: Ingest,
-+  traces: Traces,
-+  logs: Logs,
-+  serviceName: "bank",
-+});
-+
-+const BankLive = Layer.mergeAll(SessionLive, TelemetryLive).pipe(
+const BankLive = SessionLive.pipe(
+// Export every span and log to Axiom.
+const TelemetryLive = Axiom.Telemetry({
+  token: Ingest,
+  traces: Traces,
+  logs: Logs,
+  serviceName: "bank",
+});
+
+const BankLive = Layer.mergeAll(SessionLive, TelemetryLive).pipe(
   Layer.provideMerge(Bank.layer(BankHandlers)),
   Layer.provide(DomainCloudflare.layerDurableObjects()),
 );
@@ -132,12 +130,12 @@ export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
 ) {}
 ```
 
-This is the only change the bank needs. `Axiom.Telemetry` gives the Worker the datasets' addresses and the token, and the Worker and every Durable Object it hosts export their spans and logs after each response.
+This is the only change the bank needs. `Axiom.Telemetry` gives the Worker the datasets’ addresses and the token, and the Worker and every Durable Object it hosts export their spans and logs after each response.
 
 ## Follow a deposit
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Open the app, deposit, and open `bank-traces` in Axiom. The deposit is one trace:
@@ -166,71 +164,57 @@ Every span carries `domain.correlation_id`, the id of the first command in the f
 
 ## Record the amount on every withdrawal
 
-```diff lang="typescript"
-// src/WithdrawMoney.command.ts
-import * as Domain from "@alchemy.run/domain";
-import * as Schema from "effect/Schema";
-import { AccountId } from "./Account.id.ts";
-import { NotOpen } from "./NotOpen.rejection.ts";
-import { NotOwner } from "./NotOwner.rejection.ts";
-import { Session } from "./Session.middleware.ts";
-
-export class MoneyWithdrawn extends Domain.Event("MoneyWithdrawn", {
-  amount: Schema.Int,
-  balanceAfter: Schema.Int,
-}) {}
-
-export class InsufficientFunds extends Domain.Rejection("InsufficientFunds", {
-  balance: Schema.Int,
-  requested: Schema.Int,
-}) {}
-
-export class WithdrawMoney extends Domain.Command("WithdrawMoney", {
-  target: AccountId,
-  middleware: [Session],
-  input: { amount: Schema.Int },
-  events: [MoneyWithdrawn],
-  rejects: [NotOpen, NotOwner, InsufficientFunds],
-  reply: { balance: Schema.Int },
-+  attributes: (cmd) => ({ "bank.amount": cmd.amount }),
+```typescript
+export class Account extends Domain.Aggregate("Account", {
+  // ...
+  decide: {
+    // ...
+    WithdrawMoney: Effect.fn(function* (account, cmd) {
+      yield* Effect.annotateCurrentSpan("bank.amount", cmd.amount);
+      const open = yield* owned(account);
+      if (cmd.amount > open.balance) {
+        return yield* new InsufficientFunds({ balance: open.balance, requested: cmd.amount });
+      }
+      return [new MoneyWithdrawn({ amount: cmd.amount, balanceAfter: open.balance - cmd.amount })];
+    }),
+  },
+  // ...
 }) {}
 ```
 
-Spans record nothing from a command's input unless you ask. `attributes` adds `bank.amount` to every span the withdrawal makes, so you can find large withdrawals in Axiom. Events and rejections accept `attributes` too, and a `Redacted` value is always recorded as `<redacted>`.
+Spans record nothing from a command’s input unless a handler annotates it. `decide` runs inside the withdrawal’s `Domain.decide Account.WithdrawMoney` span, so `bank.amount` lands on it, and you can find large withdrawals in Axiom.
 
 ## Trace the browser
 
-The bank is traced. The trace still starts at the Worker, though, not at the click that caused it. The rest of this part adds the browser's spans.
+The bank is traced. The trace still starts at the Worker, though, not at the click that caused it. The rest of this part adds the browser’s spans.
 
-The browser can't send to Axiom itself: that would put the ingest token in every visitor's hands. Instead it sends its spans to the bank's Worker, and the Worker forwards them to Axiom with its own token.
+The browser can’t send to Axiom itself: that would put the ingest token in every visitor’s hands. Instead it sends its spans to the bank’s Worker, and the Worker forwards them to Axiom with its own token.
 
 ## Export the sign-in check
 
-```diff lang="typescript"
-// src/Session.middleware.ts
--const signedIn = (headers: Headers.Headers): Option.Option<string> =>
-+export const signedIn = (headers: Headers.Headers): Option.Option<string> =>
+```typescript
+const signedIn = (headers: Headers.Headers): Option.Option<string> =>
+export const signedIn = (headers: Headers.Headers): Option.Option<string> =>
 ```
 
-The Worker will forward spans only from signed-in customers, so a stranger can't fill your dataset. Export the `signedIn` check from Part 6 so it can use it.
+The Worker will forward spans only from signed-in customers, so a stranger can’t fill your dataset. Export the `signedIn` check from Part 6 so it can use it.
 
-## Forward the browser's spans to Axiom
+## Forward the browser’s spans to Axiom
 
-```diff lang="typescript"
-// src/BankWorker.ts
+```typescript
 import * as Axiom from "@alchemy.run/axiom";
 import * as Cloudflare from "@alchemy.run/cloudflare";
-import * as DomainCloudflare from "@alchemy.run/cloudflare/Domain";
-+import * as Telemetry from "alchemy/Telemetry";
+import * as DomainCloudflare from "@alchemy.run/domain/Cloudflare";
+import * as Telemetry from "alchemy/Telemetry";
 import * as Effect from "effect/Effect";
 import { HttpServerRequest } from "effect/http/HttpServerRequest";
 import * as Layer from "effect/Layer";
-+import * as Option from "effect/Option";
+import * as Option from "effect/Option";
 import { Bank, BankHandlers } from "./Bank.model.ts";
 import { BankApi } from "./BankApi.api.ts";
 import { Ingest, Logs, Traces } from "./Observability.ts";
--import { SessionLive, sessionRoute } from "./Session.middleware.ts";
-+import { SessionLive, sessionRoute, signedIn } from "./Session.middleware.ts";
+import { SessionLive, sessionRoute } from "./Session.middleware.ts";
+import { SessionLive, sessionRoute, signedIn } from "./Session.middleware.ts";
 
 // Export every span and log to Axiom.
 const TelemetryLive = Axiom.Telemetry({
@@ -245,13 +229,13 @@ const BankLive = Layer.mergeAll(SessionLive, TelemetryLive).pipe(
   Layer.provide(DomainCloudflare.layerDurableObjects()),
 );
 
-+// Accepts spans from the browser and forwards them to Axiom, for signed-in customers only.
-+const relayBrowserSpans = Telemetry.relay({
-+  authorize: Effect.map(HttpServerRequest, (request) =>
-+    Option.isSome(signedIn(request.headers)),
-+  ),
-+});
-+
+// Accepts spans from the browser and forwards them to Axiom, for signed-in customers only.
+const relayBrowserSpans = Telemetry.relay({
+  authorize: Effect.map(HttpServerRequest, (request) =>
+    Option.isSome(signedIn(request.headers)),
+  ),
+});
+
 export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
   "BankWorker",
   { main: import.meta.url },
@@ -261,37 +245,36 @@ export default class BankWorker extends Cloudflare.Worker<BankWorker>()(
       fetch: Effect.gen(function* () {
         const request = yield* HttpServerRequest;
         const path = new URL(request.url, "http://localhost").pathname;
--        return path === "/api/session" ? yield* sessionRoute : yield* api.fetch;
-+        if (path === "/api/session") return yield* sessionRoute;
-+        if (path.startsWith("/api/telemetry/")) return yield* relayBrowserSpans;
-+        return yield* api.fetch;
+        return path === "/api/session" ? yield* sessionRoute : yield* api.fetch;
+        if (path === "/api/session") return yield* sessionRoute;
+        if (path.startsWith("/api/telemetry/")) return yield* relayBrowserSpans;
+        return yield* api.fetch;
       }),
     };
   }).pipe(Effect.provide(BankLive)),
 ) {}
 ```
 
-`Telemetry.relay` is an HTTP handler that receives spans and sends them wherever the Worker's own telemetry goes, which is Axiom. It lives under `/api`, so the app's Worker from Part 6 already forwards it to the bank.
+`Telemetry.relay` is an HTTP handler that receives spans and sends them wherever the Worker’s own telemetry goes, which is Axiom. It lives under `/api`, so the app’s Worker from Part 6 already forwards it to the bank.
 
 ## Give the app a tracer
 
-```diff lang="typescript"
-// src/web/entry.ts
+```typescript
 import * as Domain from "@alchemy.run/domain";
 import * as Effect from "effect/Effect";
 import * as FetchHttpClient from "effect/http/FetchHttpClient";
 import * as HttpClient from "effect/http/HttpClient";
 import * as HttpClientRequest from "effect/http/HttpClientRequest";
 import * as Layer from "effect/Layer";
-+import * as OtlpSerialization from "effect/observability/OtlpSerialization";
-+import * as OtlpTracer from "effect/observability/OtlpTracer";
+import * as OtlpSerialization from "effect/observability/OtlpSerialization";
+import * as OtlpTracer from "effect/observability/OtlpTracer";
 import * as Socket from "effect/socket/Socket";
 import { Runtime } from "foldkit";
 import { BankApi } from "../BankApi.api.ts";
 import { CustomerId } from "../Customer.id.ts";
 import { Flags, init, Model, subscriptions, update, view } from "./Bank.ts";
 
-// A stand-in for a login page: `?customer=c-2` picks who you are.
+// A stand-in for a login page: \`?customer=c-2\` picks who you are.
 const customerId = CustomerId.make(new URLSearchParams(location.search).get("customer") ?? "c-1");
 
 // Sign in, so the browser holds the session cookie for every call and watch.
@@ -307,23 +290,23 @@ const BankConnection = Layer.unwrap(
     Effect.orDie,
     Effect.as(
       BankApi.layerClient.pipe(
-        Layer.provide(Domain.protocolWebSocket(`${location.origin}/api`)),
+        Layer.provide(Domain.protocolWebSocket(\`${location.origin}/api\`)),
         Layer.provide(Socket.layerWebSocketConstructorGlobal),
       ),
     ),
   ),
--).pipe(Layer.provide(FetchHttpClient.layer));
-+);
-+
-+// Send the app's spans to the bank's relay, on this origin.
-+const Tracing = OtlpTracer.layer({
-+  url: `${location.origin}/api/telemetry/v1/traces`,
-+  resource: { serviceName: "bank-web" },
-+}).pipe(Layer.provide(OtlpSerialization.layerJson));
-+
-+const Resources = Layer.mergeAll(BankConnection, Tracing).pipe(
-+  Layer.provide(FetchHttpClient.layer),
-+);
+).pipe(Layer.provide(FetchHttpClient.layer));
+);
+
+// Send the app's spans to the bank's relay, on this origin.
+const Tracing = OtlpTracer.layer({
+  url: \`${location.origin}/api/telemetry/v1/traces\`,
+  resource: { serviceName: "bank-web" },
+}).pipe(Layer.provide(OtlpSerialization.layerJson));
+
+const Resources = Layer.mergeAll(BankConnection, Tracing).pipe(
+  Layer.provide(FetchHttpClient.layer),
+);
 
 Runtime.run(
   Runtime.makeApplication({
@@ -333,8 +316,8 @@ Runtime.run(
     update,
     view,
     subscriptions,
--    resources: BankConnection,
-+    resources: Resources,
+    resources: BankConnection,
+    resources: Resources,
     container: document.getElementById("root"),
   }),
   { flags: Effect.succeed({ customerId }) },
@@ -346,7 +329,7 @@ Runtime.run(
 ## Follow a click
 
 ```sh
-bun alchemy deploy
+pnpm alchemy deploy
 ```
 
 Deposit again. The trace now starts in the browser:
@@ -365,7 +348,3 @@ Deposit                                                  the app ran its Deposit
 ```
 
 One trace shows the click, the command it sent, and everything it changed.
-
-:::note
-Next, [change a deployed model](part-8.md). Metrics, logs from handlers, and turning off view spans are in [Observability](../observability.md). To get alerted on what you now record, see [Monitors & Alerting](../../axiom/guides/alerting.md).
-:::

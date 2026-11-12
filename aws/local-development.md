@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/local-development
 title: "Local development"
 description: "alchemy dev runs your AWS stack on your machine — Lambda in Docker containers, local S3/DynamoDB/SQS, event sources firing, hot reload — with no AWS account or credentials required."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 `alchemy dev` runs your AWS stack entirely on your machine — no AWS account, no credentials, no config. Lambda functions execute in Docker containers behind working Function URLs, websites run their frameworks’ own dev servers with native HMR, ECS tasks run as real containers, and the surrounding services (S3, DynamoDB, SQS, SNS, EventBridge, and many more) are emulated locally. Code changes hot reload in ~100–500ms.
@@ -71,6 +71,14 @@ const site = yield* AWS.Website.Vite("Web");
 // deploy: site.url = the CloudFront distribution
 ```
 
+A bare `AWS.Lambda.WebFunction` runs in the emulator instead. Its server answers at a local endpoint URL whose certificate the emulator signs with the authority in `~/.floci/ca.pem`, which `curl --cacert` or your system keychain can trust:
+
+```typescript
+const api = yield* AWS.Lambda.WebFunction("Api", { main: "./src/server.ts" });
+// dev:    api.url = https://<id>.001.lambda-web.us-east-1.localhost:4566
+// deploy: api.url = https://<id>.<shard>.lambda-web.<region>.on.aws
+```
+
 The same stack deploys unchanged: `alchemy deploy` runs `vite build` and serves the output from S3 through CloudFront. For SSR frameworks, `server.environment` is delivered to the dev server’s process env, so config reads work the same locally and deployed. See [AWS frontends](frontend/websites.md).
 
 ## ECS tasks run as containers
@@ -107,7 +115,7 @@ Close to 40 services and over 200 resource types run against the local emulator 
 
 | Category | Services |
 | --- | --- |
-| Compute | Lambda (functions, layers, versions, aliases, event source mappings, permissions), ECS, ECR, Batch, Auto Scaling, Application Auto Scaling |
+| Compute | Lambda (functions, Web Functions, layers, versions, aliases, event source mappings, permissions), ECS, ECR, Batch, Auto Scaling, Application Auto Scaling |
 | APIs & delivery | API Gateway (REST), API Gateway v2 (HTTP & WebSocket), AppSync, CloudFront (Distributions, Functions, KeyValueStore), WAFv2, ACM |
 | Storage & databases | S3, DynamoDB, RDS, Glue, Athena, S3 Vectors |
 | Messaging & events | SQS, SNS, EventBridge, Kinesis, Firehose, Pipes, Scheduler, Step Functions |
@@ -151,7 +159,7 @@ The default image is our patched release (`ghcr.io/alchemy-run/floci`).
 To wipe everything inside the emulator without recreating the container, point [`nuke`](../cli/nuke.md) at the local providers:
 
 ```sh
-bun alchemy unsafe nuke --local --include 'AWS.*'
+pnpm alchemy unsafe nuke --local --include 'AWS.*'
 ```
 
 `--local` enumerates and deletes through each provider’s local implementation, so it only ever sees emulated resources — no cloud credentials are involved and nothing in a real AWS account can be touched.

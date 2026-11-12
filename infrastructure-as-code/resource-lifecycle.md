@@ -2,15 +2,23 @@
 url: https://alchemy.run/infrastructure-as-code/resource-lifecycle
 title: "Resource Lifecycle"
 description: "How alchemy plans, applies, replaces, and destroys resources — and how to think about idempotency and recovery."
-access_date: 2026-11-02T21:06:06.110Z
-current_date: 2026-11-02T21:06:06.110Z
+access_date: 2026-11-12T09:38:50.977Z
+current_date: 2026-11-12T09:38:50.977Z
 ---
 
 Every [Resource](resource.md) goes through the same lifecycle: **plan → reconcile → (replace) → delete**. The plan classifies each resource as create, update, replace, delete, or no-op, but the provider implements a single `reconcile` function that converges the cloud’s actual state to what’s declared — whether that’s the first provisioning, a routine update, or an adoption takeover. For the CLI flags that drive these operations, see the [CLI reference](../cli.md).
 
 ## The lifecycle, end-to-end
 
-<svg viewBox="0 0 628 356" role="img" aria-label="Dependency graph"><defs><marker id="alc-dag-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs><g><path d="M 164 178 C 201 178, 201 52, 238 52" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="201" y="109" text-anchor="middle">new</text></g> <g><path d="M 164 178 C 201 178, 201 136, 238 136" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="201" y="151" text-anchor="middle">changed</text></g> <g><path d="M 164 178 C 201 178, 201 220, 238 220" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="201" y="193" text-anchor="middle">breaking</text></g> <g><path d="M 164 178 C 311 178, 311 178, 458 178" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="311" y="172" text-anchor="middle">removed</text></g> <g><path d="M 164 178 C 201 178, 201 304, 238 304" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#alc-dag-arrow)"></path><text fill="currentColor" x="201" y="235" text-anchor="middle">unchanged</text></g> <g><path d="M 384 220 C 421 220, 421 178, 458 178" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#alc-dag-arrow)"></path></g><g transform="translate(24, 150)"><rect stroke="currentColor" fill="none" width="140" height="56" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="29" text-anchor="middle" dominant-baseline="middle">Plan</text></g> <g transform="translate(244, 24)"><rect stroke="currentColor" fill="none" width="140" height="56" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="29" text-anchor="middle" dominant-baseline="middle">Reconcile (create)</text></g> <g transform="translate(244, 108)"><rect stroke="currentColor" fill="none" width="140" height="56" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="29" text-anchor="middle" dominant-baseline="middle">Reconcile (update)</text></g> <g transform="translate(244, 192)"><rect stroke="currentColor" fill="none" width="140" height="56" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="29" text-anchor="middle" dominant-baseline="middle">Replace</text></g> <g transform="translate(464, 150)"><rect stroke="currentColor" fill="none" width="140" height="56" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="29" text-anchor="middle" dominant-baseline="middle">Delete</text></g> <g transform="translate(244, 276)"><rect stroke="currentColor" fill="none" width="140" height="56" rx="8" ry="8"></rect><text fill="currentColor" x="70" y="29" text-anchor="middle" dominant-baseline="middle">Noop</text></g></svg>
+| in the Stack, the resource is | the plan | the provider runs |
+| --- | --- | --- |
+| new | create | reconcile |
+| changed | update | reconcile |
+| changed in a way it can't update | replace | reconcile a new one, then delete the old |
+| gone | delete | delete |
+| the same | no-op | nothing |
+
+The plan sorts each resource into one of five actions. Create and update both run the provider's single reconcile.
 
 Both create and update intents resolve to the provider’s single `reconcile` function. Replace runs `reconcile` against a fresh instance id and then deletes the old generation. The same engine drives `alchemy deploy`, `alchemy destroy`, and `alchemy dev`.
 
@@ -105,6 +113,18 @@ Effect.gen(function* () {
 
 The policy is a decoration, not a prop, so changing it produces no diff — the resource plans as a **no-op** and the plan reports no changes. The deploy still persists the new policy onto the state row (the orphan delete reads it from there, long after the declaration is gone), so a policy change takes effect from the very next deploy.
 
+### Protecting a resource from replacement
+
+`retain` keeps the old cloud object, but a replacement still happens: dependents move to the new one. For a VPC, a cluster or a key that seals stored data, use `protect()` instead. A plan that would replace or delete the resource fails before anything is applied:
+
+```typescript
+const vpc = yield* AWS.EC2.Vpc("Vpc", { cidrBlock: "10.0.0.0/16" }).pipe(
+  RemovalPolicy.protect(),
+);
+```
+
+`alchemy plan`, `deploy` and `destroy` all refuse with a `ProtectedResource` error naming the resource. The policy is persisted like any other, so removing the declaration is refused too. To replace or delete it on purpose, deploy it without `protect()` first.
+
 ## Idempotency and recovery
 
 State persistence can fail after the cloud operation succeeds — the network drops between “bucket created” and “state saved”. Alchemy handles this by requiring `reconcile` and `delete` to be safe to retry:
@@ -141,7 +161,7 @@ The same engine powers all of these commands:
 
 See the [CLI reference](../cli.md) for the full set of flags (`--yes`, `--force`, `--dry-run`, `--stage`, `--profile`, …).
 
-Every lifecycle operation on this page is implemented per resource type by a [Provider](provider.md).
+Each of these lifecycle operations is implemented per resource type by a [Provider](provider.md).
 
 ## Where next
 
