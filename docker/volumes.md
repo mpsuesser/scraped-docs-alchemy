@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/volumes
 title: "Volumes"
 description: "Keep a container's data in a Docker.Volume so it survives the container being recreated, mount host directories, and know when a volume and its data are deleted."
-access_date: 2026-11-12T09:38:50.977Z
-current_date: 2026-11-12T09:38:50.977Z
+access_date: 2026-11-12T22:28:06.438Z
+current_date: 2026-11-12T22:28:06.438Z
 ---
 
 A container’s own filesystem is removed with the container, and most changes to a container [recreate it](containers.md#what-a-change-does). A **volume** is storage the engine keeps outside any container. Mount it at a path, and whatever is written there stays on the volume when the container goes, ready for the next one.
@@ -85,3 +85,17 @@ See [Removal policy](../infrastructure-as-code/resource-lifecycle.md#removal-pol
 ```typescript
 const data = Docker.Volume.lookup({ name: "pgdata" });
 ```
+
+## A volume with the same name
+
+Docker names are the only handle on a volume, so Alchemy labels each volume it creates with a generation ID and checks it before every change. If the volume was removed and another one now has its name, plan, deploy and destroy fail with `OwnedBySomeoneElse` and leave that volume alone.
+
+To manage a volume created outside the Stack, adopt it:
+
+```typescript
+import { adopt } from "alchemy/AdoptPolicy";
+
+const data = yield* Docker.Volume("postgres-data", { name: "pgdata" }).pipe(adopt(true));
+```
+
+Alchemy never deletes an adopted volume to apply a changed `driver`, `driverOpts` or `labels`; the plan fails and you migrate the data yourself. Docker removes volumes by name, so a volume swapped in between the check and the removal can still be deleted. For data you can’t lose, use `RemovalPolicy.protect()`, which refuses both replacement and destroy.

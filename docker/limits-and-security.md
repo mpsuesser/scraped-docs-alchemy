@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/limits-and-security
 title: "Limits & security"
 description: "Cap a container's memory, CPU and processes, run it as an unprivileged user with a read-only filesystem and no capabilities, apply seccomp and AppArmor profiles, and rotate its logs."
-access_date: 2026-11-12T09:38:50.977Z
-current_date: 2026-11-12T09:38:50.977Z
+access_date: 2026-11-12T22:28:06.438Z
+current_date: 2026-11-12T22:28:06.438Z
 ---
 
 Containers share the host’s kernel. Without limits, one container can use all the host’s memory and CPU, and its processes run as root with a set of Linux **capabilities** that let them change files and settings the image owns. Both are defaults you can tighten per container: limits cap what it can use, and dropping privileges shrinks what a compromised process could do.
@@ -33,6 +33,8 @@ const worker = yield* Docker.Container("worker", {
 ```
 
 `memory` is a hard limit: when the container goes over it, the kernel kills a process inside. `memorySwap` caps memory **plus** swap, so setting it equal to `memory` turns swap off. `memoryReservation` is a softer target Docker holds the container to when the host runs short. `cpus: 0.5` allows half a core, and `pidsLimit` caps processes and threads, which stops a fork bomb.
+
+`sharedMemorySize` sizes `/dev/shm`, which Postgres uses for parallel queries; Docker’s default is 64 MB. It counts separately from `memory`. A container that shares another’s IPC namespace uses that namespace’s `/dev/shm`, so it can’t set one.
 
 ## Drop privileges
 
@@ -69,6 +71,8 @@ const worker = yield* Docker.Container("profiled-worker", {
 A **seccomp** profile lists the system calls the container may make. `seccompProfile` is a JSON file on your machine, and editing it recreates the container, even when the path stays the same. An **AppArmor** profile limits which files and resources it can touch. It must already be loaded on the engine’s host, and only Linux hosts with AppArmor have it. Leave both unset to keep Docker’s defaults, and avoid `"unconfined"`, which turns them off.
 
 `groupAdd` adds supplementary groups, `ulimits` sets per-process limits like open files (`{ nofile: { soft: 1024, hard: 4096 } }`), and `devices` exposes a host device. `userNamespace: "host"` opts out of the engine’s user remapping, which weakens isolation rather than strengthening it.
+
+`gpuDevices: "all"` (or `"device=0"`) hands GPUs to the container, on a host with the NVIDIA container runtime. `privileged: true` gives the container nearly every power the host has; reserve it for tools like Docker-in-Docker.
 
 ## Rotate logs and stop cleanly
 

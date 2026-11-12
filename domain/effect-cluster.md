@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/effect-cluster
 title: "Effect Cluster"
 description: "Host a domain model on Effect Cluster entities, with its state in Postgres and its runners on any cloud."
-access_date: 2026-11-12T09:38:50.977Z
-current_date: 2026-11-12T09:38:50.977Z
+access_date: 2026-11-12T22:28:06.438Z
+current_date: 2026-11-12T22:28:06.438Z
 ---
 
 Host your model on [Effect Cluster](../cluster.md), and every aggregate instance, view key and policy is an entity id of one entity. Its state lives in the cluster’s Postgres, its sagas run on Effect Cluster’s workflow engine, and its runners run in the pool you give it.
@@ -118,9 +118,11 @@ Commands to one aggregate instance run one at a time. Its events, new state and 
 
 Every event reaches the views, projections and policies that consume it, at least once and in order for each source, even if a runner restarts in between. Scheduled commands are persisted messages, delivered when they’re due on whichever runner then owns the instance.
 
-## Read live over HTTP
+## Watch without polling
 
-Effect Cluster entities hold no WebSockets, so serve the Api with `Domain.protocolHttp`. A `watch` or `events` read is a streamed response, fed by polling the entity that owns the key. `Domain.protocolWebSocket` answers `501` here.
+Give the client `Domain.protocolWebSocket` (see [Api](api.md#choose-a-protocol)). The runtime that serves the Api holds each live read’s WebSocket, and the entity that owns the key pushes every commit to it over a streamed call through the pool’s gateway.
+
+A dropped socket, or an entity that moves to another runner, reconnects and resumes from the last value it delivered. Over `Domain.protocolHttp`, live reads are streamed responses that poll the entity instead.
 
 ## Add consumers to a running Domain
 

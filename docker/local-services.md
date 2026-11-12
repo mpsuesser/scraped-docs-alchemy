@@ -2,8 +2,8 @@
 url: https://alchemy.run/docker/local-services
 title: "Local Postgres"
 description: "Run Postgres for local development as Stack resources — a pinned image, a network and a volume, a Redacted password, and a health-checked container."
-access_date: 2026-11-12T09:38:50.977Z
-current_date: 2026-11-12T09:38:50.977Z
+access_date: 2026-11-12T22:28:06.438Z
+current_date: 2026-11-12T22:28:06.438Z
 ---
 
 Run Postgres for development the same way you run your cloud resources: declared in your Stack, created with one deploy, and removed with one destroy. Docker gives you a pinned image, a network the database is reachable on by name, a volume that keeps its data, and the container itself.
@@ -90,6 +90,7 @@ const postgres = yield* Docker.Container("postgres", {
     POSTGRES_USER: "alchemy",
     POSTGRES_PASSWORD: password,
   },
+  sharedMemorySize: "256m",
   ports: [{ external: 15432, internal: 5432 }],
   volumes: [
     { hostPath: data.name, containerPath: "/var/lib/postgresql/data" },
@@ -106,6 +107,8 @@ const postgres = yield* Docker.Container("postgres", {
 ```
 
 `image` takes the `RemoteImage` resource itself. A `hostPath` set to the volume’s name mounts the volume. The `postgres` alias is the name other containers on `app-network` connect to. The health check marks the container healthy once Postgres accepts connections, and `start: true` runs it, rather than leaving it created and stopped.
+
+`sharedMemorySize` raises `/dev/shm` above Docker’s 64 MB default, which Postgres runs out of on parallel queries.
 
 ## Read the bound ports
 

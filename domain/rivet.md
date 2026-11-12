@@ -2,8 +2,8 @@
 url: https://alchemy.run/domain/rivet
 title: "Rivet"
 description: "Host a domain model on Rivet Durable Objects, on nodes in any cloud, and serve its Apis from any runtime."
-access_date: 2026-11-12T09:38:50.977Z
-current_date: 2026-11-12T09:38:50.977Z
+access_date: 2026-11-12T22:28:06.438Z
+current_date: 2026-11-12T22:28:06.438Z
 ---
 
 Host your model on [Rivet](../rivet.md), and every aggregate instance, view key and policy runs as a Rivet actor with its own SQLite. The nodes run in the pool you give it, and your Api runs wherever you like.
@@ -111,9 +111,11 @@ Commands to one aggregate instance run one at a time. Its events, new state and 
 
 Every event reaches the views, projections and policies that consume it, at least once and in order for each source, even if a node restarts in between. Scheduled commands fire on the actor’s alarm when they’re due.
 
-## Read live over HTTP
+## Watch without polling
 
-Rivet holds no WebSockets for actors, so serve the Api with `Domain.protocolHttp`. A `watch` or `events` read is a streamed response, fed by polling the actor that owns the key. `Domain.protocolWebSocket` answers `501` here.
+Give the client `Domain.protocolWebSocket` (see [Api](api.md#choose-a-protocol)). Each `watch` or `events` read opens a WebSocket, which the Api carries through the control plane’s gateway to the actor that owns the key. The actor pushes every commit down it as it happens.
+
+The runtime that serves the Api holds the caller’s side of the socket: a Worker hands it straight through, and a container (Bun or Node) copies frames between the two. A dropped socket reconnects and resumes from the last value it delivered. Over `Domain.protocolHttp`, live reads are streamed responses that poll the actor instead.
 
 ## Add consumers to a running Domain
 
