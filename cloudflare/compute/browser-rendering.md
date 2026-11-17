@@ -2,17 +2,25 @@
 url: https://alchemy.run/cloudflare/compute/browser-rendering
 title: "Browser rendering"
 description: "Attach Cloudflare Browser Rendering to a Worker — run quick actions like markdown and scrape, stream screenshots and PDFs, or drive the raw binding with puppeteer."
-access_date: 2026-11-17T20:24:37.380Z
-current_date: 2026-11-17T20:24:37.380Z
+access_date: 2026-11-17T20:31:39.835Z
+current_date: 2026-11-17T20:31:39.835Z
 ---
 
-Browser Rendering gives a Worker a headless browser. In alchemy, the `Cloudflare.Browser` binding attaches it at deploy time and hands you an Effect-native client: JSON quick actions (`markdown`, `content`, `links`, `scrape`, `snapshot`, `json`) resolve to their parsed payloads, binary actions (`screenshot`, `pdf`) resolve to byte streams, and the raw binding is one accessor away for `@cloudflare/puppeteer`.
+Browser Rendering gives a Worker a headless browser. In alchemy, the
+`Cloudflare.Browser` binding attaches it at deploy time and hands you
+an Effect-native client: JSON quick actions (`markdown`, `content`,
+`links`, `scrape`, `snapshot`, `json`) resolve to their parsed
+payloads, binary actions (`screenshot`, `pdf`) resolve to byte
+streams, and the raw binding is one accessor away for
+`@cloudflare/puppeteer`.
 
 ## Bind the browser to a Worker
 
-`yield*` the binding in the Worker’s Construction phase and provide `BrowserBinding` as a layer:
+`yield*` the binding in the Worker's Construction phase and provide
+`BrowserBinding` as a layer:
 
 ```typescript
+// src/worker.ts
 import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
@@ -37,11 +45,15 @@ export default Cloudflare.Worker(
 );
 ```
 
-`Cloudflare.Browser("BROWSER")` registers the binding on the Worker at deploy time and returns the typed `BrowserClient` for runtime use. `markdown` renders the page in a headless browser and resolves to the converted Markdown; failures surface as a typed `BrowserError`.
+`Cloudflare.Browser("BROWSER")` registers the binding on the Worker at
+deploy time and returns the typed `BrowserClient` for runtime use.
+`markdown` renders the page in a headless browser and resolves to the
+converted Markdown; failures surface as a typed `BrowserError`.
 
 ## Scrape elements by selector
 
-The other JSON quick actions follow the same shape. Pass a URL plus action-specific options and get the parsed result back:
+The other JSON quick actions follow the same shape. Pass a URL plus
+action-specific options and get the parsed result back:
 
 ```typescript
 const scrape = yield* browser.scrape({
@@ -53,11 +65,14 @@ const heading = scrape.result[0]?.results[0]?.text;
 // "Example Domain"
 ```
 
-`content` returns the rendered HTML, `links` every link on the page, `snapshot` HTML plus a base64 screenshot in one call, and `json` extracts structured data from the page with an AI `prompt`.
+`content` returns the rendered HTML, `links` every link on the page,
+`snapshot` HTML plus a base64 screenshot in one call, and `json`
+extracts structured data from the page with an AI `prompt`.
 
 ## Stream a screenshot or PDF
 
-`screenshot` and `pdf` are binary actions, so they return a `Stream` of `Uint8Array` chunks instead of a parsed payload:
+`screenshot` and `pdf` are binary actions, so they return a
+`Stream` of `Uint8Array` chunks instead of a parsed payload:
 
 ```typescript
 import * as Stream from "effect/Stream";
@@ -67,13 +82,16 @@ const chunks = yield* browser
   .pipe(Stream.runCollect, Effect.orDie);
 ```
 
-`Stream.runCollect` drains the response into memory; for large PDFs you can just as well pipe the stream onward without buffering it.
+`Stream.runCollect` drains the response into memory; for large PDFs
+you can just as well pipe the stream onward without buffering it.
 
 ## Declare the binding as env metadata
 
-Workers whose `main` module exports a plain `fetch` handler declare the binding on `env` instead:
+Workers whose `main` module exports a plain `fetch` handler declare
+the binding on `env` instead:
 
 ```typescript
+// alchemy.run.ts
 export const Worker = Cloudflare.Worker("PuppeteerWorker", {
   main: "./src/worker.ts",
   compatibility: { flags: ["nodejs_compat"] },
@@ -84,13 +102,17 @@ export type WorkerEnv = Cloudflare.InferEnv<typeof Worker>;
 //   { BROWSER: BrowserRun }
 ```
 
-`InferEnv` types the `env` your handler receives. `BROWSER` flows through as Cloudflare’s native `BrowserRun` binding. The `nodejs_compat` flag is required for `@cloudflare/puppeteer`.
+`InferEnv` types the `env` your handler receives. `BROWSER` flows
+through as Cloudflare's native `BrowserRun` binding. The
+`nodejs_compat` flag is required for `@cloudflare/puppeteer`.
 
 ## Drive it with puppeteer
 
-Launch a full browser session against the binding when quick actions aren’t enough:
+Launch a full browser session against the binding when quick actions
+aren't enough:
 
 ```typescript
+// src/worker.ts
 import puppeteer from "@cloudflare/puppeteer";
 import type { WorkerEnv } from "../alchemy.run.ts";
 
@@ -108,9 +130,13 @@ export default {
 };
 ```
 
-The same escape hatch exists inside an Effect-style Worker: `yield* browser.raw` resolves to the underlying `BrowserRun` binding, ready to hand to promise-shaped libraries.
+The same escape hatch exists inside an Effect-style Worker:
+`yield* browser.raw` resolves to the underlying `BrowserRun` binding,
+ready to hand to promise-shaped libraries.
 
 ## Where next
 
-- [Workers](workers.md) — the two-phase Worker model the binding lives inside.
-- [Browser API reference](https://alchemy.run/providers/cloudflare/workers#browser) — every quick action, option type, and result shape.
+- [Workers](workers.md) — the two-phase Worker model the
+  binding lives inside.
+- [Browser API reference](https://alchemy.run/providers/cloudflare/workers#browser) —
+  every quick action, option type, and result shape.
