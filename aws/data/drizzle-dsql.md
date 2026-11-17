@@ -2,8 +2,8 @@
 url: https://alchemy.run/aws/data/drizzle-dsql
 title: "Drizzle + Aurora DSQL"
 description: "Drizzle on Lambda with Aurora DSQL, a non-admin database role, verified TLS, and an explicit DSQL migration boundary."
-access_date: 2026-11-17T22:11:34.298Z
-current_date: 2026-11-17T22:11:34.298Z
+access_date: 2026-11-17T22:18:06.371Z
+current_date: 2026-11-17T22:18:06.371Z
 ---
 
 [Runnable example](https://github.com/alchemy-run/alchemy/tree/main/examples/aws-dsql-drizzle) · [AWS setup](../setup.md) · [Aurora PostgreSQL instead](drizzle-aurora.md)
@@ -18,6 +18,10 @@ cd examples/aws-dsql-drizzle
 ```
 
 Use a DSQL-supported region such as `us-west-2`. Deployment needs `dsql:DbConnectAdmin` and access to the cluster on port 5432. The example includes Effect 4, Effect-native Drizzle, and `@effect/sql-pg`; it is not an RDS Data API integration.
+
+:::caution
+These resources are billable. Deletion protection is disabled; destroy deletes the database data.
+:::
 
 ## Create the cluster
 
@@ -46,7 +50,7 @@ export const Todos = pgSchema("app").table("todos", {
 });
 ```
 
-Use application-generated UUIDs for this table rather than PostgreSQL sequence defaults. Check [DSQL’s PostgreSQL compatibility](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/working-with-postgresql-compatibility-migration-guide.html) before extending the schema; PostgreSQL SQL generation is not a portability guarantee.
+Use application-generated UUIDs for this table rather than PostgreSQL sequence defaults. Check [DSQL's PostgreSQL compatibility](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/working-with-postgresql-compatibility-migration-guide.html) before extending the schema; PostgreSQL SQL generation is not a portability guarantee.
 
 ## Separate schema setup from application access
 
@@ -103,7 +107,7 @@ const [created] = yield* db.insert(Todos).values({
 pnpm deploy --profile testing
 ```
 
-The example’s Action performs the initial bootstrap. To apply versioned migrations on deploy instead, pass them to the cluster’s `migrations` prop; see [Apply the committed SQL](#apply-the-committed-sql).
+The example's Action performs the initial bootstrap. To apply versioned migrations on deploy instead, pass them to the cluster's `migrations` prop; see [Apply the committed SQL](#apply-the-committed-sql).
 
 ## Verify the connection
 
@@ -122,7 +126,7 @@ ALCHEMY_PROFILE=testing bun test test/integ.test.ts
 
 ## Evolve the schema
 
-Initial setup does not alter existing tables. The Action’s `version` input is not a migration history: before adopting generated migrations for this bootstrapped database, establish a reviewed baseline matching `app.todos` rather than replaying its initial creation.
+Initial setup does not alter existing tables. The Action's `version` input is not a migration history: before adopting generated migrations for this bootstrapped database, establish a reviewed baseline matching `app.todos` rather than replaying its initial creation.
 
 ### Configure SQL generation
 
@@ -131,6 +135,7 @@ pnpm add -D drizzle-kit@1.0.0-rc.5
 ```
 
 ```typescript
+// drizzle.config.ts
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
@@ -176,7 +181,7 @@ export PGPASSWORD="$(aws dsql generate-db-connect-admin-auth-token \
   --hostname "$PGHOST" --region "$AWS_REGION")"
 ```
 
-This operator connection uses AWS CLI credentials authorized for `dsql:DbConnectAdmin` and a libpq 16-or-newer client for system certificate trust. It is separate from the Lambda’s `app_user` connection. Keep the token out of source control and logs; mint a fresh one before reconnecting and unset `PGPASSWORD` when finished.
+This operator connection uses AWS CLI credentials authorized for `dsql:DbConnectAdmin` and a libpq 16-or-newer client for system certificate trust. It is separate from the Lambda's `app_user` connection. Keep the token out of source control and logs; mint a fresh one before reconnecting and unset `PGPASSWORD` when finished.
 
 ### Apply the committed SQL
 
@@ -188,7 +193,7 @@ const database = yield* AWS.DSQL.Cluster("Database", {
 });
 ```
 
-Each statement runs separately, `CREATE INDEX` becomes `CREATE INDEX ASYNC` and is awaited, and applied migrations are recorded in `__alchemy_migrations`. Editing or deleting an applied migration fails the deploy; add a new migration instead. Don’t wrap migration files in `BEGIN` / `COMMIT`, and don’t expose schema administration through an HTTP `/setup` route.
+Each statement runs separately, `CREATE INDEX` becomes `CREATE INDEX ASYNC` and is awaited, and applied migrations are recorded in `__alchemy_migrations`. Editing or deleting an applied migration fails the deploy; add a new migration instead. Don't wrap migration files in `BEGIN`/`COMMIT`, and don't expose schema administration through an HTTP `/setup` route.
 
 ## Clean up
 
